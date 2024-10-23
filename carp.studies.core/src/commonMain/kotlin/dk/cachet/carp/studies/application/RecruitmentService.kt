@@ -20,7 +20,7 @@ import kotlinx.serialization.*
 @DependentServices( StudyService::class )
 interface RecruitmentService : ApplicationService<RecruitmentService, RecruitmentService.Event>
 {
-    companion object { val API_VERSION = ApiVersion( 1, 2 ) }
+    companion object { val API_VERSION = ApiVersion( 1, 3 ) }
 
     @Serializable
     sealed class Event : IntegrationEvent<RecruitmentService>

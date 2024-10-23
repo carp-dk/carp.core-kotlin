@@ -263,15 +263,15 @@ class StudyDeployment private constructor(
      */
     private fun getDeviceStatus( device: AnyDeviceConfiguration ): DeviceDeploymentStatus
     {
+        val registration = _registeredDevices[ device ]
         val needsRedeployment = device in invalidatedDeployedDevices
         val isDeployed = device in deployedDevices
-        val isRegistered = device in _registeredDevices
         val canBeDeployed = registrableDevices.first{ it.device == device }.canBeDeployed
 
         val alreadyRegistered = registeredDevices.keys
         val mandatoryDependentDevices = getDependentDevices( device ).filter { !it.isOptional }
         val toRegisterToObtainDeployment = mandatoryDependentDevices
-            .plus( device ) // Device itself needs to be registered.
+            .plus( device ) // The device itself needs to be registered.
             .minus( alreadyRegistered )
         val mandatoryConnectedDevices =
             if ( device.isPrimary() ) protocol.getConnectedDevices( device ).filter { !it.isOptional }
@@ -283,16 +283,23 @@ class StudyDeployment private constructor(
 
         val toObtainDeployment = toRegisterToObtainDeployment.map { it.roleName }.toSet()
         val beforeDeployment = toRegisterBeforeDeployment.map { it.roleName }.toSet()
+
         return when
         {
-            needsRedeployment ->
-                DeviceDeploymentStatus.NeedsRedeployment( device, toObtainDeployment, beforeDeployment )
-            isDeployed ->
-                DeviceDeploymentStatus.Deployed( device )
-            isRegistered ->
-                DeviceDeploymentStatus.Registered( device, canBeDeployed, toObtainDeployment, beforeDeployment )
-            else ->
+            registration == null ->
                 DeviceDeploymentStatus.Unregistered( device, canBeDeployed, toObtainDeployment, beforeDeployment )
+            needsRedeployment ->
+                DeviceDeploymentStatus.NeedsRedeployment( device, registration, toObtainDeployment, beforeDeployment )
+            isDeployed ->
+                DeviceDeploymentStatus.Deployed( device, registration )
+            else ->
+                DeviceDeploymentStatus.Registered(
+                    device,
+                    registration,
+                    canBeDeployed,
+                    toObtainDeployment,
+                    beforeDeployment
+                )
         }
     }
 
