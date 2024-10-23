@@ -10,7 +10,7 @@
     { "$ref": "#StopParticipantGroup" }
   ],
   "$defs": {
-    "ApiVersion": { "const": "1.2" },
+    "ApiVersion": { "const": "1.3" },
     "AddParticipantByEmailAddress": {
       "$anchor": "AddParticipantByEmailAddress",
       "type": "object",
