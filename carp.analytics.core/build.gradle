@@ -1,0 +1,58 @@
+group = 'dk.cachet.carp.analytics'
+
+version = clientsVersion
+
+publishing {
+    publications {
+        all {
+            pom {
+                name = 'Analytics Domain Model and Application Services'
+                description =
+                    'A domain model and application services to manage analytics and runtime logic for studies on client devices (e.g., smartphone). ' 
+            }
+        }
+    }
+}
+
+kotlin {
+    jvm {
+        compilations.main.kotlinOptions.jvmTarget = versions.jvmTarget
+        compilations.test.kotlinOptions.jvmTarget = versions.jvmTarget
+
+        testRuns["test"].executionTask.configure {
+            useJUnitPlatform()
+        }
+    }
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                api project(":carp.common") 
+                implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:${versions.serialization}"
+                implementation "org.jetbrains.kotlinx:kotlinx-datetime:${versions.datetime}"
+            }
+        }
+
+        commonTest {
+            dependencies {
+                implementation kotlin("test")
+                implementation project(":carp.common.test")
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.coroutines}"
+            }
+        }
+
+        jvmMain {
+            dependencies {
+                implementation("org.jetbrains.kotlin:kotlin-stdlib")
+            }
+        }
+
+
+        jvmTest {
+            dependencies {
+                implementation kotlin("reflect")
+                implementation "org.reflections:reflections:${versions.reflections}"
+            }
+        }
+    }
+}
