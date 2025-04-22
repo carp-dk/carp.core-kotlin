@@ -174,3 +174,4 @@ publish.properties
 # OS generated files
 .DS_Store
 
+.vscode/settings.json

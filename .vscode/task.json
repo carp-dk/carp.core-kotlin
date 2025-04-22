@@ -1,0 +1,16 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Analytics: Build + Test + Coverage",
+        "type": "shell",
+        "command": "./gradlew :carp.analytics.core:build :carp.analytics.core:jvmTest :carp.analytics.core:jacocoTestReport",
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "problemMatcher": []
+      }
+    ]
+  }
+  
