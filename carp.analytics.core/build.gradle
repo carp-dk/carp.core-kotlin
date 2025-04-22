@@ -40,6 +40,7 @@ kotlin {
         commonMain {
             dependencies {
                 api project(":carp.common")
+                implementation "org.jetbrains.kotlin:kotlin-stdlib"
                 implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:${versions.serialization}"
                 implementation "org.jetbrains.kotlinx:kotlinx-datetime:${versions.datetime}"
             }
@@ -49,6 +50,9 @@ kotlin {
             dependencies {
                 implementation kotlin("test")
                 implementation project(":carp.common.test")
+                implementation "org.jetbrains.kotlin:kotlin-stdlib"
+                implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:${versions.serialization}"
+                implementation "org.jetbrains.kotlinx:kotlinx-datetime:${versions.datetime}"
                 implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.coroutines}"
             }
         }
@@ -63,6 +67,7 @@ kotlin {
             dependencies {
                 implementation kotlin("reflect")
                 implementation "org.reflections:reflections:${versions.reflections}"
+                implementation "org.jetbrains.kotlin:kotlin-stdlib"
 
                 implementation "org.junit.jupiter:junit-jupiter-api:5.10.0"
                 implementation "org.junit.jupiter:junit-jupiter-params:5.10.0"
@@ -95,3 +100,9 @@ task jacocoTestReport(type: JacocoReport) {
 
 
 tasks.jvmTest.finalizedBy jacocoTestReport
+
+task analyticsFullBuild {
+    dependsOn ':carp.analytics.core:build',
+              ':carp.analytics.core:jvmTest',
+              ':carp.analytics.core:jacocoTestReport'
+}
