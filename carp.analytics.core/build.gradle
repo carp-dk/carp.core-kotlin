@@ -2,15 +2,27 @@ group = 'dk.cachet.carp.analytics'
 
 version = clientsVersion
 
+apply plugin: 'jacoco'
+
 publishing {
     publications {
         all {
             pom {
                 name = 'Analytics Domain Model and Application Services'
                 description =
-                    'A domain model and application services to manage analytics and runtime logic for studies on client devices (e.g., smartphone). ' 
+                    'A domain model and application services to manage analytics and runtime logic for studies on client devices (e.g., smartphone). '
             }
         }
+    }
+}
+
+jacoco {
+    toolVersion = "0.8.11"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 
@@ -27,7 +39,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api project(":carp.common") 
+                api project(":carp.common")
                 implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:${versions.serialization}"
                 implementation "org.jetbrains.kotlinx:kotlinx-datetime:${versions.datetime}"
             }
@@ -47,12 +59,39 @@ kotlin {
             }
         }
 
-
         jvmTest {
             dependencies {
                 implementation kotlin("reflect")
                 implementation "org.reflections:reflections:${versions.reflections}"
+
+                implementation "org.junit.jupiter:junit-jupiter-api:5.10.0"
+                implementation "org.junit.jupiter:junit-jupiter-params:5.10.0"
+                runtimeOnly "org.junit.jupiter:junit-jupiter-engine:5.10.0"
             }
         }
     }
 }
+
+task jacocoTestReport(type: JacocoReport) {
+    dependsOn tasks.jvmTest
+
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+    }
+
+    classDirectories.setFrom fileTree("${buildDir}/classes/kotlin/jvm/main") {
+        exclude "**/generated/**"
+    }
+
+    sourceDirectories.setFrom files(
+        "src/commonMain/kotlin/dk/cachet/carp/analytics/",
+        "src/jvmMain/kotlin/dk/cachet/carp/analytics/"
+    )
+
+    executionData.setFrom files("${buildDir}/jacoco/jvmTest.exec")
+}
+
+
+tasks.jvmTest.finalizedBy jacocoTestReport
