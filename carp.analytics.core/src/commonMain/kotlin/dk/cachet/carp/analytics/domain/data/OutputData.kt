@@ -1,13 +1,27 @@
 package dk.cachet.carp.analytics.domain.data
 
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 /**
  * Represents the output data produced by a step.
  */
+@Serializable
+@SerialName("CarpWorkflow.OutputData")
 data class OutputData(
-    override val name: String, // Name of the output data
-    override val dataType: String, // TODO: Change to KClass inheriting from CARP Data
-    val destination: DataLocation 
-) : AbstractData(name, dataType, destination){
+    override val name: String,
+    override val dataType: String,
+    val destination: DataLocation
+) : WorkflowData{
+    fun validateName() {
+        require(name.isNotEmpty()) { "Name cannot be empty" }
+    }
+    fun validateDataType() {
+        require(dataType.isNotEmpty()) { "DataType cannot be empty" }
+    }
+    fun validateDataLocation() {
+        require(destination.segments.isNotEmpty()) { "Output data source path cannot be empty" }
+    }
+    
     init {
         validateName()
         validateDataType()
