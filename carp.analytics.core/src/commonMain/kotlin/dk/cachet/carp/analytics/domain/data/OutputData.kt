@@ -9,7 +9,7 @@ import kotlinx.serialization.SerialName
 @SerialName("CarpWorkflow.OutputData")
 data class OutputData(
     override val name: String,
-    override val dataType: String,
+    override val dataType: String, // format not type 
     val destination: DataLocation
 ) : WorkflowData{
     fun validateName() {
