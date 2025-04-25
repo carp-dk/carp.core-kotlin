@@ -8,11 +8,11 @@ import kotlinx.serialization.SerialName
  */
 @Serializable
 @SerialName("CarpWorkflow.InputData")
-data class InputData(
+data class InputDataReference(
     override val name: String,
     override val dataType: String,
     val source: DataLocation
-) : WorkflowData{
+) : DataReference{
     fun validateName() {
         require(name.isNotEmpty()) { "Name cannot be empty" }
     }

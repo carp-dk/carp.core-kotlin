@@ -1,7 +1,7 @@
 package dk.cachet.carp.analytics.domain.workflow
 
-import dk.cachet.carp.analytics.domain.data.InputData
-import dk.cachet.carp.analytics.domain.data.OutputData
+import dk.cachet.carp.analytics.domain.data.InputDataReference
+import dk.cachet.carp.analytics.domain.data.OutputDataReference
 import dk.cachet.carp.analytics.domain.process.Process
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -14,7 +14,7 @@ import kotlinx.serialization.Serializable
 data class Step(
     override val name: String,
     override val description: String,
-    val inputData: List<InputData>,
-    val outputData: OutputData?, 
+    val inputData: List<InputDataReference>,
+    val outputData: OutputDataReference?,
     val process: Process
 ) : WorkflowComponent
