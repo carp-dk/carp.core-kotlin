@@ -8,7 +8,7 @@ import kotlinx.serialization.SerialName
 
 @SerialName("Workflow")
 @Serializable
-class Workflow(
+data class Workflow(
     override val name: String,
     override val description: String
 ) : WorkflowComponent {

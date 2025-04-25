@@ -1,8 +1,8 @@
 package dk.cachet.carp.analytics.domain.process
 
 import dk.cachet.carp.analytics.domain.execution.ExecutionContext
-import dk.cachet.carp.common.infrastructure.services.Command
-
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * A process that executes command-line instructions.
@@ -11,13 +11,15 @@ import dk.cachet.carp.common.infrastructure.services.Command
  * @param commandTemplate Encapsulated command template.
  * @param arguments Non-empty list of command arguments.
  */
+@Serializable
+@SerialName("CommandLine")
 class CommandLineProcess(
     override val name: String,
     override val executionContext: ExecutionContext,
     val commandTemplate: CommandTemplate,
-    arguments: List<String>
+    val args: List<String>
 ) : Process {
-    val commandArguments: List<String> = arguments.also {
+    val commandArguments: List<String> = args.also {
         require(it.isNotEmpty()) { "Command arguments cannot be empty" }
     }
 
