@@ -1,9 +1,7 @@
 package dk.cachet.carp.analytics.domain.data
 
 import kotlin.test.*
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 class OutputDataTest {
@@ -11,7 +9,7 @@ class OutputDataTest {
     @Test
     fun testValidOutputDataInitialization() {
         val location = DataLocation(listOf("output", "path"))
-        val outputData = OutputData("OutputName", "Float", location)
+        val outputData = OutputDataReference("OutputName", "Float", location)
 
         assertEquals("OutputName", outputData.name)
         assertEquals("Float", outputData.dataType)
@@ -22,7 +20,7 @@ class OutputDataTest {
     fun testOutputDataWithEmptyName() {
         val location = DataLocation(listOf("output", "path"))
         val exception = assertFailsWith<IllegalArgumentException> {
-            OutputData("", "Float", location)
+            OutputDataReference("", "Float", location)
         }
         assertTrue(exception.message!!.contains("Name cannot be empty"))
     }
@@ -31,7 +29,7 @@ class OutputDataTest {
     fun testOutputDataWithEmptyDataType() {
         val location = DataLocation(listOf("output", "path"))
         val exception = assertFailsWith<IllegalArgumentException> {
-            OutputData("OutputName", "", location)
+            OutputDataReference("OutputName", "", location)
         }
         assertTrue(exception.message!!.contains("DataType cannot be empty"))
     }
@@ -39,16 +37,16 @@ class OutputDataTest {
     @Test
     fun testOutputDataWithEmptyDataLocation() {
         val exception = assertFailsWith<IllegalArgumentException> {
-            OutputData("OutputName", "Float", DataLocation(emptyList()))
+            OutputDataReference("OutputName", "Float", DataLocation(emptyList()))
         }
         assertTrue(exception.message!!.contains("Output data source path cannot be empty"))
     }
 
     @Test
     fun canSerializeAndDeserializeOutputData() {
-        val original = OutputData("foo", "String", DataLocation(listOf("input", "file.csv")))
+        val original = OutputDataReference("foo", "String", DataLocation(listOf("input", "file.csv")))
         val json = Json.encodeToString(original)
-        val restored = Json.decodeFromString<OutputData>(json)
+        val restored = Json.decodeFromString<OutputDataReference>(json)
 
         assertEquals(original, restored)
     }
