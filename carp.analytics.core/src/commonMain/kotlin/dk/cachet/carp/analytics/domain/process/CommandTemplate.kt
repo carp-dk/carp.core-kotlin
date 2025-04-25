@@ -1,9 +1,15 @@
 package dk.cachet.carp.analytics.domain.process
 
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 /**
  * Represents a command template with validation and rendering capabilities.
  * @param template Non-empty template string for commands.
  */
+
+@Serializable
+@SerialName("CommandTemplate")
 data class CommandTemplate(val template: String) {
     init {
         require(template.isNotBlank()) { "Command template cannot be blank" }

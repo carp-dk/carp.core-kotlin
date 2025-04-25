@@ -5,8 +5,6 @@ import dk.cachet.carp.analytics.domain.process.CommandLineProcess
 import dk.cachet.carp.analytics.domain.process.CommandTemplate
 import dk.cachet.carp.analytics.domain.workflow.Workflow
 import dk.cachet.carp.analytics.domain.workflow.Step
-import dk.cachet.carp.analytics.infrastructure.parser.WorkflowYamlParser
-import dk.cachet.carp.analytics.infrastructure.util.SharedYaml
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
@@ -20,7 +18,7 @@ class WorkflowYamlParserTest {
             name = "Move File",
             executionContext = ExecutionContext(envVariables = mapOf("cmd" to "cmd")),
             commandTemplate = commandTemplate,
-            arguments = listOf("sourceFile", "destinationFile")
+            args = listOf("sourceFile", "destinationFile")
         )
 
         // Create a one-step workflow
@@ -33,7 +31,7 @@ class WorkflowYamlParserTest {
 
         // Act
 
-        val yamlString = SharedYaml.encodeToString(Workflow.serializer(), workflow)
+        val yamlString = WorkflowYaml.encodeToString(Workflow.serializer(), workflow)
         val restoredWorkflow = WorkflowYamlParser.fromString(yamlString)
 
         // Assert

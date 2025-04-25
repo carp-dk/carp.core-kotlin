@@ -33,7 +33,7 @@ class ProcessFactory {
                     name = name,
                     executionContext = executionContext,
                     commandTemplate = CommandTemplate(config["commandTemplate"] as String),
-                    arguments = (config["arguments"] as? List<*>)?.filterIsInstance<String>().orEmpty()
+                    args = (config["arguments"] as? List<*>)?.filterIsInstance<String>().orEmpty()
                 )
                 ProcessType.APPLICATION_SCRIPT -> ApplicationScriptProcess(
                     name = name,
@@ -45,7 +45,7 @@ class ProcessFactory {
                     name = name,
                     executionContext = executionContext,
                     scriptPath = Path.of(config["scriptPath"] as String).toString(),
-                    arguments = (config["parameters"] as? List<*>)?.filterIsInstance<String>().orEmpty()
+                    args = (config["parameters"] as? List<*>)?.filterIsInstance<String>().orEmpty()
                 )
             }
         }

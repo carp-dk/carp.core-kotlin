@@ -1,8 +1,9 @@
 package dk.cachet.carp.analytics.domain.process
 
 import kotlin.io.path.Path
-import kotlin.io.path.exists
 import dk.cachet.carp.analytics.domain.execution.ExecutionContext
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * A process that executes Python scripts.
@@ -11,13 +12,15 @@ import dk.cachet.carp.analytics.domain.execution.ExecutionContext
  * @param scriptPath Path to the Python script to execute.
  * @param arguments Optional arguments for the script.
  */
+@Serializable
+@SerialName("Python")
 class PythonProcess(
     override val name: String,
     override val executionContext: ExecutionContext,
     val scriptPath: String,
-    arguments: List<String> = emptyList()
+    val args: List<String> = emptyList()
 ) :Process {
-    private val scriptArguments: List<String> = arguments.also {
+    private val scriptArguments: List<String> = args.also {
         require(it.none { arg -> arg.isBlank() }) { "Arguments cannot contain blank strings." }
     }
     override fun getArguments(): List<String> = scriptArguments
