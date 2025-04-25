@@ -1,12 +1,18 @@
 package dk.cachet.carp.analytics.domain.workflow
-
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 /**
  * Represents a collection of steps in a workflow.
  */
+
+@SerialName("Workflow")
+@Serializable
 class Workflow(
     override val name: String,
     override val description: String
 ) : WorkflowComponent {
+    @Contextual
     private val steps = mutableListOf<Step>()
 
     /**

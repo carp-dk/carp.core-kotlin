@@ -3,6 +3,7 @@ group = 'dk.cachet.carp.analytics'
 version = clientsVersion
 
 apply plugin: 'jacoco'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 
 publishing {
     publications {
@@ -43,6 +44,7 @@ kotlin {
                 implementation "org.jetbrains.kotlin:kotlin-stdlib"
                 implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:${versions.serialization}"
                 implementation "org.jetbrains.kotlinx:kotlinx-datetime:${versions.datetime}"
+                implementation "com.charleskorn.kaml:kaml:0.55.0"
             }
         }
 
@@ -60,9 +62,11 @@ kotlin {
         jvmMain {
             dependencies {
                 api project(":carp.common")
+                implementation "com.charleskorn.kaml:kaml:0.55.0"
                 implementation "org.jetbrains.kotlin:kotlin-stdlib"
                 implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:${versions.serialization}"
                 implementation "org.jetbrains.kotlinx:kotlinx-datetime:${versions.datetime}"
+
             }
         }
 
@@ -77,13 +81,12 @@ kotlin {
                 implementation "org.jetbrains.kotlinx:kotlinx-datetime:${versions.datetime}"
                 implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.coroutines}"
 
-                implementation "org.mockito.kotlin:mockito-kotlin:4.1.0"
-                implementation "org.mockito:mockito-inline:4.1.0"
-                implementation "org.mockito:mockito-core:4.1.0"
-
+                
                 implementation "org.junit.jupiter:junit-jupiter-api:5.10.0"
                 implementation "org.junit.jupiter:junit-jupiter-params:5.10.0"
                 runtimeOnly "org.junit.jupiter:junit-jupiter-engine:5.10.0"
+                
+                implementation "org.mockito.kotlin:mockito-kotlin:4.1.0"
             }
         }
     }
