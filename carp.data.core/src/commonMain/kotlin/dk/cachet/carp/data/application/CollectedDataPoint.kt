@@ -1,7 +1,6 @@
-package dk.cachet.carp.analytics.infrastructure.dto
+package dk.cachet.carp.data.application
 
 import dk.cachet.carp.common.application.data.Data
-import dk.cachet.carp.data.application.DataStreamId
 import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -11,7 +10,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 @SerialName("dk.cachet.carp.analytics.AnalyticsDataPoint")
-data class AnalyticsDataPoint(
+data class CollectedDataPoint(
     val streamId: DataStreamId,
     val timestamp: Instant,
     val data: Data // Polymorphic, must be registered in serializers module
