@@ -33,19 +33,23 @@ class ProcessFactory {
                     name = name,
                     executionContext = executionContext,
                     commandTemplate = CommandTemplate(config["commandTemplate"] as String),
-                    args = (config["arguments"] as? List<*>)?.filterIsInstance<String>().orEmpty()
+                    args = (config["arguments"] as? List<*>)?.filterIsInstance<String>().orEmpty(),
+                    description = config["description"] as? String
                 )
                 ProcessType.APPLICATION_SCRIPT -> ApplicationScriptExternalProcess(
                     name = name,
                     executionContext = executionContext,
                     scriptPath = Path.of(config["scriptPath"] as String),
-                    parameters = (config["parameters"] as? Map<*, *>)?.filterKeys { it is String }?.filterValues { it is String }?.mapKeys { it.key as String }?.mapValues { it.value as String }.orEmpty()
+                    parameters = (config["parameters"] as? Map<*, *>)?.filterKeys { it is String }?.filterValues { it is String }?.mapKeys { it.key as String }?.mapValues { it.value as String }.orEmpty(),
+                    description = config["description"] as? String
+
                 )
                 ProcessType.PYTHON_SCRIPT -> PythonExternalProcess(
                     name = name,
                     executionContext = executionContext,
                     scriptPath = Path.of(config["scriptPath"] as String).toString(),
-                    args = (config["parameters"] as? List<*>)?.filterIsInstance<String>().orEmpty()
+                    args = (config["parameters"] as? List<*>)?.filterIsInstance<String>().orEmpty(),
+                    description = config["description"] as? String
                 )
             }
         }

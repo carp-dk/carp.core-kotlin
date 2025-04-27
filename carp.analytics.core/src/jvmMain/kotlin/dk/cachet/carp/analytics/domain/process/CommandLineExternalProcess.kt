@@ -15,6 +15,7 @@ import kotlinx.serialization.Serializable
 @SerialName("CommandLine")
 class CommandLineExternalProcess(
     override val name: String,
+    override val description: String?,
     override val executionContext: ExecutionContext,
     val commandTemplate: CommandTemplate,
     val args: List<String>

@@ -73,6 +73,7 @@ class SequentialExecutionStrategy : ExecutionStrategy {
         step: Step,
         previousOutput: CollectedDataSet?
     ): CollectedDataSet {
+        println(step.name)
         // TODO: Resolve inputData references properly using the ExecutionContext
         // For now, just use previous output
         return previousOutput ?: CollectedDataSet(emptyList())

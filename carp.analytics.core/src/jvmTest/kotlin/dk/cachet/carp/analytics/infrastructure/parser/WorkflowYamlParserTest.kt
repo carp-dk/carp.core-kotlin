@@ -3,6 +3,7 @@ package dk.cachet.carp.analytics.infrastructure.parser
 import dk.cachet.carp.analytics.domain.execution.ExecutionContext
 import dk.cachet.carp.analytics.domain.process.CommandLineExternalProcess
 import dk.cachet.carp.analytics.domain.process.CommandTemplate
+import dk.cachet.carp.analytics.domain.process.WorkflowProcess
 import dk.cachet.carp.analytics.domain.workflow.Workflow
 import dk.cachet.carp.analytics.domain.workflow.Step
 import org.junit.jupiter.api.Test
@@ -18,7 +19,8 @@ class WorkflowYamlParserTest {
             name = "Move File",
             executionContext = ExecutionContext(envVariables = mapOf("cmd" to "cmd")),
             commandTemplate = commandTemplate,
-            args = listOf("sourceFile", "destinationFile")
+            args = listOf("sourceFile", "destinationFile"),
+            description = "Moves a file from source to destination"
         )
 
         // Create a one-step workflow
