@@ -3,10 +3,7 @@ package dk.cachet.carp.analytics.infrastructure.execution
 
 import dk.cachet.carp.analytics.domain.execution.ExecutionContext
 import dk.cachet.carp.analytics.domain.execution.Executor
-import dk.cachet.carp.analytics.domain.process.CommandLineProcess
-
-import java.io.BufferedReader
-import java.io.InputStreamReader
+import dk.cachet.carp.analytics.domain.process.CommandLineExternalProcess
 
 
 /**
@@ -15,8 +12,8 @@ import java.io.InputStreamReader
  */
 class CommandLineExecutor(
     private val processExecutor: ProcessExecutorInterface = ProcessExecutor()
-) : Executor<CommandLineProcess> {
-    override fun execute(process: CommandLineProcess, context: ExecutionContext) {
+) : Executor<CommandLineExternalProcess> {
+    override fun execute(process: CommandLineExternalProcess, context: ExecutionContext) {
         val formattedCommand = process.getFormattedCommand()
         processExecutor.executeCommand(formattedCommand, context.envVariables)
     }

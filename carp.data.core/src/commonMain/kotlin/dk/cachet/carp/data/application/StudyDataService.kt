@@ -18,7 +18,7 @@ interface StudyDataService : ApplicationService<StudyDataService, Nothing>
      * @param studyId The ID of the study to query (required).
      * @param studyDeploymentIds Optional list of subject deployment IDs to filter by.
      * @param fields Optional list of fields (relate to CARP Data Types) (e.g., "step_count") to include.
-     * @param deviceRoleName Optional list of device role names (e.g., "phone") to include.
+     * @param deviceRoleNames Optional list of device role names (e.g., "phone") to include.
      * @param from Optional absolute start time for filtering.
      * @param to Optional absolute end time for filtering.
      * @param offsetDays Optional relative offset window (e.g., first 30 days after subject enrollment).
@@ -28,7 +28,7 @@ interface StudyDataService : ApplicationService<StudyDataService, Nothing>
     suspend fun getCollectedData(
         studyId: UUID,
         studyDeploymentIds: Set<UUID>? = null,
-        deviceRoleName: Set<String>? = null,
+        deviceRoleNames: Set<String>? = null,
         fields: Set<String>? = null,
         from: Instant? = null,
         to: Instant? = null,

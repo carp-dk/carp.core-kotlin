@@ -14,12 +14,12 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 @SerialName("Python")
-class PythonProcess(
+class PythonExternalProcess(
     override val name: String,
     override val executionContext: ExecutionContext,
     val scriptPath: String,
     val args: List<String> = emptyList()
-) :Process {
+) :ExternalProcess {
     private val scriptArguments: List<String> = args.also {
         require(it.none { arg -> arg.isBlank() }) { "Arguments cannot contain blank strings." }
     }

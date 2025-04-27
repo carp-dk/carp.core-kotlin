@@ -31,7 +31,7 @@ sealed class StudyDataServiceRequest<out TReturn> : ApplicationServiceRequest<St
     data class GetCollectedData(
         val studyId: UUID,
         val studyDeploymentIds: Set<UUID>? = null,
-        val deviceRoleName: Set<String>? = null,
+        val deviceRoleNames: Set<String>? = null,
         val fields: Set<String>? = null,
         val from: Instant? = null,
         val to: Instant? = null,

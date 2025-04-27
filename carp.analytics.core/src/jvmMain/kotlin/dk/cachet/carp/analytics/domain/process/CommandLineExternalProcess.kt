@@ -13,12 +13,12 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 @SerialName("CommandLine")
-class CommandLineProcess(
+class CommandLineExternalProcess(
     override val name: String,
     override val executionContext: ExecutionContext,
     val commandTemplate: CommandTemplate,
     val args: List<String>
-) : Process {
+) : ExternalProcess {
     val commandArguments: List<String> = args.also {
         require(it.isNotEmpty()) { "Command arguments cannot be empty" }
     }
