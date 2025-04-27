@@ -2,6 +2,7 @@ package dk.cachet.carp.analytics.application.execution
 
 import dk.cachet.carp.analytics.domain.process.ExternalProcess
 import dk.cachet.carp.analytics.domain.execution.Executor
+import dk.cachet.carp.analytics.domain.process.AnalysisProcess
 import dk.cachet.carp.analytics.infrastructure.execution.CommandLineExecutor
 import dk.cachet.carp.analytics.infrastructure.execution.PythonExecutor
 
