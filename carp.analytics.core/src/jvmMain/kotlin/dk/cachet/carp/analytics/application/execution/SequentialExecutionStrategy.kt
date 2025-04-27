@@ -2,7 +2,6 @@ package dk.cachet.carp.analytics.application.execution
 
 
 import dk.cachet.carp.analytics.domain.execution.ExecutionStrategy
-import dk.cachet.carp.analytics.application.execution.ExecutorFactory
 import dk.cachet.carp.analytics.domain.workflow.Workflow
 
 /**
@@ -20,14 +19,14 @@ class SequentialExecutionStrategy : ExecutionStrategy {
         println("Starting sequential execution of workflow: ${workflow.name}")
 
         for ((index, step) in workflow.getSteps().withIndex()) {
-            val executor = executorFactory.getExecutor(step.process)
+            val executor = executorFactory.getExecutor(step.externalProcess)
 
             try {
                 println("Setting up step ${index + 1}/${workflow.getSteps().size}: ${step.name}")
-                executor.setup(step.process, step.process.executionContext) //  setup
+                executor.setup(step.externalProcess, step.externalProcess.executionContext) //  setup
 
                 println("Executing step ${index + 1}: ${step.name}")
-                executor.execute(step.process, step.process.executionContext) //  execute
+                executor.execute(step.externalProcess, step.externalProcess.executionContext) //  execute
 
             } catch (e: Exception) {
                 println("Error during execution of step ${index + 1}: ${step.name}")
@@ -35,7 +34,7 @@ class SequentialExecutionStrategy : ExecutionStrategy {
                 throw e
             } finally {
                 println("Cleaning up step ${index + 1}: ${step.name}")
-                executor.cleanup(step.process, step.process.executionContext) //  cleanup
+                executor.cleanup(step.externalProcess, step.externalProcess.executionContext) //  cleanup
             }
         }
 

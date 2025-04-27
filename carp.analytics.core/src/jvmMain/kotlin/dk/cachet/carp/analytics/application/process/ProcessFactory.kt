@@ -1,11 +1,11 @@
 package dk.cachet.carp.analytics.application.process
 
 import dk.cachet.carp.analytics.domain.execution.ExecutionContext
-import dk.cachet.carp.analytics.domain.process.Process
+import dk.cachet.carp.analytics.domain.process.ExternalProcess
 import dk.cachet.carp.analytics.domain.process.ProcessType
-import dk.cachet.carp.analytics.domain.process.CommandLineProcess
-import dk.cachet.carp.analytics.domain.process.ApplicationScriptProcess
-import dk.cachet.carp.analytics.domain.process.PythonProcess
+import dk.cachet.carp.analytics.domain.process.CommandLineExternalProcess
+import dk.cachet.carp.analytics.domain.process.ApplicationScriptExternalProcess
+import dk.cachet.carp.analytics.domain.process.PythonExternalProcess
 import dk.cachet.carp.analytics.domain.process.CommandTemplate
 import java.nio.file.Path
 
@@ -27,21 +27,21 @@ class ProcessFactory {
             name: String,
             executionContext: ExecutionContext,
             config: Map<String, Any>
-        ): Process {
+        ): ExternalProcess {
             return when (type) {
-                ProcessType.COMMAND_LINE -> CommandLineProcess(
+                ProcessType.COMMAND_LINE -> CommandLineExternalProcess(
                     name = name,
                     executionContext = executionContext,
                     commandTemplate = CommandTemplate(config["commandTemplate"] as String),
                     args = (config["arguments"] as? List<*>)?.filterIsInstance<String>().orEmpty()
                 )
-                ProcessType.APPLICATION_SCRIPT -> ApplicationScriptProcess(
+                ProcessType.APPLICATION_SCRIPT -> ApplicationScriptExternalProcess(
                     name = name,
                     executionContext = executionContext,
                     scriptPath = Path.of(config["scriptPath"] as String),
                     parameters = (config["parameters"] as? Map<*, *>)?.filterKeys { it is String }?.filterValues { it is String }?.mapKeys { it.key as String }?.mapValues { it.value as String }.orEmpty()
                 )
-                ProcessType.PYTHON_SCRIPT -> PythonProcess(
+                ProcessType.PYTHON_SCRIPT -> PythonExternalProcess(
                     name = name,
                     executionContext = executionContext,
                     scriptPath = Path.of(config["scriptPath"] as String).toString(),

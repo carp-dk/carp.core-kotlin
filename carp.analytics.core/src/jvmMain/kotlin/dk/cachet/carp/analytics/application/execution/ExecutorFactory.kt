@@ -1,12 +1,12 @@
 package dk.cachet.carp.analytics.application.execution
 
-import dk.cachet.carp.analytics.domain.process.Process
+import dk.cachet.carp.analytics.domain.process.ExternalProcess
 import dk.cachet.carp.analytics.domain.execution.Executor
 import dk.cachet.carp.analytics.infrastructure.execution.CommandLineExecutor
 import dk.cachet.carp.analytics.infrastructure.execution.PythonExecutor
 
-import dk.cachet.carp.analytics.domain.process.CommandLineProcess
-import dk.cachet.carp.analytics.domain.process.PythonProcess
+import dk.cachet.carp.analytics.domain.process.CommandLineExternalProcess
+import dk.cachet.carp.analytics.domain.process.PythonExternalProcess
 
 import kotlin.reflect.KClass
 
@@ -15,14 +15,14 @@ import kotlin.reflect.KClass
  */
 object ExecutorFactory {
 
-    private val registry: MutableMap<KClass<out Process>, () -> Executor<*>> = mutableMapOf()
+    private val registry: MutableMap<KClass<out ExternalProcess>, () -> Executor<*>> = mutableMapOf()
 
     /**
      * Registers an Executor for a specific Process type.
      * @param processType The class of the process.
      * @param executorCreator A lambda that creates an Executor instance.
      */
-    fun <P : Process> register(processType: KClass<out P>, executorCreator: () -> Executor<P>) {
+    fun <P : ExternalProcess> register(processType: KClass<out P>, executorCreator: () -> Executor<P>) {
         registry[processType] = executorCreator
     }
 
@@ -33,7 +33,7 @@ object ExecutorFactory {
      * @throws IllegalArgumentException If no Executor is registered for the given Process type.
      */
     @Suppress("UNCHECKED_CAST")
-    fun <P : Process> getExecutor(process: P): Executor<P> {
+    fun <P : ExternalProcess> getExecutor(process: P): Executor<P> {
         val creator = registry[process::class]
             ?: throw IllegalArgumentException("Unsupported process type: ${process::class.simpleName}")
         return creator() as Executor<P>
@@ -43,7 +43,7 @@ object ExecutorFactory {
      * Registers core executors.
      */
     init {
-        register(CommandLineProcess::class) { CommandLineExecutor() }
-        register(PythonProcess::class) { PythonExecutor() }
+        register(CommandLineExternalProcess::class) { CommandLineExecutor() }
+        register(PythonExternalProcess::class) { PythonExecutor() }
     }
 }

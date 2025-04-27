@@ -1,7 +1,7 @@
 package dk.cachet.carp.analytics.infrastructure.execution
 
 
-import dk.cachet.carp.analytics.domain.process.CommandLineProcess
+import dk.cachet.carp.analytics.domain.process.CommandLineExternalProcess
 import dk.cachet.carp.analytics.domain.process.CommandTemplate
 import dk.cachet.carp.analytics.domain.execution.ExecutionContext
 
@@ -18,7 +18,7 @@ class CommandLineExecutorTest {
 
     private val mockContext = ExecutionContext(envVariables = mapOf("TEST_VAR" to "VALUE"))
     private val commandTemplate = CommandTemplate("echo {0S} {1}")
-    private val process = CommandLineProcess(
+    private val process = CommandLineExternalProcess(
         name = "Test Command",
         executionContext = mockContext,
         commandTemplate = commandTemplate,

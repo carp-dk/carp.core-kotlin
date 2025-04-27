@@ -10,11 +10,11 @@ import java.nio.file.Path
  * @param scriptPath Path to the script file.
  * @param parameters Key-value pairs representing script parameters.
  */
-class ApplicationScriptProcess(
+class ApplicationScriptExternalProcess(
     override val name: String,
     override val executionContext: ExecutionContext,
     val scriptPath: Path,
     val parameters: Map<String, String>
-) : Process {
+) : ExternalProcess {
     override fun getArguments(): Map<String, String> = parameters
 }

@@ -15,7 +15,7 @@ object StudyDataServiceInvoker : ApplicationServiceInvoker<StudyDataService, Stu
                 service.getCollectedData(
                     studyId,
                     studyDeploymentIds,
-                    deviceRoleName,
+                    deviceRoleNames,
                     fields,
                     from,
                     to,

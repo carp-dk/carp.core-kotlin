@@ -8,4 +8,3 @@ data class CondaEnvironment(
     val channels: List<String> = listOf("defaults"),
     val pythonVersion: String? = null
 ) : Environment
-
