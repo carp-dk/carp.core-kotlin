@@ -10,12 +10,13 @@ import kotlinx.serialization.Serializable
  * @param name The name of the process.
  * @param executionContext Execution context for the process.
  * @param scriptPath Path to the Python script to execute.
- * @param arguments Optional arguments for the script.
+ * @param args Optional arguments for the script.
  */
 @Serializable
 @SerialName("Python")
 class PythonExternalProcess(
     override val name: String,
+    override val description: String?,
     override val executionContext: ExecutionContext,
     val scriptPath: String,
     val args: List<String> = emptyList()

@@ -22,7 +22,8 @@ class CommandLineExecutorTest {
         name = "Test Command",
         executionContext = mockContext,
         commandTemplate = commandTemplate,
-        args = listOf("Hello", "World")
+        args = listOf("Hello", "World"),
+        description = "A test command"
     )
 
     @Test

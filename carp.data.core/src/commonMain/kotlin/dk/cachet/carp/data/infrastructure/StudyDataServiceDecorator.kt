@@ -23,7 +23,7 @@ class StudyDataServiceDecorator(
     override suspend fun getCollectedData(
         studyId: UUID,
         studyDeploymentIds: Set<UUID>?,
-        deviceRoleName: Set<String>?,
+        deviceRoleNames: Set<String>?,
         fields: Set<String>?,
         from: Instant?,
         to: Instant?,
@@ -33,7 +33,7 @@ class StudyDataServiceDecorator(
             StudyDataServiceRequest.GetCollectedData(
                 studyId,
                 studyDeploymentIds,
-                deviceRoleName,
+                deviceRoleNames,
                 fields,
                 from,
                 to,

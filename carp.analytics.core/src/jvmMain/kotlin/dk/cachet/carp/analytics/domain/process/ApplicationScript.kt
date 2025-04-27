@@ -12,6 +12,7 @@ import java.nio.file.Path
  */
 class ApplicationScriptExternalProcess(
     override val name: String,
+    override val description: String?,
     override val executionContext: ExecutionContext,
     val scriptPath: Path,
     val parameters: Map<String, String>
