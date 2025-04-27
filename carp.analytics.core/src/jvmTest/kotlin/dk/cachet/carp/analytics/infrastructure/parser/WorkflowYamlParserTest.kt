@@ -23,7 +23,7 @@ class WorkflowYamlParserTest {
 
         // Create a one-step workflow
         val step = Step(name = "Move File Step", description = "Moves a file from source to destination",
-            inputData = emptyList(), outputData = null, externalProcess = process)
+            inputData = emptyList(), outputData = null, process = process)
         val workflow = Workflow(name = "File Move Workflow", description = "Moves a file from source to destination")
 
         // Add the step to the workflow
