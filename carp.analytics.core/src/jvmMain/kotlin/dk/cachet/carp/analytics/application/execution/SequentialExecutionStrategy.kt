@@ -1,6 +1,7 @@
 package dk.cachet.carp.analytics.application.execution
 
-
+import dk.cachet.carp.analytics.application.data.DataRegistry
+import dk.cachet.carp.analytics.application.data.InMemoryData
 import dk.cachet.carp.analytics.domain.execution.ExecutionStrategy
 import dk.cachet.carp.analytics.domain.process.AnalysisProcess
 import dk.cachet.carp.analytics.domain.process.ExternalProcess
@@ -9,10 +10,11 @@ import dk.cachet.carp.analytics.domain.workflow.Workflow
 import dk.cachet.carp.data.application.CollectedDataSet
 
 /**
- * Executes workflow steps sequentially.
+ * Executes workflow steps sequentially using a DataRegistry for data management.
  */
-class SequentialExecutionStrategy : ExecutionStrategy {
-
+class SequentialExecutionStrategy(
+    private val dataRegistry: DataRegistry
+) : ExecutionStrategy {
     /**
      * Executes the provided steps in the workflow one by one using the given ExecutorFactory.
      *
@@ -21,8 +23,6 @@ class SequentialExecutionStrategy : ExecutionStrategy {
      */
     override fun execute(workflow: Workflow, executorFactory: ExecutorFactory) {
         println("Starting sequential execution of workflow: ${workflow.name}")
-
-        var previousOutput: CollectedDataSet? = null
 
         for ((index, step) in workflow.getSteps().withIndex()) {
             println("Running step ${index + 1}/${workflow.getSteps().size}: ${step.name}")
@@ -53,8 +53,15 @@ class SequentialExecutionStrategy : ExecutionStrategy {
                 is AnalysisProcess -> {
                     try {
                         println("Executing AnalysisProcess: ${process.name}")
-                        val inputDataSet: CollectedDataSet = loadInputData(step, previousOutput)
-                        previousOutput = process.process(inputDataSet)
+
+                        val inputDataSet: CollectedDataSet = resolveInputData(step)
+                        val outputDataSet = process.process(inputDataSet)
+
+                        if (outputDataSet != null && step.outputData != null) {
+                            registerOutputData(step, outputDataSet)
+                        } else if (outputDataSet == null) {
+                            println("AnalysisProcess '${process.name}' produced no output.")
+                        }
                     } catch (e: Exception) {
                         println("Error during AnalysisProcess execution: ${process.name}")
                         e.printStackTrace()
@@ -69,13 +76,30 @@ class SequentialExecutionStrategy : ExecutionStrategy {
         println("Workflow execution completed successfully.")
     }
 
-    private fun loadInputData(
-        step: Step,
-        previousOutput: CollectedDataSet?
-    ): CollectedDataSet {
-        println(step.name)
-        // TODO: Resolve inputData references properly using the ExecutionContext
-        // For now, just use previous output
-        return previousOutput ?: CollectedDataSet(emptyList())
+    private fun resolveInputData(step: Step): CollectedDataSet {
+        // For now: Assume first inputData is what we fetch
+        if (step.inputData.isEmpty()) {
+            println("No input data defined for step '${step.name}', using empty dataset.")
+            return CollectedDataSet(emptyList())
+        }
+
+        val inputName = step.inputData.first().name
+        val handle = dataRegistry.resolve(inputName)
+
+        if (handle is InMemoryData) {
+            return handle.dataset
+        } else {
+            throw IllegalArgumentException("Input data '$inputName' is not in memory or has wrong type.")
+        }
+    }
+
+    private fun registerOutputData(step: Step, output: CollectedDataSet) {
+        if (step.outputData == null) {
+            println("No output data reference defined for step '${step.name}', output not stored.")
+            return
+        }
+        val outputName = step.outputData.name
+        dataRegistry.register(outputName, InMemoryData(output))
+        println("Registered output data under name: '$outputName'")
     }
 }
