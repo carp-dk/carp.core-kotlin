@@ -5,6 +5,7 @@ import dk.cachet.carp.analytics.application.data.InMemoryData
 import dk.cachet.carp.analytics.domain.execution.ExecutionStrategy
 import dk.cachet.carp.analytics.domain.process.AnalysisProcess
 import dk.cachet.carp.analytics.domain.process.ExternalProcess
+import dk.cachet.carp.analytics.domain.process.PythonExternalProcess
 import dk.cachet.carp.analytics.domain.workflow.Step
 import dk.cachet.carp.analytics.domain.workflow.Workflow
 import dk.cachet.carp.data.application.CollectedDataSet
@@ -34,8 +35,15 @@ class SequentialExecutionStrategy(
                     val executor = executorFactory.getExecutor(process)
 
                     try {
-                        println("Setting up ExternalProcess: ${process.name}")
                         executor.setup(process, process.executionContext)
+
+                        if (process is PythonExternalProcess) {
+                          process.resolveBindings(
+                            step.inputData,
+                            step.outputData,
+                              dataRegistry
+                          )
+                        }
 
                         println("Executing ExternalProcess: ${process.name}")
                         executor.execute(process, process.executionContext)

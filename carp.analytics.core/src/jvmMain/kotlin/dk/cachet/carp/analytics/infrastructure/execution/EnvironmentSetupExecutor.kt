@@ -3,7 +3,10 @@ package dk.cachet.carp.analytics.infrastructure.execution
 import dk.cachet.carp.analytics.domain.environment.Environment
 import dk.cachet.carp.analytics.domain.execution.ExecutionContext
 import dk.cachet.carp.analytics.application.environment.CommandGeneratorFactory
-import dk.cachet.carp.analytics.infrastructure.execution.ProcessExecutor
+import dk.cachet.carp.analytics.infrastructure.environment.CondaEnvironment
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 /**
  * Handles the setup, activation, and teardown of environments.
@@ -15,6 +18,12 @@ class EnvironmentSetupExecutor {
      */
     fun setup(environment: Environment, context: ExecutionContext) {
         println("Setting up environment: ${environment.name}")
+
+        if (environment is CondaEnvironment && condaEnvExists(environment.name)) {
+            println("Conda environment '${environment.name}' already exists. Skipping creation.")
+            return
+        }
+
         val generator = CommandGeneratorFactory.getGenerator(environment)
         val setupCommand = generator.generateSetupCommand(environment)
         ProcessExecutor().executeCommand(setupCommand, context.envVariables)
@@ -38,5 +47,22 @@ class EnvironmentSetupExecutor {
         val generator = CommandGeneratorFactory.getGenerator(environment)
         val teardownCommand = generator.generateTeardownCommand(environment)
         ProcessExecutor().executeCommand(teardownCommand, context.envVariables)
+    }
+
+    private fun condaEnvExists(envName: String): Boolean {
+        try {
+            val process = ProcessBuilder("cmd.exe", "/c", "conda env list --json")
+                .redirectErrorStream(true)
+                .start()
+
+            val output = process.inputStream.bufferedReader().readText()
+            val json = kotlinx.serialization.json.Json.parseToJsonElement(output).jsonObject
+            val envs = json["envs"]?.jsonArray ?: return false
+
+            return envs.any { it.jsonPrimitive.content.endsWith(envName) }
+        } catch (e: Exception) {
+            println("Warning: Failed to check conda environments, assuming missing. ${e.message}")
+            return false
+        }
     }
 }

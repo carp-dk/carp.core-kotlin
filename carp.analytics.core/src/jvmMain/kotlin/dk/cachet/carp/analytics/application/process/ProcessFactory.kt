@@ -50,7 +50,7 @@ class ProcessFactory {
                     name = name,
                     executionContext = executionContext,
                     scriptPath = Path.of(config["scriptPath"] as String).toString(),
-                    args = (config["parameters"] as? List<*>)?.filterIsInstance<String>().orEmpty(),
+                    args = (config["parameters"] as? List<*>)?.filterIsInstance<String>()?.toMutableList() ?: mutableListOf(),
                     description = config["description"] as? String
                 )
                 ProcessType.DATA_RETRIEVAL -> DataRetrievalProcess(
