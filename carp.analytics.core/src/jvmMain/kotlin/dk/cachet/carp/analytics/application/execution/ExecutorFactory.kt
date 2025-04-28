@@ -2,7 +2,6 @@ package dk.cachet.carp.analytics.application.execution
 
 import dk.cachet.carp.analytics.domain.process.ExternalProcess
 import dk.cachet.carp.analytics.domain.execution.Executor
-import dk.cachet.carp.analytics.domain.process.AnalysisProcess
 import dk.cachet.carp.analytics.infrastructure.execution.CommandLineExecutor
 import dk.cachet.carp.analytics.infrastructure.execution.PythonExecutor
 
@@ -17,6 +16,7 @@ import kotlin.reflect.KClass
 object ExecutorFactory {
 
     private val registry: MutableMap<KClass<out ExternalProcess>, () -> Executor<*>> = mutableMapOf()
+
 
     /**
      * Registers an Executor for a specific Process type.

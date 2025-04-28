@@ -1,6 +1,6 @@
 package dk.cachet.carp.analytics.application.data
-import kotlinx.serialization.Serializable
 
+import kotlinx.serialization.Serializable
 
 /**
  * Registry for managing data artifacts during workflow execution.

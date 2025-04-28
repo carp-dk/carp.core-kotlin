@@ -16,7 +16,7 @@ class CondaCommandGenerator : CommandGenerator {
         val channelCommand = env.channels.joinToString(" ") { "-c $it" }
         val pythonCommand = env.pythonVersion?.let { "python=$it" } ?: ""
 
-        return listOf(baseCommand, dependencyCommand, channelCommand, pythonCommand)
+        return listOf(baseCommand, dependencyCommand, channelCommand, pythonCommand, "--yes")
             .filter { it.isNotBlank() }
             .joinToString(" ")
     }

@@ -29,7 +29,6 @@ steps:
           scheme: "inmem"
           segments: [ "retrieved_stepcount_data" ]
           isAbsolute: false
-
     outputData:
       name: "mean_daily_stepcount"
       dataType: "collectedDataSet"
@@ -37,3 +36,31 @@ steps:
         scheme: "inmem"
         segments: [ "mean_daily_stepcount_data" ]
         isAbsolute: false
+
+  - name: "Plot Mean Step Count"
+    description: "Plot the mean daily step count per participant."
+    inputData:
+      - name: "mean_daily_stepcount"
+        dataType: "collectedDataSet"
+        source:
+          scheme: "inmem"
+          segments: [ "mean_daily_stepcount" ]
+          isAbsolute: false
+    outputData:
+        name: "mean_daily_stepcount_plot"
+        dataType: "plot"
+        destination:
+            scheme: "file"
+            segments: [ "output", "mean_daily_steps.png" ]
+            isAbsolute: false
+    process: !<Python>
+      name: "plot_mean_daily_stepcount"
+      description: "Plot the mean daily step count per participant."
+      executionContext: !<ExecutionContext>
+        environment: !<CondaEnvironment>
+            name: "plot_mean_daily_stepcount"
+            dependencies:
+              - "matplotlib"
+        envVariables:
+          TEST_VAR: "test_value"
+      scriptPath: "D:\\Code\\carp.core-kotlin\\carp.analytics.core\\scripts\\plotter.py"
