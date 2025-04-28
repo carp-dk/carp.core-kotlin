@@ -1,0 +1,39 @@
+name: "Simple Step Count Workflow Demo"
+description: "Demo to retrieve step count data and calculate mean daily step counts."
+
+steps:
+  - name: "Load Step Count Data"
+    description: "Load step count data from the database."
+    process:  !<data_retrieval>
+      name: "data_retrieval"
+      description: "Retrieve step count data from the database."
+      studyId: "f8e5c3ef-8739-42ab-80e8-7be7c1ea4e61"
+      outputName: "retrieved_stepcount_data"
+      fields: ["step_count"]
+    outputData:
+      name: "retrieved_stepcount_data"
+      dataType: "collectedDataSet"
+      destination:
+        scheme: "inmem"
+        segments: [ "retrieved_stepcount_data" ]
+        isAbsolute: false
+
+  - name: "Compute Mean Daily Step Count"
+    process: !<mean_daily_step_count>
+      type: "mean_daily_step_count"
+    inputData:
+      - name: "retrieved_stepcount_data"
+        description: "Step count data retrieved from the database."
+        dataType: "collectedDataSet"
+        source:
+          scheme: "inmem"
+          segments: [ "retrieved_stepcount_data" ]
+          isAbsolute: false
+
+    outputData:
+      name: "mean_daily_stepcount"
+      dataType: "collectedDataSet"
+      destination:
+        scheme: "inmem"
+        segments: [ "mean_daily_stepcount_data" ]
+        isAbsolute: false

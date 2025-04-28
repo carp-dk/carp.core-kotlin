@@ -1,5 +1,7 @@
 package dk.cachet.carp.analytics.infrastructure.parser
 
+import dk.cachet.carp.analytics.application.process.DataRetrievalProcess
+import dk.cachet.carp.analytics.application.process.MeanDailyStepCountProcess
 import dk.cachet.carp.analytics.domain.process.CommandLineExternalProcess
 import dk.cachet.carp.analytics.domain.process.ExternalProcess
 import dk.cachet.carp.analytics.domain.process.PythonExternalProcess
@@ -16,6 +18,9 @@ val AnalyticsSerializersModule = SerializersModule {
         subclass(ExternalProcess::class)
         subclass(CommandLineExternalProcess::class)
         subclass(PythonExternalProcess::class)
+        subclass(DataRetrievalProcess::class)
+        subclass(MeanDailyStepCountProcess::class)
+
     }
     polymorphic(WorkflowComponent::class) {
         subclass(Step::class)

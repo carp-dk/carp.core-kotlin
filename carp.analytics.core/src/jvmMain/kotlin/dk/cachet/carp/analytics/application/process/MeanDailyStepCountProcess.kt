@@ -10,10 +10,14 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
 /**
  * Process that calculates the mean daily step count per study deployment.
  */
+@Serializable
+@SerialName("mean_daily_step_count")
 class MeanDailyStepCountProcess : AnalysisProcess {
 
     override val name: String = "mean_daily_step_count"

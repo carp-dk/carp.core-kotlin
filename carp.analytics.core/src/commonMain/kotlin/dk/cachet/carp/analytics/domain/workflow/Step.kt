@@ -13,8 +13,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Step(
     override val name: String,
-    override val description: String,
-    val inputData: List<InputDataReference>,
-    val outputData: OutputDataReference?,
+    override val description: String? = null,
+    val inputData: List<InputDataReference>? = null,
+    val outputData: OutputDataReference? = null,
     val process: WorkflowProcess
 ) : WorkflowComponent

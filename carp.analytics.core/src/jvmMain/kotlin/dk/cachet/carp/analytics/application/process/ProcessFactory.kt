@@ -7,6 +7,9 @@ import dk.cachet.carp.analytics.domain.process.CommandLineExternalProcess
 import dk.cachet.carp.analytics.domain.process.ApplicationScriptExternalProcess
 import dk.cachet.carp.analytics.domain.process.PythonExternalProcess
 import dk.cachet.carp.analytics.domain.process.CommandTemplate
+import dk.cachet.carp.analytics.domain.process.WorkflowProcess
+import dk.cachet.carp.common.application.UUID
+import kotlinx.datetime.Instant
 import java.nio.file.Path
 
 /**
@@ -27,7 +30,7 @@ class ProcessFactory {
             name: String,
             executionContext: ExecutionContext,
             config: Map<String, Any>
-        ): ExternalProcess {
+        ): WorkflowProcess {
             return when (type) {
                 ProcessType.COMMAND_LINE -> CommandLineExternalProcess(
                     name = name,
@@ -51,6 +54,18 @@ class ProcessFactory {
                     args = (config["parameters"] as? List<*>)?.filterIsInstance<String>().orEmpty(),
                     description = config["description"] as? String
                 )
+                ProcessType.DATA_RETRIEVAL -> DataRetrievalProcess(
+                    name = name,
+                    description = config["description"] as? String ?: "",
+                    studyId = UUID(config["studyId"] as String),
+                    outputName = config["outputName"] as String,
+                    fields = (config["fields"] as? List<*>)?.filterIsInstance<String>()?.toSet(),
+                    deviceRoles = (config["deviceRoles"] as? List<*>)?.filterIsInstance<String>()?.toSet(),
+                    from = (config["from"] as? String)?.let { Instant.parse(it) },
+                    to = (config["to"] as? String)?.let { Instant.parse(it) },
+                    offsetDays = (config["offsetDays"] as? Int)
+                )
+                ProcessType.MEAN_DAILY_STEP_COUNT -> MeanDailyStepCountProcess()
             }
         }
     }
