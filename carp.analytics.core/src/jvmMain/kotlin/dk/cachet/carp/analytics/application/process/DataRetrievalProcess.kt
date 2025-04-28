@@ -3,7 +3,6 @@ package dk.cachet.carp.analytics.application.process
 import dk.cachet.carp.analytics.domain.process.AnalysisProcess
 import dk.cachet.carp.data.application.CollectedDataSet
 import dk.cachet.carp.analytics.application.data.DataRegistry
-import dk.cachet.carp.analytics.application.data.InMemoryData
 import dk.cachet.carp.data.application.StudyDataService
 import kotlinx.datetime.Instant
 import dk.cachet.carp.common.application.UUID
@@ -21,7 +20,6 @@ class DataRetrievalProcess(
     override val name: String,
     override val description: String?,
     private val studyId: UUID,
-    private val outputName: String,
     private val deploymentIds: Set<UUID>? = null,
     private val fields: Set<String>? = null,
     private val deviceRoles: Set<String>? = null,
@@ -52,8 +50,6 @@ class DataRetrievalProcess(
         }
 
         println("DataRetrievalProcess '$name': Retrieved ${result.points.size} data points.")
-
-//        dataRegistry.register(outputName, InMemoryData(result))
 
         return result
     }
