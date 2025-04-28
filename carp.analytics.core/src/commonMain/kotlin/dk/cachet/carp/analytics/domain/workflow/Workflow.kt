@@ -2,6 +2,8 @@ package dk.cachet.carp.analytics.domain.workflow
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlin.collections.mutableListOf
+
 /**
  * Represents a collection of steps in a workflow.
  */
@@ -21,6 +23,14 @@ data class Workflow(
      */
     fun addStep(step: Step) {
         steps.add(step)
+    }
+
+    /**
+     * Adds a step to the workflow.
+     * @param step The step to add.
+     */
+    fun addSteps(stepList: List<Step>) {
+        steps.addAll(stepList)
     }
 
     /**

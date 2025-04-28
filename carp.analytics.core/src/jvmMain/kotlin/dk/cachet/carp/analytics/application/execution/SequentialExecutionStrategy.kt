@@ -78,7 +78,7 @@ class SequentialExecutionStrategy(
 
     private fun resolveInputData(step: Step): CollectedDataSet {
         // For now: Assume first inputData is what we fetch
-        if (step.inputData.isEmpty()) {
+        if (step.inputData.isNullOrEmpty()) {
             println("No input data defined for step '${step.name}', using empty dataset.")
             return CollectedDataSet(emptyList())
         }

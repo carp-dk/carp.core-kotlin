@@ -1,9 +1,12 @@
 package dk.cachet.carp.analytics.application.data
+import kotlinx.serialization.Serializable
+
 
 /**
  * Registry for managing data artifacts during workflow execution.
  * Maps logical names to CollectedDataSets or file paths.
  */
+@Serializable
 class DataRegistry {
 
     private val data = mutableMapOf<String, DataHandle>()

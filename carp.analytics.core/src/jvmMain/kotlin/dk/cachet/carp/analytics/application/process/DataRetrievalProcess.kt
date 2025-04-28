@@ -8,15 +8,19 @@ import dk.cachet.carp.data.application.StudyDataService
 import kotlinx.datetime.Instant
 import dk.cachet.carp.common.application.UUID
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 /**
  * A process that retrieves data from a StudyDataService and registers it into the DataRegistry.
  */
+@Serializable
+@SerialName("data_retrieval")
 class DataRetrievalProcess(
     override val name: String,
-    override val description: String,
+    override val description: String?,
     private val studyId: UUID,
-    private val studyDataService: StudyDataService,
     private val outputName: String,
     private val deploymentIds: Set<UUID>? = null,
     private val fields: Set<String>? = null,
@@ -24,8 +28,13 @@ class DataRetrievalProcess(
     private val from: Instant? = null,
     private val to: Instant? = null,
     private val offsetDays: Int? = null,
-    private val dataRegistry: DataRegistry
 ) : AnalysisProcess {
+
+    @Transient
+    lateinit var studyDataService: StudyDataService
+
+    @Transient
+    lateinit var dataRegistry: DataRegistry
 
     override fun process(input: CollectedDataSet): CollectedDataSet? {
         println("DataRetrievalProcess '$name': Querying study data service...")
@@ -44,7 +53,7 @@ class DataRetrievalProcess(
 
         println("DataRetrievalProcess '$name': Retrieved ${result.points.size} data points.")
 
-        dataRegistry.register(outputName, InMemoryData(result))
+//        dataRegistry.register(outputName, InMemoryData(result))
 
         return result
     }

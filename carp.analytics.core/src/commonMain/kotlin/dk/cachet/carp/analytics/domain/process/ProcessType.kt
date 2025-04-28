@@ -8,4 +8,6 @@ enum class ProcessType {
     COMMAND_LINE,
     APPLICATION_SCRIPT,
     PYTHON_SCRIPT,
+    DATA_RETRIEVAL,
+    MEAN_DAILY_STEP_COUNT
 }

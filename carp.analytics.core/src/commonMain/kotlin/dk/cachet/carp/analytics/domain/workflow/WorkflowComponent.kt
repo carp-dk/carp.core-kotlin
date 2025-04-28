@@ -5,5 +5,5 @@ package dk.cachet.carp.analytics.domain.workflow
  */
 interface WorkflowComponent {
     val name: String
-    val description: String
+    val description: String?
 }
