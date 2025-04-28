@@ -6,15 +6,12 @@ import dk.cachet.carp.analytics.application.execution.ExecutorFactory
 import dk.cachet.carp.analytics.application.process.DataRetrievalProcess
 import dk.cachet.carp.analytics.application.process.MeanDailyStepCountProcess
 import dk.cachet.carp.analytics.domain.workflow.Workflow
-import dk.cachet.carp.analytics.domain.workflow.Step
 import dk.cachet.carp.analytics.infrastructure.parser.WorkflowYamlParser
-import dk.cachet.carp.analytics.domain.process.WorkflowProcess
 import dk.cachet.carp.data.application.StudyDataService
 import dk.cachet.carp.data.infrastructure.db.DBBackedStudyDataService
 import dk.cachet.carp.data.infrastructure.db.SQLiteStudyDataRepository
 import kotlinx.coroutines.runBlocking
 import java.io.File
-import java.util.UUID
 
 fun main() = runBlocking {
     println("Starting demo CLI runner...")

@@ -1,7 +1,6 @@
 package dk.cachet.carp.analytics.application.process
 
 import dk.cachet.carp.analytics.domain.execution.ExecutionContext
-import dk.cachet.carp.analytics.domain.process.ExternalProcess
 import dk.cachet.carp.analytics.domain.process.ProcessType
 import dk.cachet.carp.analytics.domain.process.CommandLineExternalProcess
 import dk.cachet.carp.analytics.domain.process.ApplicationScriptExternalProcess
@@ -58,7 +57,6 @@ class ProcessFactory {
                     name = name,
                     description = config["description"] as? String ?: "",
                     studyId = UUID(config["studyId"] as String),
-                    outputName = config["outputName"] as String,
                     fields = (config["fields"] as? List<*>)?.filterIsInstance<String>()?.toSet(),
                     deviceRoles = (config["deviceRoles"] as? List<*>)?.filterIsInstance<String>()?.toSet(),
                     from = (config["from"] as? String)?.let { Instant.parse(it) },
