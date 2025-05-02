@@ -13,22 +13,29 @@ import dk.cachet.carp.data.infrastructure.db.SQLiteStudyDataRepository
 import kotlinx.coroutines.runBlocking
 import java.io.File
 
+
+
 fun main() = runBlocking {
     println("Starting demo CLI runner...")
 
     // 1. Load YAML
-    val yamlPath = "D:\\Code\\carp.core-kotlin\\carp.analytics.core\\src\\jvmTest\\resources\\demo_workflow.yaml"
+
+    val cwd = System.getProperty("user.dir")
+    println("working in $cwd")
+    println(File(cwd).listFiles()?.joinToString("\n") { it.name } ?: "Directory is empty or inaccessible")
+
+    val yamlPath = ".\\src\\jvmTest\\resources\\demo_workflow.yaml"
     val yamlContent = File(yamlPath).readText()
 
     val workflowYaml = WorkflowYamlParser.fromString(yamlContent)
 
 
-    println("Loaded workflow: ${workflowYaml.name}")
+    println("Loaded workflow: ${workflowYaml.name}")    
 
     // 2. Set up environment
     val dataRegistry = DataRegistry()
     val executionStrategy = SequentialExecutionStrategy(dataRegistry)
-    val dbPath = "D:\\Code\\carp.core-kotlin\\carp.data.core\\src\\jvmTest\\resources\\test.db"
+    val dbPath = "C:\\Users\\ngrec\\Code\\core_fork\\carp.core-kotlin\\carp.data.core\\src\\jvmTest\\resources\\test.db"
     val jdbcUrl = "jdbc:sqlite:$dbPath"
     val repository = SQLiteStudyDataRepository(jdbcUrl)
     val studyDataService = DBBackedStudyDataService(repository )
