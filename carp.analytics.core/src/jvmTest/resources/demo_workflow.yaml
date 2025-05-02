@@ -63,4 +63,4 @@ steps:
               - "matplotlib"
         envVariables:
           TEST_VAR: "test_value"
-      scriptPath: "D:\\Code\\carp.core-kotlin\\carp.analytics.core\\scripts\\plotter.py"
+      scriptPath: "scripts\\plotter.py"
