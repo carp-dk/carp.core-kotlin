@@ -70,7 +70,7 @@ class SerializationTest : ConcreteTypesSerializationTest(
     }
 
     @Test
-    fun can_serialize_generic_CustomInput()
+    fun can_serialize_polymorphic_CustomInput()
     {
         val data: Data = CustomInput( 42 )
         val dataSerializer = PolymorphicSerializer( Data::class )
