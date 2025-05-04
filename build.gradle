@@ -8,7 +8,7 @@ buildscript {
 
         versions = [
             // Kotlin multiplatform versions.
-            kotlin:'1.9.23',
+            kotlin:'2.1.20',
             serialization:'1.6.3',
             coroutines:'1.8.0',
             datetime:'0.5.0',
@@ -110,6 +110,10 @@ configure( subprojects - devOpsModules ) {
                         it.optIn.add('kotlinx.coroutines.ExperimentalCoroutinesApi')
                     }
                     it.freeCompilerArgs.add('-Xexpect-actual-classes') // https://youtrack.jetbrains.com/issue/KT-61573
+
+                    // Already opt in globally to behavior which will become default in Kotlin 2.2:
+                    // https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-consistent-copy-visibility/
+                    it.freeCompilerArgs.add('-Xconsistent-data-class-copy-visibility')
                 } )
             }
         }

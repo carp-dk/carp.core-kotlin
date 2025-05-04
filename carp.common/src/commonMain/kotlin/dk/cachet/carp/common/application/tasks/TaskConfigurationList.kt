@@ -1,5 +1,6 @@
 package dk.cachet.carp.common.application.tasks
 
+import dk.cachet.carp.common.application.data.Data
 import dk.cachet.carp.common.application.devices.DeviceConfiguration
 import kotlin.js.JsExport
 import kotlin.js.JsName
@@ -11,10 +12,11 @@ import kotlin.js.JsName
  *
  * Extend from this class as an object and assign members as follows: `val SOME_TASK = add { SomeTaskBuilder() }`.
  */
+@Suppress( "NON_EXPORTABLE_TYPE" )
 @JsExport
 open class TaskConfigurationList private constructor(
-    private val list: MutableList<SupportedTaskConfiguration<*, *>>
-) : List<SupportedTaskConfiguration<*, *>> by list
+    private val list: MutableList<SupportedTaskConfiguration<*, *, *>>
+) : List<SupportedTaskConfiguration<*, *, *>> by list
 {
     @JsName( "create" )
     constructor() : this( mutableListOf() )
@@ -28,9 +30,10 @@ open class TaskConfigurationList private constructor(
 
 
     protected fun <
-        TConfiguration : TaskConfiguration<*>,
+        TConfiguration : TaskConfiguration<TData>,
+        TData : Data,
         TBuilder : TaskConfigurationBuilder<TConfiguration>
-    > add( builder: () -> TBuilder ): SupportedTaskConfiguration<TConfiguration, TBuilder> =
+    > add( builder: () -> TBuilder ): SupportedTaskConfiguration<TConfiguration, TData, TBuilder> =
         SupportedTaskConfiguration( builder ).also { list.add( it ) }
 }
 
@@ -40,7 +43,8 @@ open class TaskConfigurationList private constructor(
  */
 @JsExport
 class SupportedTaskConfiguration<
-    TConfiguration : TaskConfiguration<*>,
+    TConfiguration : TaskConfiguration<TData>,
+    TData : Data,
     TBuilder : TaskConfigurationBuilder<TConfiguration>
 >( private val createBuilder: () -> TBuilder )
 {

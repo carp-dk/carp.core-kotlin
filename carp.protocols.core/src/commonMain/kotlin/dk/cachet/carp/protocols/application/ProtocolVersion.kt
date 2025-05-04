@@ -12,11 +12,11 @@ import kotlin.js.JsExport
  *
  * @param date The date when this version of the protocol was created.
  */
+@Suppress( "NON_EXPORTABLE_TYPE" )
 @Serializable
 @JsExport
 data class ProtocolVersion(
     val tag: String,
     @Required
-    @Suppress( "NON_EXPORTABLE_TYPE" )
     val date: Instant = Clock.System.now()
 )

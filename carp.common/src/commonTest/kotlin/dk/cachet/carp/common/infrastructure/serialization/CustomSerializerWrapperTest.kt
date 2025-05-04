@@ -19,11 +19,10 @@ class CustomSerializerWrapperTest
     fun can_enforce_serializing_as_polymorph_base_class()
     {
         val wrapper = customSerializerWrapper( SealedBase.ExtendsSealed(), SealedBase.serializer() )
-        val json = Json {}
 
-        val serialized = json.encodeToString( CustomSerializerWrapper.serializer(), wrapper )
+        val serialized = Json.encodeToString( CustomSerializerWrapper.serializer(), wrapper )
 
-        val jsonObject = json.parseToJsonElement( serialized ) as JsonObject
+        val jsonObject = Json.parseToJsonElement( serialized ) as JsonObject
         assertTrue( jsonObject.contains( "type" ) )
     }
 }
