@@ -5,28 +5,28 @@ declare module "@cachet/kotlin-kotlin-stdlib"
         interface Long
         {
             // toNumber
-            da(): number
+            g1(): number
         }
-        function toLong_0( number: number ): Long
+        function toLong( number: number ): Long
 
         class Pair<K, V>
         {
             constructor( first: K, second: V )
 
             // first
-            md_1: K
+            ge_1: K
 
             // second
-            nd_1: V
+            he_1: V
         }
 
         interface Collection<T>
         {
             // contains
-            p( value: T ): boolean
+            i1( value: T ): boolean
 
             // size
-            n(): number
+            m(): number
 
             toArray(): Array<T>
         }
@@ -44,13 +44,13 @@ declare module "@cachet/kotlin-kotlin-stdlib"
         interface Map<K, V>
         {
             // get
-            x2( key: K ): V
+            g2( key: K ): V
 
             // keys
-            l2(): Set<K>
+            h2(): Set<K>
 
             // values
-            m2(): Collection<V>
+            i2(): Collection<V>
         }
         interface HashMap<K, V> extends Map<K, V> {}
         function mapOf_0<K, V>( pairs: Pair<K, V>[] ): Map<K, V>
@@ -59,16 +59,26 @@ declare module "@cachet/kotlin-kotlin-stdlib"
         interface DurationCompanion
         {
             // parseIsoString
-            zf(): Duration
+            eh(): Duration
 
             // ZERO
-            wf_1: Duration
+            bh_1: Duration
 
             // INFINITE
-            xf_1: Duration
+            ch_1: Duration
         }
-        function Companion_getInstance_13(): DurationCompanion
+        function Companion_getInstance_17(): DurationCompanion
         function _Duration___get_inWholeMilliseconds__impl__msfiry(duration: Duration): Long
         function _Duration___get_inWholeMicroseconds__impl__8oe8vv(duration: Duration): Long
+    }
+
+    namespace kotlin
+    {
+        namespace collections
+        {
+            const KtList: any
+            const KtSet: any
+            const KtMap: any
+        }
     }
 }

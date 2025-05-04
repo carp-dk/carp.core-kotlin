@@ -3,28 +3,32 @@ import extend from "@cachet/kotlin-kotlin-stdlib"
 
 
 // Facade with better method names and type conversions for internal types.
-export namespace kotlin
+export namespace kotlinExport
 {
     export type Nullable<T> = T | null | undefined
     export interface Long
     {
         toNumber(): number
     }
-    export const toLong: (number: number) => Long = extend.$_$.toLong_0
+    export const toLong: (number: number) => Long = extend.$_$.toLong
     export class Pair<K, V>
     {
         constructor( first: K, second: V ) {
             let kotlinPair = new extend.$_$.Pair( first, second );
-            kotlinPair.first = kotlinPair.md_1;
-            kotlinPair.second = kotlinPair.nd_1;
+            kotlinPair.first = kotlinPair.ge_1;
+            kotlinPair.second = kotlinPair.he_1;
             return kotlinPair;
         }
         get first(): K { return this.first; }
         get second(): V { return this.second; }
     }
 }
-export namespace kotlin.collections
+export namespace kotlinExport.collections
 {
+    export const KtList = extend.kotlin.collections.KtList
+    export const KtSet = extend.kotlin.collections.KtSet
+    export const KtMap = extend.kotlin.collections.KtMap
+
     export interface Collection<T>
     {
         contains( value: T ): boolean
@@ -42,12 +46,12 @@ export namespace kotlin.collections
     export const listOf: <T>(array: T[]) => List<T> = extend.$_$.listOf_0
     export const setOf: <T>(array: T[]) => Set<T> = extend.$_$.setOf_0
     export const mapOf =
-        function<K, V>( pairs: kotlin.Pair<K, V>[] ): Map<K, V>
+        function<K, V>( pairs: kotlinExport.Pair<K, V>[] ): Map<K, V>
         {
             return extend.$_$.mapOf_0( pairs as any )
         }
 }
-export namespace kotlin.time
+export namespace kotlinExport.time
 {
     export interface Duration
     {
@@ -56,10 +60,10 @@ export namespace kotlin.time
     }
     export namespace Duration
     {
-        export const Companion: any = extend.$_$.Companion_getInstance_13()
-        export const parseIsoString: (isoDuration: string) => Duration = Companion.zf
-        export const ZERO: Duration = Companion.wf_1
-        export const INFINITE: Duration = Companion.xf_1
+        export const Companion: any = extend.$_$.Companion_getInstance_17()
+        export const parseIsoString: (isoDuration: string) => Duration = Companion.eh
+        export const ZERO: Duration = Companion.bh_1
+        export const INFINITE: Duration = Companion.ch_1
     }
 }
 
@@ -69,36 +73,36 @@ declare module "@cachet/kotlin-kotlin-stdlib"
 {
     namespace $_$
     {
-        abstract class Long implements kotlin.Long
+        abstract class Long implements kotlinExport.Long
         {
             toNumber(): number
             inWholeMilliseconds(): number
             inWholeMicroseconds(): number
         }
-        interface Pair<K, V> extends kotlin.Pair<K, V>
+        interface Pair<K, V> extends kotlinExport.Pair<K, V>
         {
             first: K
             second: V
         }
-        interface Collection<T> extends kotlin.collections.Collection<T> {}
-        abstract class EmptyList<T> implements kotlin.collections.List<T> {}
-        abstract class AbstractMutableList<T> implements kotlin.collections.List<T> {}
-        interface Set<T> extends kotlin.collections.Set<T> {}
-        abstract class EmptySet<T> implements kotlin.collections.Set<T> {}
-        abstract class HashSet<T> implements kotlin.collections.Set<T> {}
-        interface Map<K, V> extends kotlin.collections.Map<K, V> {}
-        abstract class HashMap<K, V> implements kotlin.collections.Map<K, V>
+        interface Collection<T> extends kotlinExport.collections.Collection<T> {}
+        abstract class EmptyList<T> implements kotlinExport.collections.List<T> {}
+        abstract class AbstractMutableList<T> implements kotlinExport.collections.List<T> {}
+        interface Set<T> extends kotlinExport.collections.Set<T> {}
+        abstract class EmptySet<T> implements kotlinExport.collections.Set<T> {}
+        abstract class HashSet<T> implements kotlinExport.collections.Set<T> {}
+        interface Map<K, V> extends kotlinExport.collections.Map<K, V> {}
+        abstract class HashMap<K, V> implements kotlinExport.collections.Map<K, V>
         {
             get( key: K ): V
-            keys: kotlin.collections.Set<K>
-            values: kotlin.collections.Collection<V>
+            keys: kotlinExport.collections.Set<K>
+            values: kotlinExport.collections.Collection<V>
         }
     }
 }
 
 
 // Implement base interfaces in internal types.
-extend.$_$.Long.prototype.toNumber = function(): number { return this.da(); };
+extend.$_$.Long.prototype.toNumber = function(): number { return this.g1(); };
 Object.defineProperty( extend.$_$.Long.prototype, "inWholeMilliseconds", {
     get: function inWholeMilliseconds()
     {
@@ -114,21 +118,21 @@ Object.defineProperty( extend.$_$.Long.prototype, "inWholeMicroseconds", {
 extend.$_$.EmptyList.prototype.contains = function<T>( value: T ): boolean { return false; }
 extend.$_$.EmptyList.prototype.size = function<T>(): number { return 0; }
 extend.$_$.EmptyList.prototype.toArray = function<T>(): T[] { return []; }
-extend.$_$.AbstractMutableList.prototype.contains = function<T>( value: T ): boolean { return this.p( value ); }
-extend.$_$.AbstractMutableList.prototype.size = function<T>(): number { return this.n(); }
+extend.$_$.AbstractMutableList.prototype.contains = function<T>( value: T ): boolean { return this.i1( value ); }
+extend.$_$.AbstractMutableList.prototype.size = function<T>(): number { return this.m(); }
 extend.$_$.EmptySet.prototype.contains = function<T>( value: T ): boolean { return false; }
 extend.$_$.EmptySet.prototype.size = function<T>(): number { return 0; }
 extend.$_$.EmptySet.prototype.toArray = function<T>(): T[] { return []; }
-extend.$_$.HashSet.prototype.contains = function<T>( value: T ): boolean { return this.p( value ); }
-extend.$_$.HashSet.prototype.size = function<T>(): number { return this.n(); }
-extend.$_$.HashMap.prototype.get = function<K, V>( key: K ): V { return this.x2( key ); }
+extend.$_$.HashSet.prototype.contains = function<T>( value: T ): boolean { return this.i1( value ); }
+extend.$_$.HashSet.prototype.size = function<T>(): number { return this.m(); }
+extend.$_$.HashMap.prototype.get = function<K, V>( key: K ): V { return this.g2( key ); }
 Object.defineProperty( extend.$_$.HashMap.prototype, "keys", {
-    get: function keys() { return this.l2(); }
+    get: function keys() { return this.h2(); }
 } );
 Object.defineProperty( extend.$_$.HashMap.prototype, "values", {
-    get: function values() { return this.m2(); }
+    get: function values() { return this.i2(); }
 } );
 
 
 // Export facade.
-export default kotlin
+export default kotlinExport

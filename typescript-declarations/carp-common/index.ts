@@ -23,6 +23,7 @@ declare module "@cachet/carp-common-generated"
     }
     namespace kotlin.collections
     {
+        type Collection<E> = kotlinStdLib.collections.Collection<E>
         type List<T> = kotlinStdLib.collections.List<T>
         type Set<T> = kotlinStdLib.collections.Set<T>
         type Map<K, V> = kotlinStdLib.collections.Map<K, V>
@@ -36,6 +37,10 @@ declare module "@cachet/carp-common-generated"
         type Json = kotlinSerialization.serialization.json.Json
     }
 }
+
+
+// Set namespace objects of dependent imported modules, so that they aren't "undefined" at runtime.
+(extend as any).kotlin = kotlinStdLib
 
 
 // Re-export augmented types.

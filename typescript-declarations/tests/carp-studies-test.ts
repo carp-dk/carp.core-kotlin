@@ -1,7 +1,6 @@
 import { expect } from 'chai'
 
 import kotlin from '@cachet/carp-kotlin'
-import setOf = kotlin.collections.setOf
 import listOf = kotlin.collections.listOf
 
 import kxd from '@cachet/carp-kotlinx-datetime'
@@ -13,6 +12,9 @@ import ListSerializer = kxs.serialization.builtins.ListSerializer
 
 import carp from '@cachet/carp-studies-core'
 import dk = carp.dk
+
+import KtList = carp.kotlin.collections.KtList
+import KtSet = carp.kotlin.collections.KtSet
 
 import common = dk.cachet.carp.common
 import UUID = common.application.UUID
@@ -43,11 +45,12 @@ describe( "carp-studies-core", () => {
         it( "getAssigned participantIds and participantRoles works", () => {
             const participant1 = UUID.Companion.randomUUID()
             const participant2 = UUID.Companion.randomUUID()
-            const assigned1 = new AssignedParticipantRoles( participant1, new AssignedTo.Roles( setOf( [ "Test" ] ) ) )
+            const roles = new Set( [ "Test" ] );
+            const assigned1 = new AssignedParticipantRoles( participant1, new AssignedTo.Roles( KtSet.fromJsSet( roles ) ) )
             const assigned2 = new AssignedParticipantRoles( participant2, AssignedTo.All )
             const assignedGroup = listOf( [ assigned1, assigned2 ] )
-            expect( participantIds( assignedGroup ).contains( participant1 ) ).is.true
-            expect( participantRoles( assignedGroup ).contains( "Test" ) ).is.true
+            expect( participantIds( assignedGroup ).asJsReadonlySetView().has( participant1 ) ).is.true
+            expect( participantRoles( assignedGroup ).asJsReadonlySetView().has( "Test" ) ).is.true
         } )
     } )
 
@@ -93,11 +96,10 @@ describe( "carp-studies-core", () => {
 
     describe( "RecruitmentServiceRequest", () => {
         it( "can serialize DeployParticipantGroup", () => {
+            const assignedRoles = new Set( [ new AssignedParticipantRoles( UUID.Companion.randomUUID(), AssignedTo.All ) ] );
             const deployGroup = new RecruitmentServiceRequest.InviteNewParticipantGroup(
                 UUID.Companion.randomUUID(),
-                setOf( [
-                    new AssignedParticipantRoles( UUID.Companion.randomUUID(), AssignedTo.All )
-                ] )
+                KtSet.fromJsSet( assignedRoles )
             )
 
             const serializer = RecruitmentServiceRequest.Serializer
@@ -116,8 +118,11 @@ describe( "carp-studies-core", () => {
         it( "can serialize ParticipantGroupStatus", () => {
             const deploymentId = UUID.Companion.randomUUID()
             const now = Clock.System.now()
-            const deploymentStatus = new StudyDeploymentStatus.Running( now, deploymentId, listOf<DeviceDeploymentStatus>( [] ), listOf<ParticipantStatus>( [] ), now )
-            const participants = setOf( [ new Participant( new UsernameAccountIdentity( new Username( "Test" ) ) ) ] )
+            const emptyDeploymentStatusList = KtList.fromJsArray( [] )
+            const emptyParticipantStatusList = KtList.fromJsArray( [] )
+            const deploymentStatus = new StudyDeploymentStatus.Running( now, deploymentId, emptyDeploymentStatusList, emptyParticipantStatusList, now )
+            const participantsSet = new Set( [ new Participant( new UsernameAccountIdentity( new Username( "Test" ) ) ) ] )
+            const participants = KtSet.fromJsSet( participantsSet )
             const group = new ParticipantGroupStatus.Invited( deploymentId, participants, now, deploymentStatus )
 
             const serializer = getSerializer( ParticipantGroupStatus )
