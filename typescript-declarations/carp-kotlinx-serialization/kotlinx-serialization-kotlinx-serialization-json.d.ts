@@ -2,14 +2,14 @@ declare module "@cachet/kotlinx-serialization-kotlinx-serialization-json"
 {
     namespace $_$
     {
-        interface JsonImpl
+        interface Json
         {
             // encodeToString
-            h14( serializer: any, instance: any ): string
+            g15( serializer: any, instance: any ): string
 
             // decodeFromString
-            i14( serializer: any, string: string ): string
+            h15( serializer: any, string: string ): string
         }
-        function Default_getInstance(): JsonImpl
+        function Default_getInstance(): Json
     }
 }

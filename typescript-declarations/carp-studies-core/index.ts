@@ -42,6 +42,7 @@ declare module "@cachet/carp-studies-core-generated"
 
 
 // Set namespace objects of dependent imported modules, so that they aren't "undefined" at runtime.
+(extend as any).kotlin = kotlinStdLib
 extend.dk.cachet.carp.common = carpCommon.dk.cachet.carp.common as any;
 extend.dk.cachet.carp.deployments = carpDeployments.dk.cachet.carp.deployments as any;
 

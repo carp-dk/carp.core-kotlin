@@ -1,5 +1,5 @@
 Long
-toLong_0
+toLong
 EmptyList
 AbstractMutableList
 HashSet
@@ -10,6 +10,6 @@ to
 listOf_0
 setOf_0
 mapOf_0
-Companion_getInstance_13
+Companion_getInstance_17
 _Duration___get_inWholeMilliseconds__impl__msfiry
 _Duration___get_inWholeMicroseconds__impl__8oe8vv

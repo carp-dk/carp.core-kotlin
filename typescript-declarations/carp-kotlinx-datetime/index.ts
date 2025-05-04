@@ -11,7 +11,7 @@ export namespace kotlinx.datetime
     }
     export namespace Clock
     {
-        export const System: Clock = extend.$_$.System_getInstance()
+        export const System: Clock = extend.$_$.System_instance
     }
     export interface Instant
     {
@@ -34,8 +34,8 @@ declare module "@cachet/Kotlin-DateTime-library-kotlinx-datetime"
 
 
 // Implement base interfaces in internal types.
-extend.$_$.System.prototype.now = function(): kotlinx.datetime.Instant { return this.p13(); };
-extend.$_$.Instant_0.prototype.toEpochMilliseconds = function(): number { return this.c14(); };
+extend.$_$.System.prototype.now = function(): kotlinx.datetime.Instant { return this.o14(); };
+extend.$_$.Instant_0.prototype.toEpochMilliseconds = function(): number { return this.b15(); };
 
 
 // Export facade.
