@@ -14,7 +14,13 @@ import kotlin.js.JsName
  * The iCalendar RFC 5545 standard is used to specify the recurrence rule: https://tools.ietf.org/html/rfc5545#section-3.3.10
  * This trigger needs to be evaluated on a primary device since it is time bound and therefore requires a task scheduler.
  */
-@Suppress( "DataClassPrivateConstructor" )
+@Suppress(
+    "DataClassPrivateConstructor",
+
+    // Needed, but not recognized by IDE.
+    "NON_EXPORTABLE_TYPE",
+    "KotlinRedundantDiagnosticSuppress"
+)
 @Serializable
 @JsExport
 data class ScheduledTrigger private constructor(

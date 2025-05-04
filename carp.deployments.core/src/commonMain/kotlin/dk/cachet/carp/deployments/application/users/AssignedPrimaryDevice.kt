@@ -9,6 +9,7 @@ import kotlin.js.JsExport
 /**
  * Primary [device] and its current [registration] assigned to participants as part of a participant group.
  */
+@Suppress( "NON_EXPORTABLE_TYPE", "KotlinRedundantDiagnosticSuppress" ) // Needed, but not recognized by IDE.
 @Serializable
 @JsExport
 data class AssignedPrimaryDevice(
