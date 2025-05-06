@@ -10,7 +10,7 @@ buildscript {
             // Kotlin multiplatform versions.
             kotlin:'2.1.20',
             serialization:'1.6.3',
-            coroutines:'1.8.0',
+            coroutines:'1.10.2',
             datetime:'0.5.0',
 
             // JVM versions.
@@ -19,14 +19,14 @@ buildscript {
             reflections:'0.10.2',
 
             // JS versions.
-            nodePlugin:'7.0.2',
-            bigJs:'6.2.1',
+            nodePlugin:'7.1.0',
+            bigJs:'7.0.1',
 
             // DevOps versions.
-            detektPlugin:'1.23.5',
-            detektVerifyImplementation:'1.2.5',
-            nexusPublishPlugin:'1.3.0',
-            apacheCommons:'2.15.1'
+            detektPlugin:'1.23.8',
+            detektVerifyImplementation:'1.2.6',
+            nexusPublishPlugin:'2.0.0',
+            apacheCommons:'2.19.0'
         ]
 
         commonModule = subprojects.find { it.name == 'carp.common' }
