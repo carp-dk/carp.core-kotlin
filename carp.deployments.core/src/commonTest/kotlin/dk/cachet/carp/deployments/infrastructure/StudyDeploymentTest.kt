@@ -61,7 +61,6 @@ class StudyDeploymentTest
         }
     }
 
-    @ExperimentalSerializationApi
     @Test
     fun create_deployment_fromSnapshot_with_custom_extending_types_succeeds()
     {

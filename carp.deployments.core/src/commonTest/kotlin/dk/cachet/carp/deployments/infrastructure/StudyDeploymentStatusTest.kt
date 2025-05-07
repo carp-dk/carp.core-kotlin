@@ -49,7 +49,6 @@ class StudyDeploymentStatusTest
         assertEquals( status, parsed )
     }
 
-    @ExperimentalSerializationApi
     @Test
     fun serializing_deployment_when_unknown_devices_are_involved()
     {

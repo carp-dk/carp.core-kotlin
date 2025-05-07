@@ -75,7 +75,8 @@ abstract class UnknownPolymorphicSerializer<P : Any, W : P>(
         }
 
         // Write the JSON object.
-        encoder.encodeStructure( overrideDescriptor )
+        val overrideEncoder = encoder.encodeInline( overrideDescriptor )
+        overrideEncoder.encodeStructure( overrideDescriptor )
         {
             var id = 0
             for ( field in unknownTypeFields.values )
