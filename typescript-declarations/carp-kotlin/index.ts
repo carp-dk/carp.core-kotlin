@@ -15,8 +15,8 @@ export namespace kotlinExport
     {
         constructor( first: K, second: V ) {
             let kotlinPair = new extend.$_$.Pair( first, second );
-            kotlinPair.first = kotlinPair.he_1;
-            kotlinPair.second = kotlinPair.ie_1;
+            kotlinPair.first = kotlinPair.me_1;
+            kotlinPair.second = kotlinPair.ne_1;
             return kotlinPair;
         }
         get first(): K { return this.first; }
@@ -60,10 +60,10 @@ export namespace kotlinExport.time
     }
     export namespace Duration
     {
-        export const Companion: any = extend.$_$.Companion_getInstance_17()
-        export const parseIsoString: (isoDuration: string) => Duration = Companion.fh
-        export const ZERO: Duration = Companion.ch_1
-        export const INFINITE: Duration = Companion.dh_1
+        export const Companion: any = extend.$_$.Companion_getInstance_20()
+        export const parseIsoString: (isoDuration: string) => Duration = Companion.ii
+        export const ZERO: Duration = Companion.fi_1
+        export const INFINITE: Duration = Companion.gi_1
     }
 }
 

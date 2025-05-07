@@ -14,10 +14,10 @@ declare module "@cachet/kotlin-kotlin-stdlib"
             constructor( first: K, second: V )
 
             // first
-            he_1: K
+            me_1: K
 
             // second
-            ie_1: V
+            ne_1: V
         }
 
         interface Collection<T>
@@ -59,15 +59,15 @@ declare module "@cachet/kotlin-kotlin-stdlib"
         interface DurationCompanion
         {
             // parseIsoString
-            fh(): Duration
+            ii(): Duration
 
             // ZERO
-            ch_1: Duration
+            fi_1: Duration
 
             // INFINITE
-            dh_1: Duration
+            gi_1: Duration
         }
-        function Companion_getInstance_17(): DurationCompanion
+        function Companion_getInstance_20(): DurationCompanion
         function _Duration___get_inWholeMilliseconds__impl__msfiry(duration: Duration): Long
         function _Duration___get_inWholeMicroseconds__impl__8oe8vv(duration: Duration): Long
     }
