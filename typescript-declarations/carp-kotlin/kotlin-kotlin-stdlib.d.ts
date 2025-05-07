@@ -5,7 +5,7 @@ declare module "@cachet/kotlin-kotlin-stdlib"
         interface Long
         {
             // toNumber
-            g1(): number
+            h1(): number
         }
         function toLong( number: number ): Long
 
@@ -14,16 +14,16 @@ declare module "@cachet/kotlin-kotlin-stdlib"
             constructor( first: K, second: V )
 
             // first
-            ge_1: K
+            he_1: K
 
             // second
-            he_1: V
+            ie_1: V
         }
 
         interface Collection<T>
         {
             // contains
-            i1( value: T ): boolean
+            j1( value: T ): boolean
 
             // size
             m(): number
@@ -59,13 +59,13 @@ declare module "@cachet/kotlin-kotlin-stdlib"
         interface DurationCompanion
         {
             // parseIsoString
-            eh(): Duration
+            fh(): Duration
 
             // ZERO
-            bh_1: Duration
+            ch_1: Duration
 
             // INFINITE
-            ch_1: Duration
+            dh_1: Duration
         }
         function Companion_getInstance_17(): DurationCompanion
         function _Duration___get_inWholeMilliseconds__impl__msfiry(duration: Duration): Long

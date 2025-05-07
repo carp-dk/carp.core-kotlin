@@ -15,8 +15,8 @@ export namespace kotlinExport
     {
         constructor( first: K, second: V ) {
             let kotlinPair = new extend.$_$.Pair( first, second );
-            kotlinPair.first = kotlinPair.ge_1;
-            kotlinPair.second = kotlinPair.he_1;
+            kotlinPair.first = kotlinPair.he_1;
+            kotlinPair.second = kotlinPair.ie_1;
             return kotlinPair;
         }
         get first(): K { return this.first; }
@@ -61,9 +61,9 @@ export namespace kotlinExport.time
     export namespace Duration
     {
         export const Companion: any = extend.$_$.Companion_getInstance_17()
-        export const parseIsoString: (isoDuration: string) => Duration = Companion.eh
-        export const ZERO: Duration = Companion.bh_1
-        export const INFINITE: Duration = Companion.ch_1
+        export const parseIsoString: (isoDuration: string) => Duration = Companion.fh
+        export const ZERO: Duration = Companion.ch_1
+        export const INFINITE: Duration = Companion.dh_1
     }
 }
 
@@ -102,7 +102,7 @@ declare module "@cachet/kotlin-kotlin-stdlib"
 
 
 // Implement base interfaces in internal types.
-extend.$_$.Long.prototype.toNumber = function(): number { return this.g1(); };
+extend.$_$.Long.prototype.toNumber = function(): number { return this.h1(); };
 Object.defineProperty( extend.$_$.Long.prototype, "inWholeMilliseconds", {
     get: function inWholeMilliseconds()
     {
@@ -118,12 +118,12 @@ Object.defineProperty( extend.$_$.Long.prototype, "inWholeMicroseconds", {
 extend.$_$.EmptyList.prototype.contains = function<T>( value: T ): boolean { return false; }
 extend.$_$.EmptyList.prototype.size = function<T>(): number { return 0; }
 extend.$_$.EmptyList.prototype.toArray = function<T>(): T[] { return []; }
-extend.$_$.AbstractMutableList.prototype.contains = function<T>( value: T ): boolean { return this.i1( value ); }
+extend.$_$.AbstractMutableList.prototype.contains = function<T>( value: T ): boolean { return this.j1( value ); }
 extend.$_$.AbstractMutableList.prototype.size = function<T>(): number { return this.m(); }
 extend.$_$.EmptySet.prototype.contains = function<T>( value: T ): boolean { return false; }
 extend.$_$.EmptySet.prototype.size = function<T>(): number { return 0; }
 extend.$_$.EmptySet.prototype.toArray = function<T>(): T[] { return []; }
-extend.$_$.HashSet.prototype.contains = function<T>( value: T ): boolean { return this.i1( value ); }
+extend.$_$.HashSet.prototype.contains = function<T>( value: T ): boolean { return this.j1( value ); }
 extend.$_$.HashSet.prototype.size = function<T>(): number { return this.m(); }
 extend.$_$.HashMap.prototype.get = function<K, V>( key: K ): V { return this.g2( key ); }
 Object.defineProperty( extend.$_$.HashMap.prototype, "keys", {
