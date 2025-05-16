@@ -11,39 +11,35 @@ import kotlin.collections.mutableListOf
 @SerialName("Workflow")
 @Serializable
 data class Workflow(
-    override val name: String,
-    override val description: String
+    override val metadata: WorkflowMetadata,
 ) : WorkflowComponent {
     @Contextual
     private val steps = mutableListOf<WorkflowComponent>()
 
     /**
-     * Adds a step to the workflow.
-     * @param step The step to add.
+     * Add a component (step or sub-workflow) to this workflow.
      */
-    fun addStep(step: Step) {
-        steps.add(step)
+    fun addComponent(component: WorkflowComponent) {
+        steps.add(component)
     }
 
     /**
-     * Adds a step to the workflow.
-     * @param step The step to add.
+     * Add multiple components to the workflow.
      */
-    fun addSteps(stepList: List<Step>) {
-        steps.addAll(stepList)
+    fun addComponents(components: List<WorkflowComponent>) {
+        steps.addAll(components)
     }
 
     /**
-     * Removes a step from the workflow.
-     * @param step The step to remove.
+     * Remove a specific component from the workflow.
      */
-    fun removeStep(step: Step) {
-        steps.remove(step)
+    fun removeComponent(component: WorkflowComponent) {
+        steps.remove(component)
     }
 
     /**
-     * Returns an ordered list of steps in the workflow.
+     * Get a copy of the ordered list of workflow components.
      */
-    fun getSteps(): List<Step> = steps.toList()
+    fun getComponents(): List<WorkflowComponent> = steps.toList()
 
 }
