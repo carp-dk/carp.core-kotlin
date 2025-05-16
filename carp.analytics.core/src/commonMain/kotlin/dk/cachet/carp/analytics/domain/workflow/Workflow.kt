@@ -15,7 +15,7 @@ data class Workflow(
     override val description: String
 ) : WorkflowComponent {
     @Contextual
-    private val steps = mutableListOf<Step>()
+    private val steps = mutableListOf<WorkflowComponent>()
 
     /**
      * Adds a step to the workflow.
