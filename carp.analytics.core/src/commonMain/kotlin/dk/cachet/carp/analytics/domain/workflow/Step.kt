@@ -12,8 +12,7 @@ import kotlinx.serialization.Serializable
 @SerialName("step")
 @Serializable
 data class Step(
-    override val name: String,
-    override val description: String? = null,
+    override val metadata: StepMetadata,
     val inputData: List<InputDataReference>? = null,
     val outputData: OutputDataReference? = null,
     val process: WorkflowProcess
