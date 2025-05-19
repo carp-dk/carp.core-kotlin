@@ -5,6 +5,7 @@ import dk.cachet.carp.analytics.application.data.DataRegistry
 import dk.cachet.carp.analytics.application.execution.ExecutorFactory
 import dk.cachet.carp.analytics.application.process.DataRetrievalProcess
 import dk.cachet.carp.analytics.application.process.MeanDailyStepCountProcess
+import dk.cachet.carp.analytics.domain.workflow.Step
 import dk.cachet.carp.analytics.domain.workflow.Workflow
 import dk.cachet.carp.analytics.infrastructure.parser.WorkflowYamlParser
 import dk.cachet.carp.data.application.StudyDataService
@@ -30,7 +31,7 @@ fun main() = runBlocking {
     val workflowYaml = WorkflowYamlParser.fromString(yamlContent)
 
 
-    println("Loaded workflow: ${workflowYaml.name}")    
+    println("Loaded workflow: ${workflowYaml.metadata.name}")
 
     // 2. Set up environment
     val dataRegistry = DataRegistry()
@@ -60,24 +61,24 @@ fun rebuildWorkflow(
     studyDataService: StudyDataService,
     dataRegistry: DataRegistry
 ): Workflow {
-    val rebuiltSteps = workflow.getSteps().map { step ->
-        val process = step.process
+    val rebuiltSteps = workflow.getComponents().mapNotNull { component ->
+        if (component !is Step) return@mapNotNull null
+        val process = component.process
 
         when (process) {
             is DataRetrievalProcess -> {
                 process.studyDataService = studyDataService
                 process.dataRegistry = dataRegistry
-                step.copy(process = process)
+                component.copy(process = process)
             }
-            is MeanDailyStepCountProcess -> step // nothing special to inject
-            else -> step
+            is MeanDailyStepCountProcess -> component // no injection needed
+            else -> component
         }
     }
 
     val rebuiltWorkflow = Workflow(
-        name = workflow.name,
-        description = workflow.description
+        metadata = workflow.metadata.copy()
     )
-    rebuiltWorkflow.addSteps(rebuiltSteps)
+    rebuiltWorkflow.addComponents(rebuiltSteps)
     return rebuiltWorkflow
 }

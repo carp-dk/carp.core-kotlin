@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "oneOf": [
+    {"$ref": "#/$defs/ExecuteWorkflow"},
+    {"$ref": "#/$defs/ExecuteWorkflowFromDefinition"},
+    {"$ref": "#/$defs/GetExecutionState"},
+    {"$ref": "#/$defs/GetExecutionResult"},
+    {"$ref": "#/$defs/FindExecutions"},
+    {"$ref": "#/$defs/GetLatestExecutionStatus"}
+  ],
+  "$defs": {
+    "ApiVersion": { "const": "1.0" },
+    "ExecuteWorkflow": {
+      "$anchor": "ExecuteWorkflow",
+      "type": "object",
+      "properties": {
+        "__type": { "const": "dk.cachet.carp.analytics.infrastructure.ExecutionServiceRequest.ExecuteWorkflow" },
+        "apiVersion": { "$ref": "#/$defs/ApiVersion" },
+        "workflowId": { "type": "string", "format": "uuid" },
+        "studyId": { "type": "string", "format": "uuid" }
+      },
+      "required": [ "__type", "apiVersion", "workflowId", "studyId"],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "ExecuteWorkflow-Response",
+        "$ref": "../execution/ExecutionState.json"
+      }
+    },
+
+    "ExecuteWorkflowFromDefinition": {
+      "$anchor": "ExecuteWorkflowFromDefinition",
+      "type": "object",
+      "properties": {
+        "__type": { "const": "dk.cachet.carp.analytics.infrastructure.ExecutionServiceRequest.ExecuteWorkflowFromDefinition" },
+        "apiVersion": { "$ref": "#/$defs/ApiVersion" },
+        "studyId": { "type": "string", "format": "uuid" },
+        "workflow": { "$ref": "../workflow/Workflow.json" }
+      },
+      "required": [ "__type", "apiVersion", "studyId", "workflow"],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "ExecuteWorkflowFromDefinition-Response",
+        "$ref": "../execution/ExecutionState.json"
+      }
+    },
+    "GetExecutionState": {
+      "$anchor": "GetExecutionState",
+      "type": "object",
+      "properties": {
+        "__type": { "const": "dk.cachet.carp.analytics.infrastructure.ExecutionServiceRequest.GetExecutionState" },
+        "apiVersion": { "$ref": "#/$defs/ApiVersion" },
+        "executionId": { "type": "string", "format": "uuid" }
+      },
+      "required": [ "__type", "apiVersion", "executionId"],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "GetExecutionState-Response",
+        "$ref": "../execution/ExecutionState.json"
+      }
+    },
+    "GetExecutionResult": {
+      "$anchor": "GetExecutionResult",
+      "type": "object",
+      "properties": {
+        "__type": { "const": "dk.cachet.carp.analytics.infrastructure.ExecutionServiceRequest.GetExecutionResult" },
+        "apiVersion": { "$ref": "#/$defs/ApiVersion" },
+        "executionId": { "type": "string", "format": "uuid" }
+      },
+      "required": [ "__type", "apiVersion", "executionId"],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "GetExecutionResult-Response",
+        "$ref": "../execution/ExecutionResults.json"
+      }
+    },
+    "FindExecutions": {
+      "$anchor": "FindExecutions",
+      "type": "object",
+      "properties": {
+        "__type": { "const": "dk.cachet.carp.analytics.infrastructure.ExecutionServiceRequest.FindExecutions" },
+        "apiVersion": { "$ref": "#/$defs/ApiVersion" },
+        "studytId": { "type": "string", "format": "uuid" },
+        "workflowId": { "type": "string", "format": "uuid" }
+      },
+      "required": [ "__type", "apiVersion", "studyId", "workflowId"],
+      "additionalProperties": true,
+      "Response": {
+        "$anchor": "FindExecutions-Response",
+        "type": "array",
+        "items": {
+          "$ref": "../execution/ExecutionState.json"
+        }
+      }
+    },
+
+    "GetLatestExecutionStatus": {
+      "$anchor": "GetLatestExecutionStatus",
+      "type": "object",
+      "properties": {
+        "__type": { "const": "dk.cachet.carp.analytics.infrastructure.ExecutionServiceRequest.GetLatestExecutionStatus" },
+        "apiVersion": { "$ref": "#/$defs/ApiVersion" },
+        "studyId": { "type": "string", "format": "uuid" },
+        "workflowId": { "type": "string", "format": "uuid" }
+      },
+      "required": [ "__type", "apiVersion", "studyId", "workflowId"],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "GetLatestExecutionStatus-Response",
+        "$ref": "../execution/ExecutionState.json"
+      }
+    }
+
+  }
+}

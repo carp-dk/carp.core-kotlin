@@ -1,11 +1,13 @@
-package dk.cachet.carp.analytics.application.service
+package dk.cachet.carp.analytics.application
 
 import dk.cachet.carp.analytics.domain.execution.ExecutionResult
+import dk.cachet.carp.analytics.domain.execution.ExecutionState
 import dk.cachet.carp.analytics.domain.workflow.Workflow
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.application.services.ApiVersion
 import dk.cachet.carp.common.application.services.ApplicationService
 import dk.cachet.carp.common.application.services.IntegrationEvent
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 
@@ -25,27 +27,36 @@ interface ExecutionService : ApplicationService<ExecutionService, ExecutionServi
 
     /**
      * Execute a stored workflow identified by [workflowId].
-     *
-     * @return the result of execution, including status, outputs, and any downloadable artifacts.
-     *
-     * @throws IllegalArgumentException if the workflow ID is invalid or the user lacks access.
      */
-    suspend fun executeWorkflow(workflowId: UUID): ExecutionResult
+    suspend fun executeWorkflow(studyId: UUID, workflowId: UUID): ExecutionState
 
     /**
      * Execute a provided workflow definition without persisting it first.
-     * Useful for ad-hoc or test executions.
-     *
-     * @return the result of execution, including status, outputs, and any downloadable artifacts.
-     *
-     * @throws IllegalArgumentException if the workflow is invalid or incomplete.
      */
-    suspend fun executeWorkflowFromDefinition(workflow: Workflow): ExecutionResult
+    suspend fun executeWorkflowFromDefinition(studyId: UUID, workflow: Workflow): ExecutionState
 
     /**
-     * Retrieve a previously completed execution result.
-     *
-     * @return the execution result if it exists, or null.
+     * Retrieve the current state (running/completed) of a specific execution.
+     */
+    suspend fun getExecutionState(executionId: UUID): ExecutionState?
+
+    /**
+     * Retrieve the result of a completed execution.
      */
     suspend fun getExecutionResult(executionId: UUID): ExecutionResult?
+
+    /**
+     * Query past execution jobs by study/workflow/time range.
+     */
+    suspend fun findExecutions(
+        studyId: UUID,
+        workflowId: UUID? = null,
+        from: Instant? = null,
+        to: Instant? = null
+    ): List<ExecutionState>
+
+    /**
+     * Get the most recent execution (either running or completed) for a given workflow.
+     */
+    suspend fun getLatestExecutionStatus(studyId: UUID, workflowId: UUID?): ExecutionState?
 }

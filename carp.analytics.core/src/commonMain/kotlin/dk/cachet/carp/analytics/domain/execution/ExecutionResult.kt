@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 sealed interface ExecutionResult {
     val executionId: UUID
     val status: ExecutionStatus
-    val outputs: List<OutputDataReference>
+    val outputs: List<OutputDataReference>?
 }
 
 /**

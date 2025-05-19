@@ -18,3 +18,10 @@ dependencies {
 
     testImplementation "org.jetbrains.kotlin:kotlin-test:${versions.kotlin}"
 }
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+        showStandardStreams = true
+    }
+}

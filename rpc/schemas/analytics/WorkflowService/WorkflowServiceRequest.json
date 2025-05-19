@@ -1,0 +1,181 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/CreateWorkflow"
+    },
+    {
+      "$ref": "#/$defs/UpdateWorkflow"
+    },
+    {
+      "$ref": "#/$defs/GetWorkflow"
+    },
+    {
+      "$ref": "#/$defs/DeleteWorkflow"
+    },
+    {
+      "$ref": "#/$defs/ListWorkflows"
+    }
+  ],
+  "$defs": {
+    "ApiVersion": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "CreateWorkflow": {
+      "$anchor": "CreateWorkflow",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.WorkflowServiceRequest.CreateWorkflow"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "studyId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "workflow": {
+          "$ref": "../workflow/Workflow.json"
+        }
+      },
+      "required": [
+        "__type",
+        "apiVersion",
+        "studyId",
+        "workflow"
+      ],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "CreateWorkflow-Response",
+        "type": "boolean"
+      }
+    },
+    "UpdateWorkflow": {
+      "$anchor": "UpdateWorkflow",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.WorkflowServiceRequest.UpdateWorkflow"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "studyId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "workflowMetadata": {
+          "$ref": "../workflow/WorkflowMetadata.json"
+        },
+        "updated": {
+          "$ref": "../workflow/Workflow.json"
+        }
+      },
+      "required": [
+        "__type",
+        "apiVersion",
+        "studyId",
+        "workflowMetadata",
+        "updated"
+      ],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "UpdateWorkflow-Response",
+        "type": "boolean"
+      }
+    },
+    "GetWorkflow": {
+      "$anchor": "GetWorkflow",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.WorkflowServiceRequest.GetWorkflow"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "studyId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "workflowId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "__type",
+        "apiVersion",
+        "studyId",
+        "workflowId"
+      ],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "GetWorkflow-Response",
+        "$ref": "../workflow/Workflow.json"
+      }
+    },
+    "DeleteWorkflow": {
+      "$anchor": "DeleteWorkflow",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.WorkflowServiceRequest.DeleteWorkflow"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "studyId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "workflowId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "__type",
+        "apiVersion",
+        "studyId",
+        "workflowId"
+      ],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "DeleteWorkflow-Response",
+        "type": "boolean"
+      }
+    },
+    "ListWorkflows": {
+      "$anchor": "ListWorkflows",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.WorkflowServiceRequest.ListWorkflows"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "studyId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "__type",
+        "apiVersion",
+        "studyId"
+      ],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "ListWorkflows-Response",
+        "type": "array",
+        "items": {
+          "$ref": "../workflow/WorkflowMetadata.json"
+        }
+      }
+    }
+  }
+}

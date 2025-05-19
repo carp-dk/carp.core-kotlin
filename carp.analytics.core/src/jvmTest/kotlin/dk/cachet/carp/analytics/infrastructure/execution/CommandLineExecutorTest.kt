@@ -1,18 +1,11 @@
 package dk.cachet.carp.analytics.infrastructure.execution
 
-
 import dk.cachet.carp.analytics.domain.process.CommandLineExternalProcess
 import dk.cachet.carp.analytics.domain.process.CommandTemplate
 import dk.cachet.carp.analytics.domain.execution.ExecutionContext
-
-import kotlin.test.Test
-import kotlin.test.fail
-
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.anyString
-import org.mockito.Mockito.anyMap
+import org.junit.jupiter.api.Test
 import org.mockito.kotlin.*
-
+import kotlin.test.assertFailsWith
 
 class CommandLineExecutorTest {
 
@@ -27,17 +20,46 @@ class CommandLineExecutorTest {
     )
 
     @Test
-    fun testExecuteValidCommand() {
-        val mockProcessExecutor = mock(ProcessExecutorInterface::class.java)
-        doNothing().`when`(mockProcessExecutor).executeCommand(anyString(), anyMap())
-
+    fun `execute runs expected command without error`() {
+        // Arrange
+        val mockProcessExecutor = mock<ProcessExecutorInterface>()
         val executor = CommandLineExecutor(mockProcessExecutor)
-        try {
+
+        whenever(mockProcessExecutor.executeCommand(any(), any(),anyOrNull())).then { }
+
+        // Act
+        executor.execute(process, mockContext)
+
+        // Assert
+        verify(mockProcessExecutor).executeCommand(
+            eq(process.getFormattedCommand()),
+            eq(mockContext.envVariables),
+            anyOrNull()
+        )
+    }
+
+    @Test
+    fun `execute throws error if process fails`() {
+        // Arrange
+        val mockProcessExecutor = mock<ProcessExecutorInterface>()
+        val executor = CommandLineExecutor(mockProcessExecutor)
+
+        whenever(mockProcessExecutor.executeCommand(
+            eq(process.getFormattedCommand()),
+            eq(mockContext.envVariables),
+            anyOrNull()
+        )).thenThrow(RuntimeException("Execution failed"))
+
+        // Assert + Act
+        assertFailsWith<RuntimeException>("Expected exception when execution fails") {
             executor.execute(process, mockContext)
-        } catch (e: Throwable) {
-            fail("Unexpected exception: $e")
         }
 
-        verify(mockProcessExecutor).executeCommand(process.getFormattedCommand(), mockContext.envVariables)
+        verify(mockProcessExecutor).executeCommand(
+            eq(process.getFormattedCommand()),
+            eq(mockContext.envVariables),
+            anyOrNull()
+        )
     }
+
 }

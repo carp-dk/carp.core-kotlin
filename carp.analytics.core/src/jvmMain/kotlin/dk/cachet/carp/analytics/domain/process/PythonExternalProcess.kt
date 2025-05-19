@@ -27,6 +27,15 @@ class PythonExternalProcess(
     val scriptPath: String,
     val args: MutableList<String> = mutableListOf()
 ) :ExternalProcess {
+
+    companion object {
+        /**
+         * If false, skips the script path existence check.
+         * This should be disabled in test contexts.
+         */
+        var validateScriptPath: Boolean = true
+    }
+
     private val scriptArguments: List<String> = args.also {
         require(it.none { arg -> arg.isBlank() }) { "Arguments cannot contain blank strings." }
     }
@@ -39,7 +48,7 @@ class PythonExternalProcess(
     fun getInputBuffer(): String? = inputBuffer
 
     init {
-        validateScriptPath()
+        if (validateScriptPath) validateScriptPath()
     }
     
     // validate the script path

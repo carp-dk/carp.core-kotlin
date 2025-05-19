@@ -7,5 +7,6 @@ enum class ExecutionStatus {
     SUCCESS,
     FAILURE,
     PARTIAL,
-    SKIPPED
+    SKIPPED,
+    RUNNING
 }

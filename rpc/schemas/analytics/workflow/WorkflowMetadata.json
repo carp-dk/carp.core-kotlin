@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "$id": "WorkflowMetadata.json",
+  "title": "WorkflowMetadata",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "id": { "type": "string", "format": "uuid" },
+    "description": { "type": ["string", "null"] },
+    "version": { "$ref": "./Version.json" }
+  },
+  "required": ["id", "name", "version"],
+  "additionalProperties": false
+}

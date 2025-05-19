@@ -11,7 +11,7 @@ class SQLiteStudyDataRepositoryTest {
 
     @BeforeTest
     fun setup() {
-        val dbPath = "D:\\Code\\carp.core-kotlin\\carp.data.core\\src\\jvmTest\\resources\\test.db"
+        val dbPath = requireNotNull(this::class.java.getResource("/test.db"))
         val jdbcUrl = "jdbc:sqlite:$dbPath"
         repository = SQLiteStudyDataRepository(jdbcUrl)
     }

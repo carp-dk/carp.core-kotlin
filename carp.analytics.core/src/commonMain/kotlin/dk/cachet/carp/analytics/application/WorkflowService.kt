@@ -1,4 +1,4 @@
-package dk.cachet.carp.analytics.application.service
+package dk.cachet.carp.analytics.application
 
 import dk.cachet.carp.analytics.domain.workflow.Workflow
 import dk.cachet.carp.analytics.domain.workflow.WorkflowMetadata

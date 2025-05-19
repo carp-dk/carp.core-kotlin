@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/GetCollectedData"
+    }
+  ],
+  "$defs": {
+    "ApiVersion": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "GetCollectedData": {
+      "$anchor": "GetCollectedData",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "dk.cachet.carp.data.infrastructure.StudyDataServiceRequest.GetCollectedData"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "studyId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "studyDeploymentIds": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "deviceRoleNames": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "fields": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "from": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "to": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "offsetDays": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "__type",
+        "apiVersion",
+        "studyId"
+      ],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "GetCollectedData-Response",
+        "$ref": "../CollectedDataSet.json"
+      }
+    }
+  }
+}

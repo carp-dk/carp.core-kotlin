@@ -8,6 +8,7 @@ import dk.cachet.carp.analytics.domain.process.ExternalProcess
 import dk.cachet.carp.analytics.domain.process.PythonExternalProcess
 import dk.cachet.carp.analytics.domain.workflow.Step
 import dk.cachet.carp.analytics.domain.workflow.Workflow
+import dk.cachet.carp.analytics.domain.workflow.WorkflowComponent
 import dk.cachet.carp.data.application.CollectedDataSet
 
 /**
@@ -23,10 +24,12 @@ class SequentialExecutionStrategy(
      * @param executorFactory The factory for creating executors for each process type.
      */
     override fun execute(workflow: Workflow, executorFactory: ExecutorFactory) {
-        println("Starting sequential execution of workflow: ${workflow.name}")
+        println("Starting sequential execution of workflow: ${workflow.metadata.name}")
 
-        for ((index, step) in workflow.getSteps().withIndex()) {
-            println("Running step ${index + 1}/${workflow.getSteps().size}: ${step.name}")
+        val steps = flattenSteps(workflow)
+
+        for ((index, step) in steps.withIndex()) {
+            println("Running step ${index + 1}/${steps.size}: ${step.metadata.name}")
 
             val process = step.process
 
@@ -84,10 +87,19 @@ class SequentialExecutionStrategy(
         println("Workflow execution completed successfully.")
     }
 
+    /**
+     * Recursively flattens all workflow components to a list of steps in execution order.
+     */
+    private fun flattenSteps(component: WorkflowComponent): List<Step> = when (component) {
+        is Step -> listOf(component)
+        is Workflow -> component.getComponents().flatMap { flattenSteps(it) }
+        else -> throw IllegalStateException("Unknown component type: ${component::class.simpleName}")
+    }
+
     private fun resolveInputData(step: Step): CollectedDataSet {
         // For now: Assume first inputData is what we fetch
         if (step.inputData.isNullOrEmpty()) {
-            println("No input data defined for step '${step.name}', using empty dataset.")
+            println("No input data defined for step '${step.metadata.name}', using empty dataset.")
             return CollectedDataSet(emptyList())
         }
 
@@ -103,7 +115,7 @@ class SequentialExecutionStrategy(
 
     private fun registerOutputData(step: Step, output: CollectedDataSet) {
         if (step.outputData == null) {
-            println("No output data reference defined for step '${step.name}', output not stored.")
+            println("No output data reference defined for step '${step.metadata.name}', output not stored.")
             return
         }
         val outputName = step.outputData.name

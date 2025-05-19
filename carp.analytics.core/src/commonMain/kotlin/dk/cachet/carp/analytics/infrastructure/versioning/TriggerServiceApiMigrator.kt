@@ -1,0 +1,32 @@
+package dk.cachet.carp.analytics.infrastructure.versioning
+
+import dk.cachet.carp.common.application.services.ApiVersion
+import dk.cachet.carp.common.infrastructure.versioning.ApiResponse
+import dk.cachet.carp.common.infrastructure.versioning.ApplicationServiceApiMigrator
+import dk.cachet.carp.common.infrastructure.versioning.Major1Minor0To1Migration
+import dk.cachet.carp.analytics.application.TriggerService
+import dk.cachet.carp.analytics.infrastructure.TriggerServiceInvoker
+import dk.cachet.carp.analytics.infrastructure.TriggerServiceRequest
+import kotlinx.serialization.json.JsonObject
+
+
+private val major1Minor0To1Migration =
+    object : Major1Minor0To1Migration() {
+        override fun migrateRequest(request: JsonObject) = request.migrate { }
+
+        override fun migrateResponse(
+            request: JsonObject,
+            response: ApiResponse,
+            targetVersion: ApiVersion
+        ) = response // no transformation needed
+
+        override fun migrateEvent(event: JsonObject) = event.migrate { }
+    }
+
+val TriggerServiceApiMigrator = ApplicationServiceApiMigrator(
+    TriggerService.API_VERSION,
+    TriggerServiceInvoker,
+    TriggerServiceRequest.Serializer,
+    TriggerService.Event.serializer(),
+    emptyList() // or add a migration object like major1Minor0To1Migration if needed
+)
