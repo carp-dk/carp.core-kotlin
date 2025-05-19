@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "$id": "ExecutionStatus.json",
+  "title": "ExecutionStatus",
+  "type": "string",
+  "enum": [
+    "QUEUED",
+    "RUNNING",
+    "SUCCEEDED",
+    "FAILED"
+  ]
+}

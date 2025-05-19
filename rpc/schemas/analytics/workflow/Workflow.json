@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "$id": "Workflow.json",
+  "title": "Workflow",
+  "type": "object",
+  "required": ["metadata"],
+  "properties": {
+    "metadata": {
+      "$ref": "WorkflowMetadata.json"
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "$ref": "WorkflowComponent.json"
+      }
+    }
+  },
+  "additionalProperties": false
+}

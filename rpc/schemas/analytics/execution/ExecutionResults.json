@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "oneOf": [
+    { "$ref": "#/$defs/BasicExecutionResult" }
+  ],
+  "$defs": {
+    "ExecutionArtifact": {
+      "type": "object",
+      "properties": {
+        "uri": { "type": "string", "format": "uri" },
+        "name": { "type": "string" },
+        "type": { "$ref": "./ArtifactType.json" },
+        "mimeType": { "type": ["string", "null"] }
+      },
+      "required": ["uri", "name", "type"],
+      "additionalProperties": false
+    },
+    "BasicExecutionResult": {
+      "$anchor": "BasicExecutionResult",
+      "type": "object",
+      "properties": {
+        "executionId": { "type": "string", "format": "uuid" },
+        "status": { "$ref": "./ExecutionStatus.json" },
+        "outputs": {
+          "type": ["array", "null"],
+          "items": { "$ref": "./OutputDataReference.json" }
+        },
+        "artifacts": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ExecutionArtifact" },
+          "default": []
+        }
+      },
+      "required": ["executionId", "status", "outputs"],
+      "additionalProperties": false
+    }
+  }
+}

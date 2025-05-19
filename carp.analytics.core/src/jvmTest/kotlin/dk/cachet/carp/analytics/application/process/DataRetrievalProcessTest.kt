@@ -48,28 +48,22 @@ class DataRetrievalProcessTest {
         val registry = DataRegistry()
         val fakeDataSet = createDummyDataSet()
         val studyId = UUID.randomUUID()
-        val outputName = "retrieved_stepcount"
 
         val mockService = MockStudyDataService(fakeDataSet)
 
         val retrievalProcess = DataRetrievalProcess(
             name = "load_stepcount",
             description = "Loads step count data",
-            studyId = studyId,
-            studyDataService = mockService,
-            outputName = outputName,
+            studyId = studyId
+        ).apply {
+            studyDataService = mockService
             dataRegistry = registry
-        )
+        }
 
         val result = retrievalProcess.process(CollectedDataSet(emptyList()))
+        println(result)
 
         assertNotNull(result, "Result should not be null.")
         assertEquals(1, result.points.size, "Should return the mocked dataset.")
-
-        val resolved = registry.resolve(outputName)
-        assertTrue(resolved is InMemoryData, "Resolved object should be InMemoryData.")
-
-        val registeredDataSet = resolved.dataset
-        assertEquals(fakeDataSet, registeredDataSet, "Registered dataset should match retrieved dataset.")
     }
 }

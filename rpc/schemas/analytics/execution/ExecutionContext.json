@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "title": "ExecutionContext",
+  "type": "object",
+  "properties": {
+    "environment": {
+      "$ref": "../environment/Environment.json"
+    },
+    "envVariables": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [],
+  "additionalProperties": false
+}

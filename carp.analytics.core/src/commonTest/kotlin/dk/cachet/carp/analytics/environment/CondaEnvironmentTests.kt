@@ -11,7 +11,7 @@ import kotlin.test.assertTrue
 class CondaEnvironmentTest {
 
     @Test
-    fun `testValidCondaEnvironmentCreation`() {
+    fun testValidCondaEnvironmentCreation() {
         val condaEnv = CondaEnvironment(
             name = "TestEnv",
             dependencies = listOf("numpy", "pandas"),
@@ -70,7 +70,7 @@ class CondaEnvironmentTest {
     }
 
     @Test
-    fun `testEnvironmentWithoutPythonVersion`() {
+    fun testEnvironmentWithoutPythonVersion() {
         val condaEnv = CondaEnvironment(
             name = "TestEnv",
             dependencies = listOf("numpy")

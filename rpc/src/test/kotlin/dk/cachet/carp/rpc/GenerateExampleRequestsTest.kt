@@ -1,6 +1,8 @@
 package dk.cachet.carp.rpc
 
 import dk.cachet.carp.common.application.ApplicationServiceInfo
+import dk.cachet.carp.common.application.services.ApplicationService
+import org.reflections.Reflections
 import kotlin.test.*
 
 
@@ -10,6 +12,26 @@ internal val exampleApplicationServiceRequests: Map<ApplicationServiceInfo, List
 
 class GenerateExampleRequestsTest
 {
+
+    @Test
+    fun printDiscoveredServices() {
+        val discovered = Reflections("dk.cachet.carp")
+            .getSubTypesOf(ApplicationService::class.java)
+            .filter { it.isInterface }
+
+        println("!! Discovered interfaces:")
+        discovered.forEach {
+            println(" - ${it.name}")
+            try {
+                ApplicationServiceInfo.of(it)
+                println("   :: Valid service")
+            } catch (e: Exception) {
+                println("   :: Invalid service: ${e.message}")
+            }
+        }
+    }
+
+
     @Test
     fun can_find_application_services()
     {

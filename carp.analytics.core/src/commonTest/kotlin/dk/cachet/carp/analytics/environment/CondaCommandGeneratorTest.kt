@@ -18,7 +18,7 @@ class CondaCommandGeneratorTest {
             channels = listOf("conda-forge"),
             pythonVersion = "3.9"
         )
-        val expectedCommand = "conda create -n TestEnv numpy pandas -c conda-forge python=3.9"
+        val expectedCommand = "conda create -n TestEnv numpy pandas -c conda-forge python=3.9 --yes"
         val result = generator.generateSetupCommand(condaEnv)
         assertEquals(expectedCommand, result)
     }
@@ -51,7 +51,7 @@ class CondaCommandGeneratorTest {
             name = "TestEnv",
             dependencies = emptyList()
         )
-        val expectedCommand = "conda create -n TestEnv -c defaults"
+        val expectedCommand = "conda create -n TestEnv -c defaults --yes"
         val result = generator.generateSetupCommand(condaEnv)
         assertEquals(expectedCommand, result)
     }

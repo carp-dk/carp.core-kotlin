@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "title": "CollectedDataSet",
+  "type": "object",
+  "properties": {
+    "points": {
+      "type": "array",
+      "items": {
+        "$ref": "./CollectedDataPoint.json"
+      },
+      "default": []
+    }
+  },
+  "required": [
+    "points"
+  ],
+  "additionalProperties": false
+}

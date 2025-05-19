@@ -3,14 +3,26 @@ package dk.cachet.carp.data.application
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.application.services.ApiVersion
 import dk.cachet.carp.common.application.services.ApplicationService
+import dk.cachet.carp.common.application.services.IntegrationEvent
 import kotlinx.datetime.Instant
+import kotlinx.serialization.Required
+import kotlinx.serialization.Serializable
 
 /**
  * Provides researcher-optimized access to collected data for studies, devices, and streams.
  */
-interface StudyDataService : ApplicationService<StudyDataService, Nothing>
+interface StudyDataService : ApplicationService<StudyDataService, StudyDataService.Event>
 {
-    companion object { val API_VERSION = ApiVersion(1, 0) }
+
+    companion object {
+        val API_VERSION = ApiVersion(1, 0)
+    }
+
+    @Serializable
+    sealed class Event : IntegrationEvent<StudyDataService> {
+        @Required
+        override val apiVersion: ApiVersion = API_VERSION
+    }
 
     /**
      * Retrieve collected data points based on study and optional filters.

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "title": "CollectedDataPoint",
+  "type": "object",
+  "properties": {
+    "streamId": {
+      "$ref": "./DataStreamId.json"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "data": {
+      "$ref": "../common/data/Data.json"
+    }
+  },
+  "required": [
+    "streamId",
+    "timestamp",
+    "data"
+  ],
+  "additionalProperties": false
+}

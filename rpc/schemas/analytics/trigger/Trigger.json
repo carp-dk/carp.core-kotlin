@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "title": "Trigger",
+  "type": "object",
+  "discriminator": {
+    "propertyName": "__type"
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/ManualTrigger"
+    }
+  ],
+  "$defs": {
+    "ManualTrigger": {
+      "$anchor": "ManualTrigger",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "ManualTrigger"
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "studyId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "workflowId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "__type",
+        "id",
+        "studyId",
+        "workflowId",
+        "name",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

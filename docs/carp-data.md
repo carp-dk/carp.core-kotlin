@@ -31,3 +31,11 @@ Store and retrieve [`DataStreamPoint`](../carp.data.core/src/commonMain/kotlin/d
 | `getDataStream` | Retrieve all data points in data stream that fall within the requested range. | in deployment: `dataStream.studyDeploymentId` | |
 | `closeDataStreams` | Stop accepting data for specified study deployments. | manage deployment: (all) `studyDeploymentId` | |
 | `removeDataStreams` | Close data streams and remove all data for specified study deployments. | manage deployment: (all) `studyDeploymentId` | | 
+
+### [`StudyDataService`](../carp.data.core/src/commonMain/kotlin/dk/cachet/carp/data/application/StudyDataService.kt)
+
+Retrieve pseudonymized data collected within a study.
+
+| Endpoint | Description | Require | Grant |
+| --- | --- | --- | --- |
+| `getCollectedData` | Retrieve filtered collected data points across deployments, roles, and time. | in study: `studyId` | |
