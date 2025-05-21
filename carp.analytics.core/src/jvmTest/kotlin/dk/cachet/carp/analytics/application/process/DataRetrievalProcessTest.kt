@@ -1,7 +1,6 @@
 package dk.cachet.carp.analytics.application.process
 
 import dk.cachet.carp.analytics.application.data.DataRegistry
-import dk.cachet.carp.analytics.application.data.InMemoryData
 import dk.cachet.carp.common.application.NamespacedId
 import dk.cachet.carp.data.application.CollectedDataSet
 import dk.cachet.carp.data.application.CollectedDataPoint

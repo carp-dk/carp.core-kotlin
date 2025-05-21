@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
  * @param name The name of the process.
  * @param executionContext Execution context for the process.
  * @param commandTemplate Encapsulated command template.
- * @param arguments Non-empty list of command arguments.
+ * @param args Non-empty list of command arguments.
  */
 @Serializable
 @SerialName("CommandLine")
