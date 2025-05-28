@@ -53,7 +53,7 @@ class SQLiteStudyDataRepositoryTest {
 
         val points = repository.queryData(
             studyId,
-            fields = setOf("step_count")
+            dataTypeNames = setOf("step_count")
         )
 
         assertTrue(points.all { it.streamId.dataType.name == "step_count" })

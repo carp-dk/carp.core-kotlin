@@ -27,7 +27,7 @@ class DBBackedStudyDataService(
             studyId = studyId,
             subjectDeploymentIds = studyDeploymentIds,
             deviceRoleNames = deviceRoleNames,
-            fields = fields,
+            dataTypeNames = fields,
             from = from,
             to = to,
             offsetDays = offsetDays

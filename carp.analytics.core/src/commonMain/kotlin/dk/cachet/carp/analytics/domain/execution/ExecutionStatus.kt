@@ -2,11 +2,17 @@ package dk.cachet.carp.analytics.domain.execution
 
 import kotlinx.serialization.Serializable
 
+/**
+ * Enum representing the current lifecycle status of a workflow execution.
+ *
+ * These states are used to track progress and finality of executions in the system.
+ */
 @Serializable
 enum class ExecutionStatus {
-    SUCCESS,
+    COMPLETED,
     FAILURE,
-    PARTIAL,
+    STARTING,
     SKIPPED,
-    RUNNING
+    RUNNING,
+    QUEUED
 }

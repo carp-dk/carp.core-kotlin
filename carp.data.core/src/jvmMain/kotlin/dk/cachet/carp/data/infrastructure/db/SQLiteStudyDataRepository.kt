@@ -25,7 +25,7 @@ class SQLiteStudyDataRepository(
         studyId: UUID,
         subjectDeploymentIds: Set<UUID>?,
         deviceRoleNames: Set<String>?,
-        fields: Set<String>?,
+        dataTypeNames: Set<String>?,
         from: Instant?,
         to: Instant?,
         offsetDays: Int?
@@ -50,7 +50,7 @@ class SQLiteStudyDataRepository(
             parameters.addAll(it)
         }
 
-        fields?.takeIf { it.isNotEmpty() }?.let {
+        dataTypeNames?.takeIf { it.isNotEmpty() }?.let {
             sqlBuilder.append(" AND data_type_name IN (${it.joinToString(",") { "?" }})")
             parameters.addAll(it)
         }

@@ -1,6 +1,7 @@
 package dk.cachet.carp.analytics.application.process
 
 import dk.cachet.carp.analytics.application.data.DataRegistry
+import dk.cachet.carp.analytics.application.runtime.RuntimeDependencies
 import dk.cachet.carp.common.application.NamespacedId
 import dk.cachet.carp.data.application.CollectedDataSet
 import dk.cachet.carp.data.application.CollectedDataPoint
@@ -65,4 +66,51 @@ class DataRetrievalProcessTest {
         assertNotNull(result, "Result should not be null.")
         assertEquals(1, result.points.size, "Should return the mocked dataset.")
     }
+
+    @Test
+    fun testInjectThrowsIfStudyDataServiceMissing() {
+        val process = DataRetrievalProcess("test", null, UUID.randomUUID())
+
+        val ex = assertFailsWith<IllegalStateException> {
+            process.inject(mapOf(RuntimeDependencies.DataRegistry to DataRegistry()))
+        }
+
+        assertTrue("StudyDataService" in ex.message!!)
+    }
+
+    @Test
+    fun testInjectThrowsIfDataRegistryMissing() {
+        val process = DataRetrievalProcess("test", null, UUID.randomUUID())
+        val fakeDataSet = createDummyDataSet()
+        val mockService = MockStudyDataService(fakeDataSet)
+
+        val ex = assertFailsWith<IllegalStateException> {
+            process.inject(
+                mapOf(
+                    RuntimeDependencies.StudyDataService to mockService
+                )
+            )
+        }
+
+        assertTrue("DataRegistry" in ex.message!!)
+    }
+
+    @Test
+    fun testInjectSucceeds() {
+        val process = DataRetrievalProcess("test", null, UUID.randomUUID())
+        val fakeDataSet = createDummyDataSet()
+
+
+        val mockService = MockStudyDataService(fakeDataSet)
+
+        process.inject(
+            mapOf(
+                RuntimeDependencies.StudyDataService to mockService,
+                RuntimeDependencies.DataRegistry to DataRegistry()
+            )
+        )
+
+        // No assertion needed, if no exception is thrown the test passes
+    }
+
 }

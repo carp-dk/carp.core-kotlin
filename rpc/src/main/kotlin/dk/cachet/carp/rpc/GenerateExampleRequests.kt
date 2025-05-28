@@ -25,7 +25,6 @@ import dk.cachet.carp.analytics.domain.workflow.WorkflowMetadata
 import dk.cachet.carp.analytics.infrastructure.ExecutionServiceRequest
 import dk.cachet.carp.analytics.infrastructure.WorkflowServiceRequest
 import dk.cachet.carp.analytics.infrastructure.parser.AnalyticsSerializersModule
-import dk.cachet.carp.analytics.domain.trigger.*
 import dk.cachet.carp.analytics.domain.trigger.ManualTrigger
 import dk.cachet.carp.analytics.infrastructure.TriggerServiceRequest
 import dk.cachet.carp.common.application.*
@@ -54,7 +53,6 @@ import dk.cachet.carp.studies.infrastructure.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlin.reflect.KFunction

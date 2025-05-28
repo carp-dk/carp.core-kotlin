@@ -83,7 +83,7 @@ kotlin {
                 implementation "org.jetbrains.kotlinx:kotlinx-datetime:${versions.datetime}"
                 implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.coroutines}"
 
-                
+                implementation("io.mockk:mockk:1.13.7")
                 implementation "org.junit.jupiter:junit-jupiter-api:5.10.0"
                 implementation "org.junit.jupiter:junit-jupiter-params:5.10.0"
                 runtimeOnly "org.junit.jupiter:junit-jupiter-engine:5.10.0"
@@ -91,6 +91,8 @@ kotlin {
                 implementation "org.mockito.kotlin:mockito-kotlin:4.1.0"
                 implementation "org.mockito:mockito-core"
                 implementation "org.mockito:mockito-inline:5.2.0"
+
+
             }
         }
     }

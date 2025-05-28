@@ -1,7 +1,6 @@
 package dk.cachet.carp.analytics.domain.data
 
 import kotlin.test.*
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class InputDataTest {

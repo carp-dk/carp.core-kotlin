@@ -83,4 +83,31 @@ class DataRegistryTest {
         assertTrue(resolved is InMemoryData)
         assertEquals(dataSet2, (resolved).dataset)
     }
+
+    @Test
+    fun testToExecutionOutputsReturnsCorrectFormat() {
+        val registry = DataRegistry()
+        val dataSet = createDummyDataSet()
+        registry.register("input", InMemoryData(dataSet))
+
+        val outputs = registry.toExecutionOutputs()
+        assertEquals(1, outputs.size)
+        assertEquals("input", outputs[0].name)
+        assertEquals("dataset", outputs[0].dataType)
+        assertEquals("mem", outputs[0].location.scheme)
+    }
+
+    @Test
+    fun testToArtifactsOnlyIncludesFiles() {
+        val registry = DataRegistry()
+        val dataSet = createDummyDataSet()
+        registry.register("inmem", InMemoryData(dataSet))
+        registry.register("output_file", FileData("/tmp/output.csv", "text/csv"))
+
+        val artifacts = registry.toArtifacts()
+        assertEquals(1, artifacts.size)
+        assertEquals("output_file", artifacts[0].name)
+        assertEquals("text/csv", artifacts[0].mimeType)
+    }
+
 }
