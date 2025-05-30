@@ -3,8 +3,8 @@ buildscript {
     ext {
         // Version used for submodule artifacts.
         // Snapshot publishing changes (or adds) the suffix after '-' with 'SNAPSHOT' prior to publishing.
-        globalVersion = '1.2.1'
-        clientsVersion = '1.2.1-alpha.1' // The clients subsystem is still expected to change drastically.
+        globalVersion = '1.3.0'
+        clientsVersion = '1.3.0-alpha.1' // The clients subsystem is still expected to change drastically.
 
         versions = [
             // Kotlin multiplatform versions.
