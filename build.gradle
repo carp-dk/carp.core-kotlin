@@ -15,7 +15,7 @@ buildscript {
 
             // JVM versions.
             jvmTarget:'1.8',
-            dokkaPlugin:'1.9.20',
+            dokkaPlugin:'2.0.0',
             reflections:'0.10.2',
 
             // JS versions.
@@ -151,19 +151,15 @@ configure( subprojects - devOpsModules ) {
     apply plugin: 'maven-publish'
     apply plugin: 'signing'
     apply plugin: 'org.jetbrains.dokka'
-    task dokkaJvmJavadoc(type: org.jetbrains.dokka.gradle.DokkaTask) {
-        dokkaSourceSets {
-            register("jvm") {
-                platform.set(org.jetbrains.dokka.Platform.jvm)
-                sourceRoots.from(kotlin.sourceSets.getByName("jvmMain").kotlin.srcDirs)
-            }
-        }
+    tasks.withType(org.jetbrains.dokka.gradle.tasks.DokkaGenerateTask).configureEach {
+        // HACK: Dokka 2.0.0 exposes this debug file by default (https://github.com/Kotlin/dokka/issues/3958)
+        dokkaConfigurationJsonFile.convention(null)
     }
     task javadocJar(type: Jar) {
         group JavaBasePlugin.DOCUMENTATION_GROUP
         description 'Create javadoc jar using Dokka'
         archiveClassifier = "javadoc"
-        from dokkaJvmJavadoc
+        from dokkaGeneratePublicationHtml
     }
     publishing {
         publications {
