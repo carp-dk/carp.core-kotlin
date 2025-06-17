@@ -11,6 +11,7 @@ package dk.cachet.carp.rpc
 import dk.cachet.carp.analytics.application.ExecutionService
 import dk.cachet.carp.analytics.application.TriggerService
 import dk.cachet.carp.analytics.application.WorkflowService
+import dk.cachet.carp.analytics.application.ScheduleManagementService
 import dk.cachet.carp.analytics.domain.execution.BasicExecutionResult
 import dk.cachet.carp.analytics.domain.execution.ExecutionContext
 import dk.cachet.carp.analytics.domain.execution.ExecutionState
@@ -27,6 +28,7 @@ import dk.cachet.carp.analytics.infrastructure.WorkflowServiceRequest
 import dk.cachet.carp.analytics.infrastructure.parser.AnalyticsSerializersModule
 import dk.cachet.carp.analytics.domain.trigger.ManualTrigger
 import dk.cachet.carp.analytics.infrastructure.TriggerServiceRequest
+import dk.cachet.carp.analytics.infrastructure.ScheduleManagementServiceRequest
 import dk.cachet.carp.common.application.*
 import dk.cachet.carp.common.application.data.*
 import dk.cachet.carp.common.application.data.input.*
@@ -62,6 +64,7 @@ import kotlin.reflect.jvm.javaMethod
 import kotlin.reflect.jvm.kotlinFunction
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.seconds
+
 
 
 /**
@@ -676,6 +679,11 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
     TriggerService::endTrigger to example(
         request = TriggerServiceRequest.EndTrigger(exampleTriggerId),
         response = true
+    ),
+
+    ScheduleManagementService::evaluateDueTriggers to example(
+        request = ScheduleManagementServiceRequest.EvaluateDueTriggers(),
+        response = {}
     )
 
     )

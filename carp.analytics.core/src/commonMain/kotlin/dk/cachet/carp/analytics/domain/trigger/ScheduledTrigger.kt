@@ -12,7 +12,7 @@ data class ScheduledTrigger(
     override val studyId: UUID,
     override val workflowId: UUID,
     override val name: String,
-    val cron: String, // or a better structured Cron expression model
+    val cron: CronExpression,
     override val createdAt: Instant,
     val updatedAt: Instant? = null
 ) : Trigger
