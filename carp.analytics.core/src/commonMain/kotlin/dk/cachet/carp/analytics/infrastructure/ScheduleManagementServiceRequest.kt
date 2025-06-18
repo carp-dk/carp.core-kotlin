@@ -8,6 +8,7 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.serializer
 import kotlin.js.JsExport
 
 
@@ -22,7 +23,7 @@ sealed class ScheduleManagementServiceRequest<out TReturn> : ApplicationServiceR
     object Serializer : KSerializer<ScheduleManagementServiceRequest<*>> by ignoreTypeParameters(::serializer)
 
     @Serializable
-    data class EvaluateDueTriggers(val now: Instant = kotlinx.datetime.Clock.System.now()) : ScheduleManagementServiceRequest<Unit>() {
-        override fun getResponseSerializer() = Unit.serializer()
+    data class EvaluateDueTriggers(val now: Instant = kotlinx.datetime.Clock.System.now()) : ScheduleManagementServiceRequest<Boolean>() {
+        override fun getResponseSerializer() = serializer<Boolean>()
     }
 }

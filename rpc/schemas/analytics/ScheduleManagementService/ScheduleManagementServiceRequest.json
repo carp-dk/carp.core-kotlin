@@ -29,10 +29,8 @@
       ],
       "additionalProperties": false,
       "Response": {
-        "$anchor": "EvaluateDueTriggers-Response",
-        "type": "object",
-        "properties": {},
-        "additionalProperties": false
+        "$anchor": "DeleteTrigger-Response",
+        "type": "boolean"
       }
     }
   }

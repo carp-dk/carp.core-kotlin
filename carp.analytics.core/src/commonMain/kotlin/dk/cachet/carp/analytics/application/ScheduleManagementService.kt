@@ -21,5 +21,5 @@ interface ScheduleManagementService : ApplicationService<ScheduleManagementServi
      * Evaluate all scheduled triggers and execute any that are due.
      * Can be called manually (via API) or periodically by a scheduler.
      */
-    suspend fun evaluateDueTriggers(now: Instant = kotlinx.datetime.Clock.System.now())
+    suspend fun evaluateDueTriggers(now: Instant = kotlinx.datetime.Clock.System.now()) : Boolean
 }

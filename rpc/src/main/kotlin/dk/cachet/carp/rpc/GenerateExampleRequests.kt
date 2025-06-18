@@ -683,7 +683,7 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
 
     ScheduleManagementService::evaluateDueTriggers to example(
         request = ScheduleManagementServiceRequest.EvaluateDueTriggers(),
-        response = {}
+        response = true
     )
 
     )
