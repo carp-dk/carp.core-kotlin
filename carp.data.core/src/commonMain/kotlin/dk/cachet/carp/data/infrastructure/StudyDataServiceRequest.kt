@@ -4,9 +4,9 @@ import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.application.services.ApiVersion
 import dk.cachet.carp.common.infrastructure.serialization.ignoreTypeParameters
 import dk.cachet.carp.common.infrastructure.services.ApplicationServiceRequest
-import dk.cachet.carp.data.application.StudyDataService
+import dk.cachet.carp.data.application.CollectedDataQuery
 import dk.cachet.carp.data.application.CollectedDataSet
-import kotlinx.datetime.Instant
+import dk.cachet.carp.data.application.StudyDataService
 import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 import kotlin.js.JsExport
@@ -23,7 +23,9 @@ sealed class StudyDataServiceRequest<out TReturn> : ApplicationServiceRequest<St
     @Required
     override val apiVersion: ApiVersion = StudyDataService.API_VERSION
 
-    object Serializer : kotlinx.serialization.KSerializer<StudyDataServiceRequest<*>> by ignoreTypeParameters(::serializer)
+    object Serializer : kotlinx.serialization.KSerializer<StudyDataServiceRequest<*>> by ignoreTypeParameters(
+        ::serializer
+    )
 
     /**
      * Query collected data for a study with optional subject, field, and time filters.
@@ -31,12 +33,7 @@ sealed class StudyDataServiceRequest<out TReturn> : ApplicationServiceRequest<St
     @Serializable
     data class GetCollectedData(
         val studyId: UUID,
-        val studyDeploymentIds: Set<UUID>? = null,
-        val deviceRoleNames: Set<String>? = null,
-        val fields: Set<String>? = null,
-        val from: Instant? = null,
-        val to: Instant? = null,
-        val offsetDays: Int? = null
+        val query: CollectedDataQuery
     ) : StudyDataServiceRequest<CollectedDataSet>()
     {
         override fun getResponseSerializer() = CollectedDataSet.serializer()

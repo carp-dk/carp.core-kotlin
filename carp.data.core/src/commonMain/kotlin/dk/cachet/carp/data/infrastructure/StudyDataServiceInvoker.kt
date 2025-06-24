@@ -8,18 +8,13 @@ import dk.cachet.carp.data.application.StudyDataService
  */
 object StudyDataServiceInvoker : ApplicationServiceInvoker<StudyDataService, StudyDataServiceRequest<*>>
 {
-    override suspend fun StudyDataServiceRequest<*>.invoke(service: StudyDataService): Any =
+    override suspend fun StudyDataServiceRequest<*>.invoke( service: StudyDataService ): Any =
         when (this)
         {
             is StudyDataServiceRequest.GetCollectedData ->
                 service.getCollectedData(
                     studyId,
-                    studyDeploymentIds,
-                    deviceRoleNames,
-                    fields,
-                    from,
-                    to,
-                    offsetDays
+                    query
                 )
         }
 }

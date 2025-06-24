@@ -1,16 +1,19 @@
 package dk.cachet.carp.data.infrastructure.db
 
-import kotlin.test.*
-import kotlinx.coroutines.test.runTest
 import dk.cachet.carp.common.application.UUID
+import dk.cachet.carp.data.application.CollectedDataQuery
+import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
+import kotlin.test.*
 
-class SQLiteStudyDataRepositoryTest {
+class SQLiteStudyDataRepositoryTest
+{
 
     private lateinit var repository: SQLiteStudyDataRepository
 
     @BeforeTest
-    fun setup() {
+    fun setup()
+    {
         val dbPath = requireNotNull(this::class.java.getResource("/test.db"))
         val jdbcUrl = "jdbc:sqlite:$dbPath"
         repository = SQLiteStudyDataRepository(jdbcUrl)
@@ -19,7 +22,7 @@ class SQLiteStudyDataRepositoryTest {
     @Test
     fun testFetchAllStepCountData() = runTest {
         val studyId = UUID("f8e5c3ef-8739-42ab-80e8-7be7c1ea4e61")
-        val points = repository.queryData(studyId)
+        val points = repository.queryData(studyId, CollectedDataQuery(fields = setOf("step_count")))
 
         assertTrue(points.isNotEmpty())
         assertTrue(points.all { it.streamId.dataType.name == "step_count" })
@@ -30,8 +33,7 @@ class SQLiteStudyDataRepositoryTest {
         val studyId = UUID("f8e5c3ef-8739-42ab-80e8-7be7c1ea4e61")
         val subjectId = UUID("53d07e59-5c79-4e90-9277-6d12c1c6dca4")
 
-        val points = repository.queryData(studyId, subjectDeploymentIds = setOf(subjectId))
-
+        val points = repository.queryData( studyId, CollectedDataQuery(studyDeploymentIds = setOf(subjectId)) )
         assertTrue(points.all { it.streamId.studyDeploymentId == subjectId })
     }
 
@@ -39,10 +41,7 @@ class SQLiteStudyDataRepositoryTest {
     fun testFilterByDeviceRoleName() = runTest {
         val studyId = UUID("f8e5c3ef-8739-42ab-80e8-7be7c1ea4e61")
 
-        val points = repository.queryData(
-            studyId,
-            deviceRoleNames = setOf("phone")
-        )
+        val points = repository.queryData( studyId, CollectedDataQuery(deviceRoleNames = setOf("phone")) )
 
         assertTrue(points.all { it.streamId.deviceRoleName == "phone" })
     }
@@ -52,8 +51,7 @@ class SQLiteStudyDataRepositoryTest {
         val studyId = UUID("f8e5c3ef-8739-42ab-80e8-7be7c1ea4e61")
 
         val points = repository.queryData(
-            studyId,
-            dataTypeNames = setOf("step_count")
+            studyId, CollectedDataQuery(fields = setOf("step_count"))
         )
 
         assertTrue(points.all { it.streamId.dataType.name == "step_count" })
@@ -67,9 +65,7 @@ class SQLiteStudyDataRepositoryTest {
         val to = Instant.fromEpochMilliseconds(1670007200000)
 
         val points = repository.queryData(
-            studyId,
-            from = from,
-            to = to
+            studyId, CollectedDataQuery(from = from, to = to)
         )
 
         assertTrue(points.all { it.timestamp >= from && it.timestamp <= to })

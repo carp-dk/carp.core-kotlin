@@ -14,7 +14,8 @@ class GenerateExampleRequestsTest
 {
 
     @Test
-    fun printDiscoveredServices() {
+    fun printDiscoveredServices()
+    {
         val discovered = Reflections("dk.cachet.carp")
             .getSubTypesOf(ApplicationService::class.java)
             .filter { it.isInterface }
@@ -22,10 +23,13 @@ class GenerateExampleRequestsTest
         println("!! Discovered interfaces:")
         discovered.forEach {
             println(" - ${it.name}")
-            try {
+            try
+            {
                 ApplicationServiceInfo.of(it)
                 println("   :: Valid service")
-            } catch (e: Exception) {
+            }
+            catch ( e: Exception )
+            {
                 println("   :: Invalid service: ${e.message}")
             }
         }

@@ -1,11 +1,11 @@
 package dk.cachet.carp.data.infrastructure
 
+import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.infrastructure.services.ApplicationServiceDecorator
 import dk.cachet.carp.common.infrastructure.services.Command
-import dk.cachet.carp.data.application.StudyDataService
+import dk.cachet.carp.data.application.CollectedDataQuery
 import dk.cachet.carp.data.application.CollectedDataSet
-import kotlinx.datetime.Instant
-import dk.cachet.carp.common.application.UUID
+import dk.cachet.carp.data.application.StudyDataService
 
 /**
  * Decorator which routes [StudyDataServiceRequest] commands to a [StudyDataService].
@@ -22,22 +22,12 @@ class StudyDataServiceDecorator(
 {
     override suspend fun getCollectedData(
         studyId: UUID,
-        studyDeploymentIds: Set<UUID>?,
-        deviceRoleNames: Set<String>?,
-        fields: Set<String>?,
-        from: Instant?,
-        to: Instant?,
-        offsetDays: Int?
+        query: CollectedDataQuery
     ): CollectedDataSet =
         invoke(
             StudyDataServiceRequest.GetCollectedData(
                 studyId,
-                studyDeploymentIds,
-                deviceRoleNames,
-                fields,
-                from,
-                to,
-                offsetDays
+                query
             )
         )
 }

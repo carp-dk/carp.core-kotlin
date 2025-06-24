@@ -1,37 +1,30 @@
 package dk.cachet.carp.data.infrastructure
 
 import dk.cachet.carp.common.application.UUID
+import dk.cachet.carp.data.application.CollectedDataQuery
 import dk.cachet.carp.data.application.CollectedDataSet
 import dk.cachet.carp.data.application.StudyDataService
+import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
 import kotlin.test.*
-import kotlinx.coroutines.test.runTest
 
-class StudyDataServiceDecoratorTest {
+class StudyDataServiceDecoratorTest
+{
 
     private val studyId = UUID.randomUUID()
     private val now = Instant.parse("2025-04-27T00:00:00Z")
 
-    private class TestStudyDataService : StudyDataService {
+    private class TestStudyDataService : StudyDataService
+    {
         var calledWith: StudyDataServiceRequest.GetCollectedData? = null
 
         override suspend fun getCollectedData(
             studyId: UUID,
-            studyDeploymentIds: Set<UUID>?,
-            deviceRoleNames: Set<String>?,
-            fields: Set<String>?,
-            from: Instant?,
-            to: Instant?,
-            offsetDays: Int?
-        ): CollectedDataSet {
+            query: CollectedDataQuery
+        ): CollectedDataSet
+        {
             calledWith = StudyDataServiceRequest.GetCollectedData(
-                studyId,
-                studyDeploymentIds,
-                deviceRoleNames,
-                fields,
-                from,
-                to,
-                offsetDays
+                studyId, query
             )
             return CollectedDataSet() // Return empty for now
         }
@@ -44,14 +37,16 @@ class StudyDataServiceDecoratorTest {
 
         val result = decorator.getCollectedData(
             studyId,
-            fields = setOf("step_count"),
-            from = now
+            CollectedDataQuery(
+                fields = setOf("step_count"),
+                from = now
+            )
         )
 
         assertNotNull(backend.calledWith)
         assertEquals(studyId, backend.calledWith!!.studyId)
-        assertEquals(setOf("step_count"), backend.calledWith!!.fields)
-        assertEquals(now, backend.calledWith!!.from)
+        assertEquals(setOf("step_count"), backend.calledWith!!.query.fields)
+        assertEquals(now, backend.calledWith!!.query.from)
         assertTrue(result.points.isEmpty())
     }
 }

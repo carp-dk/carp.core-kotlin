@@ -24,60 +24,11 @@
           "type": "string",
           "format": "uuid"
         },
-        "studyDeploymentIds": {
-          "type": [
-            "array",
-            "null"
-          ],
-          "items": {
-            "type": "string",
-            "format": "uuid"
-          }
-        },
-        "deviceRoleNames": {
-          "type": [
-            "array",
-            "null"
-          ],
-          "items": {
-            "type": "string"
-          }
-        },
-        "fields": {
-          "type": [
-            "array",
-            "null"
-          ],
-          "items": {
-            "type": "string"
-          }
-        },
-        "from": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "format": "date-time"
-        },
-        "to": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "format": "date-time"
-        },
-        "offsetDays": {
-          "type": [
-            "integer",
-            "null"
-          ]
+        "query": {
+          "$ref": "../CollectedDataQuery.json"
         }
       },
-      "required": [
-        "__type",
-        "apiVersion",
-        "studyId"
-      ],
+      "required": ["__type", "apiVersion", "studyId", "query"],
       "additionalProperties": false,
       "Response": {
         "$anchor": "GetCollectedData-Response",

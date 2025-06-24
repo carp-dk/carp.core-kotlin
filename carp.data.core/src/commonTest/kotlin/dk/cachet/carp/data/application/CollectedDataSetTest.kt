@@ -6,7 +6,8 @@ import dk.cachet.carp.data.infrastructure.dataStreamId
 import kotlinx.datetime.Instant
 import kotlin.test.*
 
-class CollectedDataSetTest {
+class CollectedDataSetTest
+{
 
     private val streamId = dataStreamId<StepCount>(UUID.randomUUID(), "phone")
     private val now = Instant.parse("2025-04-27T12:00:00Z")
@@ -16,7 +17,8 @@ class CollectedDataSetTest {
     private val point2 = CollectedDataPoint(streamId, later, StepCount(steps = 20))
 
     @Test
-    fun testFilterByType() {
+    fun testFilterByType()
+    {
         val set = CollectedDataSet(listOf(point1, point2))
         val steps = set.filterByType<StepCount>()
 
@@ -25,7 +27,8 @@ class CollectedDataSetTest {
     }
 
     @Test
-    fun testFilterByStream() {
+    fun testFilterByStream()
+    {
         val set = CollectedDataSet(listOf(point1, point2))
         val filtered = set.filterByStream(streamId)
 
@@ -33,7 +36,8 @@ class CollectedDataSetTest {
     }
 
     @Test
-    fun testFilterByTimeRange() {
+    fun testFilterByTimeRange()
+    {
         val set = CollectedDataSet(listOf(point1, point2))
         val filtered = set.filterByTimeRange(now, later)
 
