@@ -18,5 +18,17 @@ kotlin {
                 implementation(npm("big.js", versions.bigJs))
             }
         }
+
+        jvmMain {
+            dependencies {
+                implementation "org.xerial:sqlite-jdbc:3.39.3.0"
+            }
+        }
+        jvmTest {
+            dependencies {
+                implementation("org.xerial:sqlite-jdbc:3.39.3.0")
+            }
+        }
     }
+
 }
