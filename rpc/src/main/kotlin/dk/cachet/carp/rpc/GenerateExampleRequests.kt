@@ -33,7 +33,6 @@ import dk.cachet.carp.studies.application.users.*
 import dk.cachet.carp.studies.infrastructure.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Instant
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlin.reflect.KFunction
@@ -43,6 +42,7 @@ import kotlin.reflect.jvm.javaMethod
 import kotlin.reflect.jvm.kotlinFunction
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.seconds
+
 
 
 /**
@@ -265,6 +265,17 @@ private val phoneDataStreamBatch = MutableDataStreamBatch().apply {
     appendSequence( geoDataSequence )
     appendSequence( stepsDataSequence )
 }
+
+// Examples for study data service.
+private val exampleCollectedData = CollectedDataSet(
+    points = listOf(
+        CollectedDataPoint(
+            streamId = phoneGeoDataStream,
+            timestamp = Instant.fromEpochMilliseconds(1642505045000),
+            data = Geolocation(55.680619, 12.582050)
+        )
+    )
+)
 
 
 private fun <TService : ApplicationService<TService, *>, TResponse> example(
@@ -490,5 +501,16 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
     DataStreamService::removeDataStreams to example(
         request = DataStreamServiceRequest.RemoveDataStreams( deploymentIds ),
         response = deploymentIds
+    ),
+    // StudyDataService
+    StudyDataService::getCollectedData to example(
+        request = StudyDataServiceRequest.GetCollectedData(
+            studyId = studyId,
+            query = CollectedDataQuery()
+        ),
+        response = exampleCollectedData
+    ),
+
+
+
     )
-)

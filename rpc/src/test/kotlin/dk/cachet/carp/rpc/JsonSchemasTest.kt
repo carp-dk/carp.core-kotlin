@@ -33,7 +33,8 @@ class JsonSchemasTest
                 // Validate request.
                 val requestJson = mapper.readTree( r.requestObject.json )
                 val requestErrors = requestSchema.validate( requestJson )
-                if (requestErrors.isNotEmpty()) {
+                if (requestErrors.isNotEmpty())
+                {
                     println("Schema mismatch for ${r.requestObject.klass}")
                     println("Schema: ${requestSchema.schemaLocation}")
                     println("Request JSON:\n${mapper.writerWithDefaultPrettyPrinter().writeValueAsString(requestJson)}")
