@@ -11,4 +11,8 @@ sealed interface Trigger {
     val workflowId: UUID
     val name: String
     val createdAt: Instant
+
+
+    fun activate(at: Instant, executionId: UUID): TriggerActivation
+
 }

@@ -21,6 +21,15 @@
     },
     {
       "$ref": "#/$defs/EndTrigger"
+    },
+    {
+      "$ref": "#/$defs/RecordActivation"
+    },
+    {
+      "$ref": "#/$defs/GetActivationsForTrigger"
+    },
+    {
+      "$ref": "#/$defs/ListByWorkflow"
     }
   ],
   "$defs": {
@@ -224,6 +233,82 @@
         "$anchor": "EndTrigger-Response",
         "type": "boolean"
       }
+    },
+    "RecordActivation": {
+      "$anchor": "RecordActivation",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.TriggerServiceRequest.RecordActivation"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "activation": {
+          "$ref": "../trigger/TriggerActivation.json"
+        }
+      },
+      "required": ["__type", "apiVersion", "activation"],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "RecordActivation-Response",
+        "type": "boolean"
+      }
+    },
+    "GetActivationsForTrigger": {
+      "$anchor": "GetActivationsForTrigger",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.TriggerServiceRequest.GetActivationsForTrigger"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "triggerId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": ["__type", "apiVersion", "triggerId"],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "GetActivationsForTrigger-Response",
+        "type": "array",
+        "items": {
+          "$ref": "../trigger/TriggerActivation.json"
+        }
+      }
+    },
+    "ListByWorkflow": {
+      "$anchor": "ListByWorkflow",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.TriggerServiceRequest.ListByWorkflow"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "studyId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "workflowId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": ["__type", "apiVersion", "studyId", "workflowId"],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "ListByWorkflow-Response",
+        "type": "array",
+        "items": {
+          "$ref": "../trigger/Trigger.json"
+        }
+      }
     }
+
   }
 }

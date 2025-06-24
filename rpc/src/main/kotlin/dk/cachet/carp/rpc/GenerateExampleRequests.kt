@@ -27,6 +27,7 @@ import dk.cachet.carp.analytics.infrastructure.ExecutionServiceRequest
 import dk.cachet.carp.analytics.infrastructure.WorkflowServiceRequest
 import dk.cachet.carp.analytics.infrastructure.parser.AnalyticsSerializersModule
 import dk.cachet.carp.analytics.domain.trigger.ManualTrigger
+import dk.cachet.carp.analytics.domain.trigger.TriggerActivation
 import dk.cachet.carp.analytics.infrastructure.TriggerServiceRequest
 import dk.cachet.carp.analytics.infrastructure.ScheduleManagementServiceRequest
 import dk.cachet.carp.common.application.*
@@ -680,6 +681,38 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
         request = TriggerServiceRequest.EndTrigger(exampleTriggerId),
         response = true
     ),
+
+    TriggerService::getActivationsForTrigger to example(
+        request = TriggerServiceRequest.GetActivationsForTrigger(exampleTriggerId),
+        response = listOf(
+            TriggerActivation(
+                UUID.randomUUID(),
+                exampleTriggerId,
+                studyId,
+                Clock.System.now(),
+                UUID.randomUUID()
+            )
+        )
+    ),
+
+    TriggerService::listByWorkflow to example(
+        request = TriggerServiceRequest.ListByWorkflow(studyId, exampleWorkflowId),
+        response = listOf(exampleTrigger)
+    ),
+
+    TriggerService::recordActivation to example(
+        request = TriggerServiceRequest.RecordActivation(
+            TriggerActivation(
+                UUID.randomUUID(),
+                exampleTriggerId,
+                studyId,
+                Clock.System.now(),
+                UUID.randomUUID()
+            )
+        ),
+        response = true
+    ),
+
 
     ScheduleManagementService::evaluateDueTriggers to example(
         request = ScheduleManagementServiceRequest.EvaluateDueTriggers(),

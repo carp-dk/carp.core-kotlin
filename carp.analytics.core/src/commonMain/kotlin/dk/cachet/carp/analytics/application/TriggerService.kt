@@ -1,6 +1,7 @@
 package dk.cachet.carp.analytics.application
 
 import dk.cachet.carp.analytics.domain.trigger.Trigger
+import dk.cachet.carp.analytics.domain.trigger.TriggerActivation
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.application.services.ApplicationService
 import dk.cachet.carp.common.application.services.ApiVersion
@@ -57,6 +58,13 @@ interface TriggerService : ApplicationService<TriggerService, TriggerService.Eve
     suspend fun listTriggers(studyId: UUID): List<Trigger>
 
     /**
+     * List all triggers for a [Workflow] within a [Study].
+     *
+     * @return [List] of [Trigger]s.
+     */
+    suspend fun listByWorkflow(studyId: UUID, workflowId: UUID): List<Trigger>
+
+    /**
      * Start a trigger.
      *
      * @return true if starts.
@@ -64,9 +72,23 @@ interface TriggerService : ApplicationService<TriggerService, TriggerService.Eve
     suspend fun startTrigger(triggerId: UUID, at: Instant = Clock.System.now()): Boolean
 
     /**
-     * Stop a trigger.
-     *.
+     * End a trigger.
+     *
+     * @return true if ended.
      */
-    suspend fun endTrigger(triggerId: UUID, at: Instant = Clock.System.now()): Boolean
+    suspend fun endTrigger(triggerId: UUID): Boolean
 
+    /**
+     * Record a trigger activation.
+     *
+     * @return true if the activation was recorded successfully.
+     */
+    suspend fun recordActivation(activation: TriggerActivation): Boolean
+
+    /**
+     * Retrieve all activations for a specific study.
+     *
+     * @return [List] of [TriggerActivation]s associated with the study.
+     */
+    suspend fun getActivationsForTrigger(triggerId: UUID): List<TriggerActivation>
 }

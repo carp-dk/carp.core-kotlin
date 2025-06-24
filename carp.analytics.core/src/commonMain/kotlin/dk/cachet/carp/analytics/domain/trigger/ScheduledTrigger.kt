@@ -14,5 +14,12 @@ data class ScheduledTrigger(
     override val name: String,
     val cron: CronExpression,
     override val createdAt: Instant,
-    val updatedAt: Instant? = null
-) : Trigger
+    val updatedAt: Instant? = null,
+    val active: Boolean = true,
+    val lastFiredAt: Instant? = null
+
+
+) : Trigger {
+    override fun activate(at: Instant, executionId: UUID): TriggerActivation =
+        TriggerActivation(UUID.randomUUID(), id, studyId, at, executionId)
+}

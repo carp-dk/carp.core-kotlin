@@ -47,6 +47,8 @@ kotlin {
                 implementation "org.jetbrains.kotlinx:kotlinx-datetime:${versions.datetime}"
                 implementation "com.charleskorn.kaml:kaml:0.55.0"
                 implementation "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}"
+                implementation 'com.ucasoft.kcron:kcron-common:0.23.0'
+
             }
         }
 
@@ -58,6 +60,8 @@ kotlin {
                 implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:${versions.serialization}"
                 implementation "org.jetbrains.kotlinx:kotlinx-datetime:${versions.datetime}"
                 implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.coroutines}"
+                implementation 'com.ucasoft.kcron:kcron-common:0.23.0'
+
             }
         }
 

@@ -86,4 +86,29 @@ interface TriggerRepository {
      * Retrieve all activations for a specific trigger.
      */
     suspend fun getActivationsForTrigger(triggerId: UUID): List<TriggerActivation>
+
+    /**
+     *  Retrieve all active scheduled triggers
+     */
+    suspend fun getAllScheduled(): List<ScheduledTrigger>
+
+    /**
+     * Get the latest activation for a specific trigger.
+     */
+    suspend fun getLatestActivationForTrigger(triggerId: UUID): TriggerActivation?
+
+    /**
+     * Add a new activation for a trigger.
+     *
+     * @param activation The activation to add.
+     */
+    suspend fun addActivation(activation: TriggerActivation)
+
+    /**
+     * End a trigger by its ID at the specified time.
+     *
+     * @param triggerId The ID of the trigger to end.
+     * @return True if the trigger was successfully ended, false otherwise.
+     */
+    suspend fun endTrigger(triggerId: UUID): Boolean
 }

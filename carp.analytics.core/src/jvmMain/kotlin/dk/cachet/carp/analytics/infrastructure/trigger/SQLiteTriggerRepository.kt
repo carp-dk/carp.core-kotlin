@@ -3,11 +3,14 @@ package dk.cachet.carp.analytics.infrastructure.trigger
 import dk.cachet.carp.analytics.application.TriggerRepository
 import dk.cachet.carp.analytics.domain.trigger.*
 import dk.cachet.carp.common.application.UUID
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.ResultSet
 import java.sql.Types
+import kotlin.compareTo
+import kotlin.toString
 
 class SqliteTriggerRepository(
     private val dbPath: String
@@ -18,8 +21,8 @@ class SqliteTriggerRepository(
     override suspend fun create(trigger: Trigger): Trigger = connect().use { conn ->
         val stmt = conn.prepareStatement(
             """
-            INSERT INTO Triggers (id, study_id, workflow_id, name, created_at, type, cron_expr, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO Triggers (id, study_id, workflow_id, name, created_at, type, cron_expr, updated_at, last_fired_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """.trimIndent()
         )
 
@@ -34,11 +37,13 @@ class SqliteTriggerRepository(
                 stmt.setString(6, "manual")
                 stmt.setNull(7, Types.VARCHAR)
                 stmt.setNull(8, Types.VARCHAR)
+                stmt.setNull(9, Types.VARCHAR)
             }
             is ScheduledTrigger -> {
                 stmt.setString(6, "scheduled")
                 stmt.setString(7, trigger.cron.expression)
                 stmt.setString(8, trigger.updatedAt?.toString())
+                stmt.setString(9, trigger.lastFiredAt?.toString())
             }
         }
         stmt.executeUpdate()
@@ -48,7 +53,7 @@ class SqliteTriggerRepository(
     override suspend fun update(trigger: Trigger): Trigger = connect().use { conn ->
         val stmt = conn.prepareStatement(
             """
-            UPDATE Triggers SET name = ?, study_id = ?, workflow_id = ?, type = ?, cron_expr = ?, updated_at = ?
+            UPDATE Triggers SET name = ?, study_id = ?, workflow_id = ?, type = ?, cron_expr = ?, updated_at = ?, last_fired_at = ?
             WHERE id = ?
             """.trimIndent()
         )
@@ -62,15 +67,17 @@ class SqliteTriggerRepository(
                 stmt.setString(4, "manual")
                 stmt.setNull(5, Types.VARCHAR)
                 stmt.setNull(6, Types.VARCHAR)
+                stmt.setNull(7, Types.VARCHAR)
             }
             is ScheduledTrigger -> {
                 stmt.setString(4, "scheduled")
                 stmt.setString(5, trigger.cron.expression)
                 stmt.setString(6, trigger.updatedAt?.toString())
+                stmt.setString(7, trigger.lastFiredAt?.toString())
             }
         }
 
-        stmt.setString(7, trigger.id.toString())
+        stmt.setString(8, trigger.id.toString())
         stmt.executeUpdate()
         trigger
     }
@@ -87,7 +94,6 @@ class SqliteTriggerRepository(
         val rs = stmt.executeQuery()
         if (rs.next()) rs.toTrigger() else null
     }
-
 
     override suspend fun list(studyId: UUID): List<Trigger> = connect().use { conn ->
         val stmt = conn.prepareStatement("SELECT * FROM Triggers WHERE study_id = ?")
@@ -106,9 +112,7 @@ class SqliteTriggerRepository(
 
     override suspend fun startTrigger(triggerId: UUID, startedAt: Instant): Boolean {
         val trigger = get(triggerId) ?: return false
-        val activation = TriggerActivation(
-            UUID.randomUUID(), triggerId, trigger.studyId, startedAt, null
-        )
+        val activation = TriggerActivation(UUID.randomUUID(), triggerId, trigger.studyId, startedAt, null)
         return recordActivation(activation)
     }
 
@@ -144,6 +148,32 @@ class SqliteTriggerRepository(
         generateSequence { if (rs.next()) rs.toTriggerActivation() else null }.toList()
     }
 
+    override suspend fun getAllScheduled(): List<ScheduledTrigger> = connect().use { conn ->
+        val stmt = conn.prepareStatement("SELECT * FROM Triggers WHERE type = 'scheduled'")
+        val rs = stmt.executeQuery()
+        generateSequence { if (rs.next()) rs.toTrigger() as? ScheduledTrigger else null }.toList()
+    }
+
+    override suspend fun getLatestActivationForTrigger(triggerId: UUID): TriggerActivation? = connect().use { conn ->
+        val stmt = conn.prepareStatement("""
+            SELECT * FROM TriggerActivations WHERE trigger_id = ? ORDER BY fired_at DESC LIMIT 1
+        """.trimIndent())
+        stmt.setString(1, triggerId.toString())
+        val rs = stmt.executeQuery()
+        if (rs.next()) rs.toTriggerActivation() else null
+    }
+
+    override suspend fun addActivation(activation: TriggerActivation) {
+        recordActivation(activation)
+    }
+
+    override suspend fun endTrigger(triggerId: UUID): Boolean = connect().use { conn ->
+        val stmt = conn.prepareStatement("UPDATE Triggers SET active = 0, updated_at = ? WHERE id = ?")
+        stmt.setString(1, Clock.System.now().toString())
+        stmt.setString(2, triggerId.toString())
+        stmt.executeUpdate() > 0
+    }
+
     private fun ResultSet.toTrigger(): Trigger {
         val type = getString("type")
         val id = UUID(getString("id"))
@@ -151,13 +181,16 @@ class SqliteTriggerRepository(
         val workflowId = UUID(getString("workflow_id"))
         val name = getString("name")
         val createdAt = Instant.parse(getString("created_at"))
+        val active = getBoolean("active")
 
         return when (type) {
             "manual" -> ManualTrigger(id, studyId, workflowId, name, createdAt)
             "scheduled" -> ScheduledTrigger(
                 id, studyId, workflowId, name,
                 CronExpression(getString("cron_expr")), createdAt,
-                getString("updated_at")?.let(Instant::parse)
+                getString("updated_at")?.let(Instant::parse),
+                active,
+                getString("last_fired_at")?.let(Instant::parse)
             )
             else -> error("Unknown trigger type: $type")
         }
@@ -168,6 +201,6 @@ class SqliteTriggerRepository(
         UUID(getString("trigger_id")),
         UUID(getString("study_id")),
         Instant.parse(getString("fired_at")),
-        getString("workflow_exec_id")?.let{UUID(it)}
+        getString("workflow_exec_id")?.let { UUID(it) }
     )
 }

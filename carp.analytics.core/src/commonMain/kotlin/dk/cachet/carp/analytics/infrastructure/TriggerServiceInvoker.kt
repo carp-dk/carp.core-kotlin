@@ -30,6 +30,15 @@ object TriggerServiceInvoker : ApplicationServiceInvoker<TriggerService, Trigger
                 service.startTrigger(triggerId, at ?: kotlinx.datetime.Clock.System.now())
 
             is TriggerServiceRequest.EndTrigger ->
-                service.endTrigger(triggerId, at ?: kotlinx.datetime.Clock.System.now())
+                service.endTrigger(triggerId)
+
+            is TriggerServiceRequest.RecordActivation ->
+                service.recordActivation(activation)
+
+            is TriggerServiceRequest.GetActivationsForTrigger ->
+                service.getActivationsForTrigger(triggerId)
+
+            is TriggerServiceRequest.ListByWorkflow ->
+                service.listByWorkflow(studyId, workflowId)
         }
 }

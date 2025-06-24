@@ -7,7 +7,9 @@ CREATE TABLE IF NOT EXISTS Triggers (
                                         created_at TEXT NOT NULL,
                                         type TEXT NOT NULL, -- 'manual' or 'scheduled'
                                         cron_expr TEXT,     -- Only used for scheduled
-                                        updated_at TEXT     -- Optional last update time
+                                        updated_at TEXT,     -- Optional last update time
+                                        last_fired_at TEXT,  -- Optional last time trigger fired
+                                        active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 -- Index for listing by study and workflow
