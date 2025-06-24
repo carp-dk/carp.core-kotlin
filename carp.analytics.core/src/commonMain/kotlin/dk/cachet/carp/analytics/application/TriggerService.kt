@@ -51,14 +51,14 @@ interface TriggerService : ApplicationService<TriggerService, TriggerService.Eve
     suspend fun getTrigger(triggerId: UUID): Trigger?
 
     /**
-     * List all triggers for a [Study].
+     * List all triggers for a Study.
      *
      * @return [List] of [Trigger]s.
      */
     suspend fun listTriggers(studyId: UUID): List<Trigger>
 
     /**
-     * List all triggers for a [Workflow] within a [Study].
+     * List all triggers for a [dk.cachet.carp.analytics.domain.workflow.Workflow] within a Study.
      *
      * @return [List] of [Trigger]s.
      */

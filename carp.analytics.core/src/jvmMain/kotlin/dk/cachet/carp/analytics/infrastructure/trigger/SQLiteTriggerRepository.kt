@@ -9,8 +9,6 @@ import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.ResultSet
 import java.sql.Types
-import kotlin.compareTo
-import kotlin.toString
 
 class SqliteTriggerRepository(
     private val dbPath: String
