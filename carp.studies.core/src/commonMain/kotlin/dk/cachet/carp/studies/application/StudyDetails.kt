@@ -4,6 +4,7 @@ package dk.cachet.carp.studies.application
 
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.deployments.application.users.StudyInvitation
+import dk.cachet.carp.protocols.application.ProtocolVersion
 import dk.cachet.carp.protocols.application.StudyProtocolSnapshot
 import kotlinx.datetime.Instant
 import kotlinx.serialization.*
@@ -40,5 +41,9 @@ data class StudyDetails(
     /**
      * A snapshot of the protocol to use in this study, or null when not yet defined.
      */
-    val protocolSnapshot: StudyProtocolSnapshot?
+    val protocolSnapshot: StudyProtocolSnapshot?,
+    /**
+     * The version of the protocol to use in this study, or null when not yet defined.
+     */
+    val protocolVersion: ProtocolVersion? = null
 )

@@ -8,32 +8,57 @@
 
 package dk.cachet.carp.rpc
 
-import dk.cachet.carp.common.application.*
-import dk.cachet.carp.common.application.data.*
-import dk.cachet.carp.common.application.data.input.*
-import dk.cachet.carp.common.application.devices.*
-import dk.cachet.carp.common.application.sampling.*
+import dk.cachet.carp.common.application.ApplicationData
+import dk.cachet.carp.common.application.ApplicationServiceInfo
+import dk.cachet.carp.common.application.EmailAddress
+import dk.cachet.carp.common.application.UUID
+import dk.cachet.carp.common.application.data.Geolocation
+import dk.cachet.carp.common.application.data.SignalStrength
+import dk.cachet.carp.common.application.data.StepCount
+import dk.cachet.carp.common.application.data.input.CarpInputDataTypes
+import dk.cachet.carp.common.application.data.input.Sex
+import dk.cachet.carp.common.application.devices.AltBeacon
+import dk.cachet.carp.common.application.devices.DeviceRegistration
+import dk.cachet.carp.common.application.devices.Smartphone
+import dk.cachet.carp.common.application.sampling.Granularity
 import dk.cachet.carp.common.application.services.ApplicationService
-import dk.cachet.carp.common.application.tasks.*
-import dk.cachet.carp.common.application.triggers.*
+import dk.cachet.carp.common.application.tasks.BackgroundTask
+import dk.cachet.carp.common.application.tasks.CustomProtocolTask
+import dk.cachet.carp.common.application.triggers.TaskControl
 import dk.cachet.carp.common.application.users.*
 import dk.cachet.carp.common.infrastructure.serialization.createDefaultJSON
-import dk.cachet.carp.common.infrastructure.services.*
-import dk.cachet.carp.data.application.*
-import dk.cachet.carp.data.infrastructure.*
+import dk.cachet.carp.common.infrastructure.services.ApplicationServiceRequest
+import dk.cachet.carp.common.infrastructure.services.LoggedRequest
+import dk.cachet.carp.data.application.DataStreamService
+import dk.cachet.carp.data.application.DataStreamsConfiguration
+import dk.cachet.carp.data.application.MutableDataStreamBatch
+import dk.cachet.carp.data.application.MutableDataStreamSequence
+import dk.cachet.carp.data.infrastructure.DataStreamServiceRequest
+import dk.cachet.carp.data.infrastructure.dataStreamId
+import dk.cachet.carp.data.infrastructure.measurement
 import dk.cachet.carp.deployments.application.*
 import dk.cachet.carp.deployments.application.users.*
-import dk.cachet.carp.deployments.infrastructure.*
-import dk.cachet.carp.protocols.application.*
+import dk.cachet.carp.deployments.infrastructure.DeploymentServiceRequest
+import dk.cachet.carp.deployments.infrastructure.ParticipationServiceRequest
+import dk.cachet.carp.protocols.application.ProtocolFactoryService
+import dk.cachet.carp.protocols.application.ProtocolFactoryServiceHost
+import dk.cachet.carp.protocols.application.ProtocolService
+import dk.cachet.carp.protocols.application.ProtocolVersion
 import dk.cachet.carp.protocols.domain.StudyProtocol
 import dk.cachet.carp.protocols.domain.start
-import dk.cachet.carp.protocols.infrastructure.*
-import dk.cachet.carp.studies.application.*
-import dk.cachet.carp.studies.application.users.*
-import dk.cachet.carp.studies.infrastructure.*
+import dk.cachet.carp.protocols.infrastructure.ProtocolFactoryServiceRequest
+import dk.cachet.carp.protocols.infrastructure.ProtocolServiceRequest
+import dk.cachet.carp.studies.application.RecruitmentService
+import dk.cachet.carp.studies.application.StudyDetails
+import dk.cachet.carp.studies.application.StudyService
+import dk.cachet.carp.studies.application.StudyStatus
+import dk.cachet.carp.studies.application.users.AssignedParticipantRoles
+import dk.cachet.carp.studies.application.users.Participant
+import dk.cachet.carp.studies.application.users.ParticipantGroupStatus
+import dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest
+import dk.cachet.carp.studies.infrastructure.StudyServiceRequest
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Instant
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlin.reflect.KFunction
@@ -323,7 +348,7 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
     ),
     StudyService::getStudyDetails to example(
         request = StudyServiceRequest.GetStudyDetails( studyId ),
-        response = StudyDetails( studyId, ownerId, studyName, studyCreatedOn, studyDescription, studyInvitation, phoneProtocol )
+        response = StudyDetails( studyId, ownerId, studyName, studyCreatedOn, studyDescription, studyInvitation, phoneProtocol, ProtocolVersion("1.0") )
     ),
     StudyService::getStudyStatus to example(
         request = StudyServiceRequest.GetStudyStatus( studyId ),

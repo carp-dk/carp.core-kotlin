@@ -1,0 +1,118 @@
+[
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.studies.infrastructure.StudyServiceRequest.CreateStudy",
+            "apiVersion": "1.3",
+            "ownerId": "4e9f8e7f-6f65-441c-8930-5f1c4748f75f",
+            "name": "Test"
+        },
+        "precedingEvents": [],
+        "publishedEvents": [
+            {
+                "__type": "dk.cachet.carp.studies.application.StudyService.Event.StudyCreated",
+                "aggregateId": "00000000-0000-0000-0000-000000000001",
+                "apiVersion": "1.3",
+                "study": {
+                    "studyId": "00000000-0000-0000-0000-000000000001",
+                    "ownerId": "4e9f8e7f-6f65-441c-8930-5f1c4748f75f",
+                    "name": "Test",
+                    "createdOn": "1970-01-01T00:00:00Z",
+                    "description": null,
+                    "invitation": {
+                        "name": "Test"
+                    },
+                    "protocolSnapshot": null
+                }
+            }
+        ],
+        "response": {
+            "__type": "dk.cachet.carp.studies.application.StudyStatus.Configuring",
+            "studyId": "00000000-0000-0000-0000-000000000001",
+            "name": "Test",
+            "createdOn": "1970-01-01T00:00:00Z",
+            "studyProtocolId": null,
+            "canSetInvitation": true,
+            "canSetStudyProtocol": true,
+            "canDeployToParticipants": false,
+            "canGoLive": false
+        }
+    },
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.studies.infrastructure.StudyServiceRequest.SetProtocol",
+            "apiVersion": "1.3",
+            "studyId": "00000000-0000-0000-0000-000000000001",
+            "protocol": {
+                "id": "3c127966-0117-4b66-87c7-66a395077034",
+                "createdOn": "2024-10-16T09:14:42.956150Z",
+                "version": 0,
+                "ownerId": "caeb9d1e-c4ed-4a3c-9e56-9470c6ecb08e",
+                "name": "Test protocol",
+                "primaryDevices": [
+                    {
+                        "__type": "dk.cachet.carp.common.application.devices.Smartphone",
+                        "isPrimaryDevice": true,
+                        "roleName": "User's phone"
+                    }
+                ]
+            }
+        },
+        "precedingEvents": [],
+        "publishedEvents": [],
+        "response": {
+            "__type": "dk.cachet.carp.studies.application.StudyStatus.Configuring",
+            "studyId": "00000000-0000-0000-0000-000000000001",
+            "name": "Test",
+            "createdOn": "1970-01-01T00:00:00Z",
+            "studyProtocolId": "3c127966-0117-4b66-87c7-66a395077034",
+            "canSetInvitation": true,
+            "canSetStudyProtocol": true,
+            "canDeployToParticipants": false,
+            "canGoLive": true
+        }
+    },
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.studies.infrastructure.StudyServiceRequest.RemoveProtocol",
+            "apiVersion": "1.3",
+            "studyId": "00000000-0000-0000-0000-000000000001"
+        },
+        "precedingEvents": [],
+        "publishedEvents": [],
+        "response": {
+            "__type": "dk.cachet.carp.studies.application.StudyStatus.Configuring",
+            "studyId": "00000000-0000-0000-0000-000000000001",
+            "name": "Test",
+            "createdOn": "1970-01-01T00:00:00Z",
+            "studyProtocolId": null,
+            "canSetInvitation": true,
+            "canSetStudyProtocol": true,
+            "canDeployToParticipants": false,
+            "canGoLive": false
+        }
+    },
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.studies.infrastructure.StudyServiceRequest.GetStudyDetails",
+            "apiVersion": "1.3",
+            "studyId": "00000000-0000-0000-0000-000000000001"
+        },
+        "precedingEvents": [],
+        "publishedEvents": [],
+        "response": {
+            "studyId": "00000000-0000-0000-0000-000000000001",
+            "ownerId": "4e9f8e7f-6f65-441c-8930-5f1c4748f75f",
+            "name": "Test",
+            "createdOn": "1970-01-01T00:00:00Z",
+            "description": null,
+            "invitation": {
+                "name": "Test"
+            },
+            "protocolSnapshot": null
+        }
+    }
+]

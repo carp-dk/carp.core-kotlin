@@ -13,8 +13,14 @@
         { "type": "null" },
         { "$ref": "../protocols/StudyProtocolSnapshot.json" }
       ]
+    },
+    "protocolVersion": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "../protocols/ProtocolVersion.json" }
+      ]
     }
   },
-  "required": [ "studyId", "ownerId", "name", "createdOn", "description", "invitation", "protocolSnapshot" ],
+  "required": [ "studyId", "ownerId", "name", "createdOn", "description", "invitation", "protocolSnapshot", "protocolVersion" ],
   "additionalProperties": false
 }

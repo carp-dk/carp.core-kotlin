@@ -3,6 +3,7 @@ package dk.cachet.carp.studies.domain
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.domain.Snapshot
 import dk.cachet.carp.deployments.application.users.StudyInvitation
+import dk.cachet.carp.protocols.application.ProtocolVersion
 import dk.cachet.carp.protocols.application.StudyProtocolSnapshot
 import kotlinx.datetime.Instant
 import kotlinx.serialization.*
@@ -18,6 +19,7 @@ data class StudySnapshot(
     val description: String? = null,
     val invitation: StudyInvitation,
     val protocolSnapshot: StudyProtocolSnapshot?,
+    val protocolVersion: ProtocolVersion?,
     val isLive: Boolean
 ) : Snapshot<Study>
 {
@@ -37,6 +39,7 @@ data class StudySnapshot(
                 description = study.description,
                 invitation = study.invitation,
                 protocolSnapshot = study.protocolSnapshot,
+                protocolVersion = study.protocolVersion,
                 isLive = study.isLive
             )
         }

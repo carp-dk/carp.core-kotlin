@@ -4,6 +4,7 @@ import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.domain.AggregateRoot
 import dk.cachet.carp.common.domain.DomainEvent
 import dk.cachet.carp.deployments.application.users.StudyInvitation
+import dk.cachet.carp.protocols.application.ProtocolVersion
 import dk.cachet.carp.protocols.application.StudyProtocolSnapshot
 import dk.cachet.carp.protocols.domain.StudyProtocol
 import dk.cachet.carp.studies.application.StudyDetails
@@ -59,6 +60,7 @@ class Study(
                 snapshot.createdOn
             )
             study.protocolSnapshot = snapshot.protocolSnapshot
+            study.protocolVersion = snapshot.protocolVersion
             study.isLive = snapshot.isLive
 
             // Events introduced by loading the snapshot are not relevant to a consumer wanting to persist changes.
@@ -143,7 +145,7 @@ class Study(
      * Get [StudyDetails] for this [Study].
      */
     fun getStudyDetails(): StudyDetails =
-        StudyDetails( id, ownerId, name, createdOn, description, invitation, protocolSnapshot )
+        StudyDetails( id, ownerId, name, createdOn, description, invitation, protocolSnapshot, protocolVersion )
 
     val canSetStudyProtocol: Boolean get() = !isLive
 
@@ -172,6 +174,19 @@ class Study(
 
             field = value
             event( Event.ProtocolSnapshotChanged( value ) )
+        }
+
+    /**
+     * The version of the protocol to use in this study, or null when not yet defined.
+     */
+    var protocolVersion: ProtocolVersion? = null
+        set ( value )
+        {
+            check( !isLive ) { "Can't set protocol version since this study already went live." }
+            check( protocolSnapshot != null || value == null )
+                { "A study protocol needs to be defined before a version can be set." }
+
+            field = value
         }
 
     /**

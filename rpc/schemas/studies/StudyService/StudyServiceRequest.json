@@ -13,7 +13,7 @@
     { "$ref": "#Remove" }
   ],
   "$defs": {
-    "ApiVersion": { "const": "1.1" },
+    "ApiVersion": { "const": "1.3" },
     "CreateStudy": {
       "$anchor": "CreateStudy",
       "type": "object",

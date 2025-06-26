@@ -1,0 +1,90 @@
+[
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.studies.infrastructure.StudyServiceRequest.CreateStudy",
+            "apiVersion": "1.3",
+            "ownerId": "443b7305-ccb1-43ef-85d7-dd3f64a1f661",
+            "name": "Test",
+            "description": "Description",
+            "invitation": {
+                "name": "Lorem ipsum",
+                "description": "Some description"
+            }
+        },
+        "precedingEvents": [],
+        "publishedEvents": [
+            {
+                "__type": "dk.cachet.carp.studies.application.StudyService.Event.StudyCreated",
+                "aggregateId": "00000000-0000-0000-0000-000000000001",
+                "apiVersion": "1.3",
+                "study": {
+                    "studyId": "00000000-0000-0000-0000-000000000001",
+                    "ownerId": "443b7305-ccb1-43ef-85d7-dd3f64a1f661",
+                    "name": "Test",
+                    "createdOn": "1970-01-01T00:00:00Z",
+                    "description": "Description",
+                    "invitation": {
+                        "name": "Lorem ipsum",
+                        "description": "Some description"
+                    },
+                    "protocolSnapshot": null
+                }
+            }
+        ],
+        "response": {
+            "__type": "dk.cachet.carp.studies.application.StudyStatus.Configuring",
+            "studyId": "00000000-0000-0000-0000-000000000001",
+            "name": "Test",
+            "createdOn": "1970-01-01T00:00:00Z",
+            "studyProtocolId": null,
+            "canSetInvitation": true,
+            "canSetStudyProtocol": true,
+            "canDeployToParticipants": false,
+            "canGoLive": false
+        }
+    },
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.studies.infrastructure.StudyServiceRequest.GetStudyStatus",
+            "apiVersion": "1.3",
+            "studyId": "00000000-0000-0000-0000-000000000001"
+        },
+        "precedingEvents": [],
+        "publishedEvents": [],
+        "response": {
+            "__type": "dk.cachet.carp.studies.application.StudyStatus.Configuring",
+            "studyId": "00000000-0000-0000-0000-000000000001",
+            "name": "Test",
+            "createdOn": "1970-01-01T00:00:00Z",
+            "studyProtocolId": null,
+            "canSetInvitation": true,
+            "canSetStudyProtocol": true,
+            "canDeployToParticipants": false,
+            "canGoLive": false
+        }
+    },
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.studies.infrastructure.StudyServiceRequest.GetStudyDetails",
+            "apiVersion": "1.3",
+            "studyId": "00000000-0000-0000-0000-000000000001"
+        },
+        "precedingEvents": [],
+        "publishedEvents": [],
+        "response": {
+            "studyId": "00000000-0000-0000-0000-000000000001",
+            "ownerId": "443b7305-ccb1-43ef-85d7-dd3f64a1f661",
+            "name": "Test",
+            "createdOn": "1970-01-01T00:00:00Z",
+            "description": "Description",
+            "invitation": {
+                "name": "Lorem ipsum",
+                "description": "Some description"
+            },
+            "protocolSnapshot": null
+        }
+    }
+]
