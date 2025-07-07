@@ -10,7 +10,9 @@ import dk.cachet.carp.common.application.users.ExpectedParticipantData
 import dk.cachet.carp.common.application.users.ParticipantAttribute
 import dk.cachet.carp.common.application.users.ParticipantRole
 import dk.cachet.carp.common.application.users.Username
+import dk.cachet.carp.protocols.application.ProtocolVersion
 import dk.cachet.carp.protocols.application.StudyProtocolSnapshot
+import dk.cachet.carp.protocols.application.VersionedStudyProtocolSnapshot
 import dk.cachet.carp.protocols.domain.StudyProtocol
 import dk.cachet.carp.studies.application.users.AssignedParticipantRoles
 import dk.cachet.carp.studies.application.users.ParticipantGroupStatus
@@ -267,11 +269,15 @@ interface RecruitmentServiceTest
         protocol.addParticipantRole( ParticipantRole( "Test role 2", false ) )
         protocol.addExpectedParticipantData( expectedData )
         val validSnapshot = protocol.getSnapshot()
+        val versionedProtocol = VersionedStudyProtocolSnapshot(
+            protocol.getSnapshot(),
+            ProtocolVersion( "Version 1")
+        )
 
         // Create live study from protocol.
         val status = service.createStudy( UUID.randomUUID(), "Test" )
         val studyId = status.studyId
-        service.setProtocol( studyId, validSnapshot )
+        service.setProtocol( studyId, versionedProtocol )
         service.goLive( studyId )
 
         return Pair( studyId, validSnapshot )

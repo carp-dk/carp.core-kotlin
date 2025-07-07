@@ -3,6 +3,8 @@ package dk.cachet.carp.studies.domain
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.application.devices.Smartphone
 import dk.cachet.carp.deployments.application.users.StudyInvitation
+import dk.cachet.carp.protocols.application.ProtocolVersion
+import dk.cachet.carp.protocols.application.VersionedStudyProtocolSnapshot
 import dk.cachet.carp.protocols.domain.StudyProtocol
 import dk.cachet.carp.studies.application.StudyStatus
 import kotlin.test.*
@@ -27,7 +29,7 @@ class StudyTest
         assertEquals( study.description, fromSnapshot.description )
         assertEquals( study.invitation, fromSnapshot.invitation )
         assertEquals( study.createdOn, fromSnapshot.createdOn )
-        assertEquals( study.protocolSnapshot, fromSnapshot.protocolSnapshot )
+        assertEquals( study.versionedProtocolSnapshot, fromSnapshot.versionedProtocolSnapshot )
         assertEquals( study.isLive, fromSnapshot.isLive )
         assertEquals( 0, fromSnapshot.consumeEvents().size )
     }
@@ -62,15 +64,15 @@ class StudyTest
         assertTrue( study.canSetStudyProtocol )
 
         setDeployableProtocol( study )
-        assertEquals( Study.Event.ProtocolSnapshotChanged( study.protocolSnapshot ), study.consumeEvents().single() )
-        assertEquals( study.protocolSnapshot?.id, study.getStatus().studyProtocolId )
+        assertEquals( Study.Event.ProtocolSnapshotChanged(study.versionedProtocolSnapshot?.protocolSnapshot), study.consumeEvents().single() )
+        assertEquals(study.versionedProtocolSnapshot?.protocolSnapshot?.id, study.getStatus().studyProtocolId )
     }
 
     @Test
     fun set_protocol_to_null_succeeds()
     {
         val study = createStudy()
-        study.protocolSnapshot = null
+        study.versionedProtocolSnapshot = null
         assertEquals( Study.Event.ProtocolSnapshotChanged( null ), study.consumeEvents().single() )
         assertNull( study.getStatus().studyProtocolId )
     }
@@ -81,7 +83,11 @@ class StudyTest
         val study = createStudy()
 
         val protocol = StudyProtocol( UUID.randomUUID(), "Test protocol" )
-        assertFailsWith<IllegalArgumentException> { study.protocolSnapshot = protocol.getSnapshot() }
+        val versionedProtocolSnapshot = VersionedStudyProtocolSnapshot(
+            protocol.getSnapshot(),
+            ProtocolVersion( "Version 1" )
+        )
+        assertFailsWith<IllegalArgumentException> { study.versionedProtocolSnapshot = versionedProtocolSnapshot }
         assertEquals( 0, study.consumeEvents().count() )
     }
 
@@ -163,7 +169,10 @@ class StudyTest
     private fun setDeployableProtocol( study: Study )
     {
         val protocol = StudyProtocol( UUID.randomUUID(), "Test protocol" )
-        protocol.addPrimaryDevice( Smartphone( "User's phone" ) ) // One primaryf device is needed to deploy.
-        study.protocolSnapshot = protocol.getSnapshot()
+        protocol.addPrimaryDevice( Smartphone( "User's phone" ) ) // One primary device is needed to deploy.
+        study.versionedProtocolSnapshot = VersionedStudyProtocolSnapshot(
+            protocol.getSnapshot(),
+            ProtocolVersion( "Version 1" )
+        )
     }
 }

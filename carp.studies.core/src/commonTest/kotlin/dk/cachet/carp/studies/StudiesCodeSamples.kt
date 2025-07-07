@@ -10,7 +10,9 @@ import dk.cachet.carp.data.infrastructure.InMemoryDataStreamService
 import dk.cachet.carp.deployments.application.DeploymentService
 import dk.cachet.carp.deployments.application.DeploymentServiceHost
 import dk.cachet.carp.deployments.infrastructure.InMemoryDeploymentRepository
+import dk.cachet.carp.protocols.application.ProtocolVersion
 import dk.cachet.carp.protocols.application.StudyProtocolSnapshot
+import dk.cachet.carp.protocols.application.VersionedStudyProtocolSnapshot
 import dk.cachet.carp.protocols.domain.StudyProtocol
 import dk.cachet.carp.protocols.domain.start
 import dk.cachet.carp.studies.application.RecruitmentService
@@ -42,7 +44,11 @@ class StudiesCodeSamples
         // Let the study use the protocol from the 'carp.protocols' example above.
         val trackPatientStudy: StudyProtocol = createExampleProtocol()
         val protocolSnapshot: StudyProtocolSnapshot = trackPatientStudy.getSnapshot()
-        studyStatus = studyService.setProtocol( studyId, protocolSnapshot )
+        val versionedStudyProtocolSnapshot = VersionedStudyProtocolSnapshot(
+            protocolSnapshot,
+            ProtocolVersion( "Version 1" )
+        )
+        studyStatus = studyService.setProtocol( studyId, versionedStudyProtocolSnapshot )
 
         // Add a participant.
         val email = EmailAddress( "participant@email.com" )

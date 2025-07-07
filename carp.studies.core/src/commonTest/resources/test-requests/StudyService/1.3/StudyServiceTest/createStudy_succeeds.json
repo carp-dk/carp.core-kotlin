@@ -4,7 +4,7 @@
         "request": {
             "__type": "dk.cachet.carp.studies.infrastructure.StudyServiceRequest.CreateStudy",
             "apiVersion": "1.3",
-            "ownerId": "7da57259-93a1-4e9e-9582-c8499c59ab0d",
+            "ownerId": "e799832c-b027-434c-8148-f705af093ab8",
             "name": "Test"
         },
         "precedingEvents": [],
@@ -15,14 +15,14 @@
                 "apiVersion": "1.3",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "7da57259-93a1-4e9e-9582-c8499c59ab0d",
+                    "ownerId": "e799832c-b027-434c-8148-f705af093ab8",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
                     "invitation": {
                         "name": "Test"
                     },
-                    "protocolSnapshot": null
+                    "versionedProtocolSnapshot": null
                 }
             }
         ],
@@ -70,14 +70,14 @@
         "publishedEvents": [],
         "response": {
             "studyId": "00000000-0000-0000-0000-000000000001",
-            "ownerId": "7da57259-93a1-4e9e-9582-c8499c59ab0d",
+            "ownerId": "e799832c-b027-434c-8148-f705af093ab8",
             "name": "Test",
             "createdOn": "1970-01-01T00:00:00Z",
             "description": null,
             "invitation": {
                 "name": "Test"
             },
-            "protocolSnapshot": null
+            "versionedProtocolSnapshot": null
         }
     }
 ]

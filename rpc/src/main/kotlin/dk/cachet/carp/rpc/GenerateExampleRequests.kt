@@ -40,10 +40,7 @@ import dk.cachet.carp.deployments.application.*
 import dk.cachet.carp.deployments.application.users.*
 import dk.cachet.carp.deployments.infrastructure.DeploymentServiceRequest
 import dk.cachet.carp.deployments.infrastructure.ParticipationServiceRequest
-import dk.cachet.carp.protocols.application.ProtocolFactoryService
-import dk.cachet.carp.protocols.application.ProtocolFactoryServiceHost
-import dk.cachet.carp.protocols.application.ProtocolService
-import dk.cachet.carp.protocols.application.ProtocolVersion
+import dk.cachet.carp.protocols.application.*
 import dk.cachet.carp.protocols.domain.StudyProtocol
 import dk.cachet.carp.protocols.domain.start
 import dk.cachet.carp.protocols.infrastructure.ProtocolFactoryServiceRequest
@@ -152,6 +149,13 @@ private val phoneProtocol = StudyProtocol(
     addTaskControl( startOfStudyTrigger.start( measureBikeProximity, bikeBeacon ) )
     applicationData = ApplicationData( "{\"uiTheme\": \"black\"}" )
 }.getSnapshot()
+private val versionedPhoneProtocol = VersionedStudyProtocolSnapshot(
+    phoneProtocol,
+    ProtocolVersion( "1.0", protocolCreatedOn )
+)
+
+
+
 private val startOfStudyTriggerId = phoneProtocol.triggers.entries.first { it.value == startOfStudyTrigger }.key
 private val expectedParticipantData = setOf(
     ExpectedParticipantData(
@@ -348,7 +352,7 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
     ),
     StudyService::getStudyDetails to example(
         request = StudyServiceRequest.GetStudyDetails( studyId ),
-        response = StudyDetails( studyId, ownerId, studyName, studyCreatedOn, studyDescription, studyInvitation, phoneProtocol, ProtocolVersion("1.0") )
+        response = StudyDetails( studyId, ownerId, studyName, studyCreatedOn, studyDescription, studyInvitation, versionedPhoneProtocol)
     ),
     StudyService::getStudyStatus to example(
         request = StudyServiceRequest.GetStudyStatus( studyId ),
@@ -366,7 +370,7 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
         response = studyConfiguringStatus
     ),
     StudyService::setProtocol to example(
-        request = StudyServiceRequest.SetProtocol( studyId, phoneProtocol ),
+        request = StudyServiceRequest.SetProtocol( studyId, versionedPhoneProtocol ),
         response = StudyStatus.Configuring( studyId, studyName, studyCreatedOn, phoneProtocol.id, true, true, false, true )
     ),
     StudyService::removeProtocol to example(

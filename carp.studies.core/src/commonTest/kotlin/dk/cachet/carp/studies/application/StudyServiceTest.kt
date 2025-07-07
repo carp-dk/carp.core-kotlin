@@ -4,7 +4,9 @@ import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.application.devices.Smartphone
 import dk.cachet.carp.common.application.triggers.TaskControl
 import dk.cachet.carp.deployments.application.users.StudyInvitation
+import dk.cachet.carp.protocols.application.ProtocolVersion
 import dk.cachet.carp.protocols.application.StudyProtocolSnapshot
+import dk.cachet.carp.protocols.application.VersionedStudyProtocolSnapshot
 import dk.cachet.carp.protocols.domain.StudyProtocol
 import kotlinx.coroutines.test.runTest
 import kotlin.test.*
@@ -153,20 +155,20 @@ interface StudyServiceTest
         var status = service.createStudy( UUID.randomUUID(), "Test" )
 
         assertTrue( status.canSetStudyProtocol )
-        val protocol = createDeployableProtocol()
-        status = service.setProtocol( status.studyId, protocol )
+        val versionedProtocol = createVersionedDeployableProtocol()
+        status = service.setProtocol( status.studyId, versionedProtocol )
         assertFalse( status.canDeployToParticipants )
         assertTrue( status is StudyStatus.Configuring )
 
         val details = service.getStudyDetails( status.studyId )
-        assertEquals( protocol, details.protocolSnapshot )
+        assertEquals( versionedProtocol, details.versionedProtocolSnapshot )
     }
 
     @Test
     fun setProtocol_fails_for_unknown_studyId() = runTest {
         val service = createService()
 
-        assertFailsWith<IllegalArgumentException> { service.setProtocol( unknownId, createDeployableProtocol() ) }
+        assertFailsWith<IllegalArgumentException> { service.setProtocol( unknownId, createVersionedDeployableProtocol() ) }
     }
 
     @Test
@@ -180,7 +182,11 @@ interface StudyServiceTest
                 TaskControl( 0, "Unknown task", "Unknown device", TaskControl.Control.Start )
             )
         )
-        assertFailsWith<IllegalArgumentException> { service.setProtocol( status.studyId, invalidSnapshot ) }
+        val versionedInvalidSnapshot = VersionedStudyProtocolSnapshot(
+            invalidSnapshot,
+            ProtocolVersion( "Version 1" ),
+        )
+        assertFailsWith<IllegalArgumentException> { service.setProtocol( status.studyId, versionedInvalidSnapshot ) }
     }
 
     @Test
@@ -189,7 +195,11 @@ interface StudyServiceTest
         val status = service.createStudy( UUID.randomUUID(), "Test" )
 
         val protocol = StudyProtocol( UUID.randomUUID(), "Not deployable" )
-        assertFailsWith<IllegalArgumentException> { service.setProtocol( status.studyId, protocol.getSnapshot() ) }
+        val versionedProtocol = VersionedStudyProtocolSnapshot(
+            protocol.getSnapshot(),
+            ProtocolVersion( "Version 1" ),
+        )
+        assertFailsWith<IllegalArgumentException> { service.setProtocol( status.studyId, versionedProtocol ) }
     }
 
     @Test
@@ -197,12 +207,12 @@ interface StudyServiceTest
         val service = createService()
         val status = service.createStudy( UUID.randomUUID(), "Test" )
         val studyId = status.studyId
-        service.setProtocol( studyId, createDeployableProtocol() )
+        service.setProtocol( studyId, createVersionedDeployableProtocol() )
 
         val removedStatus = service.removeProtocol( studyId )
         assertTrue( removedStatus is StudyStatus.Configuring )
         val details = service.getStudyDetails( studyId )
-        assertNull( details.protocolSnapshot )
+        assertNull( details.versionedProtocolSnapshot )
     }
 
     @Test
@@ -217,8 +227,11 @@ interface StudyServiceTest
         val service = createService()
         var status = service.createStudy( UUID.randomUUID(), "Test" )
 
-        val protocol = createDeployableProtocol()
-        service.setProtocol( status.studyId, protocol )
+        val versionedProtocol = VersionedStudyProtocolSnapshot(
+            createDeployableProtocol(),
+            ProtocolVersion( "Version 1" ),
+        )
+        service.setProtocol( status.studyId, versionedProtocol )
         status = service.goLive( status.studyId )
         assertFalse( status.canSetInvitation )
         assertFalse( status.canSetStudyProtocol )
@@ -227,7 +240,7 @@ interface StudyServiceTest
         {
             service.setInvitation( status.studyId, StudyInvitation( "Some study" ) )
         }
-        assertFailsWith<IllegalStateException> { service.setProtocol( status.studyId, protocol ) }
+        assertFailsWith<IllegalStateException> { service.setProtocol( status.studyId, versionedProtocol ) }
         assertFailsWith<IllegalStateException> { service.removeProtocol( status.studyId ) }
     }
 
@@ -239,7 +252,7 @@ interface StudyServiceTest
         assertTrue( status is StudyStatus.Configuring )
 
         // Set protocol and go live.
-        service.setProtocol( status.studyId, createDeployableProtocol() )
+        service.setProtocol( status.studyId, createVersionedDeployableProtocol() )
         status = service.goLive( status.studyId )
         assertTrue( status.canDeployToParticipants )
         assertTrue( status is StudyStatus.Live )
@@ -294,5 +307,14 @@ interface StudyServiceTest
         protocol.addPrimaryDevice( Smartphone( "User's phone" ) )
 
         return protocol.getSnapshot()
+    }
+
+    private fun createVersionedDeployableProtocol(): VersionedStudyProtocolSnapshot
+    {
+        val protocol = createDeployableProtocol()
+        return VersionedStudyProtocolSnapshot(
+            protocol,
+            ProtocolVersion( "Version 1" ),
+        )
     }
 }

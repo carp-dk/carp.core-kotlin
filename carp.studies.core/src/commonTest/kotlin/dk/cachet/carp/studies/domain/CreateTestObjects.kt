@@ -4,6 +4,8 @@ import dk.cachet.carp.common.application.EmailAddress
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.application.devices.Smartphone
 import dk.cachet.carp.deployments.application.users.StudyInvitation
+import dk.cachet.carp.protocols.application.ProtocolVersion
+import dk.cachet.carp.protocols.application.VersionedStudyProtocolSnapshot
 import dk.cachet.carp.protocols.domain.StudyProtocol
 import dk.cachet.carp.protocols.infrastructure.test.createComplexProtocol
 import dk.cachet.carp.studies.domain.users.Recruitment
@@ -21,7 +23,11 @@ fun createComplexStudy(): Study
     // Specify protocol.
     val protocol = StudyProtocol( UUID.randomUUID(), "Test protocol" )
     protocol.addPrimaryDevice( Smartphone( "User's phone" ) ) // Needed to make the protocol deployable.
-    study.protocolSnapshot = protocol.getSnapshot()
+    val protocolVersion = ProtocolVersion( "Version 1" )
+    study.versionedProtocolSnapshot = VersionedStudyProtocolSnapshot(
+        protocol.getSnapshot(),
+        protocolVersion
+    )
 
     // Go live.
     study.goLive()

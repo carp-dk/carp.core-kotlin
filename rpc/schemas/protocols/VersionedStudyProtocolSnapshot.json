@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "type": "object",
+  "properties": {
+    "protocolSnapshot": { "$ref": "StudyProtocolSnapshot.json" },
+    "protocolVersion": { "$ref": "ProtocolVersion.json" }
+  },
+  "required": [ "protocolSnapshot", "protocolVersion" ],
+  "additionalProperties": false
+}

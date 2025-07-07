@@ -8,19 +8,13 @@
     "createdOn": { "type": "string", "format": "date-time" },
     "description": { "type": [ "string", "null" ] },
     "invitation": { "$ref": "../deployments/users/StudyInvitation.json" },
-    "protocolSnapshot": {
+    "versionedProtocolSnapshot": {
       "oneOf": [
         { "type": "null" },
-        { "$ref": "../protocols/StudyProtocolSnapshot.json" }
-      ]
-    },
-    "protocolVersion": {
-      "oneOf": [
-        { "type": "null" },
-        { "$ref": "../protocols/ProtocolVersion.json" }
+        { "$ref": "../protocols/VersionedStudyProtocolSnapshot.json" }
       ]
     }
   },
-  "required": [ "studyId", "ownerId", "name", "createdOn", "description", "invitation", "protocolSnapshot", "protocolVersion" ],
+  "required": [ "studyId", "ownerId", "name", "createdOn", "description", "invitation", "versionedProtocolSnapshot" ],
   "additionalProperties": false
 }

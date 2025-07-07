@@ -5,8 +5,9 @@ import dk.cachet.carp.common.application.services.ApiVersion
 import dk.cachet.carp.common.application.services.ApplicationService
 import dk.cachet.carp.common.application.services.IntegrationEvent
 import dk.cachet.carp.deployments.application.users.StudyInvitation
-import dk.cachet.carp.protocols.application.StudyProtocolSnapshot
-import kotlinx.serialization.*
+import dk.cachet.carp.protocols.application.VersionedStudyProtocolSnapshot
+import kotlinx.serialization.Required
+import kotlinx.serialization.Serializable
 
 
 /**
@@ -103,7 +104,7 @@ interface StudyService : ApplicationService<StudyService, StudyService.Event>
      *  - the [protocol] contains errors preventing it from being used in deployments
      * @throws IllegalStateException when the study protocol can no longer be set since the study went 'live'.
      */
-    suspend fun setProtocol( studyId: UUID, protocol: StudyProtocolSnapshot ): StudyStatus
+    suspend fun setProtocol( studyId: UUID, protocol: VersionedStudyProtocolSnapshot ): StudyStatus
 
     /**
      * Remove the currently set study protocol for the study with the specified [studyId].

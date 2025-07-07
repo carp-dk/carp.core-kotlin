@@ -5,11 +5,14 @@ import dk.cachet.carp.common.application.services.ApiVersion
 import dk.cachet.carp.common.infrastructure.serialization.ignoreTypeParameters
 import dk.cachet.carp.common.infrastructure.services.ApplicationServiceRequest
 import dk.cachet.carp.deployments.application.users.StudyInvitation
-import dk.cachet.carp.protocols.application.StudyProtocolSnapshot
+import dk.cachet.carp.protocols.application.VersionedStudyProtocolSnapshot
 import dk.cachet.carp.studies.application.StudyDetails
 import dk.cachet.carp.studies.application.StudyService
 import dk.cachet.carp.studies.application.StudyStatus
-import kotlinx.serialization.*
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Required
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.serializer
 import kotlin.js.JsExport
 
 
@@ -70,7 +73,7 @@ sealed class StudyServiceRequest<out TReturn> : ApplicationServiceRequest<StudyS
     }
 
     @Serializable
-    data class SetProtocol( val studyId: UUID, val protocol: StudyProtocolSnapshot ) :
+    data class SetProtocol( val studyId: UUID, val protocol: VersionedStudyProtocolSnapshot ) :
         StudyServiceRequest<StudyStatus>()
     {
         override fun getResponseSerializer() = serializer<StudyStatus>()

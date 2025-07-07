@@ -4,7 +4,7 @@
         "request": {
             "__type": "dk.cachet.carp.studies.infrastructure.StudyServiceRequest.CreateStudy",
             "apiVersion": "1.3",
-            "ownerId": "8ae60bcc-78ba-4742-88c7-53d9c81938ce",
+            "ownerId": "32208911-2812-424f-b565-c208f5b9d5f2",
             "name": "Test"
         },
         "precedingEvents": [],
@@ -15,14 +15,14 @@
                 "apiVersion": "1.3",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "8ae60bcc-78ba-4742-88c7-53d9c81938ce",
+                    "ownerId": "32208911-2812-424f-b565-c208f5b9d5f2",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
                     "invitation": {
                         "name": "Test"
                     },
-                    "protocolSnapshot": null
+                    "versionedProtocolSnapshot": null
                 }
             }
         ],
@@ -45,18 +45,24 @@
             "apiVersion": "1.3",
             "studyId": "00000000-0000-0000-0000-000000000001",
             "protocol": {
-                "id": "01e707c1-a0b9-4613-b240-c156af22b994",
-                "createdOn": "2024-10-16T09:14:42.965740Z",
-                "version": 0,
-                "ownerId": "be492755-aee4-484d-bc72-fec7f7ac55d7",
-                "name": "Test protocol",
-                "primaryDevices": [
-                    {
-                        "__type": "dk.cachet.carp.common.application.devices.Smartphone",
-                        "isPrimaryDevice": true,
-                        "roleName": "User's phone"
-                    }
-                ]
+                "protocolSnapshot": {
+                    "id": "16594fa1-f298-4e60-9ec5-e8ee3e950cd7",
+                    "createdOn": "2025-07-07T09:21:18.492633Z",
+                    "version": 0,
+                    "ownerId": "f46fa4e8-f93d-4ace-b3f3-9eae33260297",
+                    "name": "Test protocol",
+                    "primaryDevices": [
+                        {
+                            "__type": "dk.cachet.carp.common.application.devices.Smartphone",
+                            "isPrimaryDevice": true,
+                            "roleName": "User's phone"
+                        }
+                    ]
+                },
+                "protocolVersion": {
+                    "tag": "Version 1",
+                    "date": "2025-07-07T09:21:18.492655Z"
+                }
             }
         },
         "precedingEvents": [],
@@ -66,7 +72,7 @@
             "studyId": "00000000-0000-0000-0000-000000000001",
             "name": "Test",
             "createdOn": "1970-01-01T00:00:00Z",
-            "studyProtocolId": "01e707c1-a0b9-4613-b240-c156af22b994",
+            "studyProtocolId": "16594fa1-f298-4e60-9ec5-e8ee3e950cd7",
             "canSetInvitation": true,
             "canSetStudyProtocol": true,
             "canDeployToParticipants": false,
@@ -88,26 +94,32 @@
                 "apiVersion": "1.3",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "8ae60bcc-78ba-4742-88c7-53d9c81938ce",
+                    "ownerId": "32208911-2812-424f-b565-c208f5b9d5f2",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
                     "invitation": {
                         "name": "Test"
                     },
-                    "protocolSnapshot": {
-                        "id": "01e707c1-a0b9-4613-b240-c156af22b994",
-                        "createdOn": "2024-10-16T09:14:42.965740Z",
-                        "version": 0,
-                        "ownerId": "be492755-aee4-484d-bc72-fec7f7ac55d7",
-                        "name": "Test protocol",
-                        "primaryDevices": [
-                            {
-                                "__type": "dk.cachet.carp.common.application.devices.Smartphone",
-                                "isPrimaryDevice": true,
-                                "roleName": "User's phone"
-                            }
-                        ]
+                    "versionedProtocolSnapshot": {
+                        "protocolSnapshot": {
+                            "id": "16594fa1-f298-4e60-9ec5-e8ee3e950cd7",
+                            "createdOn": "2025-07-07T09:21:18.492633Z",
+                            "version": 0,
+                            "ownerId": "f46fa4e8-f93d-4ace-b3f3-9eae33260297",
+                            "name": "Test protocol",
+                            "primaryDevices": [
+                                {
+                                    "__type": "dk.cachet.carp.common.application.devices.Smartphone",
+                                    "isPrimaryDevice": true,
+                                    "roleName": "User's phone"
+                                }
+                            ]
+                        },
+                        "protocolVersion": {
+                            "tag": "Version 1",
+                            "date": "2025-07-07T09:21:18.492655Z"
+                        }
                     }
                 }
             }
@@ -117,7 +129,7 @@
             "studyId": "00000000-0000-0000-0000-000000000001",
             "name": "Test",
             "createdOn": "1970-01-01T00:00:00Z",
-            "studyProtocolId": "01e707c1-a0b9-4613-b240-c156af22b994",
+            "studyProtocolId": "16594fa1-f298-4e60-9ec5-e8ee3e950cd7",
             "canSetInvitation": false,
             "canSetStudyProtocol": false,
             "canDeployToParticipants": true
@@ -144,18 +156,24 @@
             "apiVersion": "1.3",
             "studyId": "00000000-0000-0000-0000-000000000001",
             "protocol": {
-                "id": "01e707c1-a0b9-4613-b240-c156af22b994",
-                "createdOn": "2024-10-16T09:14:42.965740Z",
-                "version": 0,
-                "ownerId": "be492755-aee4-484d-bc72-fec7f7ac55d7",
-                "name": "Test protocol",
-                "primaryDevices": [
-                    {
-                        "__type": "dk.cachet.carp.common.application.devices.Smartphone",
-                        "isPrimaryDevice": true,
-                        "roleName": "User's phone"
-                    }
-                ]
+                "protocolSnapshot": {
+                    "id": "16594fa1-f298-4e60-9ec5-e8ee3e950cd7",
+                    "createdOn": "2025-07-07T09:21:18.492633Z",
+                    "version": 0,
+                    "ownerId": "f46fa4e8-f93d-4ace-b3f3-9eae33260297",
+                    "name": "Test protocol",
+                    "primaryDevices": [
+                        {
+                            "__type": "dk.cachet.carp.common.application.devices.Smartphone",
+                            "isPrimaryDevice": true,
+                            "roleName": "User's phone"
+                        }
+                    ]
+                },
+                "protocolVersion": {
+                    "tag": "Version 1",
+                    "date": "2025-07-07T09:21:18.492655Z"
+                }
             }
         },
         "precedingEvents": [],

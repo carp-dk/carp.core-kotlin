@@ -7,7 +7,6 @@ import dk.cachet.carp.protocols.application.ProtocolVersion
 import dk.cachet.carp.studies.application.StudyService
 import dk.cachet.carp.studies.infrastructure.StudyServiceInvoker
 import dk.cachet.carp.studies.infrastructure.StudyServiceRequest
-import kotlinx.datetime.Clock
 import kotlinx.serialization.json.*
 
 
@@ -55,44 +54,71 @@ private val major1Minor0To1Migration =
 private val major1Minor1to3Migration =
     object : ApiMigration( 1, 3 )
     {
-        override fun migrateRequest( request: JsonObject ): JsonObject = request
-
-        override fun migrateResponse(
-            request: JsonObject,
-            response: ApiResponse,
-            targetVersion: ApiVersion
-        ): ApiResponse =
-            when ( request.getType( ) )
+        override fun migrateRequest( request: JsonObject ) = request.migrate {
+            ifType( "dk.cachet.carp.studies.infrastructure.StudyServiceRequest.SetProtocol" )
             {
+                if (json[ "protocol" ] != null )
+                {
+                    val protocolSnapshot = json.remove("protocol")
+                    val initialVersion = ProtocolVersion( "Initial" )
+                    val protocolVersionJson = JSON.encodeToJsonElement( ProtocolVersion.serializer(), initialVersion )
+                    json["protocol"] = buildJsonObject {
+                        put("protocolSnapshot", protocolSnapshot!!)
+                        put("protocolVersion", protocolVersionJson)
+                    }
+                }
+            }
+        }
+
+        override fun migrateResponse( request: JsonObject, response: ApiResponse, targetVersion: ApiVersion ) =
+            when ( request.getType() )
+            {
+                // Replace 'versionedProtocolSnapshot' with 'protocolSnapshot'.
                 "dk.cachet.carp.studies.infrastructure.StudyServiceRequest.GetStudyDetails" ->
                 {
-                    val responseObject = ( response.response as? JsonObject )
+                    val responseObject = (response.response as? JsonObject)
                         ?.migrate {
-                            json.remove( "protocolVersion" )
+                        if (json[ "versionedProtocolSnapshot" ] != null)
+                        {
+                            val versionedSnapshot = json.remove("versionedProtocolSnapshot") as? JsonObject
+
+                            val protocolSnapshot = versionedSnapshot?.get("protocolSnapshot")
+                            if (protocolSnapshot != null) json["protocolSnapshot"] = protocolSnapshot
+
+                            json["protocolSnapshot"] = protocolSnapshot ?: JsonNull
                         }
-                    ApiResponse( responseObject, response.ex )
+                    }
+                    ApiResponse(responseObject, response.ex)
                 }
-                else -> response
-            }
+            else -> response
+        }
+
         override fun migrateEvent( event: JsonObject ) = event.migrate {
-            ifType("dk.cachet.carp.studies.application.StudyService.Event.StudyCreated") {
-                addProtocolSnapshotVersion( "study" )
+            ifType( "dk.cachet.carp.studies.application.StudyService.Event.StudyCreated" ) {
+                addVersionedProtocolSnapshot( "study" )
             }
-            ifType("dk.cachet.carp.studies.application.StudyService.Event.StudyGoneLive") {
-                addProtocolSnapshotVersion( "study" )
+            ifType( "dk.cachet.carp.studies.application.StudyService.Event.StudyGoneLive" ) {
+                addVersionedProtocolSnapshot( "study" )
             }
         }
         /**
          * The `protocolVersion` field was added to the `StudyProtocolSnapshot` object.
          * This allows old StudyService run with a newer RecruitmentService
          */
-        fun ApiJsonObjectMigrationBuilder.addProtocolSnapshotVersion( fieldName: String ) =
+        fun ApiJsonObjectMigrationBuilder.addVersionedProtocolSnapshot( fieldName: String ) =
             updateObject( fieldName )
             {
-                val newField = "protocolVersion"
-                val initialVersion = ProtocolVersion( "Initial", Clock.System.now() )
-                val protocolVersionJson = JSON.encodeToJsonElement( ProtocolVersion.serializer(), initialVersion )
-                if ( json[ newField ] == JsonNull ) json[ newField ] = protocolVersionJson
+                val snapshot = json.remove("protocolSnapshot")
+                val version = ProtocolVersion("Initial")
+                val versionJson = JSON.encodeToJsonElement(ProtocolVersion.serializer(), version)
+
+                json["versionedProtocolSnapshot"] = when (snapshot) {
+                    null, JsonNull -> JsonNull
+                    else -> buildJsonObject {
+                        put("protocolSnapshot", snapshot)
+                        put("protocolVersion", versionJson)
+                    }
+                }
             }
     }
 

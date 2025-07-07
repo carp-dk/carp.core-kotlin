@@ -15,6 +15,8 @@ import dk.cachet.carp.deployments.domain.users.ParticipantGroupService
 import dk.cachet.carp.deployments.infrastructure.InMemoryAccountService
 import dk.cachet.carp.deployments.infrastructure.InMemoryDeploymentRepository
 import dk.cachet.carp.deployments.infrastructure.InMemoryParticipationRepository
+import dk.cachet.carp.protocols.application.ProtocolVersion
+import dk.cachet.carp.protocols.application.VersionedStudyProtocolSnapshot
 import dk.cachet.carp.protocols.infrastructure.test.createSinglePrimaryDeviceProtocol
 import dk.cachet.carp.studies.application.users.AssignedParticipantRoles
 import dk.cachet.carp.studies.infrastructure.InMemoryParticipantRepository
@@ -86,7 +88,11 @@ class HostsIntegrationTest
         val study = studyService.createStudy( UUID.randomUUID(), "Test" )
         val studyId = study.studyId
         val protocol = createSinglePrimaryDeviceProtocol( "Device" )
-        studyService.setProtocol( studyId, protocol.getSnapshot() )
+        val versionedProtocol = VersionedStudyProtocolSnapshot(
+            protocol.getSnapshot(),
+            ProtocolVersion( "Version 1")
+        )
+        studyService.setProtocol( studyId, versionedProtocol )
 
         var studyGoneLive: StudyService.Event.StudyGoneLive? = null
         eventBus.registerHandler( StudyService::class, StudyService.Event.StudyGoneLive::class, this ) { studyGoneLive = it }
@@ -149,7 +155,11 @@ class HostsIntegrationTest
         val studyId = study.studyId
         val deviceRole = "Phone"
         val protocol = createSinglePrimaryDeviceProtocol( deviceRole )
-        studyService.setProtocol( studyId, protocol.getSnapshot() )
+        val versionedProtocol = VersionedStudyProtocolSnapshot(
+            protocol.getSnapshot(),
+            ProtocolVersion( "Version 1")
+        )
+        studyService.setProtocol( studyId, versionedProtocol )
         studyService.goLive( studyId )
 
         return Pair( studyId, deviceRole )

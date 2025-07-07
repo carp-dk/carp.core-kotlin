@@ -40,8 +40,11 @@ class RecruitmentServiceHost(
             event { goneLive: StudyService.Event.StudyGoneLive ->
                 val recruitment = participantRepository.getRecruitment( goneLive.study.studyId )
                 checkNotNull( recruitment )
-                checkNotNull( goneLive.study.protocolSnapshot )
-                recruitment.lockInStudy( goneLive.study.protocolSnapshot, goneLive.study.invitation )
+                checkNotNull( goneLive.study.versionedProtocolSnapshot )
+                recruitment.lockInStudy(
+                    goneLive.study.versionedProtocolSnapshot.protocolSnapshot,
+                    goneLive.study.invitation
+                )
                 participantRepository.updateRecruitment( recruitment )
             }
 

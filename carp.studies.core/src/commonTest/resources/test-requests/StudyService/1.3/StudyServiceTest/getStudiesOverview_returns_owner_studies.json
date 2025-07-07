@@ -4,7 +4,7 @@
         "request": {
             "__type": "dk.cachet.carp.studies.infrastructure.StudyServiceRequest.CreateStudy",
             "apiVersion": "1.3",
-            "ownerId": "bb4c50d2-1024-4ac0-8114-767990b1bec8",
+            "ownerId": "afffadcb-1a9a-4ac9-9217-12452e40651b",
             "name": "One"
         },
         "precedingEvents": [],
@@ -15,14 +15,14 @@
                 "apiVersion": "1.3",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "bb4c50d2-1024-4ac0-8114-767990b1bec8",
+                    "ownerId": "afffadcb-1a9a-4ac9-9217-12452e40651b",
                     "name": "One",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
                     "invitation": {
                         "name": "One"
                     },
-                    "protocolSnapshot": null
+                    "versionedProtocolSnapshot": null
                 }
             }
         ],
@@ -43,7 +43,7 @@
         "request": {
             "__type": "dk.cachet.carp.studies.infrastructure.StudyServiceRequest.CreateStudy",
             "apiVersion": "1.3",
-            "ownerId": "bb4c50d2-1024-4ac0-8114-767990b1bec8",
+            "ownerId": "afffadcb-1a9a-4ac9-9217-12452e40651b",
             "name": "Two"
         },
         "precedingEvents": [],
@@ -54,14 +54,14 @@
                 "apiVersion": "1.3",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000002",
-                    "ownerId": "bb4c50d2-1024-4ac0-8114-767990b1bec8",
+                    "ownerId": "afffadcb-1a9a-4ac9-9217-12452e40651b",
                     "name": "Two",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
                     "invitation": {
                         "name": "Two"
                     },
-                    "protocolSnapshot": null
+                    "versionedProtocolSnapshot": null
                 }
             }
         ],
@@ -82,7 +82,7 @@
         "request": {
             "__type": "dk.cachet.carp.studies.infrastructure.StudyServiceRequest.CreateStudy",
             "apiVersion": "1.3",
-            "ownerId": "56c212c1-f7ae-4463-b338-da2c3258b349",
+            "ownerId": "7314c79b-7f04-400e-8d7c-878c81334b4e",
             "name": "Three"
         },
         "precedingEvents": [],
@@ -93,14 +93,14 @@
                 "apiVersion": "1.3",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000003",
-                    "ownerId": "56c212c1-f7ae-4463-b338-da2c3258b349",
+                    "ownerId": "7314c79b-7f04-400e-8d7c-878c81334b4e",
                     "name": "Three",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
                     "invitation": {
                         "name": "Three"
                     },
-                    "protocolSnapshot": null
+                    "versionedProtocolSnapshot": null
                 }
             }
         ],
@@ -121,7 +121,7 @@
         "request": {
             "__type": "dk.cachet.carp.studies.infrastructure.StudyServiceRequest.GetStudiesOverview",
             "apiVersion": "1.3",
-            "ownerId": "bb4c50d2-1024-4ac0-8114-767990b1bec8"
+            "ownerId": "afffadcb-1a9a-4ac9-9217-12452e40651b"
         },
         "precedingEvents": [],
         "publishedEvents": [],

@@ -4,7 +4,7 @@
         "request": {
             "__type": "dk.cachet.carp.studies.infrastructure.StudyServiceRequest.CreateStudy",
             "apiVersion": "1.3",
-            "ownerId": "443b7305-ccb1-43ef-85d7-dd3f64a1f661",
+            "ownerId": "25a22fe1-a39f-4dbe-8797-1c32724a3b73",
             "name": "Test",
             "description": "Description",
             "invitation": {
@@ -20,7 +20,7 @@
                 "apiVersion": "1.3",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "443b7305-ccb1-43ef-85d7-dd3f64a1f661",
+                    "ownerId": "25a22fe1-a39f-4dbe-8797-1c32724a3b73",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": "Description",
@@ -28,7 +28,7 @@
                         "name": "Lorem ipsum",
                         "description": "Some description"
                     },
-                    "protocolSnapshot": null
+                    "versionedProtocolSnapshot": null
                 }
             }
         ],
@@ -76,7 +76,7 @@
         "publishedEvents": [],
         "response": {
             "studyId": "00000000-0000-0000-0000-000000000001",
-            "ownerId": "443b7305-ccb1-43ef-85d7-dd3f64a1f661",
+            "ownerId": "25a22fe1-a39f-4dbe-8797-1c32724a3b73",
             "name": "Test",
             "createdOn": "1970-01-01T00:00:00Z",
             "description": "Description",
@@ -84,7 +84,7 @@
                 "name": "Lorem ipsum",
                 "description": "Some description"
             },
-            "protocolSnapshot": null
+            "versionedProtocolSnapshot": null
         }
     }
 ]

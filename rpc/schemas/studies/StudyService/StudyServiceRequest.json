@@ -123,7 +123,7 @@
         "__type": { "const": "dk.cachet.carp.studies.infrastructure.StudyServiceRequest.SetProtocol" },
         "apiVersion": { "$ref": "#/$defs/ApiVersion" },
         "studyId": { "type": "string", "format": "uuid" },
-        "protocol": { "$ref": "../../protocols/StudyProtocolSnapshot.json" }
+        "protocol": { "$ref": "../../protocols/VersionedStudyProtocolSnapshot.json" }
       },
       "required": [ "__type", "apiVersion", "studyId", "protocol" ],
       "additionalProperties": false,

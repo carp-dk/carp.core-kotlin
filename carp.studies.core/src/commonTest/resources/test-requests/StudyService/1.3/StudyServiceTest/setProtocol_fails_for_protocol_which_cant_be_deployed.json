@@ -4,7 +4,7 @@
         "request": {
             "__type": "dk.cachet.carp.studies.infrastructure.StudyServiceRequest.CreateStudy",
             "apiVersion": "1.3",
-            "ownerId": "f7ac49ba-28b5-4f36-9291-cea89c4cdc34",
+            "ownerId": "2f534f36-b7ee-4161-8441-79b81f184b57",
             "name": "Test"
         },
         "precedingEvents": [],
@@ -15,14 +15,14 @@
                 "apiVersion": "1.3",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "f7ac49ba-28b5-4f36-9291-cea89c4cdc34",
+                    "ownerId": "2f534f36-b7ee-4161-8441-79b81f184b57",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
                     "invitation": {
                         "name": "Test"
                     },
-                    "protocolSnapshot": null
+                    "versionedProtocolSnapshot": null
                 }
             }
         ],
@@ -45,11 +45,17 @@
             "apiVersion": "1.3",
             "studyId": "00000000-0000-0000-0000-000000000001",
             "protocol": {
-                "id": "171ca950-23b2-47c3-b3cb-d2d92abaecbc",
-                "createdOn": "2024-10-16T09:14:42.932168Z",
-                "version": 0,
-                "ownerId": "3efa9a5a-975d-474e-9371-d1df3bb381b2",
-                "name": "Not deployable"
+                "protocolSnapshot": {
+                    "id": "56d91742-243e-410a-80d3-72d9a512a0cc",
+                    "createdOn": "2025-07-07T09:21:18.475103Z",
+                    "version": 0,
+                    "ownerId": "3e7e0ab1-1f25-43a0-a161-700a480f1c5b",
+                    "name": "Not deployable"
+                },
+                "protocolVersion": {
+                    "tag": "Version 1",
+                    "date": "2025-07-07T09:21:18.475143Z"
+                }
             }
         },
         "precedingEvents": [],

@@ -5,7 +5,7 @@ import dk.cachet.carp.common.infrastructure.services.ApplicationServiceDecorator
 import dk.cachet.carp.common.infrastructure.services.ApplicationServiceInvoker
 import dk.cachet.carp.common.infrastructure.services.Command
 import dk.cachet.carp.deployments.application.users.StudyInvitation
-import dk.cachet.carp.protocols.application.StudyProtocolSnapshot
+import dk.cachet.carp.protocols.application.VersionedStudyProtocolSnapshot
 import dk.cachet.carp.studies.application.StudyService
 
 
@@ -39,7 +39,7 @@ class StudyServiceDecorator(
     override suspend fun setInvitation( studyId: UUID, invitation: StudyInvitation ) =
         invoke( StudyServiceRequest.SetInvitation( studyId, invitation ) )
 
-    override suspend fun setProtocol( studyId: UUID, protocol: StudyProtocolSnapshot ) =
+    override suspend fun setProtocol( studyId: UUID, protocol: VersionedStudyProtocolSnapshot ) =
         invoke( StudyServiceRequest.SetProtocol( studyId, protocol ) )
 
     override suspend fun removeProtocol( studyId: UUID ) = invoke( StudyServiceRequest.RemoveProtocol( studyId ) )

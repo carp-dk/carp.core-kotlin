@@ -5,7 +5,7 @@ import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.application.UUIDFactory
 import dk.cachet.carp.common.application.services.ApplicationServiceEventBus
 import dk.cachet.carp.deployments.application.users.StudyInvitation
-import dk.cachet.carp.protocols.application.StudyProtocolSnapshot
+import dk.cachet.carp.protocols.application.VersionedStudyProtocolSnapshot
 import dk.cachet.carp.studies.domain.Study
 import dk.cachet.carp.studies.domain.StudyRepository
 import kotlinx.datetime.Clock
@@ -130,13 +130,13 @@ class StudyServiceHost(
      *  - the [protocol] contains errors preventing it from being used in deployments
      * @throws IllegalStateException when the study protocol can no longer be set since the study went 'live'.
      */
-    override suspend fun setProtocol( studyId: UUID, protocol: StudyProtocolSnapshot ): StudyStatus
+    override suspend fun setProtocol( studyId: UUID, protocol: VersionedStudyProtocolSnapshot ): StudyStatus
     {
         val study: Study? = repository.getById( studyId )
         requireNotNull( study )
 
         // Configure study to use the protocol.
-        study.protocolSnapshot = protocol
+        study.versionedProtocolSnapshot = protocol
         repository.update( study )
 
         return study.getStatus()
@@ -153,7 +153,7 @@ class StudyServiceHost(
         val study: Study? = repository.getById( studyId )
         requireNotNull( study )
 
-        study.protocolSnapshot = null
+        study.versionedProtocolSnapshot = null
         repository.update( study )
 
         return study.getStatus()

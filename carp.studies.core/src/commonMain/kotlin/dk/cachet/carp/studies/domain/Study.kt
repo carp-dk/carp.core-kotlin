@@ -4,8 +4,8 @@ import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.domain.AggregateRoot
 import dk.cachet.carp.common.domain.DomainEvent
 import dk.cachet.carp.deployments.application.users.StudyInvitation
-import dk.cachet.carp.protocols.application.ProtocolVersion
 import dk.cachet.carp.protocols.application.StudyProtocolSnapshot
+import dk.cachet.carp.protocols.application.VersionedStudyProtocolSnapshot
 import dk.cachet.carp.protocols.domain.StudyProtocol
 import dk.cachet.carp.studies.application.StudyDetails
 import dk.cachet.carp.studies.application.StudyStatus
@@ -59,8 +59,7 @@ class Study(
                 snapshot.id,
                 snapshot.createdOn
             )
-            study.protocolSnapshot = snapshot.protocolSnapshot
-            study.protocolVersion = snapshot.protocolVersion
+            study.versionedProtocolSnapshot = snapshot.versionedProtocolSnapshot
             study.isLive = snapshot.isLive
 
             // Events introduced by loading the snapshot are not relevant to a consumer wanting to persist changes.
@@ -121,7 +120,7 @@ class Study(
                 id,
                 name,
                 createdOn,
-                protocolSnapshot?.id,
+                versionedProtocolSnapshot?.protocolSnapshot?.id,
                 canSetInvitation,
                 canSetStudyProtocol,
                 canDeployToParticipants
@@ -133,7 +132,7 @@ class Study(
                 id,
                 name,
                 createdOn,
-                protocolSnapshot?.id,
+                versionedProtocolSnapshot?.protocolSnapshot?.id,
                 canSetInvitation,
                 canSetStudyProtocol,
                 canDeployToParticipants,
@@ -145,14 +144,14 @@ class Study(
      * Get [StudyDetails] for this [Study].
      */
     fun getStudyDetails(): StudyDetails =
-        StudyDetails( id, ownerId, name, createdOn, description, invitation, protocolSnapshot, protocolVersion )
+        StudyDetails( id, ownerId, name, createdOn, description, invitation, versionedProtocolSnapshot )
 
     val canSetStudyProtocol: Boolean get() = !isLive
 
     /**
      * A snapshot of the protocol to use in this study, or null when not yet defined.
      */
-    var protocolSnapshot: StudyProtocolSnapshot? = null
+    var versionedProtocolSnapshot: VersionedStudyProtocolSnapshot? = null
         /**
          * Set the protocol to use in this study as defined by an immutable snapshot.
          * Passing 'null' removes the assigned protocol.
@@ -167,26 +166,13 @@ class Study(
             check( !isLive ) { "Can't set protocol since this study already went live." }
             if ( value != null )
             {
-                val protocol = StudyProtocol.fromSnapshot( value )
+                val protocol = StudyProtocol.fromSnapshot( value.protocolSnapshot )
                 require( protocol.isDeployable() )
                     { "The specified protocol contains deployment errors and therefore won't be able to be deployed." }
             }
 
             field = value
-            event( Event.ProtocolSnapshotChanged( value ) )
-        }
-
-    /**
-     * The version of the protocol to use in this study, or null when not yet defined.
-     */
-    var protocolVersion: ProtocolVersion? = null
-        set ( value )
-        {
-            check( !isLive ) { "Can't set protocol version since this study already went live." }
-            check( protocolSnapshot != null || value == null )
-                { "A study protocol needs to be defined before a version can be set." }
-
-            field = value
+            event( Event.ProtocolSnapshotChanged( value?.protocolSnapshot ) )
         }
 
     /**
@@ -195,7 +181,7 @@ class Study(
     var isLive: Boolean = false
         private set
 
-    private val canGoLive: Boolean get() = protocolSnapshot != null
+    private val canGoLive: Boolean get() = versionedProtocolSnapshot != null
 
     /**
      * Lock in the current study protocol so that the study may be deployed to participants.
@@ -204,7 +190,7 @@ class Study(
      */
     fun goLive()
     {
-        checkNotNull( protocolSnapshot ) { "A study protocol needs to be defined for a study to go live." }
+        checkNotNull( versionedProtocolSnapshot ) { "A study protocol needs to be defined for a study to go live." }
 
         if ( !isLive )
         {
