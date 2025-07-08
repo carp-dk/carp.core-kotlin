@@ -63,7 +63,7 @@ class ApplicationServiceApiMigrator<
         // Defer applying response migrations.
         fun downgradeResponse( response: JsonElement?, ex: Exception? ): JsonElement
         {
-            val updatedResponse = toApply.fold( ApiResponse( response, ex ) ) { curResponse, migration ->
+            val updatedResponse = toApply.reversed().fold( ApiResponse( response, ex ) ) { curResponse, migration ->
                 migration.migrateResponse( request, curResponse, requestVersion )
             }
 
