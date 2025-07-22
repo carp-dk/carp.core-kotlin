@@ -5,11 +5,8 @@ import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.application.data.input.CarpInputDataTypes
 import dk.cachet.carp.common.application.devices.Smartphone
 import dk.cachet.carp.common.application.services.EventBus
-import dk.cachet.carp.common.application.users.AssignedTo
-import dk.cachet.carp.common.application.users.ExpectedParticipantData
-import dk.cachet.carp.common.application.users.ParticipantAttribute
-import dk.cachet.carp.common.application.users.ParticipantRole
-import dk.cachet.carp.common.application.users.Username
+import dk.cachet.carp.common.application.users.*
+import dk.cachet.carp.deployments.application.DeploymentService
 import dk.cachet.carp.protocols.application.StudyProtocolSnapshot
 import dk.cachet.carp.protocols.domain.StudyProtocol
 import dk.cachet.carp.studies.application.users.AssignedParticipantRoles
@@ -32,6 +29,7 @@ interface RecruitmentServiceTest
     data class SUT(
         val recruitmentService: RecruitmentService,
         val studyService: StudyService,
+        val deploymentService: DeploymentService,
         val eventBus: EventBus
     )
 
@@ -254,12 +252,41 @@ interface RecruitmentServiceTest
         assertFailsWith<IllegalArgumentException> { recruitmentService.stopParticipantGroup( studyId, unknownId ) }
     }
 
+    @Test
+    fun getParticipantGroupStatusList_full_flow_succeeds() = runTest {
+        val (recruitmentService, studyService, deploymentService) = createSUT()
+        val roleName = "User's phone"
+        val (studyId, _) = createLiveStudy( studyService, roleName )
+        val participant = recruitmentService.addParticipant( studyId, EmailAddress( "test@test.com" ) )
 
-    private suspend fun createLiveStudy( service: StudyService ): Pair<UUID, StudyProtocolSnapshot>
+        val assignParticipant = AssignedParticipantRoles( participant.id, AssignedTo.All )
+
+        val groupStatus = recruitmentService.inviteNewParticipantGroup( studyId, setOf( assignParticipant ) )
+        val deploymentId = groupStatus.id
+
+        val status = deploymentService.getStudyDeploymentStatus( deploymentId )
+        val primary = status.getRemainingDevicesToRegister().first { it.roleName == roleName }
+        val registration = primary.createRegistration()
+
+        recruitmentService.getParticipantGroupStatusList( studyId )
+        deploymentService.registerDevice( deploymentId, primary.roleName, registration )
+        recruitmentService.getParticipantGroupStatusList( studyId )
+        val deviceDeployment = deploymentService.getDeviceDeploymentFor( deploymentId, primary.roleName )
+        deploymentService.deviceDeployed( deploymentId, primary.roleName, deviceDeployment.lastUpdatedOn )
+        recruitmentService.getParticipantGroupStatusList( studyId )
+        deploymentService.unregisterDevice( deploymentId, primary.roleName )
+        recruitmentService.getParticipantGroupStatusList( studyId )
+        recruitmentService.stopParticipantGroup( studyId, deploymentId )
+    }
+
+    private suspend fun createLiveStudy(
+        service: StudyService,
+        roleName: String = "User's phone"
+    ): Pair<UUID, StudyProtocolSnapshot>
     {
         // Create deployable protocol.
         val protocol = StudyProtocol( UUID.randomUUID(), "Test protocol" )
-        protocol.addPrimaryDevice( Smartphone( "User's phone" ) )
+        protocol.addPrimaryDevice( Smartphone( roleName ) )
         val expectedData = ExpectedParticipantData(
             ParticipantAttribute.DefaultParticipantAttribute( CarpInputDataTypes.SEX )
         )

@@ -20,6 +20,6 @@ class OutputRecruitmentServiceTestRequests :
         val sut = RecruitmentServiceHostTest.createSUT()
         val loggedService = createLoggedApplicationService( sut.recruitmentService, sut.eventBus )
 
-        return RecruitmentServiceTest.SUT( loggedService, sut.studyService, sut.eventBus )
+        return RecruitmentServiceTest.SUT( loggedService, sut.studyService, sut.deploymentService, sut.eventBus )
     }
 }

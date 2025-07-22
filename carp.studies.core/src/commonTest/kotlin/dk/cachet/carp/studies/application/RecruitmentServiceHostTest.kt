@@ -48,7 +48,7 @@ class RecruitmentServiceHostTest : RecruitmentServiceTest
                 TestClock
             )
 
-            return RecruitmentServiceTest.SUT( recruitmentService, studyService, eventBus )
+            return RecruitmentServiceTest.SUT( recruitmentService, studyService, deploymentService, eventBus )
         }
     }
 

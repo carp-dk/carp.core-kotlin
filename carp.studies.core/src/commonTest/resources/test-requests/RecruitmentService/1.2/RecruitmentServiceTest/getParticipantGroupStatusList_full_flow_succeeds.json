@@ -1,0 +1,443 @@
+[
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.AddParticipantByEmailAddress",
+            "apiVersion": "1.2",
+            "studyId": "00000000-0000-0000-0000-000000000001",
+            "email": "test@test.com"
+        },
+        "precedingEvents": [
+            {
+                "__type": "dk.cachet.carp.studies.application.StudyService.Event.StudyCreated",
+                "aggregateId": "00000000-0000-0000-0000-000000000001",
+                "apiVersion": "1.1",
+                "study": {
+                    "studyId": "00000000-0000-0000-0000-000000000001",
+                    "ownerId": "24439a3d-933f-40a4-b02c-ec974653a172",
+                    "name": "Test",
+                    "createdOn": "1970-01-01T00:00:00Z",
+                    "description": null,
+                    "invitation": {
+                        "name": "Test"
+                    },
+                    "protocolSnapshot": null
+                }
+            },
+            {
+                "__type": "dk.cachet.carp.studies.application.StudyService.Event.StudyGoneLive",
+                "aggregateId": "00000000-0000-0000-0000-000000000001",
+                "apiVersion": "1.1",
+                "study": {
+                    "studyId": "00000000-0000-0000-0000-000000000001",
+                    "ownerId": "24439a3d-933f-40a4-b02c-ec974653a172",
+                    "name": "Test",
+                    "createdOn": "1970-01-01T00:00:00Z",
+                    "description": null,
+                    "invitation": {
+                        "name": "Test"
+                    },
+                    "protocolSnapshot": {
+                        "id": "5d0ab43e-bdf0-4702-9c94-91da023f1959",
+                        "createdOn": "2025-07-22T16:54:41.393117Z",
+                        "version": 0,
+                        "ownerId": "1643a416-c402-4b6d-982c-a243914b6bc5",
+                        "name": "Test protocol",
+                        "primaryDevices": [
+                            {
+                                "__type": "dk.cachet.carp.common.application.devices.Smartphone",
+                                "isPrimaryDevice": true,
+                                "roleName": "User's phone"
+                            }
+                        ],
+                        "participantRoles": [
+                            {
+                                "role": "Test role",
+                                "isOptional": false
+                            },
+                            {
+                                "role": "Test role 2",
+                                "isOptional": false
+                            }
+                        ],
+                        "expectedParticipantData": [
+                            {
+                                "attribute": {
+                                    "__type": "dk.cachet.carp.common.application.users.ParticipantAttribute.DefaultParticipantAttribute",
+                                    "inputDataType": "dk.cachet.carp.input.sex"
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        ],
+        "publishedEvents": [],
+        "response": {
+            "accountIdentity": {
+                "__type": "dk.cachet.carp.common.application.users.EmailAccountIdentity",
+                "emailAddress": "test@test.com"
+            },
+            "id": "00000000-0000-0000-0000-000000000002"
+        }
+    },
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.InviteNewParticipantGroup",
+            "apiVersion": "1.2",
+            "studyId": "00000000-0000-0000-0000-000000000001",
+            "group": [
+                {
+                    "participantId": "00000000-0000-0000-0000-000000000002",
+                    "assignedRoles": {
+                        "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                    }
+                }
+            ]
+        },
+        "precedingEvents": [],
+        "publishedEvents": [],
+        "response": {
+            "__type": "dk.cachet.carp.studies.application.users.ParticipantGroupStatus.Invited",
+            "id": "00000000-0000-0000-0000-000000000003",
+            "participants": [
+                {
+                    "accountIdentity": {
+                        "__type": "dk.cachet.carp.common.application.users.EmailAccountIdentity",
+                        "emailAddress": "test@test.com"
+                    },
+                    "id": "00000000-0000-0000-0000-000000000002"
+                }
+            ],
+            "invitedOn": "1970-01-01T00:00:00Z",
+            "studyDeploymentStatus": {
+                "__type": "dk.cachet.carp.deployments.application.StudyDeploymentStatus.Invited",
+                "createdOn": "1970-01-01T00:00:00Z",
+                "studyDeploymentId": "00000000-0000-0000-0000-000000000003",
+                "deviceStatusList": [
+                    {
+                        "__type": "dk.cachet.carp.deployments.application.DeviceDeploymentStatus.Unregistered",
+                        "device": {
+                            "__type": "dk.cachet.carp.common.application.devices.Smartphone",
+                            "isPrimaryDevice": true,
+                            "roleName": "User's phone"
+                        },
+                        "canBeDeployed": true,
+                        "remainingDevicesToRegisterToObtainDeployment": [
+                            "User's phone"
+                        ],
+                        "remainingDevicesToRegisterBeforeDeployment": [
+                            "User's phone"
+                        ]
+                    }
+                ],
+                "participantStatusList": [
+                    {
+                        "participantId": "00000000-0000-0000-0000-000000000002",
+                        "assignedParticipantRoles": {
+                            "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                        },
+                        "assignedPrimaryDeviceRoleNames": [
+                            "User's phone"
+                        ]
+                    }
+                ],
+                "startedOn": null
+            }
+        }
+    },
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.GetParticipantGroupStatusList",
+            "apiVersion": "1.2",
+            "studyId": "00000000-0000-0000-0000-000000000001"
+        },
+        "precedingEvents": [],
+        "publishedEvents": [],
+        "response": [
+            {
+                "__type": "dk.cachet.carp.studies.application.users.ParticipantGroupStatus.Invited",
+                "id": "00000000-0000-0000-0000-000000000003",
+                "participants": [
+                    {
+                        "accountIdentity": {
+                            "__type": "dk.cachet.carp.common.application.users.EmailAccountIdentity",
+                            "emailAddress": "test@test.com"
+                        },
+                        "id": "00000000-0000-0000-0000-000000000002"
+                    }
+                ],
+                "invitedOn": "1970-01-01T00:00:00Z",
+                "studyDeploymentStatus": {
+                    "__type": "dk.cachet.carp.deployments.application.StudyDeploymentStatus.Invited",
+                    "createdOn": "1970-01-01T00:00:00Z",
+                    "studyDeploymentId": "00000000-0000-0000-0000-000000000003",
+                    "deviceStatusList": [
+                        {
+                            "__type": "dk.cachet.carp.deployments.application.DeviceDeploymentStatus.Unregistered",
+                            "device": {
+                                "__type": "dk.cachet.carp.common.application.devices.Smartphone",
+                                "isPrimaryDevice": true,
+                                "roleName": "User's phone"
+                            },
+                            "canBeDeployed": true,
+                            "remainingDevicesToRegisterToObtainDeployment": [
+                                "User's phone"
+                            ],
+                            "remainingDevicesToRegisterBeforeDeployment": [
+                                "User's phone"
+                            ]
+                        }
+                    ],
+                    "participantStatusList": [
+                        {
+                            "participantId": "00000000-0000-0000-0000-000000000002",
+                            "assignedParticipantRoles": {
+                                "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                            },
+                            "assignedPrimaryDeviceRoleNames": [
+                                "User's phone"
+                            ]
+                        }
+                    ],
+                    "startedOn": null
+                }
+            }
+        ]
+    },
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.GetParticipantGroupStatusList",
+            "apiVersion": "1.2",
+            "studyId": "00000000-0000-0000-0000-000000000001"
+        },
+        "precedingEvents": [],
+        "publishedEvents": [],
+        "response": [
+            {
+                "__type": "dk.cachet.carp.studies.application.users.ParticipantGroupStatus.Invited",
+                "id": "00000000-0000-0000-0000-000000000003",
+                "participants": [
+                    {
+                        "accountIdentity": {
+                            "__type": "dk.cachet.carp.common.application.users.EmailAccountIdentity",
+                            "emailAddress": "test@test.com"
+                        },
+                        "id": "00000000-0000-0000-0000-000000000002"
+                    }
+                ],
+                "invitedOn": "1970-01-01T00:00:00Z",
+                "studyDeploymentStatus": {
+                    "__type": "dk.cachet.carp.deployments.application.StudyDeploymentStatus.DeployingDevices",
+                    "createdOn": "1970-01-01T00:00:00Z",
+                    "studyDeploymentId": "00000000-0000-0000-0000-000000000003",
+                    "deviceStatusList": [
+                        {
+                            "__type": "dk.cachet.carp.deployments.application.DeviceDeploymentStatus.Registered",
+                            "device": {
+                                "__type": "dk.cachet.carp.common.application.devices.Smartphone",
+                                "isPrimaryDevice": true,
+                                "roleName": "User's phone"
+                            },
+                            "canBeDeployed": true,
+                            "remainingDevicesToRegisterToObtainDeployment": [],
+                            "remainingDevicesToRegisterBeforeDeployment": []
+                        }
+                    ],
+                    "participantStatusList": [
+                        {
+                            "participantId": "00000000-0000-0000-0000-000000000002",
+                            "assignedParticipantRoles": {
+                                "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                            },
+                            "assignedPrimaryDeviceRoleNames": [
+                                "User's phone"
+                            ]
+                        }
+                    ],
+                    "startedOn": null
+                }
+            }
+        ]
+    },
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.GetParticipantGroupStatusList",
+            "apiVersion": "1.2",
+            "studyId": "00000000-0000-0000-0000-000000000001"
+        },
+        "precedingEvents": [],
+        "publishedEvents": [],
+        "response": [
+            {
+                "__type": "dk.cachet.carp.studies.application.users.ParticipantGroupStatus.Running",
+                "id": "00000000-0000-0000-0000-000000000003",
+                "participants": [
+                    {
+                        "accountIdentity": {
+                            "__type": "dk.cachet.carp.common.application.users.EmailAccountIdentity",
+                            "emailAddress": "test@test.com"
+                        },
+                        "id": "00000000-0000-0000-0000-000000000002"
+                    }
+                ],
+                "invitedOn": "1970-01-01T00:00:00Z",
+                "studyDeploymentStatus": {
+                    "__type": "dk.cachet.carp.deployments.application.StudyDeploymentStatus.Running",
+                    "createdOn": "1970-01-01T00:00:00Z",
+                    "studyDeploymentId": "00000000-0000-0000-0000-000000000003",
+                    "deviceStatusList": [
+                        {
+                            "__type": "dk.cachet.carp.deployments.application.DeviceDeploymentStatus.Deployed",
+                            "device": {
+                                "__type": "dk.cachet.carp.common.application.devices.Smartphone",
+                                "isPrimaryDevice": true,
+                                "roleName": "User's phone"
+                            }
+                        }
+                    ],
+                    "participantStatusList": [
+                        {
+                            "participantId": "00000000-0000-0000-0000-000000000002",
+                            "assignedParticipantRoles": {
+                                "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                            },
+                            "assignedPrimaryDeviceRoleNames": [
+                                "User's phone"
+                            ]
+                        }
+                    ],
+                    "startedOn": "2025-07-22T16:54:41.394749Z"
+                },
+                "startedOn": "2025-07-22T16:54:41.394749Z"
+            }
+        ]
+    },
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.GetParticipantGroupStatusList",
+            "apiVersion": "1.2",
+            "studyId": "00000000-0000-0000-0000-000000000001"
+        },
+        "precedingEvents": [],
+        "publishedEvents": [],
+        "response": [
+            {
+                "__type": "dk.cachet.carp.studies.application.users.ParticipantGroupStatus.Running",
+                "id": "00000000-0000-0000-0000-000000000003",
+                "participants": [
+                    {
+                        "accountIdentity": {
+                            "__type": "dk.cachet.carp.common.application.users.EmailAccountIdentity",
+                            "emailAddress": "test@test.com"
+                        },
+                        "id": "00000000-0000-0000-0000-000000000002"
+                    }
+                ],
+                "invitedOn": "1970-01-01T00:00:00Z",
+                "studyDeploymentStatus": {
+                    "__type": "dk.cachet.carp.deployments.application.StudyDeploymentStatus.DeployingDevices",
+                    "createdOn": "1970-01-01T00:00:00Z",
+                    "studyDeploymentId": "00000000-0000-0000-0000-000000000003",
+                    "deviceStatusList": [
+                        {
+                            "__type": "dk.cachet.carp.deployments.application.DeviceDeploymentStatus.Unregistered",
+                            "device": {
+                                "__type": "dk.cachet.carp.common.application.devices.Smartphone",
+                                "isPrimaryDevice": true,
+                                "roleName": "User's phone"
+                            },
+                            "canBeDeployed": true,
+                            "remainingDevicesToRegisterToObtainDeployment": [
+                                "User's phone"
+                            ],
+                            "remainingDevicesToRegisterBeforeDeployment": [
+                                "User's phone"
+                            ]
+                        }
+                    ],
+                    "participantStatusList": [
+                        {
+                            "participantId": "00000000-0000-0000-0000-000000000002",
+                            "assignedParticipantRoles": {
+                                "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                            },
+                            "assignedPrimaryDeviceRoleNames": [
+                                "User's phone"
+                            ]
+                        }
+                    ],
+                    "startedOn": "2025-07-22T16:54:41.394749Z"
+                },
+                "startedOn": "2025-07-22T16:54:41.394749Z"
+            }
+        ]
+    },
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.StopParticipantGroup",
+            "apiVersion": "1.2",
+            "studyId": "00000000-0000-0000-0000-000000000001",
+            "groupId": "00000000-0000-0000-0000-000000000003"
+        },
+        "precedingEvents": [],
+        "publishedEvents": [],
+        "response": {
+            "__type": "dk.cachet.carp.studies.application.users.ParticipantGroupStatus.Stopped",
+            "id": "00000000-0000-0000-0000-000000000003",
+            "participants": [
+                {
+                    "accountIdentity": {
+                        "__type": "dk.cachet.carp.common.application.users.EmailAccountIdentity",
+                        "emailAddress": "test@test.com"
+                    },
+                    "id": "00000000-0000-0000-0000-000000000002"
+                }
+            ],
+            "invitedOn": "1970-01-01T00:00:00Z",
+            "studyDeploymentStatus": {
+                "__type": "dk.cachet.carp.deployments.application.StudyDeploymentStatus.Stopped",
+                "createdOn": "1970-01-01T00:00:00Z",
+                "studyDeploymentId": "00000000-0000-0000-0000-000000000003",
+                "deviceStatusList": [
+                    {
+                        "__type": "dk.cachet.carp.deployments.application.DeviceDeploymentStatus.Unregistered",
+                        "device": {
+                            "__type": "dk.cachet.carp.common.application.devices.Smartphone",
+                            "isPrimaryDevice": true,
+                            "roleName": "User's phone"
+                        },
+                        "canBeDeployed": true,
+                        "remainingDevicesToRegisterToObtainDeployment": [
+                            "User's phone"
+                        ],
+                        "remainingDevicesToRegisterBeforeDeployment": [
+                            "User's phone"
+                        ]
+                    }
+                ],
+                "participantStatusList": [
+                    {
+                        "participantId": "00000000-0000-0000-0000-000000000002",
+                        "assignedParticipantRoles": {
+                            "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                        },
+                        "assignedPrimaryDeviceRoleNames": [
+                            "User's phone"
+                        ]
+                    }
+                ],
+                "startedOn": "2025-07-22T16:54:41.394749Z",
+                "stoppedOn": "1970-01-01T00:00:00Z"
+            },
+            "startedOn": "2025-07-22T16:54:41.394749Z",
+            "stoppedOn": "1970-01-01T00:00:00Z"
+        }
+    }
+]
