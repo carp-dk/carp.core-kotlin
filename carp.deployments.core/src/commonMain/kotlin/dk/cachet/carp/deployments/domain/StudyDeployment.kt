@@ -470,7 +470,11 @@ class StudyDeployment private constructor(
      * - the [deviceDeploymentLastUpdatedOn] does not match the expected timestamp. The deployment might be outdated.
      * @throws IllegalStateException when the passed [device] cannot be deployed yet, or the deployment has stopped.
      */
-    fun deviceDeployed( device: AnyPrimaryDeviceConfiguration, deviceDeploymentLastUpdatedOn: Instant )
+    fun deviceDeployed(
+        device: AnyPrimaryDeviceConfiguration,
+        deviceDeploymentLastUpdatedOn: Instant,
+        now: Instant = Clock.System.now()
+    )
     {
         // Verify whether the specified device is part of the protocol of this deployment.
         require( device in protocolSnapshot.primaryDevices )
@@ -501,7 +505,6 @@ class StudyDeployment private constructor(
             .all { it is DeviceDeploymentStatus.Deployed }
         if ( startedOn == null && allRequiredDeviceDeployed )
         {
-            val now = Clock.System.now()
             startedOn = now
             event( Event.Started( now ) )
         }

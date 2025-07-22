@@ -1,0 +1,430 @@
+[
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.deployments.infrastructure.DeploymentServiceRequest.CreateStudyDeployment",
+            "apiVersion": "1.0",
+            "id": "9a6fc6d6-c973-439f-a711-f6f1ede398bf",
+            "protocol": {
+                "id": "bc5f9e5a-c6ef-464e-8edc-aa4eddc20bcc",
+                "createdOn": "2025-07-21T09:21:12.991416Z",
+                "ownerId": "27879e75-ccc1-4866-9ab3-4ece1b735052",
+                "name": "Test protocol",
+                "description": "Test description",
+                "primaryDevices": [
+                    {
+                        "__type": "dk.cachet.carp.common.infrastructure.test.StubPrimaryDeviceConfiguration",
+                        "isPrimaryDevice": true,
+                        "roleName": "Primary"
+                    }
+                ]
+            },
+            "invitations": [
+                {
+                    "participantId": "18e73cb9-026e-4b6f-b9a1-92dbf31e03af",
+                    "assignedRoles": {
+                        "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                    },
+                    "identity": {
+                        "__type": "dk.cachet.carp.common.application.users.UsernameAccountIdentity",
+                        "username": "User"
+                    },
+                    "invitation": {
+                        "name": "Some study"
+                    }
+                }
+            ]
+        },
+        "precedingEvents": [
+        ],
+        "publishedEvents": [
+            {
+                "__type": "dk.cachet.carp.deployments.application.DeploymentService.Event.StudyDeploymentCreated",
+                "aggregateId": "9a6fc6d6-c973-439f-a711-f6f1ede398bf",
+                "apiVersion": "1.0",
+                "studyDeploymentId": "9a6fc6d6-c973-439f-a711-f6f1ede398bf",
+                "protocol": {
+                    "id": "bc5f9e5a-c6ef-464e-8edc-aa4eddc20bcc",
+                    "createdOn": "2025-07-21T09:21:12.991416Z",
+                    "ownerId": "27879e75-ccc1-4866-9ab3-4ece1b735052",
+                    "name": "Test protocol",
+                    "description": "Test description",
+                    "primaryDevices": [
+                        {
+                            "__type": "dk.cachet.carp.common.infrastructure.test.StubPrimaryDeviceConfiguration",
+                            "isPrimaryDevice": true,
+                            "roleName": "Primary"
+                        }
+                    ]
+                },
+                "invitations": [
+                    {
+                        "participantId": "18e73cb9-026e-4b6f-b9a1-92dbf31e03af",
+                        "assignedRoles": {
+                            "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                        },
+                        "identity": {
+                            "__type": "dk.cachet.carp.common.application.users.UsernameAccountIdentity",
+                            "username": "User"
+                        },
+                        "invitation": {
+                            "name": "Some study"
+                        }
+                    }
+                ],
+                "connectedDevicePreregistrations": {
+                }
+            }
+        ],
+        "response": {
+            "__type": "dk.cachet.carp.deployments.application.StudyDeploymentStatus.Invited",
+            "createdOn": "1970-01-01T00:00:00Z",
+            "studyDeploymentId": "9a6fc6d6-c973-439f-a711-f6f1ede398bf",
+            "deviceStatusList": [
+                {
+                    "__type": "dk.cachet.carp.deployments.application.DeviceDeploymentStatus.Unregistered",
+                    "device": {
+                        "__type": "dk.cachet.carp.common.infrastructure.test.StubPrimaryDeviceConfiguration",
+                        "isPrimaryDevice": true,
+                        "roleName": "Primary"
+                    },
+                    "canBeDeployed": true,
+                    "remainingDevicesToRegisterToObtainDeployment": [
+                        "Primary"
+                    ],
+                    "remainingDevicesToRegisterBeforeDeployment": [
+                        "Primary"
+                    ]
+                }
+            ],
+            "participantStatusList": [
+                {
+                    "participantId": "18e73cb9-026e-4b6f-b9a1-92dbf31e03af",
+                    "assignedParticipantRoles": {
+                        "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                    },
+                    "assignedPrimaryDeviceRoleNames": [
+                        "Primary"
+                    ]
+                }
+            ],
+            "startedOn": null
+        }
+    },
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.deployments.infrastructure.DeploymentServiceRequest.GetStudyDeploymentStatus",
+            "apiVersion": "1.0",
+            "studyDeploymentId": "9a6fc6d6-c973-439f-a711-f6f1ede398bf"
+        },
+        "precedingEvents": [
+        ],
+        "publishedEvents": [
+        ],
+        "response": {
+            "__type": "dk.cachet.carp.deployments.application.StudyDeploymentStatus.Invited",
+            "createdOn": "1970-01-01T00:00:00Z",
+            "studyDeploymentId": "9a6fc6d6-c973-439f-a711-f6f1ede398bf",
+            "deviceStatusList": [
+                {
+                    "__type": "dk.cachet.carp.deployments.application.DeviceDeploymentStatus.Unregistered",
+                    "device": {
+                        "__type": "dk.cachet.carp.common.infrastructure.test.StubPrimaryDeviceConfiguration",
+                        "isPrimaryDevice": true,
+                        "roleName": "Primary"
+                    },
+                    "canBeDeployed": true,
+                    "remainingDevicesToRegisterToObtainDeployment": [
+                        "Primary"
+                    ],
+                    "remainingDevicesToRegisterBeforeDeployment": [
+                        "Primary"
+                    ]
+                }
+            ],
+            "participantStatusList": [
+                {
+                    "participantId": "18e73cb9-026e-4b6f-b9a1-92dbf31e03af",
+                    "assignedParticipantRoles": {
+                        "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                    },
+                    "assignedPrimaryDeviceRoleNames": [
+                        "Primary"
+                    ]
+                }
+            ],
+            "startedOn": null
+        }
+    },
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.deployments.infrastructure.DeploymentServiceRequest.RegisterDevice",
+            "apiVersion": "1.0",
+            "studyDeploymentId": "9a6fc6d6-c973-439f-a711-f6f1ede398bf",
+            "deviceRoleName": "Primary",
+            "registration": {
+                "__type": "dk.cachet.carp.common.application.devices.DefaultDeviceRegistration",
+                "deviceDisplayName": null,
+                "deviceId": "75289ff2-4cee-4647-b79c-7dc0497a860d",
+                "registrationCreatedOn": "1970-01-01T00:00:00Z"
+            }
+        },
+        "precedingEvents": [
+        ],
+        "publishedEvents": [
+            {
+                "__type": "dk.cachet.carp.deployments.application.DeploymentService.Event.DeviceRegistrationChanged",
+                "aggregateId": "9a6fc6d6-c973-439f-a711-f6f1ede398bf",
+                "apiVersion": "1.0",
+                "studyDeploymentId": "9a6fc6d6-c973-439f-a711-f6f1ede398bf",
+                "device": {
+                    "__type": "dk.cachet.carp.common.infrastructure.test.StubPrimaryDeviceConfiguration",
+                    "isPrimaryDevice": true,
+                    "roleName": "Primary"
+                },
+                "registration": {
+                    "__type": "dk.cachet.carp.common.application.devices.DefaultDeviceRegistration",
+                    "deviceDisplayName": null,
+                    "deviceId": "75289ff2-4cee-4647-b79c-7dc0497a860d",
+                    "registrationCreatedOn": "1970-01-01T00:00:00Z"
+                }
+            }
+        ],
+        "response": {
+            "__type": "dk.cachet.carp.deployments.application.StudyDeploymentStatus.DeployingDevices",
+            "createdOn": "1970-01-01T00:00:00Z",
+            "studyDeploymentId": "9a6fc6d6-c973-439f-a711-f6f1ede398bf",
+            "deviceStatusList": [
+                {
+                    "__type": "dk.cachet.carp.deployments.application.DeviceDeploymentStatus.Registered",
+                    "device": {
+                        "__type": "dk.cachet.carp.common.infrastructure.test.StubPrimaryDeviceConfiguration",
+                        "isPrimaryDevice": true,
+                        "roleName": "Primary"
+                    },
+                    "canBeDeployed": true,
+                    "remainingDevicesToRegisterToObtainDeployment": [
+                    ],
+                    "remainingDevicesToRegisterBeforeDeployment": [
+                    ]
+                }
+            ],
+            "participantStatusList": [
+                {
+                    "participantId": "18e73cb9-026e-4b6f-b9a1-92dbf31e03af",
+                    "assignedParticipantRoles": {
+                        "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                    },
+                    "assignedPrimaryDeviceRoleNames": [
+                        "Primary"
+                    ]
+                }
+            ],
+            "startedOn": null
+        }
+    },
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.deployments.infrastructure.DeploymentServiceRequest.GetDeviceDeploymentFor",
+            "apiVersion": "1.0",
+            "studyDeploymentId": "9a6fc6d6-c973-439f-a711-f6f1ede398bf",
+            "primaryDeviceRoleName": "Primary"
+        },
+        "precedingEvents": [
+        ],
+        "publishedEvents": [
+        ],
+        "response": {
+            "deviceConfiguration": {
+                "__type": "dk.cachet.carp.common.infrastructure.test.StubPrimaryDeviceConfiguration",
+                "isPrimaryDevice": true,
+                "roleName": "Primary"
+            },
+            "registration": {
+                "__type": "dk.cachet.carp.common.application.devices.DefaultDeviceRegistration",
+                "deviceDisplayName": null,
+                "deviceId": "75289ff2-4cee-4647-b79c-7dc0497a860d",
+                "registrationCreatedOn": "1970-01-01T00:00:00Z"
+            }
+        }
+    },
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.deployments.infrastructure.DeploymentServiceRequest.DeviceDeployed",
+            "apiVersion": "1.0",
+            "studyDeploymentId": "9a6fc6d6-c973-439f-a711-f6f1ede398bf",
+            "primaryDeviceRoleName": "Primary",
+            "deviceDeploymentLastUpdatedOn": "1970-01-01T00:00:00Z"
+        },
+        "precedingEvents": [
+        ],
+        "publishedEvents": [
+        ],
+        "response": {
+            "__type": "dk.cachet.carp.deployments.application.StudyDeploymentStatus.Running",
+            "createdOn": "1970-01-01T00:00:00Z",
+            "studyDeploymentId": "9a6fc6d6-c973-439f-a711-f6f1ede398bf",
+            "deviceStatusList": [
+                {
+                    "__type": "dk.cachet.carp.deployments.application.DeviceDeploymentStatus.Deployed",
+                    "device": {
+                        "__type": "dk.cachet.carp.common.infrastructure.test.StubPrimaryDeviceConfiguration",
+                        "isPrimaryDevice": true,
+                        "roleName": "Primary"
+                    }
+                }
+            ],
+            "participantStatusList": [
+                {
+                    "participantId": "18e73cb9-026e-4b6f-b9a1-92dbf31e03af",
+                    "assignedParticipantRoles": {
+                        "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                    },
+                    "assignedPrimaryDeviceRoleNames": [
+                        "Primary"
+                    ]
+                }
+            ],
+            "startedOn": "1970-01-01T00:00:00Z"
+        }
+    },
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.deployments.infrastructure.DeploymentServiceRequest.UnregisterDevice",
+            "apiVersion": "1.0",
+            "studyDeploymentId": "9a6fc6d6-c973-439f-a711-f6f1ede398bf",
+            "deviceRoleName": "Primary"
+        },
+        "precedingEvents": [
+        ],
+        "publishedEvents": [
+            {
+                "__type": "dk.cachet.carp.deployments.application.DeploymentService.Event.DeviceRegistrationChanged",
+                "aggregateId": "9a6fc6d6-c973-439f-a711-f6f1ede398bf",
+                "apiVersion": "1.0",
+                "studyDeploymentId": "9a6fc6d6-c973-439f-a711-f6f1ede398bf",
+                "device": {
+                    "__type": "dk.cachet.carp.common.infrastructure.test.StubPrimaryDeviceConfiguration",
+                    "isPrimaryDevice": true,
+                    "roleName": "Primary"
+                },
+                "registration": null
+            }
+        ],
+        "response": {
+            "__type": "dk.cachet.carp.deployments.application.StudyDeploymentStatus.DeployingDevices",
+            "createdOn": "1970-01-01T00:00:00Z",
+            "studyDeploymentId": "9a6fc6d6-c973-439f-a711-f6f1ede398bf",
+            "deviceStatusList": [
+                {
+                    "__type": "dk.cachet.carp.deployments.application.DeviceDeploymentStatus.Unregistered",
+                    "device": {
+                        "__type": "dk.cachet.carp.common.infrastructure.test.StubPrimaryDeviceConfiguration",
+                        "isPrimaryDevice": true,
+                        "roleName": "Primary"
+                    },
+                    "canBeDeployed": true,
+                    "remainingDevicesToRegisterToObtainDeployment": [
+                        "Primary"
+                    ],
+                    "remainingDevicesToRegisterBeforeDeployment": [
+                        "Primary"
+                    ]
+                }
+            ],
+            "participantStatusList": [
+                {
+                    "participantId": "18e73cb9-026e-4b6f-b9a1-92dbf31e03af",
+                    "assignedParticipantRoles": {
+                        "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                    },
+                    "assignedPrimaryDeviceRoleNames": [
+                        "Primary"
+                    ]
+                }
+            ],
+            "startedOn": "1970-01-01T00:00:00Z"
+        }
+    },
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.deployments.infrastructure.DeploymentServiceRequest.Stop",
+            "apiVersion": "1.0",
+            "studyDeploymentId": "9a6fc6d6-c973-439f-a711-f6f1ede398bf"
+        },
+        "precedingEvents": [
+        ],
+        "publishedEvents": [
+            {
+                "__type": "dk.cachet.carp.deployments.application.DeploymentService.Event.StudyDeploymentStopped",
+                "aggregateId": "9a6fc6d6-c973-439f-a711-f6f1ede398bf",
+                "apiVersion": "1.0",
+                "studyDeploymentId": "9a6fc6d6-c973-439f-a711-f6f1ede398bf"
+            }
+        ],
+        "response": {
+            "__type": "dk.cachet.carp.deployments.application.StudyDeploymentStatus.Stopped",
+            "createdOn": "1970-01-01T00:00:00Z",
+            "studyDeploymentId": "9a6fc6d6-c973-439f-a711-f6f1ede398bf",
+            "deviceStatusList": [
+                {
+                    "__type": "dk.cachet.carp.deployments.application.DeviceDeploymentStatus.Unregistered",
+                    "device": {
+                        "__type": "dk.cachet.carp.common.infrastructure.test.StubPrimaryDeviceConfiguration",
+                        "isPrimaryDevice": true,
+                        "roleName": "Primary"
+                    },
+                    "canBeDeployed": true,
+                    "remainingDevicesToRegisterToObtainDeployment": [
+                        "Primary"
+                    ],
+                    "remainingDevicesToRegisterBeforeDeployment": [
+                        "Primary"
+                    ]
+                }
+            ],
+            "participantStatusList": [
+                {
+                    "participantId": "18e73cb9-026e-4b6f-b9a1-92dbf31e03af",
+                    "assignedParticipantRoles": {
+                        "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                    },
+                    "assignedPrimaryDeviceRoleNames": [
+                        "Primary"
+                    ]
+                }
+            ],
+            "startedOn": "1970-01-01T00:00:00Z",
+            "stoppedOn": "1970-01-01T00:00:00Z"
+        }
+    },
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.deployments.infrastructure.DeploymentServiceRequest.RemoveStudyDeployments",
+            "apiVersion": "1.0",
+            "studyDeploymentIds": [
+                "9a6fc6d6-c973-439f-a711-f6f1ede398bf"
+            ]
+        },
+        "precedingEvents": [
+        ],
+        "publishedEvents": [
+            {
+                "__type": "dk.cachet.carp.deployments.application.DeploymentService.Event.StudyDeploymentRemoved",
+                "aggregateId": "9a6fc6d6-c973-439f-a711-f6f1ede398bf",
+                "apiVersion": "1.0",
+                "studyDeploymentId": "9a6fc6d6-c973-439f-a711-f6f1ede398bf"
+            }
+        ],
+        "response": [
+            "9a6fc6d6-c973-439f-a711-f6f1ede398bf"
+        ]
+    }
+]

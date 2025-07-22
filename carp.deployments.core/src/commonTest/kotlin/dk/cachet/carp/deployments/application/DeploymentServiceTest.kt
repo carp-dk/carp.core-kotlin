@@ -128,6 +128,55 @@ interface DeploymentServiceTest
     }
 
     @Test
+    fun getStudyDeploymentStatusList_full_flow_succeeds() = runTest {
+        val (service, _) = createSUT()
+        val deviceRoleName = "Primary"
+        val protocol = createSinglePrimaryDeviceProtocol( deviceRoleName )
+        val protocolSnapshot = protocol.getSnapshot()
+
+        val invitation = createParticipantInvitation( AccountIdentity.fromUsername( "User" ) )
+        val deploymentId = UUID.randomUUID()
+        service.createStudyDeployment( deploymentId, protocolSnapshot, listOf( invitation ) )
+
+        val status = service.getStudyDeploymentStatus( deploymentId )
+        val primary = status.getRemainingDevicesToRegister().first { it.roleName == deviceRoleName }
+        val registration = primary.createRegistration()
+        service.registerDevice( deploymentId, primary.roleName, registration )
+        val deviceDeployment = service.getDeviceDeploymentFor( deploymentId, primary.roleName )
+        service.deviceDeployed( deploymentId, primary.roleName, deviceDeployment.lastUpdatedOn )
+        service.unregisterDevice( deploymentId, primary.roleName )
+        service.stop( deploymentId )
+        service.removeStudyDeployments( setOf( deploymentId ) )
+    }
+
+    @Test
+    fun getStudyDeploymentStatusList_with_multiple_deployments_succeeds() = runTest {
+        val (service, _) = createSUT()
+        val deviceRoleName = "Primary"
+        val (protocol, _, _) = createSinglePrimaryWithConnectedDeviceProtocol( deviceRoleName )
+        val protocolSnapshot = protocol.getSnapshot()
+
+        val invitation1 = createParticipantInvitation( AccountIdentity.fromUsername( "User 1" ) )
+        val deploymentId1 = UUID.randomUUID()
+        service.createStudyDeployment( deploymentId1, protocolSnapshot, listOf( invitation1 ) )
+        val invitation2 = createParticipantInvitation( AccountIdentity.fromUsername( "User 2" ) )
+        val deploymentId2 = UUID.randomUUID()
+        service.createStudyDeployment( deploymentId2, protocolSnapshot, listOf( invitation2 ) )
+
+        val status = service.getStudyDeploymentStatus( deploymentId1 )
+        val primary = status.getRemainingDevicesToRegister().first { it.roleName == deviceRoleName }
+        val registration = primary.createRegistration()
+        service.registerDevice( deploymentId1, primary.roleName, registration )
+        service.getStudyDeploymentStatusList(
+            setOf(
+                deploymentId1,
+                deploymentId2
+            )
+        )
+        service.stop( deploymentId1 )
+    }
+
+    @Test
     fun getStudyDeploymentStatusList_fails_when_containing_an_unknown_studyDeploymentId() = runTest {
         val (service, _) = createSUT()
         val studyDeploymentId = addTestDeployment( service, "Test device" )
