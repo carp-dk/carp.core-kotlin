@@ -214,7 +214,7 @@ class DeploymentServiceHost(
         val deployment: StudyDeployment = repository.getStudyDeploymentOrThrowBy( studyDeploymentId )
         val device = getRegisteredPrimaryDevice( deployment, primaryDeviceRoleName )
 
-        deployment.deviceDeployed( device, deviceDeploymentLastUpdatedOn )
+        deployment.deviceDeployed( device, deviceDeploymentLastUpdatedOn, clock.now() )
         repository.update( deployment )
 
         // Open the required data streams.
