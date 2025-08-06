@@ -201,6 +201,27 @@ interface DeploymentServiceTest
     }
 
     @Test
+    fun deviceDeployed_succeeds() = runTest {
+        val (service, _) = createSUT()
+        val studyDeploymentId = addTestDeployment( service, "Primary", "Connected" )
+        var status = service.getStudyDeploymentStatus( studyDeploymentId )
+        val primary = status.getRemainingDevicesToRegister().first { it.roleName == "Primary" }
+        val connected = status.getRemainingDevicesToRegister().first { it.roleName == "Connected" }
+        service.registerDevice( studyDeploymentId, primary.roleName, primary.createRegistration() )
+        service.registerDevice( studyDeploymentId, connected.roleName, connected.createRegistration() )
+
+        val deployment = service.getDeviceDeploymentFor( studyDeploymentId, primary.roleName )
+        status = service.deviceDeployed( studyDeploymentId, primary.roleName, deployment.lastUpdatedOn )
+
+        val runningStatus = status as? StudyDeploymentStatus.Running
+        assertNotNull( runningStatus )
+        val primaryDeviceStatus = runningStatus.deviceStatusList.single { it.device == primary }
+        assertTrue( primaryDeviceStatus is DeviceDeploymentStatus.Deployed )
+        val connectedDeviceStatus = runningStatus.deviceStatusList.single { it.device == connected }
+        assertTrue( connectedDeviceStatus is DeviceDeploymentStatus.Registered )
+    }
+
+    @Test
     fun stop_succeeds() = runTest {
         val (service, _) = createSUT()
         val studyDeploymentId = addTestDeployment( service, "Test device" )
