@@ -24,7 +24,7 @@ data class StudyDeploymentSnapshot(
     val deployedDevices: Set<String> = emptySet(),
     val invalidatedDeployedDevices: Set<String> = emptySet(),
     val startedOn: Instant?,
-    val isStopped: Boolean
+    val stoppedOn: Instant?
 ) : Snapshot<StudyDeployment>
 {
     companion object
@@ -45,7 +45,7 @@ data class StudyDeploymentSnapshot(
                 studyDeployment.deployedDevices.map { it.roleName }.toSet(),
                 studyDeployment.invalidatedDeployedDevices.map { it.roleName }.toSet(),
                 studyDeployment.startedOn,
-                studyDeployment.isStopped
+                studyDeployment.stoppedOn
             )
         }
     }

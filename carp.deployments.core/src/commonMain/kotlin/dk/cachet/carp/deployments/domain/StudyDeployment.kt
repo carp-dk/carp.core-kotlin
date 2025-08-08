@@ -121,8 +121,7 @@ class StudyDeployment private constructor(
             }
             deployment._invalidatedDeployedDevices.addAll( invalidatedDevices )
 
-            // In case the deployment has been stopped, stop it.
-            if ( snapshot.isStopped ) deployment.stop()
+            deployment.stoppedOn = snapshot.stoppedOn
 
             // Events introduced by loading the snapshot are not relevant to a consumer wanting to persist changes.
             deployment.consumeEvents()
