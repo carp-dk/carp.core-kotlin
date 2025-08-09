@@ -211,14 +211,19 @@ interface DeploymentServiceTest
     @Test
     fun unregisterDevice_succeeds() = runTest {
         val (service, _) = createSUT()
-        val deviceRolename = "Test device"
-        val studyDeploymentId = addTestDeployment( service, deviceRolename )
+        val primaryRolename = "Test device"
+        val connectedRolename = "Connected"
+        val studyDeploymentId = addTestDeployment( service, primaryRolename, connectedRolename )
         var status = service.getStudyDeploymentStatus( studyDeploymentId )
-        val device = status.getRemainingDevicesToRegister().first { it.roleName == deviceRolename }
-        service.registerDevice( studyDeploymentId, deviceRolename, device.createRegistration { } )
+        val primaryDevice = status.getRemainingDevicesToRegister().first { it.roleName == primaryRolename }
+        service.registerDevice( studyDeploymentId, primaryRolename, primaryDevice.createRegistration() )
+        val connectedDevice = status.getRemainingDevicesToRegister().first { it.roleName == connectedRolename }
+        service.registerDevice( studyDeploymentId, connectedRolename, connectedDevice.createRegistration() )
 
-        status = service.unregisterDevice( studyDeploymentId, deviceRolename )
-        assertTrue( device in status.getRemainingDevicesToRegister() )
+        status = service.unregisterDevice( studyDeploymentId, primaryRolename )
+        val toRegister = status.getRemainingDevicesToRegister()
+        assertEquals( 1, toRegister.size )
+        assertTrue( primaryDevice in status.getRemainingDevicesToRegister() )
     }
 
     @Test
