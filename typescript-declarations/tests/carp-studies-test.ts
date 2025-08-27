@@ -99,7 +99,8 @@ describe( "carp-studies-core", () => {
             const assignedRoles = new Set( [ new AssignedParticipantRoles( UUID.Companion.randomUUID(), AssignedTo.All ) ] );
             const deployGroup = new RecruitmentServiceRequest.InviteNewParticipantGroup(
                 UUID.Companion.randomUUID(),
-                KtSet.fromJsSet( assignedRoles )
+                KtSet.fromJsSet( assignedRoles ),
+                "Test group"
             )
 
             const serializer = RecruitmentServiceRequest.Serializer
@@ -123,7 +124,7 @@ describe( "carp-studies-core", () => {
             const deploymentStatus = new StudyDeploymentStatus.Running( now, deploymentId, emptyDeploymentStatusList, emptyParticipantStatusList, now )
             const participantsSet = new Set( [ new Participant( new UsernameAccountIdentity( new Username( "Test" ) ) ) ] )
             const participants = KtSet.fromJsSet( participantsSet )
-            const group = new ParticipantGroupStatus.Invited( deploymentId, participants, now, deploymentStatus )
+            const group = new ParticipantGroupStatus.Invited( deploymentId, participants, now, deploymentStatus, "Test group" )
 
             const serializer = getSerializer( ParticipantGroupStatus )
             const serialized = JSON.encodeToString( serializer, group )

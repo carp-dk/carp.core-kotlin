@@ -112,10 +112,10 @@ class RecruitmentServiceHost(
 
     /**
      * Create a new participant [group] of previously added participants and instantly send out invitations
-     * to participate in the study with the given [studyId].
+     * to participate in the study with the given [studyId] and an optional [name] representing this group.
      *
-     * In case a group with the same participants has already been deployed and is still running (not stopped),
-     * the latest status for this group is simply returned.
+     * In case a group with the same participants and [name] has already been deployed and is still
+     * running (not stopped), the latest status for this group is simply returned.
      *
      * @throws IllegalArgumentException when:
      *  - a study with [studyId] does not exist
@@ -126,7 +126,8 @@ class RecruitmentServiceHost(
      */
     override suspend fun inviteNewParticipantGroup(
         studyId: UUID,
-        group: Set<AssignedParticipantRoles>
+        group: Set<AssignedParticipantRoles>,
+        name: String?
     ): ParticipantGroupStatus
     {
         val recruitment = getRecruitmentOrThrow( studyId )
@@ -138,7 +139,7 @@ class RecruitmentServiceHost(
         val toDeployParticipantIds = group.map { it.participantId }.toSet()
         val deployedStatus = recruitment.participantGroups.entries
             .firstOrNull { (_, group) ->
-                group.participantIds == toDeployParticipantIds
+                group.participantIds == toDeployParticipantIds && group.name == name
             }
             ?.let { deploymentService.getStudyDeploymentStatus( it.key ) }
         if ( deployedStatus != null && deployedStatus !is StudyDeploymentStatus.Stopped )
@@ -147,7 +148,7 @@ class RecruitmentServiceHost(
         }
 
         // Create participant group and mark as deployed.
-        val participantGroup = recruitment.addParticipantGroup( toDeployParticipantIds, uuidFactory.randomUUID() )
+        val participantGroup = recruitment.addParticipantGroup( toDeployParticipantIds, name, uuidFactory.randomUUID() )
         participantGroup.markAsDeployed()
         participantRepository.updateRecruitment( recruitment )
 

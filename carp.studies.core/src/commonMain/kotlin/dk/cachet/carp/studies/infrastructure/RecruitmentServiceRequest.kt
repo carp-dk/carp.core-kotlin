@@ -65,7 +65,11 @@ sealed class RecruitmentServiceRequest<out TReturn> : ApplicationServiceRequest<
     }
 
     @Serializable
-    data class InviteNewParticipantGroup( val studyId: UUID, val group: Set<AssignedParticipantRoles> ) :
+    data class InviteNewParticipantGroup(
+        val studyId: UUID,
+        val group: Set<AssignedParticipantRoles>,
+        val name: String? = null
+    ) :
         RecruitmentServiceRequest<ParticipantGroupStatus>()
     {
         override fun getResponseSerializer() = serializer<ParticipantGroupStatus>()

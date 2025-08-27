@@ -82,6 +82,7 @@
         "__type": { "const": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.InviteNewParticipantGroup" },
         "apiVersion": { "$ref": "#/$defs/ApiVersion" },
         "studyId": { "type": "string", "format": "uuid" },
+        "name": { "type": [ "string", "null" ] },
         "group": {
           "type": "array",
           "items": { "$ref": "../users/AssignedParticipantRoles.json" }

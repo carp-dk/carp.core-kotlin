@@ -33,7 +33,6 @@ import dk.cachet.carp.studies.application.users.*
 import dk.cachet.carp.studies.infrastructure.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Instant
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlin.reflect.KFunction
@@ -155,6 +154,7 @@ private val studyLiveStatus = StudyStatus.Live( studyId, studyName, studyCreated
 
 // Deployment data matching the example protocol.
 private val deploymentId = UUID( "c9cc5317-48da-45f2-958e-58bc07f34681" )
+private val deploymentName = "Boaty McBoatface"
 private val deploymentIds = setOf( deploymentId, UUID( "d4a9bba4-860e-4c58-a356-8a91605dc1ee" ) )
 private val deploymentCreatedOn = Instant.fromEpochSeconds( 1642504000 )
 private val participantId = UUID( "32880e82-01c9-40cf-a6ed-17ff3348f251" )
@@ -384,17 +384,41 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
     RecruitmentService::inviteNewParticipantGroup to example(
         request = RecruitmentServiceRequest.InviteNewParticipantGroup(
             studyId,
-            setOf( AssignedParticipantRoles( participantId, participantAssignedRoles ) )
+            setOf( AssignedParticipantRoles( participantId, participantAssignedRoles ) ),
+            deploymentName
         ),
-        response = ParticipantGroupStatus.Invited( deploymentId, participants, participantGroupInvitedOn, invitedDeploymentStatus )
+        response = ParticipantGroupStatus.Invited(
+            deploymentId,
+            participants,
+            participantGroupInvitedOn,
+            invitedDeploymentStatus,
+            deploymentName
+        )
     ),
     RecruitmentService::getParticipantGroupStatusList to example(
         request = RecruitmentServiceRequest.GetParticipantGroupStatusList( studyId ),
-        response = listOf( ParticipantGroupStatus.Running( deploymentId, participants, participantGroupInvitedOn, runningDeploymentStatus, runningDeploymentStatus.startedOn ) )
+        response = listOf(
+            ParticipantGroupStatus.Running(
+                deploymentId,
+                participants,
+                participantGroupInvitedOn,
+                runningDeploymentStatus,
+                runningDeploymentStatus.startedOn,
+                deploymentName
+            )
+        )
     ),
     RecruitmentService::stopParticipantGroup to example(
         request = RecruitmentServiceRequest.StopParticipantGroup( studyId, deploymentId ),
-        response = ParticipantGroupStatus.Stopped( deploymentId, participants, participantGroupInvitedOn, stoppedDeploymentStatus, stoppedDeploymentStatus.startedOn, stoppedDeploymentStatus.stoppedOn )
+        response = ParticipantGroupStatus.Stopped(
+            deploymentId,
+            participants,
+            participantGroupInvitedOn,
+            stoppedDeploymentStatus,
+            stoppedDeploymentStatus.startedOn,
+            stoppedDeploymentStatus.stoppedOn,
+            deploymentName
+        )
     ),
 
     // DeploymentService

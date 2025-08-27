@@ -15,6 +15,7 @@ class ParticipantGroupStatusTest
 {
     private val now = Clock.System.now()
     private val deploymentId = UUID.randomUUID()
+    private val participantGroupName = "Test group"
     private val deviceStatusList = emptyList<DeviceDeploymentStatus>()
     private val participants: Set<Participant> = emptySet()
     private val participantStatusList: List<ParticipantStatus> = emptyList()
@@ -25,7 +26,11 @@ class ParticipantGroupStatusTest
     {
         val deployingDevices = StudyDeploymentStatus.DeployingDevices( now, deploymentId, deviceStatusList, participantStatusList, null )
 
-        val status = ParticipantGroupStatus.InDeployment.fromDeploymentStatus( participants, deployingDevices )
+        val status = ParticipantGroupStatus.InDeployment.fromDeploymentStatus(
+            participants,
+            deployingDevices,
+            participantGroupName
+        )
         assertTrue( status is ParticipantGroupStatus.Invited )
     }
 
@@ -35,7 +40,11 @@ class ParticipantGroupStatusTest
         val startedOn = Clock.System.now()
         val redeployingDevices = StudyDeploymentStatus.DeployingDevices( now, deploymentId, deviceStatusList, participantStatusList, startedOn )
 
-        val status = ParticipantGroupStatus.InDeployment.fromDeploymentStatus( participants, redeployingDevices )
+        val status = ParticipantGroupStatus.InDeployment.fromDeploymentStatus(
+            participants,
+            redeployingDevices,
+            participantGroupName
+        )
         assertTrue( status is ParticipantGroupStatus.Running )
     }
 }

@@ -26,6 +26,11 @@ sealed class ParticipantGroupStatus
     abstract val id: UUID
 
     /**
+     * An optional name to represent the group of participants.
+     */
+    abstract val name: String?
+
+    /**
      * The participants that are part of this group.
      */
     abstract val participants: Set<Participant>
@@ -37,7 +42,8 @@ sealed class ParticipantGroupStatus
     @Serializable
     data class Staged(
         override val id: UUID,
-        override val participants: Set<Participant>
+        override val participants: Set<Participant>,
+        override val name: String? = null
     ) : ParticipantGroupStatus()
 
 
@@ -54,7 +60,8 @@ sealed class ParticipantGroupStatus
              */
             fun fromDeploymentStatus(
                 participants: Set<Participant>,
-                deploymentStatus: StudyDeploymentStatus
+                deploymentStatus: StudyDeploymentStatus,
+                name: String?
             ): InDeployment
             {
                 val id = deploymentStatus.studyDeploymentId
@@ -66,12 +73,20 @@ sealed class ParticipantGroupStatus
                     is StudyDeploymentStatus.Invited,
                     is StudyDeploymentStatus.DeployingDevices ->
                         // If deployment was ready at one point (`startedOn`), consider the study 'Running'.
-                        if ( startedOn == null ) Invited( id, participants, createdOn, deploymentStatus )
-                        else Running( id, participants, createdOn, deploymentStatus, startedOn )
+                        if ( startedOn == null ) Invited( id, participants, createdOn, deploymentStatus, name )
+                        else Running( id, participants, createdOn, deploymentStatus, startedOn, name )
                     is StudyDeploymentStatus.Running ->
-                        Running( id, participants, createdOn, deploymentStatus, checkNotNull( startedOn ) )
+                        Running( id, participants, createdOn, deploymentStatus, checkNotNull( startedOn ), name )
                     is StudyDeploymentStatus.Stopped ->
-                        Stopped( id, participants, createdOn, deploymentStatus, startedOn, deploymentStatus.stoppedOn )
+                        Stopped(
+                            id,
+                            participants,
+                            createdOn,
+                            deploymentStatus,
+                            startedOn,
+                            deploymentStatus.stoppedOn,
+                            name
+                        )
                 }
             }
         }
@@ -97,7 +112,8 @@ sealed class ParticipantGroupStatus
         override val id: UUID,
         override val participants: Set<Participant>,
         override val invitedOn: Instant,
-        override val studyDeploymentStatus: StudyDeploymentStatus
+        override val studyDeploymentStatus: StudyDeploymentStatus,
+        override val name: String? = null
     ) : InDeployment()
 
     /**
@@ -113,7 +129,8 @@ sealed class ParticipantGroupStatus
         /**
          * The time when the study deployment started running, i.e., when all devices were deployed for the first time.
          */
-        val startedOn: Instant
+        val startedOn: Instant,
+        override val name: String? = null
     ) : InDeployment()
 
     /**
@@ -134,6 +151,7 @@ sealed class ParticipantGroupStatus
         /**
          * The time when the study deployment was stopped.
          */
-        val stoppedOn: Instant
+        val stoppedOn: Instant,
+        override val name: String? = null
     ) : InDeployment()
 }
