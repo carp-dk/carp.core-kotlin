@@ -100,17 +100,19 @@ class RecruitmentTest
         val recruitment = Recruitment( studyId )
         val participant = recruitment.addParticipant( participantEmail )
         val protocol = createEmptyProtocol()
+        val groupName = "Test Group"
         recruitment.lockInStudy( protocol.getSnapshot(), StudyInvitation( "Some study" ) )
 
         assertTrue( recruitment.getStatus() is RecruitmentStatus.ReadyForDeployment )
 
         val participantIds = setOf( participant.id )
-        val group = recruitment.addParticipantGroup( participantIds )
+        val group = recruitment.addParticipantGroup( participantIds, groupName )
         assertEquals( Recruitment.Event.ParticipantGroupAdded( participantIds ), recruitment.consumeEvents().last() )
         assertEquals(
             participant.id,
             recruitment.participantGroups[ group.id ]?.participantIds?.singleOrNull()
         )
+        assertEquals( groupName, group.name )
     }
 
     @Test

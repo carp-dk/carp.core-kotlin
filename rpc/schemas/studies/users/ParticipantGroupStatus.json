@@ -12,6 +12,7 @@
       "properties": {
         "__type": true,
         "id": { "type": "string", "format": "uuid" },
+        "name": { "type": [ "string", "null" ] },
         "participants": {
           "type": "array",
           "items": { "$ref": "../users/Participant.json" }

@@ -174,18 +174,23 @@ class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: I
     private val _participantGroups: MutableMap<UUID, StagedParticipantGroup> = mutableMapOf()
 
     /**
-     * Create and add the participants identified by [participantIds] as a participant group.
+     * Create and add the participants identified by [participantIds] as a participant group, optionally with a [name]
+     * representing this group.
      *
      * @throws IllegalArgumentException when one or more of the participants aren't in this recruitment.
      * @throws IllegalStateException when the study is not yet ready for deployment.
      */
-    fun addParticipantGroup( participantIds: Set<UUID>, id: UUID = UUID.randomUUID() ): StagedParticipantGroup
+    fun addParticipantGroup(
+        participantIds: Set<UUID>,
+        name: String? = null,
+        id: UUID = UUID.randomUUID()
+    ): StagedParticipantGroup
     {
         require( participants.map { it.id }.containsAll( participantIds ) )
             { "One of the participants for which to create a participant group isn't part of this recruitment." }
         check( getStatus() is RecruitmentStatus.ReadyForDeployment ) { "The study is not yet ready for deployment." }
 
-        val group = StagedParticipantGroup( id )
+        val group = StagedParticipantGroup( id, name )
         group.addParticipants( participantIds )
 
         _participantGroups[ group.id ] = group
@@ -206,7 +211,11 @@ class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: I
             { "A study deployment with ID \"$deploymentId\" is not part of this recruitment." }
 
         val participants = group.participantIds.map { id -> _participants.first { it.id == id } }
-        return ParticipantGroupStatus.InDeployment.fromDeploymentStatus( participants.toSet(), studyDeploymentStatus )
+        return ParticipantGroupStatus.InDeployment.fromDeploymentStatus(
+            participants.toSet(),
+            studyDeploymentStatus,
+            group.name
+        )
     }
 
     /**

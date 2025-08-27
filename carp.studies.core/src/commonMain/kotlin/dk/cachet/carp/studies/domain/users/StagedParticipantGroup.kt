@@ -13,7 +13,11 @@ data class StagedParticipantGroup(
     /**
      * The identifier for this participant group, used as deployment ID once the participant group is deployed.
      */
-    val id: UUID = UUID.randomUUID()
+    val id: UUID = UUID.randomUUID(),
+    /**
+     * An optional name to represent the group of participants.
+     */
+    val name: String? = null,
 )
 {
     private val _participantIds: MutableSet<UUID> = mutableSetOf()

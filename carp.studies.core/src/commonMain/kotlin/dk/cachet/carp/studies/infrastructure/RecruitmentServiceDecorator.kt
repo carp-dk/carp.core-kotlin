@@ -35,8 +35,9 @@ class RecruitmentServiceDecorator(
 
     override suspend fun inviteNewParticipantGroup(
         studyId: UUID,
-        group: Set<AssignedParticipantRoles>
-    ) = invoke( RecruitmentServiceRequest.InviteNewParticipantGroup( studyId, group ) )
+        group: Set<AssignedParticipantRoles>,
+        name: String?
+    ) = invoke( RecruitmentServiceRequest.InviteNewParticipantGroup( studyId, group, name ) )
 
     override suspend fun getParticipantGroupStatusList( studyId: UUID ) =
         invoke( RecruitmentServiceRequest.GetParticipantGroupStatusList( studyId ) )
@@ -56,7 +57,7 @@ object RecruitmentServiceInvoker : ApplicationServiceInvoker<RecruitmentService,
             is RecruitmentServiceRequest.GetParticipant -> service.getParticipant( studyId, participantId )
             is RecruitmentServiceRequest.GetParticipants -> service.getParticipants( studyId )
             is RecruitmentServiceRequest.InviteNewParticipantGroup ->
-                service.inviteNewParticipantGroup( studyId, group )
+                service.inviteNewParticipantGroup( studyId, group, name )
             is RecruitmentServiceRequest.GetParticipantGroupStatusList ->
                 service.getParticipantGroupStatusList( studyId )
             is RecruitmentServiceRequest.StopParticipantGroup -> service.stopParticipantGroup( studyId, groupId )

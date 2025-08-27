@@ -104,13 +104,15 @@ interface RecruitmentServiceTest
         val (recruitmentService, studyService) = createSUT()
         val (studyId, _) = createLiveStudy( studyService )
         val participant = recruitmentService.addParticipant( studyId, EmailAddress( "test@test.com" ) )
+        val groupName = "Test Group"
 
         val assignParticipant = AssignedParticipantRoles( participant.id, AssignedTo.All )
-        val groupStatus = recruitmentService.inviteNewParticipantGroup( studyId, setOf( assignParticipant ) )
+        val groupStatus = recruitmentService.inviteNewParticipantGroup( studyId, setOf( assignParticipant ), groupName )
         assertEquals( participant, groupStatus.participants.single() )
         val participantGroups = recruitmentService.getParticipantGroupStatusList( studyId )
         val participantInGroup = participantGroups.single().participants.single()
         assertEquals( participant, participantInGroup )
+        assertEquals( groupName, participantGroups.single().name )
     }
 
     @Test
@@ -172,6 +174,26 @@ interface RecruitmentServiceTest
     }
 
     @Test
+    fun inviteNewParticipantGroup_with_same_participants_different_name_creates_new_group() = runTest {
+        val (recruitmentService, studyService) = createSUT()
+        val (studyId, _) = createLiveStudy( studyService )
+
+        val participant = recruitmentService.addParticipant( studyId, EmailAddress( "test@test.com" ) )
+        val assignedParticipant = AssignedParticipantRoles( participant.id, AssignedTo.All )
+        val groupStatus1 = recruitmentService.inviteNewParticipantGroup(
+            studyId,
+            setOf( assignedParticipant ),
+            "Group 1"
+        )
+        val groupStatus2 = recruitmentService.inviteNewParticipantGroup(
+            studyId,
+            setOf( assignedParticipant ),
+            "Group 2"
+        )
+        assertNotEquals( groupStatus1, groupStatus2 )
+    }
+
+    @Test
     fun inviteNewParticipantGroup_multiple_times_returns_same_group() = runTest {
         val (recruitmentService, studyService) = createSUT()
         val (studyId, _) = createLiveStudy( studyService )
@@ -196,6 +218,25 @@ interface RecruitmentServiceTest
         recruitmentService.stopParticipantGroup( studyId, groupStatus.id )
         val groupStatus2 = recruitmentService.inviteNewParticipantGroup( studyId, setOf( assignParticipant ) )
         assertNotEquals( groupStatus, groupStatus2 )
+    }
+
+    @Test
+    fun inviteNewParticipantGroup_for_multiple_groups_with_same_name_succeeds() = runTest {
+        val (recruitmentService, studyService) = createSUT()
+        val (studyId, _) = createLiveStudy( studyService )
+        val sameName = "Same Group"
+
+        val p1 = recruitmentService.addParticipant( studyId, EmailAddress( "test@test.com" ) )
+        val assignedP1 = AssignedParticipantRoles( p1.id, AssignedTo.All )
+        recruitmentService.inviteNewParticipantGroup( studyId, setOf( assignedP1 ), sameName )
+
+        val p2 = recruitmentService.addParticipant( studyId, EmailAddress( "test2@test.com" ) )
+        val assignedP2 = AssignedParticipantRoles( p2.id, AssignedTo.All )
+        recruitmentService.inviteNewParticipantGroup( studyId, setOf( assignedP2 ), sameName )
+
+        val participantGroups = recruitmentService.getParticipantGroupStatusList( studyId )
+        assertNotEquals( participantGroups[0].id, participantGroups[1].id )
+        assertEquals( participantGroups[0].name, participantGroups[1].name )
     }
 
     @Test

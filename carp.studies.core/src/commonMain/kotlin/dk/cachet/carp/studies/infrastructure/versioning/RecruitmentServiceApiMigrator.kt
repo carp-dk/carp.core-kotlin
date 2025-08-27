@@ -43,30 +43,36 @@ private val major1Minor2To3Migration =
                 "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.StopParticipantGroup" ->
                 {
                     val responseObject = response.response?.jsonObject?.migrate {
-                        removeDeviceRegistration()
+                        updateParticipantGroupStatus()
                     }
                     ApiResponse( responseObject, response.ex )
                 }
                 "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.GetParticipantGroupStatusList" ->
                 {
                     val responseObject = response.response?.jsonArray?.migrate {
-                        objects { removeDeviceRegistration() }
+                        objects {
+                            updateParticipantGroupStatus()
+                        }
                     }
                     ApiResponse( responseObject, response.ex )
                 }
                 else -> response
             }
 
-        /**
-         * Remove the newly added `deviceRegistration` field from `DeviceDeploymentStatus` objects contained within
-         * `StudyDeploymentStatus`.
-         */
-        private fun ApiJsonObjectMigrationBuilder.removeDeviceRegistration() =
+
+        private fun ApiJsonObjectMigrationBuilder.updateParticipantGroupStatus()
+        {
+            // Remove the newly added `deviceRegistration` field from `DeviceDeploymentStatus` objects
+            // contained within `StudyDeploymentStatus`.
             updateObject( "studyDeploymentStatus" ) {
                 updateArray( "deviceStatusList" ) {
                     objects { json.remove( "deviceRegistration" ) }
                 }
             }
+
+            // Remove newly added 'name' field from 'ParticipantGroupStatus'.
+            json.remove( "name" )
+        }
 
         override fun migrateEvent( event: JsonObject ) = event
     }

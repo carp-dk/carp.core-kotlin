@@ -62,10 +62,10 @@ interface RecruitmentService : ApplicationService<RecruitmentService, Recruitmen
 
     /**
      * Create a new participant [group] of previously added participants and instantly send out invitations
-     * to participate in the study with the given [studyId].
+     * to participate in the study with the given [studyId] and an optional [name] representing this group.
      *
-     * In case a group with the same participants has already been deployed and is still running (not stopped),
-     * the latest status for this group is simply returned.
+     * In case a group with the same participants and [name] has already been deployed and is still
+     * running (not stopped), the latest status for this group is simply returned.
      *
      * @throws IllegalArgumentException when:
      *  - a study with [studyId] does not exist
@@ -74,7 +74,11 @@ interface RecruitmentService : ApplicationService<RecruitmentService, Recruitmen
      *  - not all necessary participant roles part of the study have been assigned a participant
      * @throws IllegalStateException when the study is not yet ready for deployment.
      */
-    suspend fun inviteNewParticipantGroup( studyId: UUID, group: Set<AssignedParticipantRoles> ): ParticipantGroupStatus
+    suspend fun inviteNewParticipantGroup(
+        studyId: UUID,
+        group: Set<AssignedParticipantRoles>,
+        name: String? = null
+    ): ParticipantGroupStatus
 
     /**
      * Get the status of all deployed participant groups in the study with the specified [studyId].

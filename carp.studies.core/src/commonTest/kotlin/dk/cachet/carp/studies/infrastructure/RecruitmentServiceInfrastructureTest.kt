@@ -24,7 +24,7 @@ class RecruitmentServiceRequestsTest : ApplicationServiceRequestsTest<Recruitmen
             RecruitmentServiceRequest.AddParticipantByUsername( studyId, Username( "test" ) ),
             RecruitmentServiceRequest.GetParticipant( studyId, UUID.randomUUID() ),
             RecruitmentServiceRequest.GetParticipants( studyId ),
-            RecruitmentServiceRequest.InviteNewParticipantGroup( studyId, setOf() ),
+            RecruitmentServiceRequest.InviteNewParticipantGroup( studyId, setOf(), "test group" ),
             RecruitmentServiceRequest.GetParticipantGroupStatusList( studyId ),
             RecruitmentServiceRequest.StopParticipantGroup( studyId, UUID.randomUUID() )
         )

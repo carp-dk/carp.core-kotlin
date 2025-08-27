@@ -34,8 +34,9 @@ fun createComplexRecruitment(): Recruitment
     val studyId = UUID.randomUUID()
     val recruitment = Recruitment( studyId ).apply {
         val participant = addParticipant( EmailAddress( "test@test.com" ) )
+        val name = "Test Group"
         lockInStudy( createComplexProtocol().getSnapshot(), StudyInvitation( "Test" ) )
-        addParticipantGroup( setOf( participant.id ) )
+        addParticipantGroup( setOf( participant.id ), name )
     }
 
     return recruitment
