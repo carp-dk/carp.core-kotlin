@@ -33,7 +33,6 @@ import dk.cachet.carp.studies.application.users.*
 import dk.cachet.carp.studies.infrastructure.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Instant
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlin.reflect.KFunction
@@ -484,6 +483,17 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
         request = DataStreamServiceRequest.GetDataStream( phoneGeoDataStream, 0, 100 ),
         response = MutableDataStreamBatch().apply { appendSequence( geoDataSequence ) }
     ),
+    DataStreamService::getBatchForStudyDeployments to example(
+        request = DataStreamServiceRequest.GetBatchForStudyDeployments(
+            studyDeploymentIds = deploymentIds,
+            dataTypes = null,
+            from = deploymentCreatedOn,
+            to = deploymentCreatedOn + 1.days
+        ),
+        // Keep the response shape minimal; the generator only validates type compatibility.
+        response = ImmutableDataStreamBatch.from(phoneDataStreamBatch)
+    ),
+
     DataStreamService::closeDataStreams to example(
         request = DataStreamServiceRequest.CloseDataStreams( deploymentIds )
     ),

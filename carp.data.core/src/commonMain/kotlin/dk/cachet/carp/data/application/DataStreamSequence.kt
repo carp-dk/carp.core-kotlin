@@ -85,6 +85,12 @@ sealed interface DataStreamSequence<TData : Data> : Sequence<DataStreamPoint<TDa
 
         return sequence
     }
+
+    /**
+     * Returns a new [ImmutableDataStreamSequence], containing all the measurements of this sequence.
+     */
+    fun toImmutableDataStreamSequence(): ImmutableDataStreamSequence<TData> =
+        ImmutableDataStreamSequence.from(this)
 }
 
 
@@ -145,6 +151,126 @@ class MutableDataStreamSequence<TData : Data>(
     }
 
     override fun equals( other: Any? ): Boolean = equalsOther( other )
+    override fun hashCode(): Int = measurements.hashCode()
+}
+
+
+/**
+ * An immutable sequence of consecutive [measurements] for a [dataStream] starting from [firstSequenceId]
+ * which all share the same [triggerIds] and [syncPoint].
+ *
+ * This implementation is designed for data retrieval scenarios where immutability provides safety
+ * and cleaner concepts.
+ */
+@JsExport
+class ImmutableDataStreamSequence<TData : Data> private constructor(
+    override val dataStream: DataStreamId,
+    override val firstSequenceId: Long,
+    override val measurements: List<Measurement<TData>>,
+    override val triggerIds: List<Int>,
+    override val syncPoint: SyncPoint
+) : DataStreamSequence<TData>
+{
+    init { throwIfIllegalInitialization() }
+
+    companion object
+    {
+        /**
+         * Create an [ImmutableDataStreamSequence] from the provided parameters.
+         * note: [measurements] and [triggerIds] are copied to ensure immutability.
+         * note: private constructor + factory methods provides defensive copying and validation before construction.
+         *
+         * @throws IllegalArgumentException when parameters violate sequence constraints.
+         *
+         */
+        fun <TData : Data> create(
+            dataStream: DataStreamId,
+            firstSequenceId: Long,
+            measurements: List<Measurement<TData>>,
+            triggerIds: List<Int>,
+            syncPoint: SyncPoint = SyncPoint.UnixEpoch
+        ): ImmutableDataStreamSequence<TData> = ImmutableDataStreamSequence(
+            dataStream,
+            firstSequenceId,
+            measurements.toList(),
+            triggerIds.toList(),
+            syncPoint
+        )
+
+        /**
+         * Create an [ImmutableDataStreamSequence] from an existing [DataStreamSequence].
+         */
+        fun <TData : Data> from( sequence: DataStreamSequence<TData> ): ImmutableDataStreamSequence<TData> =
+            ImmutableDataStreamSequence(
+                sequence.dataStream,
+                sequence.firstSequenceId,
+                sequence.measurements.toList(),
+                sequence.triggerIds.toList(),
+                sequence.syncPoint
+            )
+    }
+
+    /**
+     * Filter measurements by a *predicate*, returning a new immutable sequence.
+     * The sequence metadata (dataStream, triggerIds, syncPoint) is preserved.
+     *
+     * Example
+     *
+     * ```kotlin
+     * // Keep only measurements where the data value exceeds a threshold.
+     * val threshold = 100
+     * val highValues = sequence.filter { measurement ->
+     *     measurement.data > threshold
+     * }
+     *
+     * // highValues now contains only measurements with data > 100,
+     * // while preserving sequence metadata.
+     * ```
+     *
+     * Note: Filtering may create gaps in sequence IDs, which is acceptable for analytics scenarios.
+     */
+    fun filter( predicate: (Measurement<TData>) -> Boolean ): ImmutableDataStreamSequence<TData>
+    {
+        val filteredMeasurements = measurements.filter(predicate)
+        return ImmutableDataStreamSequence(
+            dataStream,
+            firstSequenceId,
+            filteredMeasurements,
+            triggerIds,
+            syncPoint
+        )
+    }
+
+    /**
+     * Transform measurements using the provided function, returning a new immutable sequence.
+     * The sequence metadata is preserved.
+     */
+    fun <R : Data> map( transform: (Measurement<TData>) -> Measurement<R> ): ImmutableDataStreamSequence<R>
+    {
+        val transformedMeasurements = measurements.map(transform)
+
+        if (transformedMeasurements.isNotEmpty())
+        {
+            val firstType = transformedMeasurements.first().dataType
+            require(transformedMeasurements.all { it.dataType == firstType }) {
+                "All transformed measurements must have the same data type"
+            }
+        }
+
+        return ImmutableDataStreamSequence(
+            DataStreamId(
+                    dataStream.studyDeploymentId,
+                    dataStream.deviceRoleName,
+                    transformedMeasurements.first().dataType
+                ),
+            firstSequenceId,
+            transformedMeasurements,
+            triggerIds,
+            syncPoint
+        )
+    }
+
+    override fun equals( other: Any? ): Boolean = equalsOther(other)
     override fun hashCode(): Int = measurements.hashCode()
 }
 

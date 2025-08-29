@@ -1,0 +1,80 @@
+[
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.data.infrastructure.DataStreamServiceRequest.OpenDataStreams",
+            "apiVersion": "1.1",
+            "configuration": {
+                "studyDeploymentId": "d403670c-b56c-4370-b518-bcc4197c1e9a",
+                "expectedDataStreams": [
+                    {
+                        "deviceRoleName": "Device",
+                        "dataType": "dk.cachet.carp.stubpoint"
+                    }
+                ]
+            }
+        },
+        "precedingEvents": [],
+        "publishedEvents": [],
+        "response": {}
+    },
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.data.infrastructure.DataStreamServiceRequest.AppendToDataStreams",
+            "apiVersion": "1.1",
+            "studyDeploymentId": "d403670c-b56c-4370-b518-bcc4197c1e9a",
+            "batch": [
+                {
+                    "dataStream": {
+                        "studyDeploymentId": "d403670c-b56c-4370-b518-bcc4197c1e9a",
+                        "deviceRoleName": "Device",
+                        "dataType": "dk.cachet.carp.stubpoint"
+                    },
+                    "firstSequenceId": 0,
+                    "measurements": [
+                        {
+                            "sensorStartTime": 0,
+                            "data": {
+                                "__type": "dk.cachet.carp.stubpoint",
+                                "data": "Stub"
+                            }
+                        }
+                    ],
+                    "triggerIds": [
+                        1
+                    ],
+                    "syncPoint": {
+                        "synchronizedOn": "2025-09-15T14:11:30.814701900Z",
+                        "sensorTimestampAtSyncPoint": 1757945490814701,
+                        "relativeClockSpeed": 1.0
+                    }
+                }
+            ]
+        },
+        "precedingEvents": [],
+        "publishedEvents": [],
+        "response": {}
+    },
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.data.infrastructure.DataStreamServiceRequest.GetBatchForStudyDeployments",
+            "apiVersion": "1.1",
+            "studyDeploymentIds": [
+                "d403670c-b56c-4370-b518-bcc4197c1e9a"
+            ],
+            "deviceRoleNames": [
+                "Device"
+            ],
+            "dataTypes": [
+                "dk.cachet.carp.stubpoint"
+            ],
+            "from": "2025-09-15T14:11:30.814701900Z",
+            "to": "2025-09-15T14:11:30.814701900Z"
+        },
+        "precedingEvents": [],
+        "publishedEvents": [],
+        "response": []
+    }
+]

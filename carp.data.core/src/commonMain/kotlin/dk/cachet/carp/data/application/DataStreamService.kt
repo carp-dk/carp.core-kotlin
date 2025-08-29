@@ -2,10 +2,13 @@ package dk.cachet.carp.data.application
 
 
 import dk.cachet.carp.common.application.UUID
+import dk.cachet.carp.common.application.data.DataType
 import dk.cachet.carp.common.application.services.ApiVersion
 import dk.cachet.carp.common.application.services.ApplicationService
 import dk.cachet.carp.common.application.services.IntegrationEvent
-import kotlinx.serialization.*
+import kotlinx.datetime.Instant
+import kotlinx.serialization.Required
+import kotlinx.serialization.Serializable
 
 
 /**
@@ -59,6 +62,32 @@ interface DataStreamService : ApplicationService<DataStreamService, DataStreamSe
         fromSequenceId: Long,
         toSequenceIdInclusive: Long? = null
     ): DataStreamBatch
+
+    /**
+     * Fetch a batch of collected data across multiple study deployments.
+     *
+     * Clients do not need individual DataStreamIds. The service gathers data from all
+     * streams belonging to [studyDeploymentIds], optionally filtering by [deviceRoleNames]
+     * and [dataTypes] within the time window [from]..[to].
+     *
+     * Returns an immutable batch optimized for analytics with data organized by device role name
+     * and data type. Timestamps are normalized via SyncPoints (epoch microseconds).
+     *
+     * @param studyDeploymentIds The study deployments to gather data from
+     * @param deviceRoleNames Optional filter for specific device role names
+     * @param dataTypes Optional filter for specific data types
+     * @param from Optional start time for the data window
+     * @param to Optional end time for the data window
+     * @return An immutable batch containing the filtered data organized for analytics
+     */
+    suspend fun getBatchForStudyDeployments(
+        studyDeploymentIds: Set<UUID>,
+        deviceRoleNames: Set<String>? = null,
+        dataTypes: Set<DataType>? = null,
+        from: Instant? = null,
+        to: Instant? = null
+    ): DataStreamBatch
+
 
     /**
      * Stop accepting incoming data for all data streams for each of the [studyDeploymentIds].

@@ -2,14 +2,20 @@ package dk.cachet.carp.data.infrastructure
 
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.application.data.Data
+import dk.cachet.carp.common.application.data.DataType
 import dk.cachet.carp.common.application.intersect
 import dk.cachet.carp.common.domain.ExtractUniqueKeyMap
 import dk.cachet.carp.data.application.DataStreamBatch
 import dk.cachet.carp.data.application.DataStreamId
+import dk.cachet.carp.data.application.DataStreamSequence
 import dk.cachet.carp.data.application.DataStreamService
 import dk.cachet.carp.data.application.DataStreamsConfiguration
+import dk.cachet.carp.data.application.ImmutableDataStreamBatch
+import dk.cachet.carp.data.application.Measurement
 import dk.cachet.carp.data.application.MutableDataStreamBatch
 import dk.cachet.carp.data.application.MutableDataStreamSequence
+import dk.cachet.carp.data.application.applyToTimestamp
+import kotlinx.datetime.Instant
 
 
 /**
@@ -28,6 +34,10 @@ class InMemoryDataStreamService : DataStreamService
     private val stoppedStudyDeploymentIds: MutableSet<UUID> = mutableSetOf()
     private val dataStreams: MutableDataStreamBatch = MutableDataStreamBatch()
 
+    companion object
+    {
+        private const val MICROSECONDS_TO_MILLISECONDS = 1000L
+    }
 
     /**
      * Start accepting data for a study deployment for data streams configured in [configuration].
@@ -112,14 +122,152 @@ class InMemoryDataStreamService : DataStreamService
     }
 
     /**
-     * Stop accepting incoming data for all data streams for each of the [studyDeploymentIds].
+     * Retrieve collected data points for the specified study deployments, optionally filtered by device role names, data types, and time range.
      *
-     * @throws IllegalArgumentException when no data streams were ever opened for any of the [studyDeploymentIds].
+     * @param studyDeploymentIds The set of study deployment IDs to query. Must not be empty.
+     * @param deviceRoleNames Optional set of device role names (e.g., "phone") to include. If null or empty, data for all device roles is returned.
+     * @param dataTypes Optional set of [DataType]s to include. If null or empty, data for all data types is returned.
+     * @param from Optional absolute start time for filtering. If null, no lower bound is applied.
+     * @param to Optional absolute end time for filtering. If null, no upper bound is applied.
+     *
+     * @return A [DataStreamBatch] containing matching data points.
+     */
+    override suspend fun getBatchForStudyDeployments(
+        studyDeploymentIds: Set<UUID>,
+        deviceRoleNames: Set<String>?,
+        dataTypes: Set<DataType>?,
+        from: Instant?,
+        to: Instant?
+    ): DataStreamBatch
+    {
+        val basicFilter = dataStreams.sequences.mapNotNull { sequence ->
+            if (!matchesBasicFilters(sequence, studyDeploymentIds, deviceRoleNames, dataTypes))
+            {
+                null
+            }
+            else
+            {
+                sequence
+            }
+        }
+        val filteredSequences = basicFilter.mapNotNull { sequence ->
+            if (from != null || to != null)
+            {
+                applyTimeFiltering(sequence, from, to)
+            }
+            else
+            {
+                sequence
+            }
+        }
+
+        return ImmutableDataStreamBatch.create(filteredSequences)
+    }
+
+    /**
+     * Checks if a sequence matches the basic filters (deployment ID, device role, data type).
+     */
+    private fun matchesBasicFilters(
+        sequence: DataStreamSequence<*>,
+        studyDeploymentIds: Set<UUID>,
+        deviceRoleNames: Set<String>?,
+        dataTypes: Set<DataType>?
+    ): Boolean
+    {
+        // Check deployment match first - most restrictive filter
+        if (sequence.dataStream.studyDeploymentId !in studyDeploymentIds)
+        {
+            return false
+        }
+
+        // Then check device role
+        if (!deviceRoleNames.isNullOrEmpty() &&
+            sequence.dataStream.deviceRoleName !in deviceRoleNames
+            )
+        {
+            return false
+        }
+
+        // Finally check data type
+        if (!dataTypes.isNullOrEmpty() &&
+            sequence.dataStream.dataType !in dataTypes
+            )
+        {
+            return false
+        }
+
+        return true
+    }
+
+    /**
+     * Applies time-based filtering to a sequence.
+     *
+     * @return The filtered sequence or null if no measurements fall within the time range.
+     */
+    private fun applyTimeFiltering(
+        sequence: DataStreamSequence<*>,
+        from: Instant?,
+        to: Instant?
+    ): DataStreamSequence<*>?
+    {
+        val filteredMeasurements = sequence.measurements.filter { measurement ->
+            isWithinTimeRange( measurement, sequence, from, to )
+        }
+
+        // All measurements out of range, skip this sequence
+        if (filteredMeasurements.isEmpty())
+        {
+            return null
+        }
+
+        // Create new sequence with only in-range measurements
+        return MutableDataStreamSequence<Data>(
+            sequence.dataStream,
+            sequence.firstSequenceId,
+            sequence.triggerIds,
+            sequence.syncPoint
+        ).apply {
+            appendMeasurements(filteredMeasurements)
+        }
+    }
+
+    /**
+     * Checks if a measurement falls within the specified time range.
+     */
+    private fun isWithinTimeRange(
+        measurement: Measurement<*>,
+        sequence: DataStreamSequence<*>,
+        from: Instant?,
+        to: Instant?
+    ): Boolean
+    {
+        // Convert sensor timestamps to absolute time using the sync point
+        val absoluteStartTime = Instant.fromEpochMilliseconds(
+            sequence.syncPoint.applyToTimestamp(measurement.sensorStartTime) / MICROSECONDS_TO_MILLISECONDS
+        )
+
+        val absoluteEndTime = measurement.sensorEndTime?.let { endTime ->
+            Instant.fromEpochMilliseconds(
+                sequence.syncPoint.applyToTimestamp(endTime) / MICROSECONDS_TO_MILLISECONDS
+            )
+        } ?: absoluteStartTime
+
+        val afterFrom = from == null || absoluteStartTime >= from
+        val beforeTo = to == null || absoluteEndTime <= to
+
+        return afterFrom && beforeTo
+    }
+
+    /**
+     * Stop accepting data for the specified [studyDeploymentIds].
+     *
+     * @throws IllegalArgumentException when one or more of the specified [studyDeploymentIds]
+     * do not have configured data streams.
      */
     override suspend fun closeDataStreams( studyDeploymentIds: Set<UUID> )
     {
         require( studyDeploymentIds.all { configuredDataStreams[ it ] != null } )
-            { "No data streams configured for this study deployment." }
+        { "No data streams configured for this study deployment." }
 
         stoppedStudyDeploymentIds.addAll( studyDeploymentIds )
     }
