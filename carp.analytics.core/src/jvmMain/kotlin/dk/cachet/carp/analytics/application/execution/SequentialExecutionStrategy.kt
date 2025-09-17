@@ -1,0 +1,158 @@
+package dk.cachet.carp.analytics.application.execution
+
+import dk.cachet.carp.analytics.application.data.DataRegistry
+import dk.cachet.carp.analytics.application.data.InMemoryData
+import dk.cachet.carp.analytics.domain.execution.ExecutionStrategy
+import dk.cachet.carp.analytics.domain.process.AnalysisProcess
+import dk.cachet.carp.analytics.domain.process.ExternalProcess
+import dk.cachet.carp.analytics.domain.process.PythonExternalProcess
+import dk.cachet.carp.analytics.domain.workflow.Step
+import dk.cachet.carp.analytics.domain.workflow.Workflow
+import dk.cachet.carp.analytics.domain.workflow.WorkflowComponent
+import dk.cachet.carp.data.application.CollectedDataSet
+
+/**
+ * Executes workflow steps sequentially using a DataRegistry for data management.
+ */
+class SequentialExecutionStrategy(
+    private val dataRegistry: DataRegistry
+) : ExecutionStrategy
+{
+    /**
+     * Executes the provided steps in the workflow one by one using the given ExecutorFactory.
+     *
+     * @param workflow The workflow containing the steps to execute.
+     * @param executorFactory The factory for creating executors for each process type.
+     */
+
+    override fun execute( workflow: Workflow, executorFactory: ExecutorFactory )
+    {
+        println("Starting sequential execution of workflow: ${workflow.metadata.name}")
+
+        val steps = flattenSteps(workflow)
+        for ((index, step) in steps.withIndex())
+        {
+            println("Running step ${index + 1}/${steps.size}: ${step.metadata.name}")
+
+            when (val process = step.process) {
+                is ExternalProcess -> handleExternalProcess(step, process, executorFactory)
+                is AnalysisProcess -> handleAnalysisProcess(step, process)
+                else -> throw IllegalArgumentException("Unsupported process type: ${process::class.simpleName}")
+            }
+        }
+
+        println("Workflow execution completed successfully.")
+    }
+
+    /**
+     * Recursively flattens all workflow components to a list of steps in execution order.
+     */
+    private fun flattenSteps( component: WorkflowComponent ): List<Step> = when (component)
+    {
+        is Step -> listOf(component)
+        is Workflow -> component.getComponents().flatMap { flattenSteps(it) }
+        else -> error("Unknown component type: ${component::class.simpleName}")
+    }
+
+    private fun resolveInputData( step: Step ): CollectedDataSet
+    {
+        // For now: Assume first inputData is what we fetch
+        if (step.inputData.isNullOrEmpty())
+        {
+            println("No input data defined for step '${step.metadata.name}', using empty dataset.")
+            return CollectedDataSet(emptyList())
+        }
+
+        val inputName = step.inputData.first().name
+        val handle = dataRegistry.resolve(inputName)
+
+        if (handle is InMemoryData)
+        {
+            return handle.dataset
+        }
+        else
+        {
+            error("Input data '$inputName' is not in memory or has wrong type.")
+        }
+    }
+
+    private fun registerOutputData( step: Step, output: CollectedDataSet )
+    {
+        if (step.outputData == null)
+        {
+            println("No output data reference defined for step '${step.metadata.name}', output not stored.")
+            return
+        }
+        val outputName = step.outputData.name
+        dataRegistry.register(outputName, InMemoryData(output))
+        println("Registered output data under name: '$outputName'")
+    }
+
+
+    /**
+     * Handles the execution of an [ExternalProcess] using the provided [ExecutorFactory].
+     * Sets up the executor, executes the process, and cleans up afterward.
+     */
+    private fun handleExternalProcess( step: Step, process: ExternalProcess, executorFactory: ExecutorFactory )
+    {
+        val executor = executorFactory.getExecutor(process)
+        try
+        {
+            executor.setup(process, process.executionContext)
+            if (process is PythonExternalProcess)
+            {
+                process.resolveBindings(step.inputData, step.outputData, dataRegistry)
+            }
+            println("Executing ExternalProcess: ${process.name}")
+            executor.execute(process, process.executionContext)
+        }
+        catch ( e: IllegalArgumentException )
+        {
+            println("Invalid arguments for ExternalProcess: ${process.name}")
+            throw e
+        }
+        catch ( e: IllegalStateException )
+        {
+            println("Invalid state during ExternalProcess execution: ${process.name}")
+            throw e
+        }
+        finally
+        {
+            println("Cleaning up ExternalProcess: ${process.name}")
+            executor.cleanup(process, process.executionContext)
+        }
+    }
+
+    /**
+     * Handles the execution of an [AnalysisProcess].
+     * Resolves input data, executes the process, and registers output data if applicable.
+     */
+    private fun handleAnalysisProcess( step: Step, process: AnalysisProcess )
+    {
+        try
+        {
+            println("Executing AnalysisProcess: ${process.name}")
+            val inputDataSet = resolveInputData(step)
+            val outputDataSet = process.process(inputDataSet)
+
+            if (outputDataSet != null && step.outputData != null)
+            {
+                registerOutputData(step, outputDataSet)
+            }
+            else if (outputDataSet == null)
+            {
+                println("AnalysisProcess '${process.name}' produced no output.")
+            }
+        }
+        catch ( e: IllegalArgumentException )
+        {
+            println("Invalid arguments for AnalysisProcess: ${process.name}")
+            throw e
+        }
+        catch ( e: IllegalStateException )
+        {
+            println("Invalid state during AnalysisProcess execution: ${process.name}")
+            throw e
+        }
+    }
+}
