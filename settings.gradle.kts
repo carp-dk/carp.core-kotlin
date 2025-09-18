@@ -6,6 +6,7 @@ dependencyResolutionManagement {
     }
 }
 
+include( "carp.analytics.core" )
 include( "carp.common" )
 include( "carp.common.test" )
 include( "carp.test" )
