@@ -1,6 +1,6 @@
 package dk.cachet.carp.analytics.application.runtime
 
-import dk.cachet.carp.data.application.StudyDataService
+import dk.cachet.carp.data.application.DataStreamService
 import dk.cachet.carp.analytics.application.data.DataRegistry
 
 /**
@@ -11,7 +11,7 @@ import dk.cachet.carp.analytics.application.data.DataRegistry
  */
 object RuntimeDependencies {
     /** Key for injecting the StudyDataService. */
-    val StudyDataService = RuntimeDependencyKey<StudyDataService>("studyDataService")
+    val StudyDataService = RuntimeDependencyKey<DataStreamService>("DataStreamService")
 
     /** Key for injecting the DataRegistry. */
     val DataRegistry = RuntimeDependencyKey<DataRegistry>("dataRegistry")

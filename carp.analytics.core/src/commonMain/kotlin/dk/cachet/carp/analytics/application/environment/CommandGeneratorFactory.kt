@@ -4,18 +4,13 @@ package dk.cachet.carp.analytics.application.environment
 import kotlin.reflect.KClass
 import dk.cachet.carp.analytics.domain.environment.Environment
 import dk.cachet.carp.analytics.domain.environment.CommandGenerator
-import dk.cachet.carp.analytics.infrastructure.environment.CondaEnvironment
-import dk.cachet.carp.analytics.infrastructure.environment.CondaCommandGenerator
 
 /**
  * Factory for selecting the appropriate CommandGenerator based on the Environment type.
  */
 object CommandGeneratorFactory {
 
-    private val registry: MutableMap<KClass<out Environment>, CommandGenerator> = mutableMapOf(
-        CondaEnvironment::class to CondaCommandGenerator()
-        // Add other environment types and their corresponding generators here
-    )
+    private val registry: MutableMap<KClass<out Environment>, CommandGenerator> = mutableMapOf()
 
     /**
      * Returns the appropriate CommandGenerator for the given environment.
@@ -45,6 +40,5 @@ object CommandGeneratorFactory {
      */
     fun clearCustomGenerators() {
         registry.clear()
-        registry[CondaEnvironment::class] = CondaCommandGenerator() // Reset to production state
     }
 }
