@@ -1,44 +1,33 @@
 package dk.cachet.carp.analytics.application.environment
 
-
-import kotlin.reflect.KClass
-import dk.cachet.carp.analytics.domain.environment.Environment
 import dk.cachet.carp.analytics.domain.environment.CommandGenerator
+import dk.cachet.carp.analytics.domain.environment.Environment
 
 /**
- * Factory for selecting the appropriate CommandGenerator based on the Environment type.
+ * Resolves a [CommandGenerator] for a given [Environment].
+ * Uses a string typeId to look up the appropriate generator.
  */
-object CommandGeneratorFactory {
+interface CommandGeneratorResolver {
+    /** Registry mapping environment typeId to generator. */
+    val registry: Map<String, CommandGenerator>
 
-    private val registry: MutableMap<KClass<out Environment>, CommandGenerator> = mutableMapOf()
+    /** Function to derive a typeId for the given [Environment]. */
+    val keySelector: (Environment) -> String
 
-    /**
-     * Returns the appropriate CommandGenerator for the given environment.
-     * @param environment The environment for which a CommandGenerator is required.
-     * @return The appropriate CommandGenerator instance.
-     * @throws IllegalArgumentException If no generator is registered for the environment type.
-     */
-    fun getGenerator(environment: Environment): CommandGenerator {
-        return registry[environment::class]
-            ?: throw IllegalArgumentException("No CommandGenerator available for environment type: ${environment::class.simpleName}")
-    }
+    /** Return the appropriate generator or fail with a clear error. */
+    fun get(environment: Environment): CommandGenerator
+}
 
-    /**
-     * Registers a new CommandGenerator for the specified environment type.
-     * This method is primarily intended for testing purposes.
-     *
-     * @param environmentType The class of the environment type.
-     * @param generator The CommandGenerator to register.
-     */
-    fun registerGenerator(environmentType: KClass<out Environment>, generator: CommandGenerator) {
-        registry[environmentType] = generator 
-    }
-
-    /**
-     * Clears all custom generators from the registry, restoring it to the default state.
-     * This method is primarily intended for testing purposes.
-     */
-    fun clearCustomGenerators() {
-        registry.clear()
+/**
+ * Default, multiplatform resolver with immutable registry and explicit key selector.
+ */
+class DefaultCommandGeneratorResolver(
+    override val registry: Map<String, CommandGenerator>,
+    override val keySelector: (Environment) -> String
+) : CommandGeneratorResolver {
+    override fun get(environment: Environment): CommandGenerator {
+        val key = keySelector(environment)
+        return registry[key]
+            ?: error("No CommandGenerator available for environment key '$key'. Registered: ${registry.keys}")
     }
 }
