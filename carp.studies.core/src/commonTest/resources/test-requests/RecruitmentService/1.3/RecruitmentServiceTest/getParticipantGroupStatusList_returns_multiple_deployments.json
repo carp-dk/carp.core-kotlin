@@ -14,7 +14,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "9ed836f8-1139-450d-94f5-bf985a6be59c",
+                    "ownerId": "3407151a-879d-45ac-a6dc-51de89f7be9a",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -30,7 +30,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "9ed836f8-1139-450d-94f5-bf985a6be59c",
+                    "ownerId": "3407151a-879d-45ac-a6dc-51de89f7be9a",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -38,10 +38,10 @@
                         "name": "Test"
                     },
                     "protocolSnapshot": {
-                        "id": "5205f824-6fb7-463d-9671-32ab337b2c67",
-                        "createdOn": "2025-08-09T15:18:12.646803800Z",
+                        "id": "0f147969-bcaa-44ce-9309-7bbeacae60cd",
+                        "createdOn": "2025-10-16T17:11:47.478183Z",
                         "version": 0,
-                        "ownerId": "e73c2530-dc44-4598-a195-47f6d8fcb397",
+                        "ownerId": "70b656d7-e3e7-423d-b054-22c549126ef1",
                         "name": "Test protocol",
                         "primaryDevices": [
                             {
@@ -108,6 +108,14 @@
                         "emailAddress": "test@test.com"
                     },
                     "id": "00000000-0000-0000-0000-000000000002"
+                }
+            ],
+            "assignedParticipantRoles": [
+                {
+                    "participantId": "00000000-0000-0000-0000-000000000002",
+                    "assignedRoles": {
+                        "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                    }
                 }
             ],
             "invitedOn": "1970-01-01T00:00:00Z",
@@ -194,6 +202,14 @@
                     "id": "00000000-0000-0000-0000-000000000004"
                 }
             ],
+            "assignedParticipantRoles": [
+                {
+                    "participantId": "00000000-0000-0000-0000-000000000004",
+                    "assignedRoles": {
+                        "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                    }
+                }
+            ],
             "invitedOn": "1970-01-01T00:00:00Z",
             "studyDeploymentStatus": {
                 "__type": "dk.cachet.carp.deployments.application.StudyDeploymentStatus.Invited",
@@ -253,6 +269,14 @@
                         "id": "00000000-0000-0000-0000-000000000002"
                     }
                 ],
+                "assignedParticipantRoles": [
+                    {
+                        "participantId": "00000000-0000-0000-0000-000000000002",
+                        "assignedRoles": {
+                            "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                        }
+                    }
+                ],
                 "invitedOn": "1970-01-01T00:00:00Z",
                 "studyDeploymentStatus": {
                     "__type": "dk.cachet.carp.deployments.application.StudyDeploymentStatus.Invited",
@@ -299,6 +323,14 @@
                             "emailAddress": "test2@test.com"
                         },
                         "id": "00000000-0000-0000-0000-000000000004"
+                    }
+                ],
+                "assignedParticipantRoles": [
+                    {
+                        "participantId": "00000000-0000-0000-0000-000000000004",
+                        "assignedRoles": {
+                            "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                        }
                     }
                 ],
                 "invitedOn": "1970-01-01T00:00:00Z",

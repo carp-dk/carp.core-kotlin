@@ -2,11 +2,13 @@ package dk.cachet.carp.studies.domain.users
 
 import dk.cachet.carp.common.application.EmailAddress
 import dk.cachet.carp.common.application.UUID
+import dk.cachet.carp.common.application.users.AssignedTo
 import dk.cachet.carp.common.application.users.EmailAccountIdentity
 import dk.cachet.carp.deployments.application.StudyDeploymentStatus
 import dk.cachet.carp.deployments.application.users.StudyInvitation
 import dk.cachet.carp.protocols.infrastructure.test.createEmptyProtocol
 import dk.cachet.carp.protocols.infrastructure.test.createSinglePrimaryDeviceProtocol
+import dk.cachet.carp.studies.application.users.AssignedParticipantRoles
 import kotlinx.datetime.Clock
 import kotlin.test.*
 
@@ -27,8 +29,9 @@ class RecruitmentTest
         val participant = recruitment.addParticipant( participantEmail )
         val protocol = createEmptyProtocol()
         val invitation = StudyInvitation( "Test", "A study" )
+        val roleAssignment = setOf( AssignedParticipantRoles( participant.id, AssignedTo.All ) )
         recruitment.lockInStudy( protocol.getSnapshot(), invitation )
-        recruitment.addParticipantGroup( setOf( participant.id ) )
+        recruitment.addParticipantGroup( roleAssignment )
 
         val snapshot = recruitment.getSnapshot()
         val fromSnapshot = Recruitment.fromSnapshot( snapshot )
@@ -105,9 +108,9 @@ class RecruitmentTest
 
         assertTrue( recruitment.getStatus() is RecruitmentStatus.ReadyForDeployment )
 
-        val participantIds = setOf( participant.id )
-        val group = recruitment.addParticipantGroup( participantIds, groupName )
-        assertEquals( Recruitment.Event.ParticipantGroupAdded( participantIds ), recruitment.consumeEvents().last() )
+        val roleAssignment = setOf( AssignedParticipantRoles( participant.id, AssignedTo.All ) )
+        val group = recruitment.addParticipantGroup( roleAssignment, groupName )
+        assertEquals( Recruitment.Event.ParticipantGroupAdded( roleAssignment ), recruitment.consumeEvents().last() )
         assertEquals(
             participant.id,
             recruitment.participantGroups[ group.id ]?.participantIds?.singleOrNull()
@@ -123,10 +126,22 @@ class RecruitmentTest
 
         assertFalse( recruitment.getStatus() is RecruitmentStatus.ReadyForDeployment )
 
-        val participantIds = setOf( participant.id )
-        assertFailsWith<IllegalStateException> { recruitment.addParticipantGroup( participantIds ) }
+        val roleAssignment = setOf( AssignedParticipantRoles( participant.id, AssignedTo.All ) )
+        assertFailsWith<IllegalStateException> { recruitment.addParticipantGroup( roleAssignment ) }
         val participationEvents = recruitment.consumeEvents().filterIsInstance<Recruitment.Event.ParticipantGroupAdded>()
         assertEquals( 0, participationEvents.count() )
+    }
+
+    @Test
+    fun addParticipantGroup_fails_for_unknown_participant_roles()
+    {
+        val recruitment = Recruitment( studyId )
+        val participant = recruitment.addParticipant( participantEmail )
+        val protocol = createEmptyProtocol()
+        recruitment.lockInStudy( protocol.getSnapshot(), StudyInvitation( "Some study" ) )
+        val unknownRole = AssignedTo.Roles( setOf( "Unknown role" ) )
+        val unknownRoleAssignment = setOf( AssignedParticipantRoles( participant.id, unknownRole ) )
+        assertFailsWith<IllegalArgumentException> { recruitment.addParticipantGroup( unknownRoleAssignment ) }
     }
 
     @Test
@@ -134,9 +149,10 @@ class RecruitmentTest
     {
         val recruitment = Recruitment( studyId )
         val participant = recruitment.addParticipant( participantEmail )
+        val roleAssignment = setOf( AssignedParticipantRoles( participant.id, AssignedTo.All ) )
         val protocol = createEmptyProtocol()
         recruitment.lockInStudy( protocol.getSnapshot(), StudyInvitation( "Some study" ) )
-        val group = recruitment.addParticipantGroup( setOf( participant.id ) )
+        val group = recruitment.addParticipantGroup( roleAssignment )
 
         val stubDeploymentStatus =
             StudyDeploymentStatus.DeployingDevices( Clock.System.now(), group.id, emptyList(), emptyList(), null )

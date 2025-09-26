@@ -122,9 +122,11 @@ describe( "carp-studies-core", () => {
             const emptyDeploymentStatusList = KtList.fromJsArray( [] )
             const emptyParticipantStatusList = KtList.fromJsArray( [] )
             const deploymentStatus = new StudyDeploymentStatus.Running( now, deploymentId, emptyDeploymentStatusList, emptyParticipantStatusList, now )
-            const participantsSet = new Set( [ new Participant( new UsernameAccountIdentity( new Username( "Test" ) ) ) ] )
-            const participants = KtSet.fromJsSet( participantsSet )
-            const group = new ParticipantGroupStatus.Invited( deploymentId, participants, now, deploymentStatus, "Test group" )
+            const participantsSet = [ new Participant( new UsernameAccountIdentity( new Username( "Test" ) ) ) ]
+            const participants = KtSet.fromJsSet( new Set( participantsSet ) )
+            const roleAssignmentsSet = new Set( [ new AssignedParticipantRoles( participantsSet[0].id, AssignedTo.All ) ] )
+            const roleAssignments = KtSet.fromJsSet( roleAssignmentsSet )
+            const group = new ParticipantGroupStatus.Invited( deploymentId, participants, roleAssignments, now, deploymentStatus, "Test group" )
 
             const serializer = getSerializer( ParticipantGroupStatus )
             const serialized = JSON.encodeToString( serializer, group )

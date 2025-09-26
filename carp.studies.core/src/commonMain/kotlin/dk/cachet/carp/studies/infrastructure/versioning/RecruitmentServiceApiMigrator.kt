@@ -70,8 +70,9 @@ private val major1Minor2To3Migration =
                 }
             }
 
-            // Remove newly added 'name' field from 'ParticipantGroupStatus'.
+            // Remove newly added fields from `ParticipantGroupStatus`.
             json.remove( "name" )
+            json.remove( "assignedParticipantRoles" )
         }
 
         override fun migrateEvent( event: JsonObject ) = event

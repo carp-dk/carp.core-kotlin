@@ -35,6 +35,11 @@ sealed class ParticipantGroupStatus
      */
     abstract val participants: Set<Participant>
 
+    /**
+     * The participant role assignments in this group.
+     */
+    abstract val assignedParticipantRoles: Set<AssignedParticipantRoles>
+
 
     /**
      * The [participants] have not yet been invited. The list of participants can still be modified.
@@ -43,6 +48,7 @@ sealed class ParticipantGroupStatus
     data class Staged(
         override val id: UUID,
         override val participants: Set<Participant>,
+        override val assignedParticipantRoles: Set<AssignedParticipantRoles>,
         override val name: String? = null
     ) : ParticipantGroupStatus()
 
@@ -60,6 +66,7 @@ sealed class ParticipantGroupStatus
              */
             fun fromDeploymentStatus(
                 participants: Set<Participant>,
+                roleAssignment: Set<AssignedParticipantRoles>,
                 deploymentStatus: StudyDeploymentStatus,
                 name: String?
             ): InDeployment
@@ -73,14 +80,29 @@ sealed class ParticipantGroupStatus
                     is StudyDeploymentStatus.Invited,
                     is StudyDeploymentStatus.DeployingDevices ->
                         // If deployment was ready at one point (`startedOn`), consider the study 'Running'.
-                        if ( startedOn == null ) Invited( id, participants, createdOn, deploymentStatus, name )
-                        else Running( id, participants, createdOn, deploymentStatus, startedOn, name )
+                        if ( startedOn == null )
+                        {
+                            Invited( id, participants, roleAssignment, createdOn, deploymentStatus, name )
+                        }
+                        else
+                        {
+                            Running( id, participants, roleAssignment, createdOn, deploymentStatus, startedOn, name )
+                        }
                     is StudyDeploymentStatus.Running ->
-                        Running( id, participants, createdOn, deploymentStatus, checkNotNull( startedOn ), name )
+                        Running(
+                            id,
+                            participants,
+                            roleAssignment,
+                            createdOn,
+                            deploymentStatus,
+                            checkNotNull( startedOn ),
+                            name
+                        )
                     is StudyDeploymentStatus.Stopped ->
                         Stopped(
                             id,
                             participants,
+                            roleAssignment,
                             createdOn,
                             deploymentStatus,
                             startedOn,
@@ -111,6 +133,7 @@ sealed class ParticipantGroupStatus
     data class Invited(
         override val id: UUID,
         override val participants: Set<Participant>,
+        override val assignedParticipantRoles: Set<AssignedParticipantRoles>,
         override val invitedOn: Instant,
         override val studyDeploymentStatus: StudyDeploymentStatus,
         override val name: String? = null
@@ -124,6 +147,7 @@ sealed class ParticipantGroupStatus
     data class Running(
         override val id: UUID,
         override val participants: Set<Participant>,
+        override val assignedParticipantRoles: Set<AssignedParticipantRoles>,
         override val invitedOn: Instant,
         override val studyDeploymentStatus: StudyDeploymentStatus,
         /**
@@ -141,6 +165,7 @@ sealed class ParticipantGroupStatus
     data class Stopped(
         override val id: UUID,
         override val participants: Set<Participant>,
+        override val assignedParticipantRoles: Set<AssignedParticipantRoles>,
         override val invitedOn: Instant,
         override val studyDeploymentStatus: StudyDeploymentStatus,
         /**

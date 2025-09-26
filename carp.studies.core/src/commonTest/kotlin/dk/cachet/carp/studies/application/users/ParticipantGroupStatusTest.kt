@@ -18,6 +18,7 @@ class ParticipantGroupStatusTest
     private val participantGroupName = "Test group"
     private val deviceStatusList = emptyList<DeviceDeploymentStatus>()
     private val participants: Set<Participant> = emptySet()
+    private val roleAssignments: Set<AssignedParticipantRoles> = emptySet()
     private val participantStatusList: List<ParticipantStatus> = emptyList()
 
 
@@ -28,6 +29,7 @@ class ParticipantGroupStatusTest
 
         val status = ParticipantGroupStatus.InDeployment.fromDeploymentStatus(
             participants,
+            roleAssignments,
             deployingDevices,
             participantGroupName
         )
@@ -42,6 +44,7 @@ class ParticipantGroupStatusTest
 
         val status = ParticipantGroupStatus.InDeployment.fromDeploymentStatus(
             participants,
+            roleAssignments,
             redeployingDevices,
             participantGroupName
         )

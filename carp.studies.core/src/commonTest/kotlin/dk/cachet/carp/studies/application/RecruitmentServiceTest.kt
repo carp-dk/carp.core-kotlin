@@ -185,6 +185,8 @@ interface RecruitmentServiceTest
             setOf( assignedParticipant ),
             "Group 1"
         )
+
+        // Deploy the same participants in a group with a different name.
         val groupStatus2 = recruitmentService.inviteNewParticipantGroup(
             studyId,
             setOf( assignedParticipant ),
@@ -230,6 +232,7 @@ interface RecruitmentServiceTest
         val assignedP1 = AssignedParticipantRoles( p1.id, AssignedTo.All )
         recruitmentService.inviteNewParticipantGroup( studyId, setOf( assignedP1 ), sameName )
 
+        // Second group with different participants but same group same name.
         val p2 = recruitmentService.addParticipant( studyId, EmailAddress( "test2@test.com" ) )
         val assignedP2 = AssignedParticipantRoles( p2.id, AssignedTo.All )
         recruitmentService.inviteNewParticipantGroup( studyId, setOf( assignedP2 ), sameName )
@@ -237,6 +240,31 @@ interface RecruitmentServiceTest
         val participantGroups = recruitmentService.getParticipantGroupStatusList( studyId )
         assertNotEquals( participantGroups[0].id, participantGroups[1].id )
         assertEquals( participantGroups[0].name, participantGroups[1].name )
+    }
+
+    @Test
+    fun inviteNewParticipantGroup_for_same_participant_different_roles_succeeds() = runTest {
+        val (recruitmentService, studyService) = createSUT()
+        val (studyId, protocol) = createLiveStudy( studyService )
+        val participant1 = recruitmentService.addParticipant( studyId, EmailAddress( "test@test.com" ) )
+        val participant2 = recruitmentService.addParticipant( studyId, EmailAddress( "test2@test.com" ) )
+        val role1 = protocol.participantRoles.map { it.role }.first()
+        val role2 = protocol.participantRoles.map { it.role }.last()
+
+        // First group: participant1 has role1, participant2 has role2.
+        val assignedSpecificRoles1 = AssignedParticipantRoles( participant1.id, AssignedTo.Roles( setOf ( role1 ) ) )
+        val assignedSpecificRoles2 = AssignedParticipantRoles( participant2.id, AssignedTo.Roles( setOf ( role2 ) ) )
+        val groupStatus1 = recruitmentService.inviteNewParticipantGroup(
+            studyId, setOf( assignedSpecificRoles1, assignedSpecificRoles2 )
+        )
+
+        // Second group: participant1 has role2, participant2 has role1.
+        val assignedSpecificRoles3 = AssignedParticipantRoles( participant1.id, AssignedTo.Roles( setOf ( role2 ) ) )
+        val assignedSpecificRoles4 = AssignedParticipantRoles( participant2.id, AssignedTo.Roles( setOf ( role1 ) ) )
+        val groupStatus2 = recruitmentService.inviteNewParticipantGroup(
+            studyId, setOf( assignedSpecificRoles3, assignedSpecificRoles4 )
+        )
+        assertNotEquals( groupStatus1, groupStatus2 )
     }
 
     @Test

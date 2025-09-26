@@ -14,7 +14,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "b2159246-a701-4062-af44-575edd23e084",
+                    "ownerId": "cd232d57-cd94-48fc-8e6f-80843eccef8f",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -30,7 +30,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "b2159246-a701-4062-af44-575edd23e084",
+                    "ownerId": "cd232d57-cd94-48fc-8e6f-80843eccef8f",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -38,10 +38,10 @@
                         "name": "Test"
                     },
                     "protocolSnapshot": {
-                        "id": "6e1fe4b6-20a1-4bae-a19e-68b47d277fb7",
-                        "createdOn": "2025-08-09T15:18:12.632803300Z",
+                        "id": "4e7cf29a-5e1c-4fc5-b203-b17b70f8b767",
+                        "createdOn": "2025-10-16T17:11:09.217206Z",
                         "version": 0,
-                        "ownerId": "9d8eb47d-434a-43f4-94cb-44080ca4ac9c",
+                        "ownerId": "578c9ac6-b621-4ea8-aa00-0f0542a79aea",
                         "name": "Test protocol",
                         "primaryDevices": [
                             {
@@ -110,6 +110,14 @@
                     "id": "00000000-0000-0000-0000-000000000002"
                 }
             ],
+            "assignedParticipantRoles": [
+                {
+                    "participantId": "00000000-0000-0000-0000-000000000002",
+                    "assignedRoles": {
+                        "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                    }
+                }
+            ],
             "invitedOn": "1970-01-01T00:00:00Z",
             "studyDeploymentStatus": {
                 "__type": "dk.cachet.carp.deployments.application.StudyDeploymentStatus.Invited",
@@ -167,6 +175,14 @@
                         "emailAddress": "test@test.com"
                     },
                     "id": "00000000-0000-0000-0000-000000000002"
+                }
+            ],
+            "assignedParticipantRoles": [
+                {
+                    "participantId": "00000000-0000-0000-0000-000000000002",
+                    "assignedRoles": {
+                        "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                    }
                 }
             ],
             "invitedOn": "1970-01-01T00:00:00Z",
@@ -236,6 +252,14 @@
                         "emailAddress": "test@test.com"
                     },
                     "id": "00000000-0000-0000-0000-000000000002"
+                }
+            ],
+            "assignedParticipantRoles": [
+                {
+                    "participantId": "00000000-0000-0000-0000-000000000002",
+                    "assignedRoles": {
+                        "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                    }
                 }
             ],
             "invitedOn": "1970-01-01T00:00:00Z",
