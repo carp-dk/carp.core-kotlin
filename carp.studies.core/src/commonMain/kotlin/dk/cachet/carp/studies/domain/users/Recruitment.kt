@@ -3,6 +3,7 @@ package dk.cachet.carp.studies.domain.users
 import dk.cachet.carp.common.application.EmailAddress
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.application.users.AccountIdentity
+import dk.cachet.carp.common.application.users.AssignedTo
 import dk.cachet.carp.common.application.users.EmailAccountIdentity
 import dk.cachet.carp.common.application.users.UsernameAccountIdentity
 import dk.cachet.carp.common.domain.AggregateRoot
@@ -29,7 +30,10 @@ class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: I
     sealed class Event : DomainEvent
     {
         data class ParticipantAdded( val participant: Participant ) : Event()
-        data class ParticipantGroupAdded( val participantIds: Set<UUID> ) : Event()
+        data class ParticipantGroupAdded(
+            val participants: Set<AssignedParticipantRoles>,
+            val name: String? = null
+        ) : Event()
     }
 
 
@@ -174,27 +178,29 @@ class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: I
     private val _participantGroups: MutableMap<UUID, StagedParticipantGroup> = mutableMapOf()
 
     /**
-     * Create and add the participants identified by [participantIds] as a participant group, optionally with a [name]
-     * representing this group.
+     * Create and add the [participants] with assigned roles to a participant group, and optionally give it a [name].
      *
-     * @throws IllegalArgumentException when one or more of the participants aren't in this recruitment.
+     * @throws IllegalArgumentException when:
+     *  - one or more of the participants aren't in this recruitment.
+     *  - any of the participant roles specified in [participants] are not part of the configured study protocol.
      * @throws IllegalStateException when the study is not yet ready for deployment.
      */
     fun addParticipantGroup(
-        participantIds: Set<UUID>,
+        participants: Set<AssignedParticipantRoles>,
         name: String? = null,
         id: UUID = UUID.randomUUID()
     ): StagedParticipantGroup
     {
-        require( participants.map { it.id }.containsAll( participantIds ) )
-            { "One of the participants for which to create a participant group isn't part of this recruitment." }
-        check( getStatus() is RecruitmentStatus.ReadyForDeployment ) { "The study is not yet ready for deployment." }
+        val status = getStatus()
+        check( status is RecruitmentStatus.ReadyForDeployment ) { "The study is not yet ready for deployment." }
+
+        validateRoleAssignments( status.studyProtocol, participants )
 
         val group = StagedParticipantGroup( id, name )
-        group.addParticipants( participantIds )
+        group.addParticipants( participants )
 
         _participantGroups[ group.id ] = group
-        event( Event.ParticipantGroupAdded( participantIds ) )
+        event( Event.ParticipantGroupAdded( participants, null ) )
 
         return group
     }
@@ -213,6 +219,7 @@ class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: I
         val participants = group.participantIds.map { id -> _participants.first { it.id == id } }
         return ParticipantGroupStatus.InDeployment.fromDeploymentStatus(
             participants.toSet(),
+            group.roleAssignments,
             studyDeploymentStatus,
             group.name
         )
@@ -223,4 +230,29 @@ class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: I
      */
     override fun getSnapshot( version: Int ): RecruitmentSnapshot =
         RecruitmentSnapshot.fromParticipantRecruitment( this, version )
+
+    /**
+     * Validate that all participants exist in this recruitment and that all assigned roles are part of the protocol.
+     *
+     * @throws IllegalArgumentException when:
+     *  - one or more of the participants aren't in this recruitment.
+     *  - any of the participant roles specified in [participants] are not part of the configured study protocol.
+     */
+    private fun validateRoleAssignments( protocol: StudyProtocolSnapshot, participants: Set<AssignedParticipantRoles> )
+    {
+        require( this.participants.map { it.id }.containsAll( participants.participantIds() ) )
+            { "One of the participants for which to create a participant group isn't part of this recruitment." }
+
+        val assignedParticipantRoles = participants
+            .map { it.assignedRoles }
+            .filterIsInstance<AssignedTo.Roles>()
+            .flatMap { it.roleNames }
+            .toSet()
+        val availableRoles = protocol.participantRoles.map { it.role }.toSet()
+
+        assignedParticipantRoles.forEach { assigned ->
+            require( assigned in availableRoles )
+                { "The assigned participant role \"$assigned\" is not part of the study protocol." }
+        }
+    }
 }

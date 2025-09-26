@@ -133,13 +133,11 @@ class RecruitmentServiceHost(
         val recruitment = getRecruitmentOrThrow( studyId )
         val (protocol, invitations) = recruitment.createInvitations( group )
 
-        // In case the same participants have been invited before,
+        // In case the same participants with the same roles have been invited with the same group name before,
         // and that deployment is still running, return the existing group.
-        // TODO: The same participants might be invited for different role names, which we currently cannot differentiate between.
-        val toDeployParticipantIds = group.map { it.participantId }.toSet()
         val deployedStatus = recruitment.participantGroups.entries
-            .firstOrNull { (_, group) ->
-                group.participantIds == toDeployParticipantIds && group.name == name
+            .firstOrNull { (_, existingGroup) ->
+                existingGroup.roleAssignments == group && existingGroup.name == name
             }
             ?.let { deploymentService.getStudyDeploymentStatus( it.key ) }
         if ( deployedStatus != null && deployedStatus !is StudyDeploymentStatus.Stopped )
@@ -148,7 +146,7 @@ class RecruitmentServiceHost(
         }
 
         // Create participant group and mark as deployed.
-        val participantGroup = recruitment.addParticipantGroup( toDeployParticipantIds, name, uuidFactory.randomUUID() )
+        val participantGroup = recruitment.addParticipantGroup( group, name, uuidFactory.randomUUID() )
         participantGroup.markAsDeployed()
         participantRepository.updateRecruitment( recruitment )
 

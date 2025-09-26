@@ -14,7 +14,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "c6829dd1-26b4-4b66-b6e6-241f2bb67398",
+                    "ownerId": "bc734795-3dd5-4561-af83-fee62ed0b3a4",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -30,7 +30,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "c6829dd1-26b4-4b66-b6e6-241f2bb67398",
+                    "ownerId": "bc734795-3dd5-4561-af83-fee62ed0b3a4",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -38,10 +38,10 @@
                         "name": "Test"
                     },
                     "protocolSnapshot": {
-                        "id": "30876917-268a-4738-a989-98848b762eea",
-                        "createdOn": "2025-08-27T19:25:11.784560Z",
+                        "id": "079cc410-cc83-4e69-8209-35b608703970",
+                        "createdOn": "2025-10-16T17:11:09.230865Z",
                         "version": 0,
-                        "ownerId": "b618a3eb-6b26-48d3-9db2-c19a9556373d",
+                        "ownerId": "04e0fd86-c25f-4bce-be13-3766a9b086e0",
                         "name": "Test protocol",
                         "primaryDevices": [
                             {
@@ -95,7 +95,7 @@
                     }
                 }
             ],
-            "name": "Test Group"
+            "name": "Same Group"
         },
         "precedingEvents": [],
         "publishedEvents": [],
@@ -109,6 +109,14 @@
                         "emailAddress": "test@test.com"
                     },
                     "id": "00000000-0000-0000-0000-000000000002"
+                }
+            ],
+            "assignedParticipantRoles": [
+                {
+                    "participantId": "00000000-0000-0000-0000-000000000002",
+                    "assignedRoles": {
+                        "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                    }
                 }
             ],
             "invitedOn": "1970-01-01T00:00:00Z",
@@ -146,7 +154,7 @@
                 ],
                 "startedOn": null
             },
-            "name": "Test Group"
+            "name": "Same Group"
         }
     },
     {
@@ -181,7 +189,7 @@
                     }
                 }
             ],
-            "name": "Test Group"
+            "name": "Same Group"
         },
         "precedingEvents": [],
         "publishedEvents": [],
@@ -195,6 +203,14 @@
                         "emailAddress": "test2@test.com"
                     },
                     "id": "00000000-0000-0000-0000-000000000004"
+                }
+            ],
+            "assignedParticipantRoles": [
+                {
+                    "participantId": "00000000-0000-0000-0000-000000000004",
+                    "assignedRoles": {
+                        "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                    }
                 }
             ],
             "invitedOn": "1970-01-01T00:00:00Z",
@@ -232,7 +248,7 @@
                 ],
                 "startedOn": null
             },
-            "name": "Test Group"
+            "name": "Same Group"
         }
     },
     {
@@ -255,6 +271,14 @@
                             "emailAddress": "test@test.com"
                         },
                         "id": "00000000-0000-0000-0000-000000000002"
+                    }
+                ],
+                "assignedParticipantRoles": [
+                    {
+                        "participantId": "00000000-0000-0000-0000-000000000002",
+                        "assignedRoles": {
+                            "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                        }
                     }
                 ],
                 "invitedOn": "1970-01-01T00:00:00Z",
@@ -292,7 +316,7 @@
                     ],
                     "startedOn": null
                 },
-                "name": "Test Group"
+                "name": "Same Group"
             },
             {
                 "__type": "dk.cachet.carp.studies.application.users.ParticipantGroupStatus.Invited",
@@ -304,6 +328,14 @@
                             "emailAddress": "test2@test.com"
                         },
                         "id": "00000000-0000-0000-0000-000000000004"
+                    }
+                ],
+                "assignedParticipantRoles": [
+                    {
+                        "participantId": "00000000-0000-0000-0000-000000000004",
+                        "assignedRoles": {
+                            "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                        }
                     }
                 ],
                 "invitedOn": "1970-01-01T00:00:00Z",
@@ -341,7 +373,7 @@
                     ],
                     "startedOn": null
                 },
-                "name": "Test Group"
+                "name": "Same Group"
             }
         ]
     }

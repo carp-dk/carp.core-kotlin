@@ -166,6 +166,7 @@ private val studyInvitation = StudyInvitation(
     ApplicationData( "{\"trialGroup\", \"A\"}" )
 )
 private val participantAssignedRoles = AssignedTo.Roles( setOf( participantRole.role ) )
+private val roleAssignment = setOf( AssignedParticipantRoles( participantId, participantAssignedRoles ) )
 private val participantInvitation = ParticipantInvitation(
     participantId,
     participantAssignedRoles,
@@ -390,6 +391,7 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
         response = ParticipantGroupStatus.Invited(
             deploymentId,
             participants,
+            roleAssignment,
             participantGroupInvitedOn,
             invitedDeploymentStatus,
             deploymentName
@@ -401,6 +403,7 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
             ParticipantGroupStatus.Running(
                 deploymentId,
                 participants,
+                roleAssignment,
                 participantGroupInvitedOn,
                 runningDeploymentStatus,
                 runningDeploymentStatus.startedOn,
@@ -413,6 +416,7 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
         response = ParticipantGroupStatus.Stopped(
             deploymentId,
             participants,
+            roleAssignment,
             participantGroupInvitedOn,
             stoppedDeploymentStatus,
             stoppedDeploymentStatus.startedOn,

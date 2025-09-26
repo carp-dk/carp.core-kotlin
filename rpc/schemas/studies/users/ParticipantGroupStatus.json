@@ -16,9 +16,13 @@
         "participants": {
           "type": "array",
           "items": { "$ref": "../users/Participant.json" }
+        },
+        "assignedParticipantRoles": {
+          "type": "array",
+          "items": { "$ref": "../users/AssignedParticipantRoles.json" }
         }
       },
-      "required": [ "__type", "id", "participants" ]
+      "required": [ "__type", "id", "participants", "assignedParticipantRoles" ]
     },
     "InDeployment": {
       "$anchor": "InDeployment",
