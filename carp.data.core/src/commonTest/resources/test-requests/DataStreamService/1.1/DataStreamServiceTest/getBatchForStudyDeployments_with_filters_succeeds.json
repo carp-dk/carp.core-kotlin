@@ -39,13 +39,6 @@
                                 "__type": "dk.cachet.carp.stubpoint",
                                 "data": "Stub"
                             }
-                        },
-                        {
-                            "sensorStartTime": 0,
-                            "data": {
-                                "__type": "dk.cachet.carp.stubpoint",
-                                "data": "Stub"
-                            }
                         }
                     ],
                     "triggerIds": [
@@ -64,37 +57,24 @@
         "response": {}
     },
     {
-        "outcome": "Failed",
+        "outcome": "Succeeded",
         "request": {
-            "__type": "dk.cachet.carp.data.infrastructure.DataStreamServiceRequest.GetDataStream",
+            "__type": "dk.cachet.carp.data.infrastructure.DataStreamServiceRequest.GetBatchForStudyDeployments",
             "apiVersion": "1.1",
-            "dataStream": {
-                "studyDeploymentId": "dfd7a5be-6276-4cea-87a9-97b44e6a53ee",
-                "deviceRoleName": "Device",
-                "dataType": "dk.cachet.carp.stubpoint"
-            },
-            "fromSequenceId": -1,
-            "toSequenceIdInclusive": 10
+            "studyDeploymentIds": [
+                "dfd7a5be-6276-4cea-87a9-97b44e6a53ee"
+            ],
+            "deviceRoleNames": [
+                "Device"
+            ],
+            "dataTypes": [
+                "dk.cachet.carp.stubpoint"
+            ],
+            "from": "2025-10-27T15:48:33.455846700Z",
+            "to": "2025-10-27T15:48:33.455846700Z"
         },
         "precedingEvents": [],
         "publishedEvents": [],
-        "exceptionType": "IllegalArgumentException"
-    },
-    {
-        "outcome": "Failed",
-        "request": {
-            "__type": "dk.cachet.carp.data.infrastructure.DataStreamServiceRequest.GetDataStream",
-            "apiVersion": "1.1",
-            "dataStream": {
-                "studyDeploymentId": "dfd7a5be-6276-4cea-87a9-97b44e6a53ee",
-                "deviceRoleName": "Device",
-                "dataType": "dk.cachet.carp.stubpoint"
-            },
-            "fromSequenceId": 1,
-            "toSequenceIdInclusive": 0
-        },
-        "precedingEvents": [],
-        "publishedEvents": [],
-        "exceptionType": "IllegalArgumentException"
+        "response": []
     }
 ]

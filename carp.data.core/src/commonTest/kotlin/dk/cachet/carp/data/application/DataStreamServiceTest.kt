@@ -165,12 +165,88 @@ interface DataStreamServiceTest
     fun removeDataStream_ignores_unknown_ids() = runTest {
         val service = createServiceWithOpenStubDataPointStream()
 
-        val unknownDeploymentid = UUID.randomUUID()
-        val removed = service.removeDataStreams( setOf( stubDeploymentId, unknownDeploymentid ) )
+        val unknownDeploymentId = UUID.randomUUID()
+        val removed = service.removeDataStreams( setOf( stubDeploymentId, unknownDeploymentId ) )
 
         assertEquals( setOf( stubDeploymentId ), removed )
     }
 
+    @Test
+    fun getBatchForStudyDeployments_succeeds() = runTest {
+        val service = createServiceWithOpenStubDataPointStream()
+        val batch = MutableDataStreamBatch().apply {
+            appendSequence( createStubSequence( 0, StubDataPoint(), StubDataPoint() ) )
+        }
+        service.appendToDataStreams( stubDeploymentId, batch )
+
+        val collectedData = service.getBatchForStudyDeployments( setOf( stubDeploymentId ) )
+
+        assertNotNull( collectedData )
+        assertTrue( collectedData.sequences.toList().isNotEmpty() )
+    }
+
+    @Test
+    fun getBatchForStudyDeployments_succeeds_with_empty_result() = runTest {
+        val service = createServiceWithOpenStubDataPointStream()
+
+        val collectedData = service.getBatchForStudyDeployments( setOf( stubDeploymentId ) )
+
+        assertNotNull( collectedData )
+        assertTrue( collectedData.sequences.toList().isEmpty() )
+    }
+
+    @Test
+    fun getBatchForStudyDeployments_succeeds_with_mixed_valid_invalid_deployment_ids() = runTest {
+        val service = createServiceWithOpenStubDataPointStream()
+
+        val unknownDeploymentId = UUID.randomUUID()
+        val collectedData = service.getBatchForStudyDeployments( setOf( stubDeploymentId, unknownDeploymentId ) )
+
+        assertNotNull( collectedData )
+        // Should handle mixed valid/invalid deployment IDs gracefully
+        assertTrue( collectedData.sequences.toList().isEmpty() ) // No data added yet
+    }
+
+    @Test
+    fun getBatchForStudyDeployments_does_not_fail_when_all_deployment_ids_are_invalid() = runTest {
+        val service = createService()
+
+        val unknownDeploymentId = UUID.randomUUID()
+        val batch = service.getBatchForStudyDeployments(setOf(stubDeploymentId, unknownDeploymentId))
+
+        assertNotNull(batch)
+    }
+
+    @Test
+    fun getBatchForStudyDeployments_succeeds_with_empty_deployment_set() = runTest {
+        val service = createService()
+
+        val collectedData = service.getBatchForStudyDeployments( emptySet() )
+
+        assertNotNull( collectedData )
+        assertTrue( collectedData.sequences.toList().isEmpty() )
+    }
+
+    @Test
+    fun getBatchForStudyDeployments_with_filters_succeeds() = runTest {
+        val service = createServiceWithOpenStubDataPointStream()
+        val batch = MutableDataStreamBatch().apply {
+            appendSequence( createStubSequence( 0, StubDataPoint() ) )
+        }
+        service.appendToDataStreams( stubDeploymentId, batch )
+
+        // Test that optional parameters don't break the API
+        val collectedData = service.getBatchForStudyDeployments(
+            setOf( stubDeploymentId ),
+            deviceRoleNames = setOf( stubSequenceDeviceRoleName ),
+            dataTypes = setOf( STUB_DATA_POINT_TYPE ),
+            from = now,
+            to = now
+        )
+
+        assertNotNull( collectedData )
+        // API should succeed regardless of filter results
+    }
 
     /**
      * Create a data stream service and open [stubDataPointStream] for [stubDeploymentId].

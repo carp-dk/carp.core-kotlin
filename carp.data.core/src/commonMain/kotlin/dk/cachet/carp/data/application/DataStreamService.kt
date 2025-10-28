@@ -2,10 +2,13 @@ package dk.cachet.carp.data.application
 
 
 import dk.cachet.carp.common.application.UUID
+import dk.cachet.carp.common.application.data.DataType
 import dk.cachet.carp.common.application.services.ApiVersion
 import dk.cachet.carp.common.application.services.ApplicationService
 import dk.cachet.carp.common.application.services.IntegrationEvent
-import kotlinx.serialization.*
+import kotlinx.datetime.Instant
+import kotlinx.serialization.Required
+import kotlinx.serialization.Serializable
 
 
 /**
@@ -59,6 +62,33 @@ interface DataStreamService : ApplicationService<DataStreamService, DataStreamSe
         fromSequenceId: Long,
         toSequenceIdInclusive: Long? = null
     ): DataStreamBatch
+
+    /**
+     * Retrieve data across multiple study deployments, optionally filtered by device role names,
+     * data types, and time range.
+     *
+     * The response is a canonical [DataStreamBatch]: for each [DataStreamId], sequences are
+     * ordered by start time and non-overlapping (contract preserved). No derived/secondary
+     * indexing is applied in this API; analytics-specific projections are out of scope here.
+     *
+     * Time range semantics: if [from] or [to] are specified, sequences are clipped to the
+     * half-open interval [from, to) (inclusive start, exclusive end).
+     *
+     * @param studyDeploymentIds Study deployments to query. Must not be empty.
+     * @param deviceRoleNames Optional device role name filter (e.g., "phone"). If null or empty, all are included.
+     * @param dataTypes Optional data type filter. If null or empty, all are included.
+     * @param from Optional absolute start time (inclusive). If null, no lower bound.
+     * @param to Optional absolute end time (exclusive). If null, no upper bound.
+     * @return A [DataStreamBatch] containing matching data sequences, preserving per-stream invariants.
+     */
+    suspend fun getBatchForStudyDeployments(
+        studyDeploymentIds: Set<UUID>,
+        deviceRoleNames: Set<String>? = null,
+        dataTypes: Set<DataType>? = null,
+        from: Instant? = null,
+        to: Instant? = null
+    ): DataStreamBatch
+
 
     /**
      * Stop accepting incoming data for all data streams for each of the [studyDeploymentIds].

@@ -1,6 +1,7 @@
 package dk.cachet.carp.data.infrastructure
 
 import dk.cachet.carp.common.application.UUID
+import dk.cachet.carp.common.application.data.DataType
 import dk.cachet.carp.common.application.services.ApiVersion
 import dk.cachet.carp.common.infrastructure.serialization.ignoreTypeParameters
 import dk.cachet.carp.common.infrastructure.services.ApplicationServiceRequest
@@ -9,6 +10,7 @@ import dk.cachet.carp.data.application.DataStreamBatchSerializer
 import dk.cachet.carp.data.application.DataStreamId
 import dk.cachet.carp.data.application.DataStreamService
 import dk.cachet.carp.data.application.DataStreamsConfiguration
+import kotlinx.datetime.Instant
 import kotlinx.serialization.*
 import kotlin.js.JsExport
 
@@ -54,15 +56,25 @@ sealed class DataStreamServiceRequest<out TReturn> : ApplicationServiceRequest<D
     }
 
     @Serializable
-    data class CloseDataStreams( val studyDeploymentIds: Set<UUID> ) :
-        DataStreamServiceRequest<Unit>()
+    data class GetBatchForStudyDeployments(
+        val studyDeploymentIds: Set<UUID>,
+        val deviceRoleNames: Set<String>? = null,
+        val dataTypes: Set<DataType>? = null,
+        val from: Instant? = null,
+        val to: Instant? = null
+    ) : DataStreamServiceRequest<DataStreamBatch>()
+    {
+        override fun getResponseSerializer() = DataStreamBatchSerializer
+    }
+
+    @Serializable
+    data class CloseDataStreams( val studyDeploymentIds: Set<UUID> ) : DataStreamServiceRequest<Unit>()
     {
         override fun getResponseSerializer() = serializer<Unit>()
     }
 
     @Serializable
-    data class RemoveDataStreams( val studyDeploymentIds: Set<UUID> ) :
-        DataStreamServiceRequest<Set<UUID>>()
+    data class RemoveDataStreams( val studyDeploymentIds: Set<UUID> ) : DataStreamServiceRequest<Set<UUID>>()
     {
         override fun getResponseSerializer() = serializer<Set<UUID>>()
     }

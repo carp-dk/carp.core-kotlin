@@ -29,5 +29,6 @@ Store and retrieve [`DataStreamPoint`](../carp.data.core/src/commonMain/kotlin/d
 | `openDataStreams` | Start accepting data for a specific study deployment. | manage deployment: `studyDeploymentId`| |
 | `appendToDataStreams` | Append a batch of data point sequences to corresponding data streams. | in deployment: `studyDeploymentId` |  |
 | `getDataStream` | Retrieve all data points in data stream that fall within the requested range. | in deployment: `dataStream.studyDeploymentId` | |
+| `getBatchForStudyDeployments` | Fetch collected data across multiple study deployments with optional filtering by device roles, data types, and time range. | in deployment: (all) `studyDeploymentIds` | |
 | `closeDataStreams` | Stop accepting data for specified study deployments. | manage deployment: (all) `studyDeploymentId` | |
-| `removeDataStreams` | Close data streams and remove all data for specified study deployments. | manage deployment: (all) `studyDeploymentId` | | 
+| `removeDataStreams` | Close data streams and remove all data for specified study deployments. | manage deployment: (all) `studyDeploymentId` | |

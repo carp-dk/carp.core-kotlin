@@ -64,37 +64,49 @@
         "response": {}
     },
     {
-        "outcome": "Failed",
+        "outcome": "Succeeded",
         "request": {
-            "__type": "dk.cachet.carp.data.infrastructure.DataStreamServiceRequest.GetDataStream",
+            "__type": "dk.cachet.carp.data.infrastructure.DataStreamServiceRequest.GetBatchForStudyDeployments",
             "apiVersion": "1.1",
-            "dataStream": {
-                "studyDeploymentId": "dfd7a5be-6276-4cea-87a9-97b44e6a53ee",
-                "deviceRoleName": "Device",
-                "dataType": "dk.cachet.carp.stubpoint"
-            },
-            "fromSequenceId": -1,
-            "toSequenceIdInclusive": 10
+            "studyDeploymentIds": [
+                "dfd7a5be-6276-4cea-87a9-97b44e6a53ee"
+            ]
         },
         "precedingEvents": [],
         "publishedEvents": [],
-        "exceptionType": "IllegalArgumentException"
-    },
-    {
-        "outcome": "Failed",
-        "request": {
-            "__type": "dk.cachet.carp.data.infrastructure.DataStreamServiceRequest.GetDataStream",
-            "apiVersion": "1.1",
-            "dataStream": {
-                "studyDeploymentId": "dfd7a5be-6276-4cea-87a9-97b44e6a53ee",
-                "deviceRoleName": "Device",
-                "dataType": "dk.cachet.carp.stubpoint"
-            },
-            "fromSequenceId": 1,
-            "toSequenceIdInclusive": 0
-        },
-        "precedingEvents": [],
-        "publishedEvents": [],
-        "exceptionType": "IllegalArgumentException"
+        "response": [
+            {
+                "dataStream": {
+                    "studyDeploymentId": "dfd7a5be-6276-4cea-87a9-97b44e6a53ee",
+                    "deviceRoleName": "Device",
+                    "dataType": "dk.cachet.carp.stubpoint"
+                },
+                "firstSequenceId": 0,
+                "measurements": [
+                    {
+                        "sensorStartTime": 0,
+                        "data": {
+                            "__type": "dk.cachet.carp.stubpoint",
+                            "data": "Stub"
+                        }
+                    },
+                    {
+                        "sensorStartTime": 0,
+                        "data": {
+                            "__type": "dk.cachet.carp.stubpoint",
+                            "data": "Stub"
+                        }
+                    }
+                ],
+                "triggerIds": [
+                    1
+                ],
+                "syncPoint": {
+                    "synchronizedOn": "2025-10-27T15:48:33.455846700Z",
+                    "sensorTimestampAtSyncPoint": 1761580113455846,
+                    "relativeClockSpeed": 1.0
+                }
+            }
+        ]
     }
 ]

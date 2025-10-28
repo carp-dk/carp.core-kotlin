@@ -1,0 +1,16 @@
+[
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.data.infrastructure.DataStreamServiceRequest.GetBatchForStudyDeployments",
+            "apiVersion": "1.1",
+            "studyDeploymentIds": [
+                "dfd7a5be-6276-4cea-87a9-97b44e6a53ee",
+                "6fe2484d-7829-48fa-8a2e-5a07ae40b9df"
+            ]
+        },
+        "precedingEvents": [],
+        "publishedEvents": [],
+        "response": []
+    }
+]

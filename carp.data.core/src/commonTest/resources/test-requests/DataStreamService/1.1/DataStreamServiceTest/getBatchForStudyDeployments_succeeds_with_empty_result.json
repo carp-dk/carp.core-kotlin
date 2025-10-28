@@ -1,0 +1,34 @@
+[
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.data.infrastructure.DataStreamServiceRequest.OpenDataStreams",
+            "apiVersion": "1.1",
+            "configuration": {
+                "studyDeploymentId": "dfd7a5be-6276-4cea-87a9-97b44e6a53ee",
+                "expectedDataStreams": [
+                    {
+                        "deviceRoleName": "Device",
+                        "dataType": "dk.cachet.carp.stubpoint"
+                    }
+                ]
+            }
+        },
+        "precedingEvents": [],
+        "publishedEvents": [],
+        "response": {}
+    },
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.data.infrastructure.DataStreamServiceRequest.GetBatchForStudyDeployments",
+            "apiVersion": "1.1",
+            "studyDeploymentIds": [
+                "dfd7a5be-6276-4cea-87a9-97b44e6a53ee"
+            ]
+        },
+        "precedingEvents": [],
+        "publishedEvents": [],
+        "response": []
+    }
+]
