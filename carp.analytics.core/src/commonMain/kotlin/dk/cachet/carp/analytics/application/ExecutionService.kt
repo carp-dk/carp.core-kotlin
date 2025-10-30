@@ -1,7 +1,7 @@
 package dk.cachet.carp.analytics.application
 
 import dk.cachet.carp.analytics.domain.execution.ExecutionResult
-import dk.cachet.carp.analytics.domain.execution.ExecutionState
+import dk.cachet.carp.analytics.domain.execution.ExecutorState
 import dk.cachet.carp.analytics.domain.workflow.Workflow
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.application.services.ApiVersion
@@ -28,17 +28,17 @@ interface ExecutionService : ApplicationService<ExecutionService, ExecutionServi
     /**
      * Execute a stored workflow identified by [workflowId].
      */
-    suspend fun executeWorkflow(studyId: UUID, workflowId: UUID): ExecutionState
+    suspend fun executeWorkflow(studyId: UUID, workflowId: UUID): ExecutorState
 
     /**
      * Execute a provided workflow definition without persisting it first.
      */
-    suspend fun executeWorkflowFromDefinition(studyId: UUID, workflow: Workflow): ExecutionState
+    suspend fun executeWorkflowFromDefinition(studyId: UUID, workflow: Workflow): ExecutorState
 
     /**
      * Retrieve the current state (running/completed) of a specific execution.
      */
-    suspend fun getExecutionState(executionId: UUID): ExecutionState?
+    suspend fun getExecutionState(executionId: UUID): ExecutorState?
 
     /**
      * Retrieve the result of a completed execution.
@@ -53,10 +53,10 @@ interface ExecutionService : ApplicationService<ExecutionService, ExecutionServi
         workflowId: UUID? = null,
         from: Instant? = null,
         to: Instant? = null
-    ): List<ExecutionState>
+    ): List<ExecutorState>
 
     /**
      * Get the most recent execution (either running or completed) for a given workflow.
      */
-    suspend fun getLatestExecutionStatus(studyId: UUID, workflowId: UUID?): ExecutionState?
+    suspend fun getLatestExecutionStatus(studyId: UUID, workflowId: UUID?): ExecutorState?
 }

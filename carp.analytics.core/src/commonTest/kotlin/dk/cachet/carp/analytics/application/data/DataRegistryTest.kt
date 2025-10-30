@@ -1,29 +1,32 @@
 package dk.cachet.carp.analytics.application.data
 
-import dk.cachet.carp.common.application.NamespacedId
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.application.data.StepCount
-import dk.cachet.carp.data.application.CollectedDataPoint
-import dk.cachet.carp.data.application.CollectedDataSet
-import dk.cachet.carp.data.application.DataStreamId
-import kotlinx.datetime.Clock
+import dk.cachet.carp.data.application.MutableDataStreamSequence
+import dk.cachet.carp.data.application.MutableDataStreamBatch
+import dk.cachet.carp.data.infrastructure.dataStreamId
+import dk.cachet.carp.data.infrastructure.measurement
 import kotlin.test.*
 
 class DataRegistryTest
 {
-    private fun createDummyDataSet(): CollectedDataSet
+    private fun createDummyDataSet(): MutableDataStreamBatch
     {
-        val stepCount = StepCount(steps = 5000)
-        val dataPoint = CollectedDataPoint(
-            streamId = DataStreamId(
-                studyDeploymentId = UUID.randomUUID(),
-                deviceRoleName = "phone",
-                dataType = NamespacedId("dk.cachet.carp", "step_count")
-            ),
-            data = stepCount,
-            timestamp = Clock.System.now()
-        )
-        return CollectedDataSet(listOf(dataPoint))
+        val deploymentId = UUID.randomUUID()
+        val phoneStepsDataStream = dataStreamId<StepCount>(deploymentId, "phone")
+
+        val stepsDataSequence = MutableDataStreamSequence<StepCount>(
+            dataStream = phoneStepsDataStream,
+            firstSequenceId = 0,
+            triggerIds = listOf(1)
+        ).apply {
+            appendMeasurements(measurement(StepCount(0), 1642505045000000L))
+            appendMeasurements(measurement(StepCount(30), 1642505144000000L))
+        }
+
+        val batch = MutableDataStreamBatch()
+        batch.appendSequence(stepsDataSequence)
+        return batch
     }
 
     @Test

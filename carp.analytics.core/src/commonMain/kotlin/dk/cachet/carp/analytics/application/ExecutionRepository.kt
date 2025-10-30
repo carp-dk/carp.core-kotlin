@@ -1,7 +1,7 @@
 package dk.cachet.carp.analytics.application
 
 import dk.cachet.carp.analytics.domain.execution.ExecutionResult
-import dk.cachet.carp.analytics.domain.execution.ExecutionState
+import dk.cachet.carp.analytics.domain.execution.ExecutorState
 import dk.cachet.carp.common.application.UUID
 import kotlinx.datetime.Instant
 
@@ -13,36 +13,36 @@ import kotlinx.datetime.Instant
  */
 interface ExecutionRepository {
     /**
-     * Persist a newly created [ExecutionState].
+     * Persist a newly created [ExecutorState].
      * @return true if persisted successfully.
      */
-    suspend fun saveState(state: ExecutionState): Boolean
+    suspend fun saveState(state: ExecutorState): Boolean
 
     /**
-     * Update an existing [ExecutionState] (e.g., to mark as RUNNING, COMPLETED).
+     * Update an existing [ExecutorState] (e.g., to mark as RUNNING, COMPLETED).
      * @return true if the update was applied successfully.
      */
-    suspend fun updateState(state: ExecutionState): Boolean
+    suspend fun updateState(state: ExecutorState): Boolean
     /**
-     * Get the current [ExecutionState] for the given [executionId].
+     * Get the current [ExecutorState] for the given [executionId].
      * @return the state, or null if not found.
      */
-    suspend fun getState(executionId: UUID): ExecutionState?
+    suspend fun getState(executionId: UUID): ExecutorState?
     /**
      * Fetch the latest known status for a given workflow.
-     * @return the most recent [ExecutionState] based on start time.
+     * @return the most recent [ExecutorState] based on start time.
      */
-    suspend fun getLatestStatus(workflowId: UUID): ExecutionState?
+    suspend fun getLatestStatus(workflowId: UUID): ExecutorState?
     /**
      * Search for executions based on study ID and optional filters.
-     * @return a list of matching [ExecutionState] records.
+     * @return a list of matching [ExecutorState] records.
      */
     suspend fun findByStudy(
         studyId: UUID,
         workflowId: UUID? = null,
         from: Instant? = null,
         to: Instant? = null
-    ): List<ExecutionState>
+    ): List<ExecutorState>
     /**
      * Save the final result of a completed workflow execution.
      * @return true if saved successfully.

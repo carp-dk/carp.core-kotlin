@@ -8,6 +8,25 @@
 
 package dk.cachet.carp.rpc
 
+import dk.cachet.carp.analytics.application.ExecutionService
+import dk.cachet.carp.analytics.application.ScheduleManagementService
+import dk.cachet.carp.analytics.application.TriggerService
+import dk.cachet.carp.analytics.application.WorkflowService
+import dk.cachet.carp.analytics.domain.execution.BasicExecutionResult
+import dk.cachet.carp.analytics.domain.execution.ExecutorState
+import dk.cachet.carp.analytics.domain.execution.ExecutionStatus
+import dk.cachet.carp.analytics.domain.process.WorkflowProcess
+import dk.cachet.carp.analytics.domain.trigger.TriggerActivation
+import dk.cachet.carp.analytics.domain.workflow.Step
+import dk.cachet.carp.analytics.domain.workflow.StepMetadata
+import dk.cachet.carp.analytics.domain.workflow.Version
+import dk.cachet.carp.analytics.domain.workflow.Workflow
+import dk.cachet.carp.analytics.domain.workflow.WorkflowMetadata
+import dk.cachet.carp.analytics.domain.trigger.ManualTrigger
+import dk.cachet.carp.analytics.infrastructure.ExecutionServiceRequest
+import dk.cachet.carp.analytics.infrastructure.WorkflowServiceRequest
+import dk.cachet.carp.analytics.infrastructure.TriggerServiceRequest
+import dk.cachet.carp.analytics.infrastructure.ScheduleManagementServiceRequest
 import dk.cachet.carp.common.application.*
 import dk.cachet.carp.common.application.data.*
 import dk.cachet.carp.common.application.data.input.*
@@ -32,6 +51,7 @@ import dk.cachet.carp.studies.application.*
 import dk.cachet.carp.studies.application.users.*
 import dk.cachet.carp.studies.infrastructure.*
 import kotlinx.coroutines.runBlocking
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -42,6 +62,7 @@ import kotlin.reflect.jvm.javaMethod
 import kotlin.reflect.jvm.kotlinFunction
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.seconds
+
 
 
 /**
@@ -265,6 +286,58 @@ private val phoneDataStreamBatch = MutableDataStreamBatch().apply {
     appendSequence( stepsDataSequence )
 }
 
+// Example for workflow service.
+private val exampleWorkflowId = UUID("00000000-0000-0000-0000-000000000123")
+private val exampleWorkflowMetadata = WorkflowMetadata(
+    id = exampleWorkflowId,
+    name = "Sleep Quality Analysis",
+    version = Version(1, 0)
+)
+
+class TestProcess : WorkflowProcess
+{
+    override val name: String = "TestInjectableProcess"
+    override val description: String = "A test process for injection."
+}
+
+val exampleStep = Step(
+    metadata = StepMetadata(
+        name = "Extract Sleep Duration",
+        version = Version(1, 0)
+    ),
+    process = TestProcess()
+)
+
+private val exampleWorkflow = Workflow(
+    exampleWorkflowMetadata
+)
+
+// Example for execution service.
+private val exampleExecutionId = UUID("00000000-0000-0000-0000-000000000456")
+private val exampleExecutionState = ExecutorState(
+    executionId = exampleExecutionId,
+    workflowId = exampleWorkflowId,
+    status = ExecutionStatus.RUNNING,
+    startedAt = Instant.fromEpochMilliseconds(1642505045000),
+    completedAt = null,
+    studyId = studyId
+)
+private val exampleExecutionResult = BasicExecutionResult(
+    executionId = exampleExecutionId,
+    status = ExecutionStatus.RUNNING,
+    outputs = emptyList(), // or provide a list of OutputDataReference
+    artifacts = emptyList() // optional if you want to keep it minimal
+)
+
+// Example for trigger service request.
+private val exampleTriggerId = UUID("00000000-0000-0000-0000-000000123456")
+private val exampleTrigger = ManualTrigger(
+    id = exampleTriggerId,
+    studyId = studyId,
+    workflowId = exampleWorkflowId,
+    name = "Manual Trigger",
+    createdAt = Clock.System.now()
+)
 
 private fun <TService : ApplicationService<TService, *>, TResponse> example(
     request: ApplicationServiceRequest<TService, TResponse>,
@@ -499,5 +572,135 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
     DataStreamService::removeDataStreams to example(
         request = DataStreamServiceRequest.RemoveDataStreams( deploymentIds ),
         response = deploymentIds
+    ),
+
+    // WorkflowService
+    WorkflowService::createWorkflow to example(
+        request = WorkflowServiceRequest.CreateWorkflow( studyId, exampleWorkflow ),
+        response = true
+    ),
+
+    WorkflowService::updateWorkflow to example(
+        request = WorkflowServiceRequest.UpdateWorkflow( studyId, exampleWorkflowMetadata, exampleWorkflow ),
+        response = true
+    ),
+
+    WorkflowService::getWorkflow to example(
+        request = WorkflowServiceRequest.GetWorkflow( studyId, exampleWorkflowId ),
+        response = exampleWorkflow
+    ),
+
+    WorkflowService::deleteWorkflow to example(
+        request = WorkflowServiceRequest.DeleteWorkflow( studyId, exampleWorkflowId ),
+        response = true
+    ),
+
+    WorkflowService::listWorkflows to example(
+        request = WorkflowServiceRequest.ListWorkflows( studyId ),
+        response = listOf( exampleWorkflowMetadata )
+    ),
+
+    // ExecutionService
+    ExecutionService::executeWorkflow to example(
+        request = ExecutionServiceRequest.ExecuteWorkflow( studyId, exampleWorkflowId ),
+        response = exampleExecutionState
+    ),
+
+    ExecutionService::executeWorkflowFromDefinition to example(
+        request = ExecutionServiceRequest.ExecuteWorkflowFromDefinition( studyId, exampleWorkflow ),
+        response = exampleExecutionState
+    ),
+
+    ExecutionService::getExecutionState to example(
+        request = ExecutionServiceRequest.GetExecutionState( exampleExecutionId ),
+        response = exampleExecutionState
+    ),
+
+    ExecutionService::findExecutions to example(
+        request = ExecutionServiceRequest.FindExecutions( studyId, exampleWorkflowId ),
+        response = listOf( exampleExecutionState )
+    ),
+
+    ExecutionService::getLatestExecutionStatus to example(
+        request = ExecutionServiceRequest.GetLatestExecutionStatus( studyId, exampleWorkflowId ),
+        response = exampleExecutionState
+    ),
+
+    ExecutionService::getExecutionResult to example(
+        request = ExecutionServiceRequest.GetExecutionResult( exampleExecutionId ),
+        response = exampleExecutionResult
+    ),
+
+    // TriggerService
+    TriggerService::createTrigger to example(
+        request = TriggerServiceRequest.CreateTrigger(exampleTrigger),
+        response = exampleTrigger
+    ),
+
+    TriggerService::updateTrigger to example(
+        request = TriggerServiceRequest.UpdateTrigger(exampleTrigger.copy(name = "Manual Trigger (Updated)")),
+        response = exampleTrigger.copy(name = "Manual Trigger (Updated)")
+    ),
+
+    TriggerService::deleteTrigger to example(
+        request = TriggerServiceRequest.DeleteTrigger(exampleTriggerId),
+        response = true
+    ),
+
+    TriggerService::getTrigger to example(
+        request = TriggerServiceRequest.GetTrigger(exampleTriggerId),
+        response = exampleTrigger
+    ),
+
+    TriggerService::listTriggers to example(
+        request = TriggerServiceRequest.ListTriggers(studyId),
+        response = listOf(exampleTrigger)
+    ),
+
+    TriggerService::startTrigger to example(
+        request = TriggerServiceRequest.StartTrigger(exampleTriggerId),
+        response = true
+    ),
+
+    TriggerService::endTrigger to example(
+        request = TriggerServiceRequest.EndTrigger(exampleTriggerId),
+        response = true
+    ),
+
+    TriggerService::getActivationsForTrigger to example(
+        request = TriggerServiceRequest.GetActivationsForTrigger(exampleTriggerId),
+        response = listOf(
+            TriggerActivation(
+                UUID.randomUUID(),
+                exampleTriggerId,
+                studyId,
+                Clock.System.now(),
+                UUID.randomUUID()
+            )
+        )
+    ),
+
+    TriggerService::listByWorkflow to example(
+        request = TriggerServiceRequest.ListByWorkflow(studyId, exampleWorkflowId),
+        response = listOf(exampleTrigger)
+    ),
+
+    TriggerService::recordActivation to example(
+        request = TriggerServiceRequest.RecordActivation(
+            TriggerActivation(
+                UUID.randomUUID(),
+                exampleTriggerId,
+                studyId,
+                Clock.System.now(),
+                UUID.randomUUID()
+            )
+        ),
+        response = true
+    ),
+
+
+    ScheduleManagementService::evaluateDueTriggers to example(
+        request = ScheduleManagementServiceRequest.EvaluateDueTriggers(),
+        response = true
     )
 )

@@ -1,9 +1,7 @@
-package dk.cachet.carp.analytics.domain
+package dk.cachet.carp.analytics.domain.data
 
-import dk.cachet.carp.analytics.domain.data.DataLocation
-import dk.cachet.carp.analytics.domain.data.DataSource
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class DataLocationTest
 {

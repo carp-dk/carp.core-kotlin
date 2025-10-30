@@ -5,7 +5,7 @@ import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ExecutionState(
+data class ExecutorState(
     val executionId: UUID,
     val status: ExecutionStatus,
     val startedAt: Instant,

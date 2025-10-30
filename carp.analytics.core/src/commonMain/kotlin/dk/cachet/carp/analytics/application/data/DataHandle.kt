@@ -1,6 +1,6 @@
 package dk.cachet.carp.analytics.application.data
 
-import dk.cachet.carp.data.application.ImmutableDataStreamBatch
+import dk.cachet.carp.data.application.DataStreamBatch
 
 /**
  * Represents a unit of data managed by the analytics runtime.
@@ -16,9 +16,9 @@ sealed interface DataHandle
  *
  * Typically used to transfer step output datasets that are not persisted to disk.
  *
- * @param dataset A [ImmutableDataStreamBatch] containing the data.
+ * @param dataset A [DataStreamBatch] containing the data.
  */
-data class InMemoryData(val dataset: ImmutableDataStreamBatch) : DataHandle
+data class InMemoryData(val dataset: DataStreamBatch) : DataHandle
 
 /**
  * A [DataHandle] representing a file produced or consumed by a workflow step.
