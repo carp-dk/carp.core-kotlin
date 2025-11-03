@@ -6,7 +6,8 @@ import dk.cachet.carp.analytics.domain.environment.Environment
  * Factory contract to create an [Environment] from a parsed YAML section.
  * The provided spec is the map for a single environment section (type, name, config, ...).
  */
-interface EnvironmentFactory {
+interface EnvironmentFactory
+{
     /** The key in the YAML section that identifies the environment type (e.g., "type"). */
     val typeKey: String
 
@@ -17,7 +18,7 @@ interface EnvironmentFactory {
     val registry: Map<String, (spec: Map<String, Any?>) -> Environment>
 
     /** Create an environment instance based on the supplied YAML section. */
-    fun create(spec: Map<String, Any?>): Environment
+    fun create( spec: Map<String, Any?> ): Environment
 }
 
 /**
@@ -26,8 +27,10 @@ interface EnvironmentFactory {
 class DefaultEnvironmentFactory(
     override val registry: Map<String, (spec: Map<String, Any?>) -> Environment>,
     override val typeKey: String = "type"
-) : EnvironmentFactory {
-    override fun create(spec: Map<String, Any?>): Environment {
+) : EnvironmentFactory
+{
+    override fun create( spec: Map<String, Any?> ): Environment
+    {
         val typeId = spec[typeKey] as? String
             ?: error("Missing '$typeKey' in environment specification.")
         val builder = registry[typeId]

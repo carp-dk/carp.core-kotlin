@@ -5,6 +5,7 @@ import dk.cachet.carp.data.application.DataStreamBatch
 /**
  * Defines the contract for in-memory analytics processes.
  */
-interface AnalysisProcess : WorkflowProcess {
-    fun process(input: DataStreamBatch): DataStreamBatch?
+interface AnalysisProcess : WorkflowProcess
+{
+    fun process( input: DataStreamBatch ): DataStreamBatch?
 }

@@ -8,7 +8,8 @@ import kotlinx.serialization.Serializable
  * These states are used to track progress and finality of executions in the system.
  */
 @Serializable
-enum class ExecutionStatus {
+enum class ExecutionStatus
+{
     COMPLETED,
     FAILURE,
     STARTING,

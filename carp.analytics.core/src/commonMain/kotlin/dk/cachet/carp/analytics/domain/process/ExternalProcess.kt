@@ -5,7 +5,8 @@ import dk.cachet.carp.analytics.domain.execution.ExecutionContext
 /**
  * Defines the contract for externally executed processes (e.g., Python scripts, CLI tools).
  */
-interface ExternalProcess : WorkflowProcess {
+interface ExternalProcess : WorkflowProcess
+{
     val executionContext: ExecutionContext
     fun getArguments(): Any
 }

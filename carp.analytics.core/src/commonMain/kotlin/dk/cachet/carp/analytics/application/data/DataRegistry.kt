@@ -14,7 +14,8 @@ import kotlinx.serialization.Serializable
  * and is essential for linking data flow between steps.
  */
 @Serializable
-class DataRegistry {
+class DataRegistry
+{
 
     private val data = mutableMapOf<String, DataHandle>()
 
@@ -22,10 +23,9 @@ class DataRegistry {
      * Register a new artifact under a logical name.
      * @throws IllegalArgumentException if name already exists.
      */
-    fun register(name: String, artifact: DataHandle) {
-        if (data.containsKey(name)) {
-            throw IllegalArgumentException("Data with name '$name' is already registered.")
-        }
+    fun register( name: String, artifact: DataHandle )
+    {
+        require(!data.containsKey(name)) { "Data already registered: $name" }
         data[name] = artifact
     }
 
@@ -33,21 +33,24 @@ class DataRegistry {
      * Resolve an artifact by name.
      * @throws IllegalArgumentException if name does not exist.
      */
-    fun resolve(name: String): DataHandle {
+    fun resolve( name: String ): DataHandle
+    {
         return data[name] ?: throw IllegalArgumentException("No data registered with name '$name'.")
     }
 
     /**
      * Check if a name is registered.
      */
-    fun isRegistered(name: String): Boolean {
+    fun isRegistered( name: String ): Boolean
+    {
         return data.containsKey(name)
     }
 
     /**
      *  Overwrite an existing registration (or insert if not present)
      */
-    fun overwrite(name: String, artifact: DataHandle) {
+    fun overwrite( name: String, artifact: DataHandle )
+    {
         data[name] = artifact
     }
 
@@ -87,5 +90,4 @@ class DataRegistry {
                 )
             else null
         }
-
 }

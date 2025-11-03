@@ -10,14 +10,14 @@ import kotlin.test.assertTrue
 class DefaultCommandGeneratorRegistryTest
 {
     // Test environment implementation
-    private class TestEnvironment(override val name: String, override val dependencies: List<String>) : Environment
+    private class TestEnvironment( override val name: String, override val dependencies: List<String> ) : Environment
 
     // Test command generator implementation
     private class TestCommandGenerator : CommandGenerator
     {
-        override fun generateSetupCommand(env: Environment): String = "setup ${env.name}"
-        override fun generateActivateCommand(env: Environment): String = "activate ${env.name}"
-        override fun generateTeardownCommand(env: Environment): String = "teardown ${env.name}"
+        override fun generateSetupCommand( env: Environment ): String = "setup ${env.name}"
+        override fun generateActivateCommand( env: Environment ): String = "activate ${env.name}"
+        override fun generateTeardownCommand( env: Environment ): String = "teardown ${env.name}"
     }
 
     @Test

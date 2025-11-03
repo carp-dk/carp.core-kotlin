@@ -18,5 +18,5 @@ interface ExecutionStrategy
      * internally, allowing for flexible factory management across different
      * deployment scenarios.
      */
-    fun execute(workflow: Workflow)
+    fun execute( workflow: Workflow )
 }

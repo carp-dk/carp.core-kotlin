@@ -39,8 +39,19 @@ class DataHandleTest
         val mutableBatch = MutableDataStreamBatch()
         mutableBatch.appendSequence(sequence)
 
-
         val handle = InMemoryData(mutableBatch)
+
+        // Verify the handle contains the expected data
+        val retrievedBatch = handle.dataset
+        assertEquals(1, retrievedBatch.sequences.count(), "Batch should contain one sequence")
+
+        val retrievedSequence = retrievedBatch.sequences.first()
+        assertEquals(phoneGeoDataStream, retrievedSequence.dataStream, "Data stream should match")
+        assertEquals(1, retrievedSequence.measurements.size, "Should contain one measurement")
+
+        val retrievedMeasurement = retrievedSequence.measurements.first()
+        assertEquals(measurementData.data, retrievedMeasurement.data, "Measurement data should match")
+        assertEquals(measurementData.sensorStartTime, retrievedMeasurement.sensorStartTime, "Sensor start time should match")
     }
 
     @Test

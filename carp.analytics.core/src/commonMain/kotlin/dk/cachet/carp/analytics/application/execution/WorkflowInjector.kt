@@ -13,7 +13,8 @@ import dk.cachet.carp.analytics.domain.workflow.WorkflowComponent
  * This is primarily used to wire up dependencies like services or configuration
  * objects into processes (e.g., data access layers) that require them at runtime.
  */
-object WorkflowInjector {
+object WorkflowInjector
+{
 
     /**
      * Inject dependencies into all [InjectableProcess] instances within the given [workflow].
@@ -26,7 +27,8 @@ object WorkflowInjector {
     fun inject(
         workflow: Workflow,
         dependencies: Map<RuntimeDependencyKey<*>, Any>
-    ) {
+    )
+    {
         workflow.getComponents().forEach { component ->
             injectComponent(component, dependencies)
         }
@@ -35,15 +37,20 @@ object WorkflowInjector {
     private fun injectComponent(
         component: WorkflowComponent,
         dependencies: Map<RuntimeDependencyKey<*>, Any>
-    ) {
-        when (component) {
-            is Step -> {
+    )
+    {
+        when (component)
+        {
+            is Step ->
+            {
                 val process = component.process
-                if (process is InjectableProcess) {
+                if (process is InjectableProcess)
+                {
                     process.inject(dependencies)
                 }
             }
-            is Workflow -> {
+            is Workflow ->
+            {
                 inject(component, dependencies)
             }
         }

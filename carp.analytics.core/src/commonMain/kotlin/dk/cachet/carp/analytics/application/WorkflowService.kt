@@ -28,31 +28,31 @@ interface WorkflowService : ApplicationService<WorkflowService, WorkflowService.
      *
      * @return true if the workflow was successfully created, false otherwise (e.g., duplicate or invalid).
      */
-    suspend fun createWorkflow(studyId: UUID, workflow: Workflow): Boolean
+    suspend fun createWorkflow( studyId: UUID, workflow: Workflow ): Boolean
 
     /**
      * Update an existing workflow identified by [workflowMetadata.id] for the given [studyId].
      *
      * @throws NoSuchElementException if no such workflow exists.
      */
-    suspend fun updateWorkflow(studyId: UUID, workflowMetadata: WorkflowMetadata, updated: Workflow): Boolean
+    suspend fun updateWorkflow( studyId: UUID, workflowMetadata: WorkflowMetadata, updated: Workflow ): Boolean
 
     /**
      * Get a workflow for the given [studyId] and [workflowId].
      *
      * @return The workflow, or null if not found or access is denied.
      */
-    suspend fun getWorkflow(studyId: UUID, workflowId: UUID): Workflow?
+    suspend fun getWorkflow( studyId: UUID, workflowId: UUID ): Workflow?
 
     /**
      * Delete a workflow from a study.
      *
      * @return true if deleted, false otherwise.
      */
-    suspend fun deleteWorkflow(studyId: UUID, workflowId: UUID): Boolean
+    suspend fun deleteWorkflow( studyId: UUID, workflowId: UUID ): Boolean
 
     /**
      * List summaries of all workflows in a given study.
      */
-    suspend fun listWorkflows(studyId: UUID): List<WorkflowMetadata>
+    suspend fun listWorkflows( studyId: UUID ): List<WorkflowMetadata>
 }

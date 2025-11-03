@@ -1,7 +1,6 @@
 package dk.cachet.carp.analytics.domain.execution
 
 import dk.cachet.carp.analytics.domain.environment.Environment
-
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 /**

@@ -14,7 +14,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class ExecutionOutput(
-    val name: String,              // matches output ref name
+    val name: String, // matches output ref name
     val dataType: String,
-    val location: DataLocation     // where it was saved
+    val location: DataLocation // where it was saved
 )

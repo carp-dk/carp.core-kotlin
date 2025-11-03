@@ -13,7 +13,8 @@ data class ManualTrigger(
     override val workflowId: UUID,
     override val name: String,
     override val createdAt: Instant,
-) : Trigger {
-    override fun activate(at: Instant, executionId: UUID): TriggerActivation =
+) : Trigger
+{
+    override fun activate( at: Instant, executionId: UUID ): TriggerActivation =
         TriggerActivation(UUID.randomUUID(), id, studyId, at, executionId)
 }

@@ -10,8 +10,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @SerialName("CommandTemplate")
-data class CommandTemplate(val template: String) {
-    init {
+data class CommandTemplate( val template: String )
+{
+    init
+    {
         require(template.isNotBlank()) { "Command template cannot be blank" }
     }
 
@@ -20,11 +22,13 @@ data class CommandTemplate(val template: String) {
      * @param arguments List of arguments to format the template.
      * @return A formatted command string.
      */
-    fun render(arguments: List<String>): String {
-        return template.replace(Regex("\\{(\\d+)}")) { matchResult ->
+    fun render( arguments: List<String> ): String
+    {
+        return template.replace(Regex("\\{(\\d+)}"))
+        { matchResult ->
             val index = matchResult.groupValues[1].toInt()
             arguments.getOrNull(index)
-                ?: throw IllegalArgumentException("Missing argument for placeholder {${index}} in template: $template")
+                ?: throw IllegalArgumentException("Missing argument for placeholder $index in template: $template")
         }
     }
 }

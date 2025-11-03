@@ -11,11 +11,12 @@ import dk.cachet.carp.common.application.UUID
  *
  * Used by the [ExecutionOrchestratorService] to decouple workflow execution from orchestration logic.
  */
-interface JobManager {
+interface JobManager
+{
     /**
      * Submit a workflow execution job identified by [executionId] and the full [workflow] definition.
      *
      * This method is non-blocking and should offload execution to a worker mechanism.
      */
-    fun submitWorkflowJob(executionId: UUID, workflow: Workflow)
+    fun submitWorkflowJob( executionId: UUID, workflow: Workflow )
 }

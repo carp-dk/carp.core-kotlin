@@ -1,8 +1,7 @@
 package dk.cachet.carp.analytics.domain.workflow
 import kotlinx.serialization.Contextual
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
-import kotlin.collections.mutableListOf
+import kotlinx.serialization.Serializable
 
 /**
  * Represents a collection of steps in a workflow.
@@ -12,28 +11,32 @@ import kotlin.collections.mutableListOf
 @Serializable
 data class Workflow(
     override val metadata: WorkflowMetadata,
-) : WorkflowComponent {
+) : WorkflowComponent
+{
     @Contextual
     private val steps = mutableListOf<WorkflowComponent>()
 
     /**
      * Add a component (step or sub-workflow) to this workflow.
      */
-    fun addComponent(component: WorkflowComponent) {
+    fun addComponent( component: WorkflowComponent )
+    {
         steps.add(component)
     }
 
     /**
      * Add multiple components to the workflow.
      */
-    fun addComponents(components: List<WorkflowComponent>) {
+    fun addComponents( components: List<WorkflowComponent> )
+    {
         steps.addAll(components)
     }
 
     /**
      * Remove a specific component from the workflow.
      */
-    fun removeComponent(component: WorkflowComponent) {
+    fun removeComponent( component: WorkflowComponent )
+    {
         steps.remove(component)
     }
 
@@ -41,5 +44,4 @@ data class Workflow(
      * Get a copy of the ordered list of workflow components.
      */
     fun getComponents(): List<WorkflowComponent> = steps.toList()
-
 }

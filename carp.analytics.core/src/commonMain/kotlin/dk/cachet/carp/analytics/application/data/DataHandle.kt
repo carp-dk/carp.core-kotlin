@@ -18,7 +18,7 @@ sealed interface DataHandle
  *
  * @param dataset A [DataStreamBatch] containing the data.
  */
-data class InMemoryData(val dataset: DataStreamBatch) : DataHandle
+data class InMemoryData( val dataset: DataStreamBatch ) : DataHandle
 
 /**
  * A [DataHandle] representing a file produced or consumed by a workflow step.
@@ -28,4 +28,4 @@ data class InMemoryData(val dataset: DataStreamBatch) : DataHandle
  * @param path The absolute or relative path to the file.
  * @param mimeType Optional MIME type, e.g., "text/csv" or "image/png".
  */
-data class FileData(val path: String, val mimeType: String? = null) : DataHandle
+data class FileData( val path: String, val mimeType: String? = null ) : DataHandle

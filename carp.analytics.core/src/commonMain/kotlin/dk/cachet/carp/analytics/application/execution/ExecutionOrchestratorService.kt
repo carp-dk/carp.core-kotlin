@@ -9,6 +9,7 @@ import dk.cachet.carp.analytics.domain.workflow.Workflow
  * The orchestrator is responsible for preparing the workflow for execution (e.g., injecting dependencies),
  * and dispatching it to the appropriate execution engine or job manager.
  */
-interface ExecutionOrchestratorService {
-    suspend fun launchWorkflow(executionState: ExecutorState, workflow: Workflow?)
+interface ExecutionOrchestratorService
+{
+    suspend fun launchWorkflow( executionState: ExecutorState, workflow: Workflow? )
 }

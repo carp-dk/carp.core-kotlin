@@ -2,8 +2,8 @@ package dk.cachet.carp.analytics.application.data
 
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.application.data.StepCount
-import dk.cachet.carp.data.application.MutableDataStreamSequence
 import dk.cachet.carp.data.application.MutableDataStreamBatch
+import dk.cachet.carp.data.application.MutableDataStreamSequence
 import dk.cachet.carp.data.infrastructure.dataStreamId
 import dk.cachet.carp.data.infrastructure.measurement
 import kotlin.test.*

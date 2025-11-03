@@ -7,11 +7,13 @@ import kotlinx.serialization.Serializable
 data class Version(
     val major: Int,
     val minor: Int? = null
-) {
+)
+{
     override fun toString(): String = minor?.let { "$major.$it" } ?: "$major"
 }
 
-interface ComponentMetadata {
+interface ComponentMetadata
+{
     val name: String
     val description: String?
     val version: Version

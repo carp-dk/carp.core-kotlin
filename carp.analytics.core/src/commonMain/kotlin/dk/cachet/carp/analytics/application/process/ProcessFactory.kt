@@ -6,7 +6,8 @@ import dk.cachet.carp.analytics.domain.process.WorkflowProcess
  * Factory contract to create a [WorkflowProcess] from a parsed YAML section.
  * The provided spec is the map for a single process section (type, name, config, ...).
  */
-interface ProcessFactory {
+interface ProcessFactory
+{
     /** The key in the YAML section that identifies the process type (e.g., "type"). */
     val typeKey: String
 
@@ -17,7 +18,7 @@ interface ProcessFactory {
     val registry: Map<String, (spec: Map<String, Any?>) -> WorkflowProcess>
 
     /** Create a process instance based on the supplied YAML section. */
-    fun create(spec: Map<String, Any?>): WorkflowProcess
+    fun create( spec: Map<String, Any?> ): WorkflowProcess
 }
 
 /**
@@ -30,8 +31,10 @@ interface ProcessFactory {
 class DefaultProcessFactory(
     override val registry: Map<String, (spec: Map<String, Any?>) -> WorkflowProcess>,
     override val typeKey: String = "type"
-) : ProcessFactory {
-    override fun create(spec: Map<String, Any?>): WorkflowProcess {
+) : ProcessFactory
+{
+    override fun create( spec: Map<String, Any?> ): WorkflowProcess
+    {
         val typeId = spec[typeKey] as? String
             ?: error("Missing '$typeKey' in process specification.")
         val builder = registry[typeId]

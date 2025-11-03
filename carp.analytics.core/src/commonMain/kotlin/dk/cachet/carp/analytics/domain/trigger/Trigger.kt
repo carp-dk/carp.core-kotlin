@@ -5,7 +5,8 @@ import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed interface Trigger {
+sealed interface Trigger
+{
     val id: UUID
     val studyId: UUID
     val workflowId: UUID
@@ -13,6 +14,5 @@ sealed interface Trigger {
     val createdAt: Instant
 
 
-    fun activate(at: Instant, executionId: UUID): TriggerActivation
-
+    fun activate( at: Instant, executionId: UUID ): TriggerActivation
 }

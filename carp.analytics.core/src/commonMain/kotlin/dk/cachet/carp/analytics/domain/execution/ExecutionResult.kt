@@ -11,7 +11,8 @@ import kotlinx.serialization.Serializable
  * Subtypes may include different levels of detail, such as output references and visualization artifacts.
  */
 @Serializable
-sealed interface ExecutionResult {
+sealed interface ExecutionResult
+{
     val executionId: UUID
     val status: ExecutionStatus
     val outputs: List<ExecutionOutput>?

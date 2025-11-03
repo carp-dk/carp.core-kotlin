@@ -7,12 +7,14 @@ import kotlinx.datetime.Instant
 import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 
-interface ScheduleManagementService : ApplicationService<ScheduleManagementService, ScheduleManagementService.Event> {
+interface ScheduleManagementService : ApplicationService<ScheduleManagementService, ScheduleManagementService.Event>
+{
 
     companion object { val API_VERSION = ApiVersion(1, 0) }
 
     @Serializable
-    sealed class Event : IntegrationEvent<ScheduleManagementService> {
+    sealed class Event : IntegrationEvent<ScheduleManagementService>
+    {
         @Required
         override val apiVersion: ApiVersion = API_VERSION
     }
@@ -21,5 +23,5 @@ interface ScheduleManagementService : ApplicationService<ScheduleManagementServi
      * Evaluate all scheduled triggers and execute any that are due.
      * Can be called manually (via API) or periodically by a scheduler.
      */
-    suspend fun evaluateDueTriggers(now: Instant = kotlinx.datetime.Clock.System.now()) : Boolean
+    suspend fun evaluateDueTriggers( now: Instant = kotlinx.datetime.Clock.System.now() ): Boolean
 }

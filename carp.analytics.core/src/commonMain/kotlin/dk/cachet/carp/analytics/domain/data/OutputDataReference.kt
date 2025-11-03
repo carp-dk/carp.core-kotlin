@@ -1,7 +1,8 @@
 package dk.cachet.carp.analytics.domain.data
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
 /**
  * Represents the output data produced by a step.
  */
@@ -9,20 +10,24 @@ import kotlinx.serialization.SerialName
 @SerialName("CarpWorkflow.OutputData")
 data class OutputDataReference(
     override val name: String,
-    override val dataType: String, // format not type 
+    override val dataType: String, // format not type
     val destination: DataLocation
-) : DataReference{
-    fun validateName() {
+) : DataReference
+{
+    fun validateName()
+    {
         require(name.isNotEmpty()) { "Name cannot be empty" }
     }
-    fun validateDataType() {
+    fun validateDataType()
+    {
         require(dataType.isNotEmpty()) { "DataType cannot be empty" }
     }
-    fun validateDataLocation() {
+    fun validateDataLocation()
+    {
         require(destination.segments.isNotEmpty()) { "Output data source path cannot be empty" }
     }
-    
-    init {
+    init
+    {
         validateName()
         validateDataType()
         validateDataLocation()

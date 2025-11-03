@@ -3,6 +3,7 @@ package dk.cachet.carp.analytics.domain.workflow
 /**
  * Base interface for all workflow components.
  */
-interface WorkflowComponent {
+interface WorkflowComponent
+{
     val metadata: ComponentMetadata
 }

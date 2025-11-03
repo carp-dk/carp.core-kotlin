@@ -17,7 +17,7 @@ class ExecutionStrategyTest
         // Implementation would manage its own ExecutorFactory dependency here
         // private val executorFactory: ExecutorFactory = ...
 
-        override fun execute(workflow: Workflow)
+        override fun execute( workflow: Workflow )
         {
             // Implementation would use its internal executorFactory here
             // executorFactory.createExecutor().execute(workflow)

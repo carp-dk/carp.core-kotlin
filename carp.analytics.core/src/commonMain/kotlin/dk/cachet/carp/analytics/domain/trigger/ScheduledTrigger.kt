@@ -19,10 +19,11 @@ data class ScheduledTrigger(
     val lastFiredAt: Instant? = null
 
 
-) : Trigger {
-    override fun activate(at: Instant, executionId: UUID): TriggerActivation =
+) : Trigger
+{
+    override fun activate( at: Instant, executionId: UUID ): TriggerActivation =
         TriggerActivation(UUID.randomUUID(), id, studyId, at, executionId)
 
-    fun getNextScheduledTime(from: Instant): kotlinx.datetime.LocalDateTime? =
+    fun getNextScheduledTime( from: Instant ): kotlinx.datetime.LocalDateTime? =
         cron.getNextScheduledTime(from)
 }

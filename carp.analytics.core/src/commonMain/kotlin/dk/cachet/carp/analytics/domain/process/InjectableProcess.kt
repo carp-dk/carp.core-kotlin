@@ -14,12 +14,13 @@ import dk.cachet.carp.analytics.application.runtime.RuntimeDependencyKey
  *
  * The injection map must use [RuntimeDependencyKey] to ensure clarity and type safety of each dependency.
  */
-interface InjectableProcess {
+interface InjectableProcess
+{
     /**
      * Injects runtime dependencies needed by the process.
      *
      * @param dependencies A map of dependency keys to instances.
      *                     Callers are responsible for ensuring required keys are included.
      */
-    fun inject(dependencies: Map<RuntimeDependencyKey<*>, Any>)
+    fun inject( dependencies: Map<RuntimeDependencyKey<*>, Any> )
 }

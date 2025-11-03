@@ -1,19 +1,14 @@
 package dk.cachet.carp.analytics.domain.trigger
 
-import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 import com.ucasoft.kcron.Cron
 import com.ucasoft.kcron.abstractions.CronDateTimeProvider
 import com.ucasoft.kcron.core.exceptions.WrongCronExpression
-import com.ucasoft.kcron.core.Cron as CronCore
 import com.ucasoft.kcron.kotlinx.datetime.CronLocalDateTime
 import com.ucasoft.kcron.kotlinx.datetime.toCronLocalDateTime
-import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.minus
+import kotlinx.datetime.*
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import com.ucasoft.kcron.core.Cron as CronCore
 
 
 /**
@@ -24,12 +19,17 @@ import kotlinx.datetime.minus
 @SerialName("CronExpression")
 data class CronExpression(
     val expression: String
-) {
-    init {
+)
+{
+    init
+    {
         require(expression.isNotBlank()) { "Cron expression cannot be blank." }
-        try {
+        try
+        {
             Cron.parseAndBuild(expression)
-        } catch (e: WrongCronExpression) {
+        }
+        catch ( e: WrongCronExpression )
+        {
             throw IllegalArgumentException("Invalid cron expression: $expression", e)
         }
     }
@@ -39,7 +39,8 @@ data class CronExpression(
     /**
      * Get the next scheduled time from the provided [Instant], or `null` if no future match exists.
      */
-    fun getNextScheduledTime(from: Instant): LocalDateTime? {
+    fun getNextScheduledTime( from: Instant ): LocalDateTime?
+    {
         val fromLocal = from.toLocalDateTime(TimeZone.UTC)
         val provider = FixedCronDateTimeProvider(fromLocal)
 
@@ -50,16 +51,19 @@ data class CronExpression(
     /**
      * Returns `true` if this cron should trigger at the given [now] instant, based on a [lastFired] time.
      */
-    fun shouldTriggerAt(now: Instant, lastFired: Instant?): Boolean {
+    fun shouldTriggerAt( now: Instant, lastFired: Instant? ): Boolean
+    {
         val next = getNextScheduledTime(lastFired ?: now.minus(1, DateTimeUnit.SECOND))
         return next != null && next <= now.toLocalDateTime(TimeZone.UTC)
     }
 }
 
 
+@Suppress("Immutable", "DataClass")
 class FixedCronDateTimeProvider(
     private val fixedNow: LocalDateTime
-) : CronDateTimeProvider<LocalDateTime, CronLocalDateTime> {
+) : CronDateTimeProvider<LocalDateTime, CronLocalDateTime>
+{
 
     override fun now(): CronLocalDateTime = fixedNow.toCronLocalDateTime()
 
@@ -71,8 +75,8 @@ class FixedCronDateTimeProvider(
         minutes: Int,
         seconds: Int
     ): CronLocalDateTime =
-        CronLocalDateTime(year, month, day, hours, minutes, seconds)
+        CronLocalDateTime( year, month, day, hours, minutes, seconds )
 
-    override fun from(original: LocalDateTime): CronLocalDateTime =
+    override fun from( original: LocalDateTime ): CronLocalDateTime =
         original.toCronLocalDateTime()
 }

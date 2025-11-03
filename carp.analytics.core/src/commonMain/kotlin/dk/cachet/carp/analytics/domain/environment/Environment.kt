@@ -11,7 +11,8 @@ package dk.cachet.carp.analytics.domain.environment
     * - Increased Complexity: Requires additional structures (Dependency class) and changes to existing code.
     * - Command Generation Overhead: The generator must map Dependency objects to strings for the final command.
  */
-interface Environment {
+interface Environment
+{
     val name: String
     val dependencies: List<String>
 }

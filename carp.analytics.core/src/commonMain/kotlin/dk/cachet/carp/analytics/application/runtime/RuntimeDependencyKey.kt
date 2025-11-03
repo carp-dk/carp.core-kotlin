@@ -6,4 +6,4 @@ package dk.cachet.carp.analytics.application.runtime
  * @param T The type of dependency associated with this key.
  * @property name A human-readable identifier for the dependency (used for debugging/logging).
  */
-data class RuntimeDependencyKey<T : Any>(val name: String)
+data class RuntimeDependencyKey<T : Any>( val name: String )
