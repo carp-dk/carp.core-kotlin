@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "$id": "ExecutionState.json",
+  "title": "ExecutionState",
+  "type": "object",
+  "properties": {
+    "executionId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "workflowId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "status": {
+      "$ref": "ExecutionStatus.json"
+    },
+    "startedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completedAt": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "studyId": {
+      "type": "string",
+      "format": "uuid"
+    }
+  },
+  "required": [
+    "executionId",
+    "workflowId",
+    "status",
+    "startedAt",
+    "studyId"
+  ],
+  "additionalProperties": false
+}

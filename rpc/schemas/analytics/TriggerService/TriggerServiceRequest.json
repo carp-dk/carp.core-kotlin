@@ -1,0 +1,314 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/CreateTrigger"
+    },
+    {
+      "$ref": "#/$defs/UpdateTrigger"
+    },
+    {
+      "$ref": "#/$defs/DeleteTrigger"
+    },
+    {
+      "$ref": "#/$defs/GetTrigger"
+    },
+    {
+      "$ref": "#/$defs/ListTriggers"
+    },
+    {
+      "$ref": "#/$defs/StartTrigger"
+    },
+    {
+      "$ref": "#/$defs/EndTrigger"
+    },
+    {
+      "$ref": "#/$defs/RecordActivation"
+    },
+    {
+      "$ref": "#/$defs/GetActivationsForTrigger"
+    },
+    {
+      "$ref": "#/$defs/ListByWorkflow"
+    }
+  ],
+  "$defs": {
+    "ApiVersion": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "CreateTrigger": {
+      "$anchor": "CreateTrigger",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.TriggerServiceRequest.CreateTrigger"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "trigger": {
+          "$ref": "../trigger/Trigger.json"
+        }
+      },
+      "required": [
+        "__type",
+        "apiVersion",
+        "trigger"
+      ],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "CreateTrigger-Response",
+        "$ref": "../trigger/Trigger.json"
+      }
+    },
+    "UpdateTrigger": {
+      "$anchor": "UpdateTrigger",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.TriggerServiceRequest.UpdateTrigger"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "trigger": {
+          "$ref": "../trigger/Trigger.json"
+        }
+      },
+      "required": [
+        "__type",
+        "apiVersion",
+        "trigger"
+      ],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "UpdateTrigger-Response",
+        "$ref": "../trigger/Trigger.json"
+      }
+    },
+    "DeleteTrigger": {
+      "$anchor": "DeleteTrigger",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.TriggerServiceRequest.DeleteTrigger"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "triggerId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "__type",
+        "apiVersion",
+        "triggerId"
+      ],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "DeleteTrigger-Response",
+        "type": "boolean"
+      }
+    },
+    "GetTrigger": {
+      "$anchor": "GetTrigger",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.TriggerServiceRequest.GetTrigger"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "triggerId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "__type",
+        "apiVersion",
+        "triggerId"
+      ],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "GetTrigger-Response",
+        "$ref": "../trigger/Trigger.json"
+      }
+    },
+    "ListTriggers": {
+      "$anchor": "ListTriggers",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.TriggerServiceRequest.ListTriggers"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "studyId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "__type",
+        "apiVersion",
+        "studyId"
+      ],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "ListTriggers-Response",
+        "type": "array",
+        "items": {
+          "$ref": "../trigger/Trigger.json"
+        }
+      }
+    },
+    "StartTrigger": {
+      "$anchor": "StartTrigger",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.TriggerServiceRequest.StartTrigger"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "triggerId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "__type",
+        "apiVersion",
+        "triggerId"
+      ],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "StartTrigger-Response",
+        "type": "boolean"
+      }
+    },
+    "EndTrigger": {
+      "$anchor": "EndTrigger",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.TriggerServiceRequest.EndTrigger"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "triggerId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "__type",
+        "apiVersion",
+        "triggerId"
+      ],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "EndTrigger-Response",
+        "type": "boolean"
+      }
+    },
+    "RecordActivation": {
+      "$anchor": "RecordActivation",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.TriggerServiceRequest.RecordActivation"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "activation": {
+          "$ref": "../trigger/TriggerActivation.json"
+        }
+      },
+      "required": ["__type", "apiVersion", "activation"],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "RecordActivation-Response",
+        "type": "boolean"
+      }
+    },
+    "GetActivationsForTrigger": {
+      "$anchor": "GetActivationsForTrigger",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.TriggerServiceRequest.GetActivationsForTrigger"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "triggerId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": ["__type", "apiVersion", "triggerId"],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "GetActivationsForTrigger-Response",
+        "type": "array",
+        "items": {
+          "$ref": "../trigger/TriggerActivation.json"
+        }
+      }
+    },
+    "ListByWorkflow": {
+      "$anchor": "ListByWorkflow",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.TriggerServiceRequest.ListByWorkflow"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "studyId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "workflowId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": ["__type", "apiVersion", "studyId", "workflowId"],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "ListByWorkflow-Response",
+        "type": "array",
+        "items": {
+          "$ref": "../trigger/Trigger.json"
+        }
+      }
+    }
+
+  }
+}

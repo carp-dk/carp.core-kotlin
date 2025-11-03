@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "title": "WorkflowProcess",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/CommandLineExternalProcess"
+    },
+    {
+      "$ref": "#/$defs/AnalysisProcess"
+    }
+  ],
+  "$defs": {
+    "CommandLineExternalProcess": {
+      "$anchor": "CommandLineExternalProcess",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "CommandLine"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "executionContext": {
+          "$ref": "../execution/ExecutionContext.json"
+        },
+        "commandTemplate": {
+          "type": "object",
+          "properties": {
+            "template": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "template"
+          ],
+          "additionalProperties": false
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "__type",
+        "name",
+        "executionContext",
+        "commandTemplate",
+        "args"
+      ],
+      "additionalProperties": false
+    },
+    "AnalysisProcess": {
+      "$anchor": "AnalysisProcess",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "AnalysisProcess"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "__type",
+        "name"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

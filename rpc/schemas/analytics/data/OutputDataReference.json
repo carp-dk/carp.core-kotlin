@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "title": "OutputDataReference",
+  "type": "object",
+  "properties": {
+    "name": { "type": "string" },
+    "dataType": { "type": "string" },
+    "destination": { "$ref": "./DataLocation.json" }
+  },
+  "required": ["name", "dataType", "destination"],
+  "additionalProperties": false
+}

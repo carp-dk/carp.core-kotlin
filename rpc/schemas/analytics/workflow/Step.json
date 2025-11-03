@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "title": "Step",
+  "type": "object",
+  "properties": {
+    "__type": {
+      "const": "step"
+    },
+    "metadata": {
+      "$ref": "./StepMetadata.json"
+    },
+    "inputData": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "../data/InputDataReference.json"
+      }
+    },
+    "outputData": {
+      "anyOf": [
+        {
+          "$ref": "../data/OutputDataReference.json"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "process": {
+      "$ref": "../process/WorkflowProcess.json"
+    }
+  },
+  "required": [
+    "__type",
+    "metadata",
+    "process"
+  ],
+  "additionalProperties": false
+}
