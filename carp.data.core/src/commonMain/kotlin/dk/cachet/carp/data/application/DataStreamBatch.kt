@@ -3,6 +3,7 @@
 package dk.cachet.carp.data.application
 
 import dk.cachet.carp.common.application.data.Data
+import dk.cachet.carp.common.application.data.DataType
 import kotlinx.serialization.*
 import kotlinx.serialization.builtins.*
 import kotlinx.serialization.descriptors.*
@@ -35,6 +36,12 @@ interface DataStreamBatch : Sequence<DataStreamPoint<*>>
      */
     fun getDataStreamPoints( dataStream: DataStreamId ): Sequence<DataStreamPoint<*>> =
         sequences.filter { it.dataStream == dataStream }.flatMap { it }
+
+    /**
+     * Returns a new [ImmutableDataStreamBatch], containing all the sequences of this batch.
+     */
+    fun toImmutableDataStreamBatch(): ImmutableDataStreamBatch =
+        ImmutableDataStreamBatch.from(this)
 }
 
 
@@ -131,6 +138,149 @@ class MutableDataStreamBatch : DataStreamBatch
     }
 
     override fun hashCode(): Int = sequences.hashCode()
+}
+
+
+/**
+ * An immutable collection of data stream [sequences] optimized for data retrieval and analytics.
+ *
+ * Unlike [MutableDataStreamBatch] which enforces non-overlapping sequences for incremental building,
+ * this implementation is designed for cross-device, cross-sensor data analysis where temporal
+ * overlap between different devices/data types is expected and valid.
+ *
+ * The internal structure is optimized for analytics queries:
+ * Device Role Name → Data Type → Synchronized Data Sequences
+ */
+@JsExport
+class ImmutableDataStreamBatch private constructor(
+    private val deviceDataMap: Map<String, Map<DataType, List<DataStreamSequence<*>>>>
+) : DataStreamBatch
+{
+    override val sequences: Sequence<DataStreamSequence<*>>
+        get() = deviceDataMap.values.asSequence()
+            .flatMap { it.values }
+            .flatMap { it.asSequence() }
+
+    companion object
+    {
+        /**
+         * Create an [ImmutableDataStreamBatch] from the provided sequences.
+         *
+         * @throws IllegalArgumentException when sequences within the same DataStreamId overlap.
+         *
+         * note: Sequences across different devices/data types may overlap (this is expected for analytics).
+         * note: private constructor + factory methods provides validation and optimal internal structure.
+         */
+        fun create( sequences: Sequence<DataStreamSequence<*>> ): ImmutableDataStreamBatch
+        {
+            // Validate that sequences within the same DataStreamId don't overlap
+            val sequencesByDataStream = sequences.groupBy { it.dataStream }
+            sequencesByDataStream.forEach { (dataStreamId, streamSequences) ->
+                val sortedSequences = streamSequences.sortedBy { it.range.first }
+                for (i in 1 until sortedSequences.size)
+                {
+                    val previous = sortedSequences[i - 1]
+                    val current = sortedSequences[i]
+                    require(previous.range.last < current.range.first) {
+                        "Sequences within data stream $dataStreamId overlap: ${previous.range} and ${current.range}"
+                    }
+                }
+            }
+
+            // Build hierarchical structure: Device → DataType → Sequences
+            val deviceDataMap = sequences
+                .groupBy { it.dataStream.deviceRoleName }
+                .mapValues { (_, deviceSequences) ->
+                    deviceSequences.groupBy { it.dataStream.dataType }
+                }
+
+            return ImmutableDataStreamBatch(deviceDataMap)
+        }
+
+        /**
+         * Create an [ImmutableDataStreamBatch] from an existing [DataStreamBatch].
+         */
+        fun from( batch: DataStreamBatch ): ImmutableDataStreamBatch =
+            create(batch.sequences)
+
+        /**
+         * Create an empty [ImmutableDataStreamBatch].
+         */
+        fun empty(): ImmutableDataStreamBatch =
+            ImmutableDataStreamBatch(emptyMap())
+    }
+
+    /**
+     * Get all device role names represented in this batch.
+     */
+    fun getDeviceRoleNames(): Set<String> = deviceDataMap.keys
+
+    /**
+     * Get all data types represented in this batch.
+     *
+     * @param deviceRoleName if specified, only return data types for this device role name
+     */
+    fun getDataTypes( deviceRoleName: String? = null ): Set<DataType> =
+        if (deviceRoleName != null)
+        {
+            deviceDataMap[deviceRoleName]?.keys.orEmpty()
+        } else
+        {
+            deviceDataMap.values.flatMap { it.keys }.toSet()
+        }
+
+    /**
+     * Get all sequences for a specific device role name.
+     *
+     * @param synchronize if true, convert all sequences to synchronized data points and flatten
+     */
+    fun getForDevice( deviceRoleName: String, synchronize: Boolean = false ): Any =
+        if (synchronize)
+        {
+            // Return synchronized data points grouped by data type
+            deviceDataMap[deviceRoleName]?.mapValues { (_, sequences) ->
+                sequences.flatMap { it }.map { it.synchronize() }.sortedBy { it.syncPoint.synchronizedOn }
+            }.orEmpty()
+        } else
+        {
+            // Return sequences grouped by data type
+            deviceDataMap[deviceRoleName]?.mapValues { (_, sequences) ->
+                sequences
+            }.orEmpty()
+        }
+
+    /**
+     * Get all data for a specific data type, mapped by device role name.
+     *
+     * @param synchronize if true, convert all sequences to synchronized data points and flatten
+     */
+    fun getForDataType( dataType: DataType, synchronize: Boolean = false ): Map<String, Any> =
+        deviceDataMap.mapNotNull { (deviceRoleName, dataTypeMap) ->
+            val sequences = dataTypeMap[dataType]
+            if (sequences != null)
+            {
+                val data =
+                    if (synchronize)
+                    {
+                        sequences.flatMap { it }.map { it.synchronize() }.sortedBy { it.syncPoint.synchronizedOn }
+                    }
+                    else
+                    {
+                        sequences
+                    }
+                deviceRoleName to data
+            }
+            else null
+        }.toMap()
+
+    override fun equals( other: Any? ): Boolean
+    {
+        if (this === other) return true
+        if (other !is DataStreamBatch) return false
+        return toList() == other.toList()
+    }
+
+    override fun hashCode(): Int = deviceDataMap.hashCode()
 }
 
 
