@@ -72,8 +72,10 @@ class DataRegistry
                     dataType = "dataset",
                     location = DataLocation(listOf("memory", name), scheme = "mem", isAbsolute = false)
                 )
+                else -> null
             }
         }
+
     /**
      * Return a list of [ExecutionArtifact].
      *

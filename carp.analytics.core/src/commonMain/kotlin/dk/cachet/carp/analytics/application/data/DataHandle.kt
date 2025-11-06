@@ -1,6 +1,6 @@
 package dk.cachet.carp.analytics.application.data
 
-import dk.cachet.carp.data.application.DataStreamBatch
+import dk.cachet.carp.analytics.domain.data.ICarpTabularData
 
 /**
  * Represents a unit of data managed by the analytics runtime.
@@ -9,16 +9,16 @@ import dk.cachet.carp.data.application.DataStreamBatch
  * Implementations may encapsulate different storage forms such as in-memory data,
  * files, etc...
  */
-sealed interface DataHandle
+interface DataHandle
 
 /**
  * A [DataHandle] representing data stored in memory during execution.
  *
  * Typically used to transfer step output datasets that are not persisted to disk.
  *
- * @param dataset A [DataStreamBatch] containing the data.
+ * @param dataset A [ICarpTabularData] containing the data.
  */
-data class InMemoryData( val dataset: DataStreamBatch ) : DataHandle
+data class InMemoryData( val dataset: ICarpTabularData ) : DataHandle
 
 /**
  * A [DataHandle] representing a file produced or consumed by a workflow step.

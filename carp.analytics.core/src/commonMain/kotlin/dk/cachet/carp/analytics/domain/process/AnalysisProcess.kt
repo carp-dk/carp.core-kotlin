@@ -1,11 +1,11 @@
 package dk.cachet.carp.analytics.domain.process
 
-import dk.cachet.carp.data.application.DataStreamBatch
+import dk.cachet.carp.analytics.domain.data.ICarpTabularData
 
 /**
  * Defines the contract for in-memory analytics processes.
  */
 interface AnalysisProcess : WorkflowProcess
 {
-    fun process( input: DataStreamBatch ): DataStreamBatch?
+    fun process( input: ICarpTabularData ): ICarpTabularData?
 }
