@@ -1,20 +1,122 @@
 package dk.cachet.carp.analytics.domain.data
 
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 
 /**
- * A concrete representation of an output produced by a step in a workflow.
+ * Runtime information about data produced during workflow execution.
+ * Represents what actually happened when a step executed, as opposed to
+ * OutputDataSpec which represents the design-time specification.
  *
- * Each [ExecutionOutput] corresponds to a declared [OutputDataReference] in the workflow definition
- * and describes the actual location and data format used during runtime.
- *
- * @param name The name of the output, matching the reference defined in the workflow.
- * @param dataType A description of the data type (e.g., CSV, JSON, parquet).
- * @param location A location descriptor indicating where the data was stored (e.g., file path, URI).
+ * @property outputId References the OutputDataSpec identifier
+ * @property actualLocation Where the data actually ended up (may differ from planned destination)
+ * @property statistics Runtime metrics about the data
+ * @property timestamp When this output was produced
+ * @property success Whether the output was produced successfully
+ * @property errorMessage Error message if an exception occurred
  */
 @Serializable
 data class ExecutionOutput(
-    val name: String, // matches output ref name
-    val dataType: String,
-    val location: DataLocation // where it was saved
-)
+    val outputId: String,
+    val actualLocation: DataSource,
+    val statistics: DataStatistics,
+    val timestamp: Instant,
+    val success: Boolean,
+    val errorMessage: String? = null
+) {
+    /**
+     * Whether this output can be used as input for subsequent steps.
+     */
+    val isValid: Boolean get() = success && errorMessage == null
+}
+
+/**
+ * Statistical information about data collected at runtime.
+ *
+ * @property rowCount Number of rows/records in the data (for tabular data)
+ * @property byteSize Size of the data in bytes
+ * @property columnCount Number of columns (for tabular data)
+ * @property checksum Data checksum for integrity verification
+ * @property customMetrics Additional domain-specific metrics (stored as strings)
+ */
+@Serializable
+data class DataStatistics(
+    val rowCount: Long? = null,
+    val byteSize: Long? = null,
+    val columnCount: Int? = null,
+    val checksum: String? = null,
+    val customMetrics: Map<String, String> = emptyMap()
+) {
+    /**
+     * Checks if the statistics meet the given constraints.
+     */
+    fun satisfiesConstraints(constraints: DataConstraints): Boolean {
+        // Check minimum rows
+        if (constraints.minRows != null && rowCount != null && rowCount < constraints.minRows) {
+            return false
+        }
+
+        // Check maximum rows
+        if (constraints.maxRows != null && rowCount != null && rowCount > constraints.maxRows) {
+            return false
+        }
+
+        return true
+    }
+
+    /**
+     * Returns a human-readable summary of the statistics.
+     */
+    fun summary(): String {
+        val parts = mutableListOf<String>()
+
+        if (rowCount != null) {
+            parts.add("$rowCount rows")
+        }
+        if (columnCount != null) {
+            parts.add("$columnCount columns")
+        }
+        if (byteSize != null) {
+            parts.add("${formatBytes(byteSize)}")
+        }
+
+        return if (parts.isEmpty()) {
+            "No statistics available"
+        } else {
+            parts.joinToString(", ")
+        }
+    }
+
+    private fun formatBytes(bytes: Long): String {
+        return when {
+            bytes < 1024 -> "$bytes B"
+            bytes < 1024 * 1024 -> "${bytes / 1024} KB"
+            bytes < 1024 * 1024 * 1024 -> "${bytes / (1024 * 1024)} MB"
+            else -> "${bytes / (1024 * 1024 * 1024)} GB"
+        }
+    }
+}
+
+/**
+ * Collection of execution outputs from a workflow step.
+ *
+ * @property stepId Identifier of the step that produced these outputs
+ * @property outputs List of execution outputs
+ * @property duration How long the step took to execute
+ */
+@Serializable
+data class StepExecutionResult(
+    val stepId: String,
+    val outputs: List<ExecutionOutput>,
+    val duration: kotlinx.datetime.DateTimePeriod? = null
+) {
+    /** Whether all outputs were produced successfully */
+    val allSuccessful: Boolean get() = outputs.all { it.success }
+
+    /** Outputs that were produced successfully */
+    val successfulOutputs: List<ExecutionOutput> get() = outputs.filter { it.success }
+
+    /** Outputs that failed */
+    val failedOutputs: List<ExecutionOutput> get() = outputs.filter { !it.success }
+}
+

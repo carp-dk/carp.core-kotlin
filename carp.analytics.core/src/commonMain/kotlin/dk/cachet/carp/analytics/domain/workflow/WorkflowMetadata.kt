@@ -15,6 +15,7 @@ data class Version(
 interface ComponentMetadata
 {
     val name: String
+    val id: UUID
     val description: String?
     val version: Version
 }
@@ -22,6 +23,7 @@ interface ComponentMetadata
 @Serializable
 data class StepMetadata(
     override val name: String,
+    override val id: UUID,
     override val description: String? = null,
     override val version: Version = Version(1)
 ) : ComponentMetadata
@@ -29,6 +31,7 @@ data class StepMetadata(
 @Serializable
 data class SubWorkflowMetadata(
     override val name: String,
+    override val id: UUID,
     override val description: String? = null,
     override val version: Version = Version(1)
 ) : ComponentMetadata
@@ -37,6 +40,6 @@ data class SubWorkflowMetadata(
 data class WorkflowMetadata(
     override val name: String,
     override val description: String? = null,
-    val id: UUID,
+    override val id: UUID,
     override val version: Version = Version(1),
 ) : ComponentMetadata

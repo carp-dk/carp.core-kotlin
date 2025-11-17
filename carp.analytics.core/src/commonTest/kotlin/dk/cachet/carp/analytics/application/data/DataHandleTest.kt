@@ -1,57 +1,23 @@
 package dk.cachet.carp.analytics.application.data
 
-import dk.cachet.carp.common.application.UUID
-import dk.cachet.carp.common.application.data.Geolocation
-import dk.cachet.carp.data.application.MutableDataStreamBatch
-import dk.cachet.carp.data.application.MutableDataStreamSequence
-import dk.cachet.carp.data.application.SyncPoint
-import dk.cachet.carp.data.infrastructure.dataStreamId
-import dk.cachet.carp.data.infrastructure.measurement
+import dk.cachet.carp.analytics.domain.data.ICarpTabularData
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertSame
 
 class DataHandleTest
 {
+    // Simple mock implementation of ICarpTabularData
+    private class MockTabularData : ICarpTabularData
 
     @Test
     fun `in memory data holds dataset`()
     {
-        val deploymentId = UUID( "c9cc5317-48da-45f2-958e-58bc07f34681" )
-        val phoneGeoDataStream = dataStreamId<Geolocation>( deploymentId, "Participant's phone" )
-
-        // Create a measurement with Geolocation data
-        val measurementData = measurement(
-            data = Geolocation(55.680619, 12.582050),
-            sensorStartTime = 1642505045000000, // microseconds
-            sensorEndTime = null // point measurement
-        )
-
-        // Create a data stream sequence
-        val sequence = MutableDataStreamSequence<Geolocation>(
-            dataStream = phoneGeoDataStream,
-            firstSequenceId = 0,
-            triggerIds = listOf(1),
-            syncPoint = SyncPoint.UnixEpoch
-        )
-        sequence.appendMeasurements(measurementData)
-
-        // Create a batch containing the sequence
-        val mutableBatch = MutableDataStreamBatch()
-        mutableBatch.appendSequence(sequence)
-
-        val handle = InMemoryData(mutableBatch)
+        val mockData = MockTabularData()
+        val handle = InMemoryData(mockData)
 
         // Verify the handle contains the expected data
-        val retrievedBatch = handle.dataset
-        assertEquals(1, retrievedBatch.sequences.count(), "Batch should contain one sequence")
-
-        val retrievedSequence = retrievedBatch.sequences.first()
-        assertEquals(phoneGeoDataStream, retrievedSequence.dataStream, "Data stream should match")
-        assertEquals(1, retrievedSequence.measurements.size, "Should contain one measurement")
-
-        val retrievedMeasurement = retrievedSequence.measurements.first()
-        assertEquals(measurementData.data, retrievedMeasurement.data, "Measurement data should match")
-        assertEquals(measurementData.sensorStartTime, retrievedMeasurement.sensorStartTime, "Sensor start time should match")
+        assertSame(mockData, handle.dataset, "Should return the same dataset instance")
     }
 
     @Test

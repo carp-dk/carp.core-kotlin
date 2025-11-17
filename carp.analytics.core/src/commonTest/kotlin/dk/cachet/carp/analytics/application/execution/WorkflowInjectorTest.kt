@@ -41,7 +41,7 @@ class WorkflowInjectorTest
     fun `inject should call inject on injectable process`()
     {
         val process = TestInjectableProcess()
-        val step = Step(StepMetadata(name = "test"), process = process)
+        val step = Step(StepMetadata(id = UUID.randomUUID(), name = "test"), process = process)
         val workflow = Workflow(WorkflowMetadata(name = "test", id = UUID.randomUUID(),)).apply { addComponent(step) }
 
         val dependencies: Map<RuntimeDependencyKey<*>, Any> =
@@ -56,7 +56,7 @@ class WorkflowInjectorTest
     fun `inject should recurse into nested workflows`()
     {
         val process = TestInjectableProcess()
-        val nestedStep = Step(StepMetadata(name = "nested test"), process = process)
+        val nestedStep = Step(StepMetadata(id = UUID.randomUUID(), name = "nested test"), process = process)
         val nestedWorkflow = Workflow(WorkflowMetadata(name = "nested workflow", id = UUID.randomUUID(),)).apply {
             addComponent(nestedStep)
         }
@@ -76,7 +76,7 @@ class WorkflowInjectorTest
     fun `inject should skip non-injectable processes`()
     {
         val process = TestProcess() // not injectable
-        val step = Step(StepMetadata(name = "non inject test"), process = process)
+        val step = Step(StepMetadata(id = UUID.randomUUID(), name = "non inject test"), process = process)
         val workflow = Workflow(WorkflowMetadata(name = "test workflow", id = UUID.randomUUID(),)).apply { addComponent(step) }
 
         val dependencies: Map<RuntimeDependencyKey<*>, Any> =

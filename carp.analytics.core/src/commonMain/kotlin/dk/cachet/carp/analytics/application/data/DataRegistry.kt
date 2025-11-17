@@ -1,9 +1,13 @@
 package dk.cachet.carp.analytics.application.data
 
-import dk.cachet.carp.analytics.domain.data.DataLocation
+import dk.cachet.carp.analytics.domain.data.DataStatistics
 import dk.cachet.carp.analytics.domain.data.ExecutionOutput
+import dk.cachet.carp.analytics.domain.data.FileFormat
+import dk.cachet.carp.analytics.domain.data.FileSystemSource
+import dk.cachet.carp.analytics.domain.data.InMemorySource
 import dk.cachet.carp.analytics.domain.execution.ArtifactType
 import dk.cachet.carp.analytics.domain.execution.ExecutionArtifact
+import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
 
 /**
@@ -60,21 +64,78 @@ class DataRegistry
      * Converts all entries into [ExecutionOutput], resolving memory vs file-based handles.
      */
     fun toExecutionOutputs(): List<ExecutionOutput> =
-        data.mapNotNull { (name, handle) ->
+        data.map { (name, handle) ->
             when (handle) {
                 is FileData -> ExecutionOutput(
-                    name = name,
-                    dataType = "file",
-                    location = DataLocation(listOf(handle.path), scheme = "file")
+                    outputId = name,
+                    actualLocation = FileSystemSource(
+                        path = handle.path,
+                        format = inferFormat(handle.path, handle.mimeType)
+                    ),
+                    statistics = DataStatistics(),
+                    timestamp = Clock.System.now(),
+                    success = true,
+                    errorMessage = null
                 )
                 is InMemoryData -> ExecutionOutput(
-                    name = name,
-                    dataType = "dataset",
-                    location = DataLocation(listOf("memory", name), scheme = "mem", isAbsolute = false)
+                    outputId = name,
+                    actualLocation = InMemorySource(
+                        registryKey = name
+                    ),
+                    statistics = DataStatistics(
+                        // TODO: Extract actual row count from ICarpTabularData if available
+                        rowCount = null
+                    ),
+                    timestamp = Clock.System.now(),
+                    success = true,
+                    errorMessage = null
                 )
-                else -> null
+                else -> ExecutionOutput(
+                    outputId = name,
+                    actualLocation = InMemorySource(registryKey = name),
+                    statistics = DataStatistics(),
+                    timestamp = Clock.System.now(),
+                    success = false,
+                    errorMessage = "Unknown DataHandle type: ${handle::class.simpleName}"
+                )
             }
         }
+
+    /**
+     * Infer file format from path or MIME type.
+     */
+    private fun inferFormat(path: String, mimeType: String?): FileFormat {
+        // Try MIME type first
+        if (mimeType != null) {
+            return when {
+                mimeType.contains("csv") -> FileFormat.CSV
+                mimeType.contains("json") -> FileFormat.JSON
+                mimeType.contains("xml") -> FileFormat.XML
+                mimeType.contains("excel") || mimeType.contains("spreadsheet") -> FileFormat.EXCEL
+                mimeType.contains("yaml") -> FileFormat.YAML
+                mimeType.contains("parquet") -> FileFormat.PARQUET
+                mimeType.contains("avro") -> FileFormat.AVRO
+                else -> inferFromExtension(path)
+            }
+        }
+
+        // Fall back to file extension
+        return inferFromExtension(path)
+    }
+
+    private fun inferFromExtension(path: String): FileFormat {
+        return when (path.substringAfterLast('.', "").lowercase()) {
+            "csv" -> FileFormat.CSV
+            "json" -> FileFormat.JSON
+            "xml" -> FileFormat.XML
+            "parquet" -> FileFormat.PARQUET
+            "avro" -> FileFormat.AVRO
+            "xlsx", "xls" -> FileFormat.EXCEL
+            "yaml", "yml" -> FileFormat.YAML
+            "tsv" -> FileFormat.TSV
+            else -> FileFormat.BINARY
+        }
+    }
 
     /**
      * Return a list of [ExecutionArtifact].

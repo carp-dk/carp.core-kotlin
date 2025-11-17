@@ -2,6 +2,7 @@ package dk.cachet.carp.analytics.domain.workflow
 
 import dk.cachet.carp.analytics.domain.execution.ExecutionContext
 import dk.cachet.carp.analytics.domain.process.ExternalProcess
+import dk.cachet.carp.common.application.UUID
 import kotlin.test.*
 
 class FakeExternalProcess(
@@ -24,6 +25,7 @@ class StepTest
     {
         step = Step(
             metadata = StepMetadata(
+                id = UUID.randomUUID(),
                 name = "Extract Sleep Duration",
                 version = Version(1, 0)
             ),
@@ -53,9 +55,9 @@ class StepTest
     }
 
     @Test
-    fun inputAndOutputDataShouldBeNullByDefault()
+    fun inputAndOutputDataShouldBeEmptyByDefault()
     {
-        assertNull(step.inputData)
-        assertNull(step.outputData)
+        assertTrue(step.inputs.isEmpty())
+        assertTrue(step.outputs.isEmpty())
     }
 }

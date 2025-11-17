@@ -3,6 +3,7 @@ package dk.cachet.carp.analytics.domain.execution
 
 import dk.cachet.carp.analytics.domain.data.*
 import dk.cachet.carp.common.application.UUID
+import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
 import kotlin.test.*
 
@@ -17,13 +18,15 @@ class ExecutionResultTest
             status = ExecutionStatus.COMPLETED,
             outputs = listOf(
                 ExecutionOutput(
-                    "summary",
-                    "csv",
-                    DataLocation(
-                                segments = listOf("data", "outputs", "summary.csv"),
-                                isAbsolute = true,
-                                scheme = "file"
-                    )
+                    outputId = "summary",
+                    actualLocation = FileSystemSource(
+                        path = "/data/outputs/summary.csv",
+                        format = FileFormat.CSV
+                    ),
+                    statistics = DataStatistics(),
+                    timestamp = Clock.System.now(),
+                    success = true,
+                    errorMessage = null
                 )
             ),
             artifacts = listOf(

@@ -1,39 +1,50 @@
 package dk.cachet.carp.analytics.domain.execution
 
+import dk.cachet.carp.analytics.domain.process.ExternalProcess
 import dk.cachet.carp.analytics.domain.workflow.Workflow
 import dk.cachet.carp.analytics.domain.workflow.WorkflowMetadata
 import dk.cachet.carp.common.application.UUID
+import kotlin.reflect.KClass
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
 class ExecutionStrategyTest
 {
     /**
-     * Example implementation showing how ExecutionStrategy implementations
-     * should manage their own ExecutorFactory dependencies internally.
+     * Example implementation showing how ExecutionStrategy implementations work
      */
     private class ExampleExecutionStrategy : ExecutionStrategy
     {
-        // Implementation would manage its own ExecutorFactory dependency here
-        // private val executorFactory: ExecutorFactory = ...
-
-        override fun execute( workflow: Workflow )
+        override fun execute(workflow: Workflow, executionFactory: IExecutionFactory)
         {
-            // Implementation would use its internal executorFactory here
-            // executorFactory.createExecutor().execute(workflow)
-
-            // For this example, we just validate the workflow is provided
+            // Validate the workflow is provided
             require(workflow.metadata.name.isNotEmpty()) { "Workflow name cannot be empty" }
         }
     }
 
+    /**
+     * Mock execution factory for testing
+     */
+    private class MockExecutionFactory : IExecutionFactory {
+
+        override fun <P : ExternalProcess> register(
+            processType: KClass<out P>,
+            executorCreator: () -> Executor<P>
+        ) {
+            TODO("Not yet implemented")
+        }
+
+        override fun <P : ExternalProcess> getExecutor(process: P): Executor<P> {
+            TODO("Not yet implemented")
+        }
+    }
+
     @Test
-    fun `ExecutionStrategy interface allows implementations to manage their own dependencies`()
+    fun `ExecutionStrategy interface allows implementations`()
     {
         val strategy: ExecutionStrategy = ExampleExecutionStrategy()
         assertNotNull(strategy)
 
-        // Verify the interface contract - implementations only need workflow parameter
         val workflow = Workflow(
             metadata = WorkflowMetadata(
                 "Test Workflow",
@@ -42,7 +53,9 @@ class ExecutionStrategyTest
             )
         )
 
-        // Should not throw - demonstrates clean interface without factory dependency
-        strategy.execute(workflow)
+        val factory = MockExecutionFactory()
+
+        // Should not throw - demonstrates clean interface
+        strategy.execute(workflow, factory)
     }
 }
