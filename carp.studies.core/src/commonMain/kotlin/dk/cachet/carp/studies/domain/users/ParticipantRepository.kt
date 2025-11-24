@@ -21,6 +21,12 @@ interface ParticipantRepository
     suspend fun getRecruitment( studyId: UUID ): Recruitment?
 
     /**
+     * Returns the [Recruitment] which contains the participant group with the specified [groupId],
+     * or null when no recruitment containing the specified participant group exists.
+     */
+    suspend fun getRecruitmentWithParticipantGroup( groupId: UUID ): Recruitment?
+
+    /**
      * Update a [Recruitment] which is already stored in this repository.
      *
      * @throws IllegalArgumentException when no previous version of this recruitment is stored in the repository.
