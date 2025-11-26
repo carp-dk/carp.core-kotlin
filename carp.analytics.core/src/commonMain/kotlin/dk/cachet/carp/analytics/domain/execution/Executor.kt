@@ -32,11 +32,4 @@ interface Executor
      */
     fun execute( step: Step )
 
-    /**
-     * Cleans up resources after step execution.
-     * This may include temporary files, environment deactivation, etc.
-     *
-     * @param step The step to clean up.
-     */
-    fun cleanup( step: Step ) {}
 }
