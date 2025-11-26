@@ -7,6 +7,5 @@ import dk.cachet.carp.analytics.domain.execution.ExecutionContext
  */
 interface ExternalProcess : WorkflowProcess
 {
-    val executionContext: ExecutionContext
     fun getArguments(): Any
 }

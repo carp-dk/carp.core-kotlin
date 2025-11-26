@@ -4,13 +4,13 @@ import dk.cachet.carp.analytics.domain.data.InputDataSpec
 import dk.cachet.carp.analytics.domain.data.OutputDataSpec
 import dk.cachet.carp.analytics.domain.data.StepExecutionResult
 import dk.cachet.carp.analytics.domain.data.ValidationResult
+import dk.cachet.carp.analytics.domain.execution.ExecutionContext
 import dk.cachet.carp.analytics.domain.process.WorkflowProcess
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
  * Represents a single step in a workflow.
- * A step takes inputs, applies a process, and produces outputs.
  */
 @Serializable
 @SerialName( "Step" )
@@ -19,6 +19,7 @@ data class Step(
     val inputs: List<InputDataSpec> = emptyList(),
     val outputs: List<OutputDataSpec> = emptyList(),
     val process: WorkflowProcess,
+    val executionContext: ExecutionContext,
     val executionResult: StepExecutionResult? = null
 ) : WorkflowComponent {
 
