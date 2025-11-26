@@ -11,7 +11,7 @@ interface IExecutionFactory {
      */
     fun <P : ExternalProcess> register(
         processType: KClass<out P>,
-        executorCreator: () -> Executor<P>
+        executorCreator: () -> Executor
     )
 
     /**
@@ -20,5 +20,5 @@ interface IExecutionFactory {
      * @return The corresponding [Executor] instance.
      * @throws IllegalArgumentException If no Executor is registered for the given Process type.
      */
-    fun <P : ExternalProcess> getExecutor(process: P): Executor<P>
+    fun <P : ExternalProcess> getExecutor(process: P): Executor
 }
