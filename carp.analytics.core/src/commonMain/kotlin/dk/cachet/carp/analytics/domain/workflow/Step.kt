@@ -4,6 +4,7 @@ import dk.cachet.carp.analytics.domain.data.InputDataSpec
 import dk.cachet.carp.analytics.domain.data.OutputDataSpec
 import dk.cachet.carp.analytics.domain.data.StepExecutionResult
 import dk.cachet.carp.analytics.domain.data.ValidationResult
+import dk.cachet.carp.analytics.domain.environment.Environment
 import dk.cachet.carp.analytics.domain.execution.ExecutionContext
 import dk.cachet.carp.analytics.domain.process.WorkflowProcess
 import kotlinx.serialization.SerialName
@@ -19,7 +20,7 @@ data class Step(
     val inputs: List<InputDataSpec> = emptyList(),
     val outputs: List<OutputDataSpec> = emptyList(),
     val process: WorkflowProcess,
-    val executionContext: ExecutionContext,
+    val executionContext: ExecutionContext = ExecutionContext(),
     val executionResult: StepExecutionResult? = null
 ) : WorkflowComponent {
 
