@@ -65,12 +65,31 @@ sealed class RecruitmentServiceRequest<out TReturn> : ApplicationServiceRequest<
     }
 
     @Serializable
+    @Deprecated( "Use CreateParticipantGroup and InviteParticipantGroup instead." )
     data class InviteNewParticipantGroup(
         val studyId: UUID,
         val group: Set<AssignedParticipantRoles>,
         val name: String? = null
-    ) :
-        RecruitmentServiceRequest<ParticipantGroupStatus>()
+    ) : RecruitmentServiceRequest<ParticipantGroupStatus>()
+    {
+        override fun getResponseSerializer() = serializer<ParticipantGroupStatus>()
+    }
+
+    @Serializable
+    data class CreateParticipantGroup(
+        val groupId: UUID,
+        val group: Set<AssignedParticipantRoles>,
+        val studyId: UUID,
+        val name: String? = null
+    ) : RecruitmentServiceRequest<ParticipantGroupStatus>()
+    {
+        override fun getResponseSerializer() = serializer<ParticipantGroupStatus>()
+    }
+
+    @Serializable
+    data class InviteParticipantGroup(
+        val groupId: UUID
+    ) : RecruitmentServiceRequest<ParticipantGroupStatus>()
     {
         override fun getResponseSerializer() = serializer<ParticipantGroupStatus>()
     }

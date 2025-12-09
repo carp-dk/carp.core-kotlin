@@ -17,7 +17,7 @@ which reflects the underlying state machine:
 
 ![Participant group state machine](https://i.imgur.com/VIv3HKk.png)
 
-Note: `createParticipantGroup` and `inviteParticipantGroup` are envisioned new endpoints currently not yet available.
+Note: The legacy `inviteNewParticipantGroup` is still available to create and invite in one step, but planned to be removed in the future.
 
 Once a participant group is `InDeployment`, the state of the underlying `studyDeploymentStatus` determines the concrete `ParticipantGroupStatus`.
 Calling `RecruitmentService.stopParticipantGroup()` will stop the underlying deployment, but the deployment can also be stopped by participants in the study.
@@ -55,6 +55,8 @@ Allows setting recruitment goals, adding participants to studies, and creating d
 | `addParticipant` | Add a participant identified by a specified email address or username to a study. | manage study: `studyId` | |
 | `getParticipant` | Returns the participant with a specified ID for a study. | manage study: `studyId` | |
 | `getParticipants` | Get all participants for a study. | manage study: `studyId` | |
-| `inviteNewParticipantGroup` | Create and instantly invite a group of previously added participants to a study. | manage study: `studyId` | |
+| `inviteNewParticipantGroup` | (Deprecated) Create and instantly invite a group of previously added participants to a study. | manage study: `studyId` | |
+| `createParticipantGroup` | Prepare a group of previously added participants for deployment without inviting them yet. | manage study: `studyId` | |
+| `inviteParticipantGroup` | Invite a previously prepared participant group to start participating in the study. | manage study: `studyId` | |
 | `getParticipantGroupStatusList` | Get the status of all participant groups in a study. | manage study: `studyId` | |
 | `stopParticipantGroup` | Stop the study deployment in a study of a participant group. No further changes to this deployment will be allowed and no more data will be collected. | manage study: `studyId` | |

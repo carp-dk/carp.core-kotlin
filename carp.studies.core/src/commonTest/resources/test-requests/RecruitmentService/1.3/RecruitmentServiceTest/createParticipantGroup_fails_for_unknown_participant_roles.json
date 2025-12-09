@@ -1,0 +1,107 @@
+[
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.AddParticipantByEmailAddress",
+            "apiVersion": "1.3",
+            "studyId": "00000000-0000-0000-0000-000000000001",
+            "email": "test@test.com"
+        },
+        "precedingEvents": [
+            {
+                "__type": "dk.cachet.carp.studies.application.StudyService.Event.StudyCreated",
+                "aggregateId": "00000000-0000-0000-0000-000000000001",
+                "apiVersion": "1.1",
+                "study": {
+                    "studyId": "00000000-0000-0000-0000-000000000001",
+                    "ownerId": "a3a34fca-ee6e-4832-ab59-c881d39a6f75",
+                    "name": "Test",
+                    "createdOn": "1970-01-01T00:00:00Z",
+                    "description": null,
+                    "invitation": {
+                        "name": "Test"
+                    },
+                    "protocolSnapshot": null
+                }
+            },
+            {
+                "__type": "dk.cachet.carp.studies.application.StudyService.Event.StudyGoneLive",
+                "aggregateId": "00000000-0000-0000-0000-000000000001",
+                "apiVersion": "1.1",
+                "study": {
+                    "studyId": "00000000-0000-0000-0000-000000000001",
+                    "ownerId": "a3a34fca-ee6e-4832-ab59-c881d39a6f75",
+                    "name": "Test",
+                    "createdOn": "1970-01-01T00:00:00Z",
+                    "description": null,
+                    "invitation": {
+                        "name": "Test"
+                    },
+                    "protocolSnapshot": {
+                        "id": "0bfb9e22-646b-4cf1-8a27-33be57c607d2",
+                        "createdOn": "2025-11-08T08:42:51.125779Z",
+                        "version": 0,
+                        "ownerId": "bd8c4a0e-3df6-4e79-9734-3609602fe8df",
+                        "name": "Test protocol",
+                        "primaryDevices": [
+                            {
+                                "__type": "dk.cachet.carp.common.application.devices.Smartphone",
+                                "isPrimaryDevice": true,
+                                "roleName": "User's phone"
+                            }
+                        ],
+                        "participantRoles": [
+                            {
+                                "role": "Test role",
+                                "isOptional": false
+                            },
+                            {
+                                "role": "Test role 2",
+                                "isOptional": false
+                            }
+                        ],
+                        "expectedParticipantData": [
+                            {
+                                "attribute": {
+                                    "__type": "dk.cachet.carp.common.application.users.ParticipantAttribute.DefaultParticipantAttribute",
+                                    "inputDataType": "dk.cachet.carp.input.sex"
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        ],
+        "publishedEvents": [],
+        "response": {
+            "accountIdentity": {
+                "__type": "dk.cachet.carp.common.application.users.EmailAccountIdentity",
+                "emailAddress": "test@test.com"
+            },
+            "id": "00000000-0000-0000-0000-000000000002"
+        }
+    },
+    {
+        "outcome": "Failed",
+        "request": {
+            "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.CreateParticipantGroup",
+            "apiVersion": "1.3",
+            "groupId": "f065b7c5-8025-4f41-98e7-d55efdc23df8",
+            "group": [
+                {
+                    "participantId": "00000000-0000-0000-0000-000000000002",
+                    "assignedRoles": {
+                        "__type": "dk.cachet.carp.common.application.users.AssignedTo.Roles",
+                        "roleNames": [
+                            "Unknown role"
+                        ]
+                    }
+                }
+            ],
+            "studyId": "00000000-0000-0000-0000-000000000001"
+        },
+        "precedingEvents": [],
+        "publishedEvents": [],
+        "exceptionType": "IllegalArgumentException"
+    }
+]

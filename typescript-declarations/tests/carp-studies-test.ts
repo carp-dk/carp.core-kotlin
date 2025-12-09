@@ -95,16 +95,19 @@ describe( "carp-studies-core", () => {
 
 
     describe( "RecruitmentServiceRequest", () => {
-        it( "can serialize DeployParticipantGroup", () => {
+        it( "can serialize CreateParticipantGroup", () => {
+            const groupId = UUID.Companion.randomUUID()
+            const studyId = UUID.Companion.randomUUID()
             const assignedRoles = new Set( [ new AssignedParticipantRoles( UUID.Companion.randomUUID(), AssignedTo.All ) ] );
-            const deployGroup = new RecruitmentServiceRequest.InviteNewParticipantGroup(
-                UUID.Companion.randomUUID(),
+            const createGroup = new RecruitmentServiceRequest.CreateParticipantGroup(
+                groupId,
                 KtSet.fromJsSet( assignedRoles ),
+                studyId,
                 "Test group"
             )
 
             const serializer = RecruitmentServiceRequest.Serializer
-            const serialized = JSON.encodeToString( serializer, deployGroup )
+            const serialized = JSON.encodeToString( serializer, createGroup )
             expect( serialized ).is.not.undefined
         } )
 

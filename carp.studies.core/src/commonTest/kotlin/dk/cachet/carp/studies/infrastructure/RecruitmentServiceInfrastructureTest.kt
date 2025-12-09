@@ -24,7 +24,10 @@ class RecruitmentServiceRequestsTest : ApplicationServiceRequestsTest<Recruitmen
             RecruitmentServiceRequest.AddParticipantByUsername( studyId, Username( "test" ) ),
             RecruitmentServiceRequest.GetParticipant( studyId, UUID.randomUUID() ),
             RecruitmentServiceRequest.GetParticipants( studyId ),
+            @Suppress( "DEPRECATION" )
             RecruitmentServiceRequest.InviteNewParticipantGroup( studyId, setOf(), "test group" ),
+            RecruitmentServiceRequest.CreateParticipantGroup( UUID.randomUUID(), setOf(), studyId, "test group" ),
+            RecruitmentServiceRequest.InviteParticipantGroup( UUID.randomUUID() ),
             RecruitmentServiceRequest.GetParticipantGroupStatusList( studyId ),
             RecruitmentServiceRequest.StopParticipantGroup( studyId, UUID.randomUUID() )
         )
