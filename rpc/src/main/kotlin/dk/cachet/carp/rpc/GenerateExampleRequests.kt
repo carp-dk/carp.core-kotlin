@@ -397,6 +397,31 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
             deploymentName
         )
     ),
+    RecruitmentService::createParticipantGroup to example(
+        request = RecruitmentServiceRequest.CreateParticipantGroup(
+            deploymentId,
+            setOf( AssignedParticipantRoles( participantId, participantAssignedRoles ) ),
+            studyId,
+            deploymentName
+        ),
+        response = ParticipantGroupStatus.Staged(
+            deploymentId,
+            participants,
+            setOf( AssignedParticipantRoles( participantId, participantAssignedRoles ) ),
+            deploymentName
+        )
+    ),
+    RecruitmentService::inviteParticipantGroup to example(
+        request = RecruitmentServiceRequest.InviteParticipantGroup( deploymentId ),
+        response = ParticipantGroupStatus.Invited(
+            deploymentId,
+            participants,
+            roleAssignment,
+            participantGroupInvitedOn,
+            invitedDeploymentStatus,
+            deploymentName
+        )
+    ),
     RecruitmentService::getParticipantGroupStatusList to example(
         request = RecruitmentServiceRequest.GetParticipantGroupStatusList( studyId ),
         response = listOf(

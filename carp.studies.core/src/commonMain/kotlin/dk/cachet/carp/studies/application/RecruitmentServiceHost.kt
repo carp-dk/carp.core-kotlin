@@ -125,6 +125,13 @@ class RecruitmentServiceHost(
      *  - not all necessary participant roles part of the study have been assigned a participant
      * @throws IllegalStateException when the study is not yet ready for deployment.
      */
+    @Deprecated(
+        "Use createParticipantGroup and inviteParticipantGroup instead",
+        replaceWith = ReplaceWith(
+            "inviteParticipantGroup( createParticipantGroup( UUID.randomUUID(), group, studyId, name ).id )",
+            "dk.cachet.carp.common.application.UUID"
+        )
+    )
     override suspend fun inviteNewParticipantGroup(
         studyId: UUID,
         group: Set<AssignedParticipantRoles>,
@@ -156,6 +163,64 @@ class RecruitmentServiceHost(
         //  This should use eventual consistency: https://github.com/imotions/carp.core-kotlin/issues/295
         //  And probably be separate requests: https://github.com/imotions/carp.core-kotlin/issues/319
         val deploymentStatus = deploymentService.createStudyDeployment( participantGroup.id, protocol, invitations )
+
+        return recruitment.getParticipantGroupStatus( participantGroup.id ) { deploymentStatus }
+    }
+
+    /**
+     * Create a new participant [group] of previously added participants for the study with the given [studyId],
+     * and an optional [name] representing this group, but do not yet send out invitations.
+     * This is used to create a group of participants which can be deployed at a later time.
+     *
+     * As long as no final study protocol is locked in for the study, a participant group can't be created
+     * since participant roles to which participants need to be assigned are unknown.
+     * @throws IllegalArgumentException when:
+     *  - a study with [studyId] does not exist
+     *  - an existing participant group with [groupId] already exists
+     *  - any of the participant roles specified in [group] does not exist
+     * @throws IllegalStateException when the study is not yet ready for deployment.
+     */
+    override suspend fun createParticipantGroup(
+        groupId: UUID,
+        group: Set<AssignedParticipantRoles>,
+        studyId: UUID,
+        name: String?
+    ): ParticipantGroupStatus
+    {
+        val recruitment = getRecruitmentOrThrow( studyId )
+        require( participantRepository.getRecruitmentWithParticipantGroup( groupId ) == null )
+            { "Participant group with ID \"$groupId\" already exists." }
+
+        val participantGroup = recruitment.addParticipantGroup( group, name, groupId )
+        participantRepository.updateRecruitment( recruitment )
+
+        return recruitment.getParticipantGroupStatus( participantGroup.id ) {
+            error( "Participant group with ID \"$groupId\" is not yet deployed." )
+        }
+    }
+
+    /**
+     * Invite the participant group with the specified [groupId] to start participating in its study.
+     *
+     * @throws IllegalArgumentException when:
+     *  - the participant group with [groupId] does not exist
+     *  - not all necessary participant roles part of the study have been assigned a participant
+     * @throws IllegalStateException when group has already been deployed.
+    */
+    override suspend fun inviteParticipantGroup( groupId: UUID ): ParticipantGroupStatus
+    {
+        val (recruitment, participantGroup) = getRecruitmentWithGroupOrThrow( groupId )
+
+        check( !participantGroup.isDeployed ) { "Participant group has already been deployed." }
+
+        val (protocol, invitations) = recruitment.createInvitations( participantGroup.roleAssignments )
+        val deploymentStatus = deploymentService.createStudyDeployment( participantGroup.id, protocol, invitations )
+
+        // Mark participant group as deployed.
+        // TODO: If `createStudyDeployment` succeeds, but 'updateRecruitment' fails, state will be inconsistent.
+        //  This should use eventual consistency: https://github.com/imotions/carp.core-kotlin/issues/295
+        participantGroup.markAsDeployed()
+        participantRepository.updateRecruitment( recruitment )
 
         return recruitment.getParticipantGroupStatus( participantGroup.id ) { deploymentStatus }
     }

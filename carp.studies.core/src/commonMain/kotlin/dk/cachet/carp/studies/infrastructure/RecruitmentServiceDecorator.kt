@@ -33,11 +33,29 @@ class RecruitmentServiceDecorator(
     override suspend fun getParticipants( studyId: UUID ) =
         invoke( RecruitmentServiceRequest.GetParticipants( studyId ) )
 
+    @Deprecated(
+        "Use CreateParticipantGroup and InviteParticipantGroup instead",
+        ReplaceWith(
+            "inviteParticipantGroup( createParticipantGroup( UUID.randomUUID(), group, studyId, name ).id )",
+            "dk.cachet.carp.common.application.UUID"
+        )
+    )
+    @Suppress( "DEPRECATION" )
     override suspend fun inviteNewParticipantGroup(
         studyId: UUID,
         group: Set<AssignedParticipantRoles>,
         name: String?
     ) = invoke( RecruitmentServiceRequest.InviteNewParticipantGroup( studyId, group, name ) )
+
+    override suspend fun createParticipantGroup(
+        groupId: UUID,
+        group: Set<AssignedParticipantRoles>,
+        studyId: UUID,
+        name: String?
+    ) = invoke( RecruitmentServiceRequest.CreateParticipantGroup( groupId, group, studyId, name ) )
+
+    override suspend fun inviteParticipantGroup( groupId: UUID ) =
+        invoke( RecruitmentServiceRequest.InviteParticipantGroup( groupId ) )
 
     override suspend fun getParticipantGroupStatusList( studyId: UUID ) =
         invoke( RecruitmentServiceRequest.GetParticipantGroupStatusList( studyId ) )
@@ -49,6 +67,7 @@ class RecruitmentServiceDecorator(
 
 object RecruitmentServiceInvoker : ApplicationServiceInvoker<RecruitmentService, RecruitmentServiceRequest<*>>
 {
+    @Suppress( "DEPRECATION" )
     override suspend fun RecruitmentServiceRequest<*>.invoke( service: RecruitmentService ): Any =
         when ( this )
         {
@@ -58,6 +77,9 @@ object RecruitmentServiceInvoker : ApplicationServiceInvoker<RecruitmentService,
             is RecruitmentServiceRequest.GetParticipants -> service.getParticipants( studyId )
             is RecruitmentServiceRequest.InviteNewParticipantGroup ->
                 service.inviteNewParticipantGroup( studyId, group, name )
+            is RecruitmentServiceRequest.CreateParticipantGroup ->
+                service.createParticipantGroup(groupId, group, studyId, name )
+            is RecruitmentServiceRequest.InviteParticipantGroup -> service.inviteParticipantGroup( groupId )
             is RecruitmentServiceRequest.GetParticipantGroupStatusList ->
                 service.getParticipantGroupStatusList( studyId )
             is RecruitmentServiceRequest.StopParticipantGroup -> service.stopParticipantGroup( studyId, groupId )

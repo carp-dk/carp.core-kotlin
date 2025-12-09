@@ -74,11 +74,49 @@ interface RecruitmentService : ApplicationService<RecruitmentService, Recruitmen
      *  - not all necessary participant roles part of the study have been assigned a participant
      * @throws IllegalStateException when the study is not yet ready for deployment.
      */
+    @Deprecated(
+        "Use createParticipantGroup and inviteParticipantGroup instead",
+        ReplaceWith(
+            "inviteParticipantGroup( createParticipantGroup( UUID.randomUUID(), group, studyId, name ).id )",
+            "dk.cachet.carp.common.application.UUID"
+        ),
+        level = DeprecationLevel.WARNING
+    )
     suspend fun inviteNewParticipantGroup(
         studyId: UUID,
         group: Set<AssignedParticipantRoles>,
         name: String? = null
     ): ParticipantGroupStatus
+
+    /**
+     * Create a new participant [group] of previously added participants for the study with the given [studyId],
+     * and an optional [name] representing this group, but do not yet send out invitations.
+     * This is used to create a group of participants which can be deployed at a later time.
+     *
+     * As long as no final study protocol is locked in for the study, a participant group can't be created
+     * since participant roles to which participants need to be assigned are unknown.
+     * @throws IllegalArgumentException when:
+     *  - a study with [studyId] does not exist
+     *  - an existing participant group with [groupId] already exists
+     *  - any of the participant roles specified in [group] does not exist
+     * @throws IllegalStateException when the study is not yet ready for deployment.
+     */
+    suspend fun createParticipantGroup(
+        groupId: UUID,
+        group: Set<AssignedParticipantRoles>,
+        studyId: UUID,
+        name: String? = null
+    ): ParticipantGroupStatus
+
+    /**
+     * Invite the participant group with the specified [groupId] to start participating in its study.
+     *
+     * @throws IllegalArgumentException when:
+     *  - the participant group with [groupId] does not exist
+     *  - not all necessary participant roles part of the study have been assigned a participant
+     * @throws IllegalStateException when group has already been deployed.
+     */
+    suspend fun inviteParticipantGroup( groupId: UUID ): ParticipantGroupStatus
 
     /**
      * Get the status of all participant groups in the study with the specified [studyId].
