@@ -81,7 +81,7 @@ interface RecruitmentService : ApplicationService<RecruitmentService, Recruitmen
     ): ParticipantGroupStatus
 
     /**
-     * Get the status of all deployed participant groups in the study with the specified [studyId].
+     * Get the status of all participant groups in the study with the specified [studyId].
      *
      * @throws IllegalArgumentException when a study with [studyId] does not exist.
      */

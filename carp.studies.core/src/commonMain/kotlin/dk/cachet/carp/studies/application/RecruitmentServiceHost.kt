@@ -16,6 +16,7 @@ import dk.cachet.carp.studies.application.users.Participant
 import dk.cachet.carp.studies.application.users.ParticipantGroupStatus
 import dk.cachet.carp.studies.domain.users.ParticipantRepository
 import dk.cachet.carp.studies.domain.users.Recruitment
+import dk.cachet.carp.studies.domain.users.StagedParticipantGroup
 import kotlinx.datetime.Clock
 
 
@@ -142,7 +143,7 @@ class RecruitmentServiceHost(
             ?.let { deploymentService.getStudyDeploymentStatus( it.key ) }
         if ( deployedStatus != null && deployedStatus !is StudyDeploymentStatus.Stopped )
         {
-            return recruitment.getParticipantGroupStatus( deployedStatus )
+            return recruitment.getParticipantGroupStatus( deployedStatus.studyDeploymentId ) { deployedStatus }
         }
 
         // Create participant group and mark as deployed.
@@ -156,11 +157,11 @@ class RecruitmentServiceHost(
         //  And probably be separate requests: https://github.com/imotions/carp.core-kotlin/issues/319
         val deploymentStatus = deploymentService.createStudyDeployment( participantGroup.id, protocol, invitations )
 
-        return recruitment.getParticipantGroupStatus( deploymentStatus )
+        return recruitment.getParticipantGroupStatus( participantGroup.id ) { deploymentStatus }
     }
 
     /**
-     * Get the status of all deployed participant groups in the study with the specified [studyId].
+     * Get the status of all participant groups in the study with the specified [studyId].
      *
      * @throws IllegalArgumentException when a study with [studyId] does not exist.
      */
@@ -168,13 +169,10 @@ class RecruitmentServiceHost(
     {
         val recruitment: Recruitment = getRecruitmentOrThrow( studyId )
 
-        // Get study deployment status list.
-        val studyDeploymentIds = recruitment.participantGroups.keys
-        val studyDeploymentStatusList: List<StudyDeploymentStatus> =
-            if ( studyDeploymentIds.isEmpty() ) emptyList()
-            else deploymentService.getStudyDeploymentStatusList( studyDeploymentIds )
-
-        return studyDeploymentStatusList.map { recruitment.getParticipantGroupStatus( it ) }
+        return recruitment.getParticipantGroupStatusList(
+            recruitment.participantGroups.keys,
+            deploymentService::getStudyDeploymentStatusList
+        )
     }
 
     /**
@@ -182,23 +180,29 @@ class RecruitmentServiceHost(
      * of the participant group with the specified [groupId] (equivalent to the studyDeploymentId).
      * No further changes to this deployment will be allowed and no more data will be collected.
      *
-     * @throws IllegalArgumentException when a study with [studyId] or participant group with [groupId] does not exist.
+     * @throws IllegalArgumentException when:
+     *  - a study with [studyId] or participant group with [groupId] does not exist
+     *  - the participant group with [groupId] does not belong to the study with [studyId].
      */
     override suspend fun stopParticipantGroup( studyId: UUID, groupId: UUID ): ParticipantGroupStatus
     {
-        val recruitment = getRecruitmentWithGroupOrThrow( studyId, groupId )
+        val (recruitment, participantGroup) = getRecruitmentWithGroupOrThrow( groupId )
+
+        require( recruitment.id == studyId ) {
+            "Participant group with ID \"$groupId\" does not belong to study with ID \"$studyId\"."
+        }
 
         val deploymentStatus = deploymentService.stop( groupId )
-        return recruitment.getParticipantGroupStatus( deploymentStatus )
+        return recruitment.getParticipantGroupStatus( participantGroup.id ) { deploymentStatus }
     }
 
-    private suspend fun getRecruitmentWithGroupOrThrow( studyId: UUID, groupId: UUID ): Recruitment
+    private suspend fun getRecruitmentWithGroupOrThrow( groupId: UUID ): Pair<Recruitment, StagedParticipantGroup>
     {
-        val recruitment: Recruitment = getRecruitmentOrThrow( studyId )
-        val participations = recruitment.participantGroups[ groupId ]
-        requireNotNull( participations ) { "Study deployment with the specified groupId not found." }
+        val recruitment = participantRepository.getRecruitmentWithParticipantGroup( groupId )
+            ?: throw IllegalArgumentException( "Study deployment with the specified groupId not found." )
 
-        return recruitment
+        val group = checkNotNull( recruitment.participantGroups[ groupId ] )
+        return Pair( recruitment, group )
     }
 
     private suspend fun getRecruitmentOrThrow( studyId: UUID ): Recruitment =

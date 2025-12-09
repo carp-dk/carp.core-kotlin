@@ -56,5 +56,5 @@ Allows setting recruitment goals, adding participants to studies, and creating d
 | `getParticipant` | Returns the participant with a specified ID for a study. | manage study: `studyId` | |
 | `getParticipants` | Get all participants for a study. | manage study: `studyId` | |
 | `inviteNewParticipantGroup` | Create and instantly invite a group of previously added participants to a study. | manage study: `studyId` | |
-| `getParticipantGroupStatusList` | Get the status of all deployed participant groups in a study. | manage study: `studyId` | |
+| `getParticipantGroupStatusList` | Get the status of all participant groups in a study. | manage study: `studyId` | |
 | `stopParticipantGroup` | Stop the study deployment in a study of a participant group. No further changes to this deployment will be allowed and no more data will be collected. | manage study: `studyId` | |

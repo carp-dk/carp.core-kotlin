@@ -206,24 +206,78 @@ class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: I
     }
 
     /**
-     * Get the [ParticipantGroupStatus] of the study deployment identified by [studyDeploymentStatus].
+     * Get the [ParticipantGroupStatus] for participant groups with [groupIds] in this recruitment.
+     * For deployed participant groups, the matching [StudyDeploymentStatus] is retrieved using
+     * [getDeploymentStatusList].
      *
-     * @throws IllegalArgumentException when the study deployment identified by [studyDeploymentStatus] is not part of this recruitment.
+     * @throws IllegalArgumentException when:
+     * - [groupIds] contains an id which is not part of this recruitment
+     * - [getDeploymentStatusList] doesn't return a matching [StudyDeploymentStatus] for each of the requested IDs
      */
-    fun getParticipantGroupStatus( studyDeploymentStatus: StudyDeploymentStatus ): ParticipantGroupStatus
+    suspend fun getParticipantGroupStatusList(
+        groupIds: Set<UUID>,
+        getDeploymentStatusList: suspend (Set<UUID>) -> List<StudyDeploymentStatus>
+    ): List<ParticipantGroupStatus>
     {
-        val deploymentId = studyDeploymentStatus.studyDeploymentId
-        val group: StagedParticipantGroup = requireNotNull( _participantGroups[ deploymentId ] )
-            { "A study deployment with ID \"$deploymentId\" is not part of this recruitment." }
+        require( participantGroups.keys.containsAll( groupIds ) )
+            { "One of the group IDs a status is requested for isn't part of this recruitment." }
 
-        val participants = group.participantIds.map { id -> _participants.first { it.id == id } }
-        return ParticipantGroupStatus.InDeployment.fromDeploymentStatus(
-            participants.toSet(),
-            group.roleAssignments,
-            studyDeploymentStatus,
-            group.name
-        )
+        val (deployedGroups, stagedGroups) = groupIds
+            .map { participantGroups.getValue( it ) }
+            .partition { it.isDeployed }
+
+        // Get participant group status for staged groups.
+        val stagedGroupStatuses = stagedGroups.map { group ->
+            ParticipantGroupStatus.Staged(
+                id = group.id,
+                participants = getParticipantsFor( group ),
+                assignedParticipantRoles = group.roleAssignments,
+                name = group.name
+            )
+        }
+
+        // Get deployment status for deployed participant groups.
+        val deployedGroupIds = deployedGroups.map { it.id }.toSet()
+        val deploymentStatuses =
+            if ( deployedGroupIds.isEmpty() ) emptyMap()
+            else getDeploymentStatusList( deployedGroupIds ).associateBy { it.studyDeploymentId }
+
+        // Get participant group status for deployed groups.
+        val deployedGroupStatuses = deployedGroups.map { group ->
+            val deploymentStatus = requireNotNull( deploymentStatuses[ group.id ] )
+                { "No study deployment status returned for the requested ID: \"${group.id}\"." }
+            ParticipantGroupStatus.InDeployment.fromDeploymentStatus(
+                getParticipantsFor( group ),
+                group.roleAssignments,
+                deploymentStatus,
+                group.name
+            )
+        }
+
+        return stagedGroupStatuses + deployedGroupStatuses
     }
+
+    /**
+     * Get the [ParticipantGroupStatus] for the participant group with [groupId] in this recruitment.
+     * If the participant group is deployed, the matching [StudyDeploymentStatus] is retrieved using
+     * [getDeploymentStatus].
+     *
+     * @throws IllegalArgumentException when:
+     * - [groupId] is not part of this recruitment
+     * - [getDeploymentStatus] returns a [StudyDeploymentStatus] which doesn't match the requested ID
+     */
+    suspend fun getParticipantGroupStatus(
+        groupId: UUID,
+        getDeploymentStatus: (UUID) -> StudyDeploymentStatus
+    ): ParticipantGroupStatus =
+        getParticipantGroupStatusList( setOf( groupId ) )
+            { deploymentIds -> listOf( getDeploymentStatus( deploymentIds.single() ) ) }.single()
+
+    /**
+     * Get the participants for the participant [group].
+     */
+    private fun getParticipantsFor( group: StagedParticipantGroup ): Set<Participant> =
+        group.participantIds.map { id -> _participants.first { it.id == id } }.toSet()
 
     /**
      * Get an immutable snapshot of the current state of this [Recruitment] using the specified snapshot [version].

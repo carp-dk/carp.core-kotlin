@@ -9,6 +9,8 @@ import dk.cachet.carp.deployments.application.users.StudyInvitation
 import dk.cachet.carp.protocols.infrastructure.test.createEmptyProtocol
 import dk.cachet.carp.protocols.infrastructure.test.createSinglePrimaryDeviceProtocol
 import dk.cachet.carp.studies.application.users.AssignedParticipantRoles
+import dk.cachet.carp.studies.application.users.ParticipantGroupStatus
+import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Clock
 import kotlin.test.*
 
@@ -145,33 +147,135 @@ class RecruitmentTest
     }
 
     @Test
-    fun getParticipantGroupStatus_succeeds()
-    {
-        val recruitment = Recruitment( studyId )
+    fun getParticipantGroupStatus_for_deployed_group_succeeds() = runTest {
+        val recruitment = createReadyRecruitment()
         val participant = recruitment.addParticipant( participantEmail )
-        val roleAssignment = setOf( AssignedParticipantRoles( participant.id, AssignedTo.All ) )
-        val protocol = createEmptyProtocol()
-        recruitment.lockInStudy( protocol.getSnapshot(), StudyInvitation( "Some study" ) )
-        val group = recruitment.addParticipantGroup( roleAssignment )
+        val group = recruitment.addParticipantGroup(
+            setOf( AssignedParticipantRoles( participant.id, AssignedTo.All ) ),
+            "Test Group"
+        )
+        group.markAsDeployed()
+        val deploymentStatus =
+            StudyDeploymentStatus.DeployingDevices(
+                Clock.System.now(),
+                group.id,
+                emptyList(),
+                emptyList(),
+                null
+            )
 
-        val stubDeploymentStatus =
-            StudyDeploymentStatus.DeployingDevices( Clock.System.now(), group.id, emptyList(), emptyList(), null )
-        val groupStatus = recruitment.getParticipantGroupStatus( stubDeploymentStatus )
+        val groupStatus = recruitment.getParticipantGroupStatus( group.id ) { requestedId ->
+            assertEquals( group.id, requestedId )
+            deploymentStatus
+        }
 
-        assertEquals( group.id, groupStatus.id )
-        assertEquals( setOf( participant ), groupStatus.participants )
+        val expected = ParticipantGroupStatus.Invited(
+            group.id,
+            setOf( participant ),
+            group.roleAssignments,
+            deploymentStatus.createdOn,
+            deploymentStatus,
+            group.name
+        )
+        assertEquals( expected, groupStatus )
     }
 
     @Test
-    fun getParticipantGroupStatus_fails_for_unknown_studyDeploymentId()
-    {
-        val recruitment = Recruitment( studyId )
+    fun getParticipantGroupStatus_for_staged_group_succeeds() = runTest {
+        val recruitment = createReadyRecruitment()
+        val participant = recruitment.addParticipant( participantEmail )
+        val group = recruitment.addParticipantGroup(
+            setOf( AssignedParticipantRoles( participant.id, AssignedTo.All ) )
+        )
+
+        val status = recruitment.getParticipantGroupStatus( group.id ) {
+            error( "Should not request deployment status for staged groups." )
+        }
+
+        val expected = ParticipantGroupStatus.Staged(
+            group.id,
+            setOf( participant ),
+            group.roleAssignments,
+            group.name
+        )
+        assertEquals( expected, status )
+    }
+
+    @Test
+    fun getParticipantGroupStatusList_returns_statuses_for_staged_and_deployed_groups() = runTest {
+        val recruitment = createReadyRecruitment()
+        val participant1 = recruitment.addParticipant( participantEmail )
+        val participant2 = recruitment.addParticipant( EmailAddress( "test2@test.com" ) )
+        val assignedRoles1 = AssignedParticipantRoles( participant1.id, AssignedTo.All )
+        val assignedRoles2 = AssignedParticipantRoles( participant2.id, AssignedTo.All )
+        val deployedGroup = recruitment.addParticipantGroup( setOf( assignedRoles1 ), "Deployed Group" )
+        val stagedGroup = recruitment.addParticipantGroup( setOf( assignedRoles2 ), "Staged Group" )
+        deployedGroup.markAsDeployed()
+        val deploymentStatus =
+            StudyDeploymentStatus.DeployingDevices(
+                Clock.System.now(),
+                deployedGroup.id,
+                emptyList(),
+                emptyList(),
+                null
+            )
+
+        val statuses = recruitment.getParticipantGroupStatusList(
+            setOf( stagedGroup.id, deployedGroup.id )
+        ) { ids ->
+            assertEquals( setOf( deployedGroup.id ), ids )
+            listOf( deploymentStatus )
+        }
+
+        val expectedStatuses = setOf(
+            ParticipantGroupStatus.Staged(
+                stagedGroup.id,
+                setOf( participant2 ),
+                stagedGroup.roleAssignments,
+                stagedGroup.name
+            ),
+            ParticipantGroupStatus.Invited(
+                deployedGroup.id,
+                setOf( participant1 ),
+                deployedGroup.roleAssignments,
+                deploymentStatus.createdOn,
+                deploymentStatus,
+                deployedGroup.name
+            )
+        )
+        assertEquals( expectedStatuses, statuses.toSet() )
+    }
+
+    @Test
+    fun getParticipantGroupStatus_fails_for_unknown_groupId() = runTest {
+        val recruitment = createReadyRecruitment()
 
         val unknownId = UUID.randomUUID()
-        val stubDeploymentStatus =
-            StudyDeploymentStatus.DeployingDevices( Clock.System.now(), unknownId, emptyList(), emptyList(), null )
         assertFailsWith<IllegalArgumentException> {
-            recruitment.getParticipantGroupStatus( stubDeploymentStatus )
+            recruitment.getParticipantGroupStatus( unknownId ) { error( "Should not be called." ) }
         }
+    }
+
+    @Test
+    fun getParticipantGroupStatusList_fails_when_deployment_status_is_missing() = runTest {
+        val recruitment = createReadyRecruitment()
+        val participant = recruitment.addParticipant( participantEmail )
+        val group = recruitment.addParticipantGroup(
+            setOf( AssignedParticipantRoles( participant.id, AssignedTo.All ) )
+        )
+        group.markAsDeployed()
+
+        assertFailsWith<IllegalArgumentException> {
+            recruitment.getParticipantGroupStatusList( setOf( group.id ) ) { emptyList() }
+        }
+    }
+
+
+    private fun createReadyRecruitment(): Recruitment
+    {
+        val recruitment = Recruitment( UUID.randomUUID() )
+        val protocol = createSinglePrimaryDeviceProtocol().getSnapshot()
+        recruitment.lockInStudy( protocol, StudyInvitation( "Study" ) )
+        return recruitment
     }
 }

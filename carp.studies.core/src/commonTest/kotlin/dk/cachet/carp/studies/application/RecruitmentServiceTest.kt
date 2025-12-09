@@ -323,6 +323,22 @@ interface RecruitmentServiceTest
         assertFailsWith<IllegalArgumentException> { recruitmentService.stopParticipantGroup( studyId, unknownId ) }
     }
 
+    @Test
+    fun stopParticipantGroup_fails_when_group_belongs_to_other_study() = runTest {
+        val (recruitmentService, studyService) = createSUT()
+        val (studyId, _) = createLiveStudy( studyService )
+        val (otherStudyId, _) = createLiveStudy( studyService )
+        val participant = recruitmentService.addParticipant( studyId, EmailAddress( "test@test.com" ) )
+        val groupStatus = recruitmentService.inviteNewParticipantGroup(
+            studyId,
+            setOf( AssignedParticipantRoles( participant.id, AssignedTo.All ) )
+        )
+
+        assertFailsWith<IllegalArgumentException> {
+            recruitmentService.stopParticipantGroup( otherStudyId, groupStatus.id )
+        }
+    }
+
 
     private suspend fun createLiveStudy( service: StudyService ): Pair<UUID, StudyProtocolSnapshot>
     {
