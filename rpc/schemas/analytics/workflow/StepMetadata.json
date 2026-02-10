@@ -4,9 +4,10 @@
   "type": "object",
   "properties": {
     "name": { "type": "string" },
+    "id": { "type": "string", "format": "uuid" },
     "description": { "type": ["string", "null"] },
     "version": { "$ref": "./Version.json" }
   },
-  "required": ["name", "version"],
+  "required": ["name", "id", "version"],
   "additionalProperties": false
 }

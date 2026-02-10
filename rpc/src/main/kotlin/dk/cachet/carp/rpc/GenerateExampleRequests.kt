@@ -323,6 +323,7 @@ class TestProcess : WorkflowProcess
 
 val exampleStep = Step(
     metadata = StepMetadata(
+        id = UUID("00000000-0000-0000-0000-000000000789"),
         name = "Extract Sleep Duration",
         version = Version(1, 0)
     ),

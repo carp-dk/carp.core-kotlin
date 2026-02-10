@@ -18,6 +18,11 @@ class DefaultCommandGeneratorRegistryTest
         override fun generateSetupCommand( env: Environment ): String = "setup ${env.name}"
         override fun generateActivateCommand( env: Environment ): String = "activate ${env.name}"
         override fun generateTeardownCommand( env: Environment ): String = "teardown ${env.name}"
+        override fun generateRunCommand( env: Environment, command: String ): String = "run $command on ${env.name}"
+        override fun generateListEnvironmentsCommand(): String = "list"
+        override fun generateCreateEnvironmentCommand( env: Environment ): String = "create ${env.name}"
+        override fun generateInstallDependenciesCommand( env: Environment ): String? = if (env.name.isNotEmpty()) "install on ${env.name}" else null
+        override fun parseEnvironmentList( output: String ): List<String> = output.split("\n").filter { it.isNotBlank() }
     }
 
     @Test

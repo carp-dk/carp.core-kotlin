@@ -29,12 +29,12 @@ class ExecutionStrategyTest
 
         override fun <P : ExternalProcess> register(
             processType: KClass<out P>,
-            executorCreator: () -> Executor<P>
+            executorCreator: () -> Executor
         ) {
             TODO("Not yet implemented")
         }
 
-        override fun <P : ExternalProcess> getExecutor(process: P): Executor<P> {
+        override fun <P : ExternalProcess> getExecutor(process: P): Executor {
             TODO("Not yet implemented")
         }
     }

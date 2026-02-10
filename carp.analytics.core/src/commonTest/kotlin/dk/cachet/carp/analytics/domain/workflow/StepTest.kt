@@ -1,6 +1,5 @@
 package dk.cachet.carp.analytics.domain.workflow
 
-import dk.cachet.carp.analytics.domain.execution.ExecutionContext
 import dk.cachet.carp.analytics.domain.process.ExternalProcess
 import dk.cachet.carp.common.application.UUID
 import kotlin.test.*
@@ -8,7 +7,6 @@ import kotlin.test.*
 class FakeExternalProcess(
     override val name: String = "Fake Process",
     override val description: String? = "Fake description",
-    override val executionContext: ExecutionContext = ExecutionContext(null, emptyMap()),
     val arguments: List<String> = emptyList()
 ) : ExternalProcess
 {
@@ -32,7 +30,6 @@ class StepTest
             process = FakeExternalProcess(
                 name = "Fake Sleep Process",
                 description = "Simulated CLI call",
-                executionContext = ExecutionContext(null, emptyMap()),
                 arguments = listOf("--input", "sleep_data.csv", "--output", "result.json")
             )
         )
