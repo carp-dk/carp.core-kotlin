@@ -109,6 +109,25 @@ interface RecruitmentService : ApplicationService<RecruitmentService, Recruitmen
     ): ParticipantGroupStatus
 
     /**
+     * Update the participant group for the specified [groupId].
+     *
+     * Participant assignments can't be changed after the group has been invited; the group name can always be updated.
+     *
+     * @param group If set, role assignments are updated; unchanged otherwise.
+     * @param name If set, the group name is updated; unchanged otherwise.
+     * @throws IllegalArgumentException when:
+     *  - the participant group with [groupId] does not exist
+     *  - any of the participant roles specified in [group] does not exist
+     *  - any of the participants specified in [group] does not exist
+     * @throws IllegalStateException when the group has already been deployed and [group] changes participant assignments.
+     */
+    suspend fun updateParticipantGroup(
+        groupId: UUID,
+        group: Set<AssignedParticipantRoles>? = null,
+        name: String? = null
+    ): ParticipantGroupStatus
+
+    /**
      * Invite the participant group with the specified [groupId] to start participating in its study.
      *
      * @throws IllegalArgumentException when:

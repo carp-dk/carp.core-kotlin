@@ -51,6 +51,20 @@ data class StagedParticipantGroup(
     }
 
     /**
+     * Replace all participants in this group.
+     * This is only allowed when the group hasn't been deployed yet.
+     *
+     * @throws IllegalStateException when this participant group is already deployed.
+     */
+    fun replaceParticipants( participants: Set<AssignedParticipantRoles> )
+    {
+        check( !isDeployed ) { "Can't update participants after a participant group has been deployed." }
+
+        _roleAssignments.clear()
+        _roleAssignments.addAll( participants )
+    }
+
+    /**
      * Specify that a deployment for this participant group has been created.
      *
      * @throws IllegalStateException when no participants to deploy are specified.

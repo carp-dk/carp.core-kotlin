@@ -200,6 +200,39 @@ class RecruitmentServiceHost(
     }
 
     /**
+     * Update the participant group for the specified [groupId].
+     *
+     * Participant assignments can't be changed after the group has been invited; the group name can always be updated.
+     * If [group] is provided, role assignments are updated; unchanged otherwise.
+     * If [name] is provided, the group name is updated; unchanged otherwise.
+     *
+     * @throws IllegalArgumentException when:
+     *  - the participant group with [groupId] does not exist
+     *  - any of the participant roles specified in [group] does not exist
+     *  - any of the participants specified in [group] does not exist
+     * @throws IllegalStateException when the group has already been deployed and [group] changes participant assignments.
+     */
+    override suspend fun updateParticipantGroup(
+        groupId: UUID,
+        group: Set<AssignedParticipantRoles>?,
+        name: String?
+    ): ParticipantGroupStatus
+    {
+        val (recruitment, participantGroup) = getRecruitmentWithGroupOrThrow( groupId )
+
+        if ( group != null || name != null )
+        {
+            recruitment.updateParticipantGroup( groupId, group, name )
+            participantRepository.updateRecruitment( recruitment )
+        }
+
+        return recruitment.getParticipantGroupStatus(
+            participantGroup.id,
+            deploymentService::getStudyDeploymentStatus
+        )
+    }
+
+    /**
      * Invite the participant group with the specified [groupId] to start participating in its study.
      *
      * @throws IllegalArgumentException when:

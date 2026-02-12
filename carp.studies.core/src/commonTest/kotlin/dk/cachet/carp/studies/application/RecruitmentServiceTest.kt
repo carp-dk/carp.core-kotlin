@@ -375,6 +375,163 @@ interface RecruitmentServiceTest
     }
 
     @Test
+    fun updateParticipantGroup_succeeds_before_invite() = runTest {
+        val (recruitmentService, studyService) = createSUT()
+        val (studyId, _) = createLiveStudy( studyService )
+        val participant = recruitmentService.addParticipant( studyId, EmailAddress( "test@test.com" ) )
+        val groupId = UUID.randomUUID()
+        val initialAssignments = setOf( AssignedParticipantRoles( participant.id, AssignedTo.All ) )
+        recruitmentService.createParticipantGroup( groupId, initialAssignments, studyId, "Initial name" )
+
+        val updatedParticipant = recruitmentService.addParticipant( studyId, EmailAddress( "test2@test.com" ) )
+        val updatedAssignments = setOf( AssignedParticipantRoles( updatedParticipant.id, AssignedTo.All ) )
+        val updatedStatus =
+            recruitmentService.updateParticipantGroup( groupId, updatedAssignments, "Updated name" )
+
+        val expectedStatus = ParticipantGroupStatus.Staged(
+            id = groupId,
+            participants = setOf( updatedParticipant ),
+            assignedParticipantRoles = updatedAssignments,
+            name = "Updated name"
+        )
+        assertEquals( expectedStatus, updatedStatus )
+    }
+
+    @Test
+    fun updateParticipantGroup_succeeds_with_only_role_assignments_change() = runTest {
+        val (recruitmentService, studyService) = createSUT()
+        val (studyId, protocol) = createLiveStudy( studyService )
+        val participant = recruitmentService.addParticipant( studyId, EmailAddress( "test@test.com" ) )
+        val role1 = protocol.participantRoles.first().role
+        val role2 = protocol.participantRoles.last().role
+        val groupId = UUID.randomUUID()
+        val initialAssignments = setOf(
+            AssignedParticipantRoles( participant.id, AssignedTo.Roles( setOf( role1 ) ) )
+        )
+        recruitmentService.createParticipantGroup( groupId, initialAssignments, studyId, "Initial name" )
+
+        val updatedAssignments = setOf(
+            AssignedParticipantRoles( participant.id, AssignedTo.Roles( setOf( role2 ) ) )
+        )
+        val updatedStatus = recruitmentService.updateParticipantGroup( groupId, updatedAssignments )
+
+        assertTrue( updatedStatus is ParticipantGroupStatus.Staged )
+        assertEquals( "Initial name", updatedStatus.name )
+        assertEquals( setOf( participant ), updatedStatus.participants )
+        assertEquals( updatedAssignments, updatedStatus.assignedParticipantRoles )
+    }
+
+    @Test
+    fun updateParticipantGroup_allows_name_update_after_invite() = runTest {
+        val (recruitmentService, studyService) = createSUT()
+        val (studyId, _) = createLiveStudy( studyService )
+        val participant = recruitmentService.addParticipant( studyId, EmailAddress( "test@test.com" ) )
+        val assignments = setOf( AssignedParticipantRoles( participant.id, AssignedTo.All ) )
+        val groupStatus =
+            recruitmentService.createParticipantGroup( UUID.randomUUID(), assignments, studyId, "Initial name" )
+        recruitmentService.inviteParticipantGroup( groupStatus.id )
+
+        val updatedStatus = recruitmentService.updateParticipantGroup( groupStatus.id, name = "Renamed after invite" )
+
+        assertEquals( "Renamed after invite", updatedStatus.name )
+        assertTrue( updatedStatus is ParticipantGroupStatus.Invited )
+    }
+
+    @Test
+    fun updateParticipantGroup_fails_when_updating_participants_after_invite() = runTest {
+        val (recruitmentService, studyService) = createSUT()
+        val (studyId, _) = createLiveStudy( studyService )
+        val participant = recruitmentService.addParticipant( studyId, EmailAddress( "test@test.com" ) )
+        val updatedParticipant = recruitmentService.addParticipant( studyId, EmailAddress( "test2@test.com" ) )
+        val assignments = setOf( AssignedParticipantRoles( participant.id, AssignedTo.All ) )
+        val groupStatus = recruitmentService.createParticipantGroup( UUID.randomUUID(), assignments, studyId )
+        recruitmentService.inviteParticipantGroup( groupStatus.id )
+
+        val updatedAssignments = setOf( AssignedParticipantRoles( updatedParticipant.id, AssignedTo.All ) )
+        assertFailsWith<IllegalStateException> {
+            recruitmentService.updateParticipantGroup( groupStatus.id, updatedAssignments )
+        }
+    }
+
+    @Test
+    fun updateParticipantGroup_fails_for_unknown_groupId() = runTest {
+        val (recruitmentService, studyService) = createSUT()
+        val (studyId, _) = createLiveStudy( studyService )
+        val participant = recruitmentService.addParticipant( studyId, EmailAddress( "test@test.com" ) )
+        val assignments = setOf( AssignedParticipantRoles( participant.id, AssignedTo.All ) )
+
+        assertFailsWith<IllegalArgumentException> {
+            recruitmentService.updateParticipantGroup( unknownId, assignments, "Updated name" )
+        }
+    }
+
+    @Test
+    fun updateParticipantGroup_fails_for_unknown_participants() = runTest {
+        val (recruitmentService, studyService) = createSUT()
+        val (studyId, _) = createLiveStudy( studyService )
+        val participant = recruitmentService.addParticipant( studyId, EmailAddress( "test@test.com" ) )
+        val initialAssignments = setOf( AssignedParticipantRoles( participant.id, AssignedTo.All ) )
+        val groupStatus = recruitmentService.createParticipantGroup( UUID.randomUUID(), initialAssignments, studyId )
+
+        val updatedAssignments = setOf( AssignedParticipantRoles( unknownId, AssignedTo.All ) )
+        assertFailsWith<IllegalArgumentException> {
+            recruitmentService.updateParticipantGroup( groupStatus.id, updatedAssignments )
+        }
+    }
+
+    @Test
+    fun updateParticipantGroup_fails_for_unknown_participant_roles() = runTest {
+        val (recruitmentService, studyService) = createSUT()
+        val (studyId, _) = createLiveStudy( studyService )
+        val participant = recruitmentService.addParticipant( studyId, EmailAddress( "test@test.com" ) )
+        val initialAssignments = setOf( AssignedParticipantRoles( participant.id, AssignedTo.All ) )
+        val groupStatus = recruitmentService.createParticipantGroup( UUID.randomUUID(), initialAssignments, studyId )
+
+        val updatedAssignments = setOf(
+            AssignedParticipantRoles( participant.id, AssignedTo.Roles( setOf( "Missing role" ) ) )
+        )
+        assertFailsWith<IllegalArgumentException> {
+            recruitmentService.updateParticipantGroup( groupStatus.id, updatedAssignments )
+        }
+    }
+
+    @Test
+    fun updateParticipantGroup_succeeds_with_same_assignments_after_invite() = runTest {
+        val (recruitmentService, studyService) = createSUT()
+        val (studyId, _) = createLiveStudy( studyService )
+        val participant = recruitmentService.addParticipant( studyId, EmailAddress( "test@test.com" ) )
+        val assignments = setOf( AssignedParticipantRoles( participant.id, AssignedTo.All ) )
+        val groupStatus =
+            recruitmentService.createParticipantGroup( UUID.randomUUID(), assignments, studyId, "Initial name" )
+        recruitmentService.inviteParticipantGroup( groupStatus.id )
+
+        val updatedStatus =
+            recruitmentService.updateParticipantGroup( groupStatus.id, assignments, null )
+
+        assertTrue( updatedStatus is ParticipantGroupStatus.Invited )
+        assertEquals( assignments, updatedStatus.assignedParticipantRoles )
+        assertEquals( "Initial name", updatedStatus.name )
+    }
+
+    @Test
+    fun updateParticipantGroup_succeeds_with_no_op_update() = runTest {
+        val (recruitmentService, studyService) = createSUT()
+        val (studyId, _) = createLiveStudy( studyService )
+        val participant = recruitmentService.addParticipant( studyId, EmailAddress( "test@test.com" ) )
+        val assignments = setOf( AssignedParticipantRoles( participant.id, AssignedTo.All ) )
+        val groupStatus =
+            recruitmentService.createParticipantGroup( UUID.randomUUID(), assignments, studyId, "Initial name" )
+
+        val updatedStatus =
+            recruitmentService.updateParticipantGroup( groupStatus.id, group = null, name = null )
+
+        assertTrue( updatedStatus is ParticipantGroupStatus.Staged )
+        assertEquals( "Initial name", updatedStatus.name )
+        assertEquals( setOf( participant ), updatedStatus.participants )
+        assertEquals( assignments, updatedStatus.assignedParticipantRoles )
+    }
+
+    @Test
     fun inviteParticipantGroup_succeeds() = runTest {
         val (recruitmentService, studyService) = createSUT()
         val (studyId, _) = createLiveStudy( studyService )

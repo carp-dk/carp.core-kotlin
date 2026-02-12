@@ -27,6 +27,7 @@ class RecruitmentServiceRequestsTest : ApplicationServiceRequestsTest<Recruitmen
             @Suppress( "DEPRECATION" )
             RecruitmentServiceRequest.InviteNewParticipantGroup( studyId, setOf(), "test group" ),
             RecruitmentServiceRequest.CreateParticipantGroup( UUID.randomUUID(), setOf(), studyId, "test group" ),
+            RecruitmentServiceRequest.UpdateParticipantGroup( UUID.randomUUID(), setOf(), "updated group" ),
             RecruitmentServiceRequest.InviteParticipantGroup( UUID.randomUUID() ),
             RecruitmentServiceRequest.GetParticipantGroupStatusList( studyId ),
             RecruitmentServiceRequest.StopParticipantGroup( studyId, UUID.randomUUID() )

@@ -147,6 +147,97 @@ class RecruitmentTest
     }
 
     @Test
+    fun updateParticipantGroup_updates_assignments_and_name_for_staged_group()
+    {
+        val recruitment = createReadyRecruitment()
+        val participant1 = recruitment.addParticipant( participantEmail )
+        val participant2 = recruitment.addParticipant( EmailAddress( "test2@test.com" ) )
+        val group = recruitment.addParticipantGroup(
+            setOf( AssignedParticipantRoles( participant1.id, AssignedTo.All ) ),
+            "Initial name"
+        )
+
+        val updatedAssignments = setOf( AssignedParticipantRoles( participant2.id, AssignedTo.All ) )
+        recruitment.updateParticipantGroup( group.id, updatedAssignments, "Updated name" )
+
+        assertEquals( "Updated name", group.name )
+        assertEquals( updatedAssignments, group.roleAssignments )
+    }
+
+    @Test
+    fun updateParticipantGroup_allows_name_change_after_deployed()
+    {
+        val recruitment = createReadyRecruitment()
+        val participant = recruitment.addParticipant( participantEmail )
+        val group = recruitment.addParticipantGroup(
+            setOf( AssignedParticipantRoles( participant.id, AssignedTo.All ) ),
+            "Initial name"
+        )
+        group.markAsDeployed()
+
+        recruitment.updateParticipantGroup( group.id, name = "Renamed after deploy" )
+
+        assertEquals( "Renamed after deploy", group.name )
+    }
+
+    @Test
+    fun updateParticipantGroup_fails_when_assignments_change_after_deployed()
+    {
+        val recruitment = createReadyRecruitment()
+        val participant1 = recruitment.addParticipant( participantEmail )
+        val participant2 = recruitment.addParticipant( EmailAddress( "test2@test.com" ) )
+        val group = recruitment.addParticipantGroup(
+            setOf( AssignedParticipantRoles( participant1.id, AssignedTo.All ) )
+        )
+        group.markAsDeployed()
+
+        val updatedAssignments = setOf( AssignedParticipantRoles( participant2.id, AssignedTo.All ) )
+        assertFailsWith<IllegalStateException>
+            { recruitment.updateParticipantGroup( group.id, updatedAssignments ) }
+    }
+
+    @Test
+    fun updateParticipantGroup_fails_for_unknown_groupId()
+    {
+        val recruitment = createReadyRecruitment()
+        val participant = recruitment.addParticipant( participantEmail )
+        val assignments = setOf( AssignedParticipantRoles( participant.id, AssignedTo.All ) )
+
+        val unknownId = UUID.randomUUID()
+        assertFailsWith<IllegalArgumentException>
+            { recruitment.updateParticipantGroup( unknownId, assignments, "Updated name" ) }
+    }
+
+    @Test
+    fun updateParticipantGroup_fails_for_unknown_participants()
+    {
+        val recruitment = createReadyRecruitment()
+        val participant = recruitment.addParticipant( participantEmail )
+        val initialAssignments = setOf( AssignedParticipantRoles( participant.id, AssignedTo.All ) )
+        val group = recruitment.addParticipantGroup( initialAssignments )
+
+        val unknownId = UUID.randomUUID()
+        val updatedAssignments = setOf( AssignedParticipantRoles( unknownId, AssignedTo.All ) )
+        assertFailsWith<IllegalArgumentException>
+            { recruitment.updateParticipantGroup( group.id, updatedAssignments ) }
+    }
+
+    @Test
+    fun updateParticipantGroup_fails_for_unknown_participant_roles()
+    {
+        val recruitment = createReadyRecruitment()
+        val participant = recruitment.addParticipant( participantEmail )
+        val initialAssignments = setOf( AssignedParticipantRoles( participant.id, AssignedTo.All ) )
+        val group = recruitment.addParticipantGroup( initialAssignments )
+
+        val updatedAssignments = setOf(
+            AssignedParticipantRoles( participant.id, AssignedTo.Roles( setOf( "Unknown role" ) ) )
+        )
+        assertFailsWith<IllegalArgumentException>
+            { recruitment.updateParticipantGroup( group.id, updatedAssignments ) }
+    }
+
+    @Test
     fun getParticipantGroupStatus_for_deployed_group_succeeds() = runTest {
         val recruitment = createReadyRecruitment()
         val participant = recruitment.addParticipant( participantEmail )
