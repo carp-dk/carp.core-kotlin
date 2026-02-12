@@ -24,6 +24,7 @@ import kotlinx.datetime.Instant
 /**
  * Represents a set of [participants] recruited for a study identified by [studyId].
  */
+@Suppress( "TooManyFunctions" )
 class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: Instant = Clock.System.now() ) :
     AggregateRoot<Recruitment, RecruitmentSnapshot, Recruitment.Event>( id, createdOn )
 {
@@ -206,6 +207,42 @@ class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: I
     }
 
     /**
+     * Update the [participants] and/or [name] of an existing participant group with the specified [groupId].
+     *
+     * @throws IllegalArgumentException when:
+     *  - the participant group with [groupId] does not exist.
+     *  - one or more of the participants aren't in this recruitment.
+     *  - any of the participant roles specified in [participants] are not part of the configured study protocol.
+     * @throws IllegalStateException when:
+     *  - the recruitment is not ready for deployment
+     *  - the group has already been deployed and [participants] changes assignments
+     */
+    fun updateParticipantGroup(
+        groupId: UUID,
+        participants: Set<AssignedParticipantRoles>? = null,
+        name: String? = null
+    )
+    {
+        val group = requireNotNull( _participantGroups[ groupId ] )
+            { "Participant group with ID \"$groupId\" does not exist." }
+
+        val newRoleAssignments = participants != null && group.roleAssignments != participants
+        if ( newRoleAssignments )
+        {
+            check( !group.isDeployed )
+                { "Participant group has already been deployed; participant assignments can no longer be changed." }
+
+            val status = getStatus()
+            check( status is RecruitmentStatus.ReadyForDeployment ) { "The study is not yet ready for deployment." }
+
+            validateRoleAssignments( status.studyProtocol, participants )
+            group.replaceParticipants( participants )
+        }
+
+        if ( name != null ) group.name = name
+    }
+
+    /**
      * Get the [ParticipantGroupStatus] for participant groups with [groupIds] in this recruitment.
      * For deployed participant groups, the matching [StudyDeploymentStatus] is retrieved using
      * [getDeploymentStatusList].
@@ -231,7 +268,7 @@ class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: I
             ParticipantGroupStatus.Staged(
                 id = group.id,
                 participants = getParticipantsFor( group ),
-                assignedParticipantRoles = group.roleAssignments,
+                assignedParticipantRoles = group.roleAssignments.toSet(),
                 name = group.name
             )
         }
@@ -248,7 +285,7 @@ class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: I
                 { "No study deployment status returned for the requested ID: \"${group.id}\"." }
             ParticipantGroupStatus.InDeployment.fromDeploymentStatus(
                 getParticipantsFor( group ),
-                group.roleAssignments,
+                group.roleAssignments.toSet(),
                 deploymentStatus,
                 group.name
             )
@@ -268,7 +305,7 @@ class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: I
      */
     suspend fun getParticipantGroupStatus(
         groupId: UUID,
-        getDeploymentStatus: (UUID) -> StudyDeploymentStatus
+        getDeploymentStatus: suspend (UUID) -> StudyDeploymentStatus
     ): ParticipantGroupStatus =
         getParticipantGroupStatusList( setOf( groupId ) )
             { deploymentIds -> listOf( getDeploymentStatus( deploymentIds.single() ) ) }.single()

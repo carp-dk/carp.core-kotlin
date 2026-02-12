@@ -7,6 +7,7 @@
     { "$ref": "#GetParticipants" },
     { "$ref": "#InviteNewParticipantGroup" },
     { "$ref": "#CreateParticipantGroup" },
+    { "$ref": "#UpdateParticipantGroup" },
     { "$ref": "#InviteParticipantGroup" },
     { "$ref": "#GetParticipantGroupStatusList" },
     { "$ref": "#StopParticipantGroup" }
@@ -115,6 +116,26 @@
       "additionalProperties": false,
       "Response": {
         "$anchor": "CreateParticipantGroup-Response",
+        "$ref": "../users/ParticipantGroupStatus.json"
+      }
+    },
+    "UpdateParticipantGroup": {
+      "$anchor": "UpdateParticipantGroup",
+      "type": "object",
+      "properties": {
+        "__type": { "const": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.UpdateParticipantGroup" },
+        "apiVersion": { "$ref": "#/$defs/ApiVersion" },
+        "groupId": { "type": "string", "format": "uuid" },
+        "group": {
+          "type": [ "array", "null" ],
+          "items": { "$ref": "../users/AssignedParticipantRoles.json" }
+        },
+        "name": { "type": [ "string", "null" ] }
+      },
+      "required": [ "__type", "apiVersion", "groupId" ],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "UpdateParticipantGroup-Response",
         "$ref": "../users/ParticipantGroupStatus.json"
       }
     },

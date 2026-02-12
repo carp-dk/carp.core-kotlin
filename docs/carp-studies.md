@@ -57,6 +57,7 @@ Allows setting recruitment goals, adding participants to studies, and creating d
 | `getParticipants` | Get all participants for a study. | manage study: `studyId` | |
 | `inviteNewParticipantGroup` | (Deprecated) Create and instantly invite a group of previously added participants to a study. | manage study: `studyId` | |
 | `createParticipantGroup` | Prepare a group of previously added participants for deployment without inviting them yet. | manage study: `studyId` | |
+| `updateParticipantGroup` | Update a prepared participant group. | manage study: `studyId` | |
 | `inviteParticipantGroup` | Invite a previously prepared participant group to start participating in the study. | manage study: `studyId` | |
 | `getParticipantGroupStatusList` | Get the status of all participant groups in a study. | manage study: `studyId` | |
 | `stopParticipantGroup` | Stop the study deployment in a study of a participant group. No further changes to this deployment will be allowed and no more data will be collected. | manage study: `studyId` | |

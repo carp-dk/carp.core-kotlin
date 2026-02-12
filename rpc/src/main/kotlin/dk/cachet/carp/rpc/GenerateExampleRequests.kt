@@ -155,11 +155,14 @@ private val studyLiveStatus = StudyStatus.Live( studyId, studyName, studyCreated
 // Deployment data matching the example protocol.
 private val deploymentId = UUID( "c9cc5317-48da-45f2-958e-58bc07f34681" )
 private val deploymentName = "Boaty McBoatface"
+private val updatedDeploymentName = "Plowy McPlowface"
 private val deploymentIds = setOf( deploymentId, UUID( "d4a9bba4-860e-4c58-a356-8a91605dc1ee" ) )
 private val deploymentCreatedOn = Instant.fromEpochSeconds( 1642504000 )
 private val participantId = UUID( "32880e82-01c9-40cf-a6ed-17ff3348f251" )
 private val participantAccount = EmailAccountIdentity( "boaty@mcboatface.com" )
 private val participantAccountId = UUID( "ca60cb7f-de18-44b6-baf9-3c8e6a73005a" )
+private val updatedParticipantId = UUID( "b1d89f6c-07e5-4f24-9b86-7bcbe5535c39" )
+private val updatedParticipantAccount = EmailAccountIdentity( "plowy@mcplowface.com" )
 private val studyInvitation = StudyInvitation(
     studyName,
     "Participate in this study, which keeps track of how much you walk and bike!",
@@ -167,6 +170,7 @@ private val studyInvitation = StudyInvitation(
 )
 private val participantAssignedRoles = AssignedTo.Roles( setOf( participantRole.role ) )
 private val roleAssignment = setOf( AssignedParticipantRoles( participantId, participantAssignedRoles ) )
+private val updatedRoleAssignment = setOf( AssignedParticipantRoles( updatedParticipantId, participantAssignedRoles ) )
 private val participantInvitation = ParticipantInvitation(
     participantId,
     participantAssignedRoles,
@@ -229,6 +233,7 @@ private val stoppedDeploymentStatus = StudyDeploymentStatus.Stopped(
     Instant.fromEpochSeconds( 1642506000 )
 )
 private val participants = setOf( Participant( participantAccount, participantId ) )
+private val updatedParticipants = setOf( Participant( updatedParticipantAccount, updatedParticipantId ) )
 private val participantGroupInvitedOn = Instant.fromEpochSeconds( 1642514010 )
 private val phoneDeviceDeployment = PrimaryDeviceDeployment(
     phone,
@@ -409,6 +414,19 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
             participants,
             setOf( AssignedParticipantRoles( participantId, participantAssignedRoles ) ),
             deploymentName
+        )
+    ),
+    RecruitmentService::updateParticipantGroup to example(
+        request = RecruitmentServiceRequest.UpdateParticipantGroup(
+            deploymentId,
+            group = updatedRoleAssignment,
+            name = updatedDeploymentName
+        ),
+        response = ParticipantGroupStatus.Staged(
+            deploymentId,
+            updatedParticipants,
+            updatedRoleAssignment,
+            updatedDeploymentName
         )
     ),
     RecruitmentService::inviteParticipantGroup to example(
