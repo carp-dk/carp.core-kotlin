@@ -1,4 +1,4 @@
-# carp.data [![Maven Central](https://maven-badges.herokuapp.com/maven-central/dk.cachet.carp.data/carp.data.core/badge.svg)](https://mvnrepository.com/artifact/dk.cachet.carp.data) [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/dk.cachet.carp.data/carp.data.core?server=https%3A%2F%2Foss.sonatype.org)](https://oss.sonatype.org/content/repositories/snapshots/dk/cachet/carp/data/) 
+# carp.data [![Maven Central](https://img.shields.io/maven-central/v/dk.cachet.carp.data/carp.data.core)](https://central.sonatype.com/artifact/dk.cachet.carp.data/carp.data.core) [![Snapshot](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fdk%2Fcachet%2Fcarp%2Fdata%2Fcarp.data.core%2Fmaven-metadata.xml)](https://central.sonatype.com/repository/maven-snapshots/dk/cachet/carp/data/carp.data.core/maven-metadata.xml) 
 
 Contains all pseudonymized data.
 When combined with the original study protocol, the full provenance of the data (when/why it was collected) is known.
