@@ -20,14 +20,17 @@ data class DataSchema(
     val jsonSchema: String? = null,
     val encoding: String = "UTF-8",
     val compression: String? = null
-) {
+)
+{
     /**
      * Validates whether this schema is compatible with another schema.
      * Used to check if data from one step can be consumed by another.
      */
-    fun isCompatibleWith(other: DataSchema): Boolean {
+    fun isCompatibleWith( other: DataSchema ): Boolean
+    {
         if (format != other.format) return false
-        if (columns != null && other.columns != null) {
+        if (columns != null && other.columns != null)
+        {
             val thisColumnNames = columns.map { it.name }.toSet()
             val requiredOtherColumns = other.columns.filter { !it.nullable }
             return requiredOtherColumns.all { it.name in thisColumnNames }

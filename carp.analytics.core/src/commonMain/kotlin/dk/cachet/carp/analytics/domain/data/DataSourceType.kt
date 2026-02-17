@@ -7,7 +7,8 @@ import kotlinx.serialization.Serializable
  * Used to distinguish between different storage and retrieval mechanisms.
  */
 @Serializable
-enum class DataSourceType {
+enum class DataSourceType
+{
     /** Local or network file system storage */
     FILE_SYSTEM,
 
@@ -32,7 +33,8 @@ enum class DataSourceType {
  * Used to specify where processed data should be written.
  */
 @Serializable
-enum class DestinationType {
+enum class DestinationType
+{
     /** Local or network file system storage */
     FILE_SYSTEM,
 

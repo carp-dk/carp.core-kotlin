@@ -3,6 +3,11 @@ package dk.cachet.carp.analytics.domain.data
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 
+// Named constants for byte-size thresholds (lower-case to match VariableNaming rule)
+private const val kb: Long = 1024L
+private const val mb: Long = kb * 1024L
+private const val gb: Long = mb * 1024L
+
 /**
  * Runtime information about data produced during workflow execution.
  * Represents what actually happened when a step executed, as opposed to
@@ -23,11 +28,13 @@ data class ExecutionOutput(
     val timestamp: Instant,
     val success: Boolean,
     val errorMessage: String? = null
-) {
+)
+{
     /**
      * Whether this output can be used as input for subsequent steps.
      */
-    val isValid: Boolean get() = success && errorMessage == null
+    val isValid: Boolean
+        get() = success && errorMessage == null
 }
 
 /**
@@ -46,18 +53,22 @@ data class DataStatistics(
     val columnCount: Int? = null,
     val checksum: String? = null,
     val customMetrics: Map<String, String> = emptyMap()
-) {
+)
+{
     /**
      * Checks if the statistics meet the given constraints.
      */
-    fun satisfiesConstraints(constraints: DataConstraints): Boolean {
+    fun satisfiesConstraints( constraints: DataConstraints ): Boolean
+    {
         // Check minimum rows
-        if (constraints.minRows != null && rowCount != null && rowCount < constraints.minRows) {
+        if ( constraints.minRows != null && rowCount != null && rowCount < constraints.minRows )
+        {
             return false
         }
 
         // Check maximum rows
-        if (constraints.maxRows != null && rowCount != null && rowCount > constraints.maxRows) {
+        if ( constraints.maxRows != null && rowCount != null && rowCount > constraints.maxRows )
+        {
             return false
         }
 
@@ -67,32 +78,41 @@ data class DataStatistics(
     /**
      * Returns a human-readable summary of the statistics.
      */
-    fun summary(): String {
+    fun summary(): String
+    {
         val parts = mutableListOf<String>()
 
-        if (rowCount != null) {
+        if ( rowCount != null )
+        {
             parts.add("$rowCount rows")
         }
-        if (columnCount != null) {
+        if ( columnCount != null )
+        {
             parts.add("$columnCount columns")
         }
-        if (byteSize != null) {
-            parts.add("${formatBytes(byteSize)}")
+        if ( byteSize != null )
+        {
+            parts.add("${formatBytes( byteSize )}")
         }
 
-        return if (parts.isEmpty()) {
+        return if ( parts.isEmpty() )
+        {
             "No statistics available"
-        } else {
+        }
+        else
+        {
             parts.joinToString(", ")
         }
     }
 
-    private fun formatBytes(bytes: Long): String {
-        return when {
-            bytes < 1024 -> "$bytes B"
-            bytes < 1024 * 1024 -> "${bytes / 1024} KB"
-            bytes < 1024 * 1024 * 1024 -> "${bytes / (1024 * 1024)} MB"
-            else -> "${bytes / (1024 * 1024 * 1024)} GB"
+    private fun formatBytes( bytes: Long ): String
+    {
+        return when
+        {
+            bytes < kb -> "$bytes B"
+            bytes < mb -> "${bytes / kb} KB"
+            bytes < gb -> "${bytes / mb} MB"
+            else -> "${bytes / gb} GB"
         }
     }
 }
@@ -109,14 +129,17 @@ data class StepExecutionResult(
     val stepId: String,
     val outputs: List<ExecutionOutput>,
     val duration: kotlinx.datetime.DateTimePeriod? = null
-) {
+)
+{
     /** Whether all outputs were produced successfully */
-    val allSuccessful: Boolean get() = outputs.all { it.success }
+    val allSuccessful: Boolean
+        get() = outputs.all { it.success }
 
     /** Outputs that were produced successfully */
-    val successfulOutputs: List<ExecutionOutput> get() = outputs.filter { it.success }
+    val successfulOutputs: List<ExecutionOutput>
+        get() = outputs.filter { it.success }
 
     /** Outputs that failed */
-    val failedOutputs: List<ExecutionOutput> get() = outputs.filter { !it.success }
+    val failedOutputs: List<ExecutionOutput>
+        get() = outputs.filter { !it.success }
 }
-

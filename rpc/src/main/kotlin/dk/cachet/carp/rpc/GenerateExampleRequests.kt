@@ -15,7 +15,7 @@ import dk.cachet.carp.analytics.application.WorkflowService
 import dk.cachet.carp.analytics.domain.execution.BasicExecutionResult
 import dk.cachet.carp.analytics.domain.execution.ExecutionStatus
 import dk.cachet.carp.analytics.domain.execution.ExecutorState
-import dk.cachet.carp.analytics.domain.process.WorkflowProcess
+import dk.cachet.carp.analytics.domain.tasks.TaskDefinition
 import dk.cachet.carp.analytics.domain.trigger.ManualTrigger
 import dk.cachet.carp.analytics.domain.trigger.TriggerActivation
 import dk.cachet.carp.analytics.domain.workflow.*
@@ -315,20 +315,12 @@ private val exampleWorkflowMetadata = WorkflowMetadata(
     version = Version(1, 0)
 )
 
-class TestProcess : WorkflowProcess
+class TestTask : TaskDefinition
 {
     override val name: String = "TestInjectableProcess"
     override val description: String = "A test process for injection."
+    override val id: UUID = UUID("00000000-0000-0000-0000-000000000456")
 }
-
-val exampleStep = Step(
-    metadata = StepMetadata(
-        id = UUID("00000000-0000-0000-0000-000000000789"),
-        name = "Extract Sleep Duration",
-        version = Version(1, 0)
-    ),
-    process = TestProcess()
-)
 
 private val exampleWorkflow = Workflow(
     exampleWorkflowMetadata

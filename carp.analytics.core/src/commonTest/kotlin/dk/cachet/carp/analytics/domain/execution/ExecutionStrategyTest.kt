@@ -15,7 +15,7 @@ class ExecutionStrategyTest
      */
     private class ExampleExecutionStrategy : ExecutionStrategy
     {
-        override fun execute(workflow: Workflow, executionFactory: IExecutionFactory)
+        override fun execute( workflow: Workflow, executionFactory: IExecutionFactory )
         {
             // Validate the workflow is provided
             require(workflow.metadata.name.isNotEmpty()) { "Workflow name cannot be empty" }
@@ -25,16 +25,19 @@ class ExecutionStrategyTest
     /**
      * Mock execution factory for testing
      */
-    private class MockExecutionFactory : IExecutionFactory {
+    private class MockExecutionFactory : IExecutionFactory
+    {
 
         override fun <P : ExternalProcess> register(
             processType: KClass<out P>,
             executorCreator: () -> Executor
-        ) {
+        )
+        {
             TODO("Not yet implemented")
         }
 
-        override fun <P : ExternalProcess> getExecutor(process: P): Executor {
+        override fun <P : ExternalProcess> getExecutor( process: P ): Executor
+        {
             TODO("Not yet implemented")
         }
     }

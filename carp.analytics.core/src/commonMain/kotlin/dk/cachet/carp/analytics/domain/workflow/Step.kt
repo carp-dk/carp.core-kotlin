@@ -2,16 +2,16 @@ package dk.cachet.carp.analytics.domain.workflow
 
 import dk.cachet.carp.analytics.domain.data.InputDataSpec
 import dk.cachet.carp.analytics.domain.data.OutputDataSpec
-import dk.cachet.carp.analytics.domain.data.StepExecutionResult
 import dk.cachet.carp.analytics.domain.data.ValidationResult
-import dk.cachet.carp.analytics.domain.environment.Environment
-import dk.cachet.carp.analytics.domain.execution.ExecutionContext
-import dk.cachet.carp.analytics.domain.process.WorkflowProcess
+import dk.cachet.carp.analytics.domain.tasks.TaskDefinition
+import dk.cachet.carp.common.application.UUID
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * Represents a single step in a workflow.
+ * Declarative model of a workflow step.
+ *
+ * Contains definition data (task, inputs, outputs, environment reference).
  */
 @Serializable
 @SerialName( "Step" )
@@ -19,50 +19,65 @@ data class Step(
     override val metadata: StepMetadata,
     val inputs: List<InputDataSpec> = emptyList(),
     val outputs: List<OutputDataSpec> = emptyList(),
-    val process: WorkflowProcess,
-    val executionContext: ExecutionContext = ExecutionContext(),
-    val executionResult: StepExecutionResult? = null
-) : WorkflowComponent {
+    val task: TaskDefinition,
+    val environmentId: UUID
+) : WorkflowComponent
+{
 
     /**
      * Validates that this step is properly configured.
      */
-    fun validate(): StepValidationResult {
+    fun validate(): StepValidationResult
+    {
         val errors = mutableListOf<String>()
 
         // Validate all inputs
         inputs.forEach { input ->
             val result = input.validate()
-            if (result.isFailure) {
-                errors.add("Input '${input.identifier}': ${(result as ValidationResult.Failure).errors.joinToString(", ")}")
+            if ( result.isFailure )
+            {
+                errors.add(
+                    "Input '${input.identifier}': ${( result as ValidationResult.Failure ).errors.joinToString( ", " )}"
+                )
             }
         }
 
         // Validate all outputs
         outputs.forEach { output ->
             val result = output.validate()
-            if (result.isFailure) {
-                errors.add("Output '${output.identifier}': ${(result as ValidationResult.Failure).errors.joinToString(", ")}")
+            if ( result.isFailure )
+            {
+                errors.add(
+                    "Output '${output.identifier}': ${(
+                            result as ValidationResult.Failure
+                            ).errors.joinToString( ", " )}"
+                )
             }
         }
 
-        return if (errors.isEmpty()) {
+        return if ( errors.isEmpty() )
+        {
             StepValidationResult.Valid
-        } else {
-            StepValidationResult.Invalid(errors)
+        }
+        else
+        {
+            StepValidationResult.Invalid( errors )
         }
     }
 
     /**
      * Checks if this step can consume the output of another step.
      */
-    fun canConsumeOutputOf(other: Step, outputId: String): Boolean {
+    fun canConsumeOutputOf( other: Step, outputId: String ): Boolean
+    {
         val otherOutput = other.outputs.find { it.identifier == outputId } ?: return false
         val matchingInput = inputs.find { it.identifier == outputId }
 
-        if (matchingInput != null) {
-            if (matchingInput.schema != null && otherOutput.schema != null) {
-                return matchingInput.schema.isCompatibleWith(otherOutput.schema)
+        if ( matchingInput != null )
+        {
+            if ( matchingInput.schema != null && otherOutput.schema != null )
+            {
+                return matchingInput.schema.isCompatibleWith( otherOutput.schema )
             }
             return true
         }
@@ -75,12 +90,14 @@ data class Step(
  * Result of step validation.
  */
 @Serializable
-sealed class StepValidationResult {
+sealed class StepValidationResult
+{
     @Serializable
     object Valid : StepValidationResult()
 
     @Serializable
-    data class Invalid(val errors: List<String>) : StepValidationResult()
+    data class Invalid( val errors: List<String> ) : StepValidationResult()
 
-    val isValid: Boolean get() = this is Valid
+    val isValid: Boolean
+        get() = this is Valid
 }

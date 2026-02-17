@@ -7,7 +7,8 @@ import kotlinx.serialization.Serializable
  * A data reference provides logical identification and metadata about data,
  * separate from its physical location or access method.
  */
-interface DataReference {
+interface DataReference
+{
     val identifier: String
     val name: String
     val description: String?
@@ -34,25 +35,85 @@ data class InputDataSpec(
     val source: DataSource,
     val required: Boolean = true,
     val constraints: DataConstraints? = null
-) : DataReference {
+) : DataReference
+{
     /**
      * Validates that the data source configuration is complete and valid.
      */
-    fun validate(): ValidationResult {
+    fun validate(): ValidationResult
+    {
         val errors = mutableListOf<String>()
-        if (identifier.isBlank()) errors.add("Identifier cannot be blank")
-        when (source) {
-            is FileSystemSource -> if (source.path.isBlank()) errors.add("FileSystemSource path cannot be blank")
-            is UrlSource -> if (source.url.isBlank()) errors.add("UrlSource URL cannot be blank")
-            is DatabaseSource -> {
-                if (source.connectionString.isBlank()) errors.add("DatabaseSource connectionString cannot be blank")
-                if (source.query.isBlank()) errors.add("DatabaseSource query cannot be blank")
-            }
-            is InMemorySource -> if (source.registryKey.isBlank()) errors.add("InMemorySource registryKey cannot be blank")
-            is ApiSource -> if (source.endpoint.isBlank()) errors.add("ApiSource endpoint cannot be blank")
-            is StreamSource -> if (source.streamId.isBlank()) errors.add("StreamSource streamId cannot be blank")
+
+        if ( identifier.isBlank() )
+        {
+            errors.add("Identifier cannot be blank")
         }
-        return if (errors.isEmpty()) ValidationResult.Success else ValidationResult.Failure(errors)
+
+        errors += validateSource( source )
+
+        return if ( errors.isEmpty() ) ValidationResult.Success else ValidationResult.Failure( errors )
+    }
+
+    private fun validateSource( source: DataSource ): List<String>
+    {
+        val errors = mutableListOf<String>()
+
+        when ( source )
+        {
+            is FileSystemSource ->
+            {
+                if ( source.path.isBlank() )
+                {
+                    errors.add("FileSystemSource path cannot be blank")
+                }
+            }
+
+            is UrlSource ->
+            {
+                if ( source.url.isBlank() )
+                {
+                    errors.add("UrlSource URL cannot be blank")
+                }
+            }
+
+            is DatabaseSource ->
+            {
+                if ( source.connectionString.isBlank() )
+                {
+                    errors.add("DatabaseSource connectionString cannot be blank")
+                }
+                if ( source.query.isBlank() )
+                {
+                    errors.add("DatabaseSource query cannot be blank")
+                }
+            }
+
+            is InMemorySource ->
+            {
+                if ( source.registryKey.isBlank() )
+                {
+                    errors.add("InMemorySource registryKey cannot be blank")
+                }
+            }
+
+            is ApiSource ->
+            {
+                if ( source.endpoint.isBlank() )
+                {
+                    errors.add("ApiSource endpoint cannot be blank")
+                }
+            }
+
+            is StreamSource ->
+            {
+                if ( source.streamId.isBlank() )
+                {
+                    errors.add("StreamSource streamId cannot be blank")
+                }
+            }
+        }
+
+        return errors
     }
 }
 
@@ -74,24 +135,77 @@ data class OutputDataSpec(
     override val schema: DataSchema? = null,
     val destination: DataDestination,
     val format: FileFormat? = null
-) : DataReference {
+) : DataReference
+{
     /**
      * Validates that the destination configuration is complete and valid.
      */
-    fun validate(): ValidationResult {
+    fun validate(): ValidationResult
+    {
         val errors = mutableListOf<String>()
-        if (identifier.isBlank()) errors.add("Identifier cannot be blank")
-        when (destination) {
-            is FileDestination -> if (destination.path.isBlank()) errors.add("FileDestination path cannot be blank")
-            is RegistryDestination -> if (destination.key.isBlank()) errors.add("RegistryDestination key cannot be blank")
-            is DatabaseDestination -> {
-                if (destination.connectionString.isBlank()) errors.add("DatabaseDestination connectionString cannot be blank")
-                if (destination.table.isBlank()) errors.add("DatabaseDestination table cannot be blank")
-            }
-            is ApiDestination -> if (destination.endpoint.isBlank()) errors.add("ApiDestination endpoint cannot be blank")
-            is StreamDestination -> if (destination.streamId.isBlank()) errors.add("StreamDestination streamId cannot be blank")
+
+        if ( identifier.isBlank() )
+        {
+            errors.add("Identifier cannot be blank")
         }
-        return if (errors.isEmpty()) ValidationResult.Success else ValidationResult.Failure(errors)
+
+        errors += validateDestination( destination )
+
+        return if ( errors.isEmpty() ) ValidationResult.Success else ValidationResult.Failure( errors )
+    }
+
+    private fun validateDestination( destination: DataDestination ): List<String>
+    {
+        val errors = mutableListOf<String>()
+
+        when ( destination )
+        {
+            is FileDestination ->
+            {
+                if ( destination.path.isBlank() )
+                {
+                    errors.add("FileDestination path cannot be blank")
+                }
+            }
+
+            is RegistryDestination ->
+            {
+                if ( destination.key.isBlank() )
+                {
+                    errors.add("RegistryDestination key cannot be blank")
+                }
+            }
+
+            is DatabaseDestination ->
+            {
+                if ( destination.connectionString.isBlank() )
+                {
+                    errors.add("DatabaseDestination connectionString cannot be blank")
+                }
+                if ( destination.table.isBlank() )
+                {
+                    errors.add("DatabaseDestination table cannot be blank")
+                }
+            }
+
+            is ApiDestination ->
+            {
+                if ( destination.endpoint.isBlank() )
+                {
+                    errors.add("ApiDestination endpoint cannot be blank")
+                }
+            }
+
+            is StreamDestination ->
+            {
+                if ( destination.streamId.isBlank() )
+                {
+                    errors.add("StreamDestination streamId cannot be blank")
+                }
+            }
+        }
+
+        return errors
     }
 }
 
@@ -99,15 +213,25 @@ data class OutputDataSpec(
  * Result of a validation operation.
  */
 @Serializable
-sealed class ValidationResult {
+sealed class ValidationResult
+{
     /** Validation passed */
     @Serializable
     object Success : ValidationResult()
 
     /** Validation failed with errors */
     @Serializable
-    data class Failure(val errors: List<String>) : ValidationResult()
+    data class Failure( val errors: List<String> ) : ValidationResult()
 
-    val isSuccess: Boolean get() = this is Success
-    val isFailure: Boolean get() = this is Failure
+    val isSuccess: Boolean
+        get()
+        {
+            return this is Success
+        }
+
+    val isFailure: Boolean
+        get()
+        {
+            return this is Failure
+        }
 }

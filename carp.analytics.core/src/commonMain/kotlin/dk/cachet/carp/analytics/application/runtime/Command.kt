@@ -7,8 +7,10 @@ data class Command(
     val env: Map<String, String> = emptyMap(),
     val stdin: ByteArray?,
     val timeoutMs: Long?
-) {
-    override fun equals(other: Any?): Boolean {
+)
+{
+    override fun equals( other: Any? ): Boolean
+    {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
 
@@ -19,7 +21,8 @@ data class Command(
         if (args != other.args) return false
         if (cwd != other.cwd) return false
         if (env != other.env) return false
-        if (stdin != null) {
+        if (stdin != null)
+        {
             if (other.stdin == null) return false
             if (!stdin.contentEquals(other.stdin)) return false
         } else if (other.stdin != null) return false
@@ -27,7 +30,8 @@ data class Command(
         return true
     }
 
-    override fun hashCode(): Int {
+    override fun hashCode(): Int
+    {
         var result = timeoutMs?.hashCode() ?: 0
         result = 31 * result + exe.hashCode()
         result = 31 * result + args.hashCode()

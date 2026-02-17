@@ -7,7 +7,8 @@ import kotlinx.serialization.Serializable
  * This is a sealed interface to provide type-safe data source configurations.
  */
 @Serializable
-sealed interface DataSource {
+sealed interface DataSource
+{
     /** The type of this data source */
     val sourceType: DataSourceType
 
@@ -27,7 +28,8 @@ data class FileSystemSource(
     val path: String,
     val format: FileFormat,
     override val metadata: Map<String, String> = emptyMap()
-) : DataSource {
+) : DataSource
+{
     override val sourceType: DataSourceType = DataSourceType.FILE_SYSTEM
 }
 
@@ -45,7 +47,8 @@ data class UrlSource(
     val format: FileFormat,
     val headers: Map<String, String> = emptyMap(),
     override val metadata: Map<String, String> = emptyMap()
-) : DataSource {
+) : DataSource
+{
     override val sourceType: DataSourceType = DataSourceType.HTTP
 }
 
@@ -63,7 +66,8 @@ data class DatabaseSource(
     val query: String,
     val databaseType: DatabaseType,
     override val metadata: Map<String, String> = emptyMap()
-) : DataSource {
+) : DataSource
+{
     override val sourceType: DataSourceType = DataSourceType.DATABASE
 }
 
@@ -77,7 +81,8 @@ data class DatabaseSource(
 data class InMemorySource(
     val registryKey: String,
     override val metadata: Map<String, String> = emptyMap()
-) : DataSource {
+) : DataSource
+{
     override val sourceType: DataSourceType = DataSourceType.IN_MEMORY
 }
 
@@ -99,7 +104,8 @@ data class ApiSource(
     val parameters: Map<String, String> = emptyMap(),
     val headers: Map<String, String> = emptyMap(),
     override val metadata: Map<String, String> = emptyMap()
-) : DataSource {
+) : DataSource
+{
     override val sourceType: DataSourceType = DataSourceType.API
 }
 
@@ -117,7 +123,8 @@ data class StreamSource(
     val streamType: String,
     val configuration: Map<String, String> = emptyMap(),
     override val metadata: Map<String, String> = emptyMap()
-) : DataSource {
+) : DataSource
+{
     override val sourceType: DataSourceType = DataSourceType.STREAM
 }
 
@@ -125,25 +132,26 @@ data class StreamSource(
  * Authentication configuration for data sources.
  */
 @Serializable
-sealed interface Authentication {
+sealed interface Authentication
+{
     /** No authentication */
     @Serializable
     object None : Authentication
 
     /** Basic HTTP authentication */
     @Serializable
-    data class Basic(val username: String, val password: String) : Authentication
+    data class Basic( val username: String, val password: String ) : Authentication
 
     /** Bearer token authentication */
     @Serializable
-    data class Bearer(val token: String) : Authentication
+    data class Bearer( val token: String ) : Authentication
 
     /** API key authentication */
     @Serializable
-    data class ApiKey(val key: String, val headerName: String = "X-API-Key") : Authentication
+    data class ApiKey( val key: String, val headerName: String = "X-API-Key" ) : Authentication
 
     /** OAuth2 authentication */
     @Serializable
-    data class OAuth2(val accessToken: String, val refreshToken: String? = null) : Authentication
+    data class OAuth2( val accessToken: String, val refreshToken: String? = null ) : Authentication
 }
 

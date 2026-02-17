@@ -10,7 +10,7 @@ import kotlinx.serialization.Serializable
 @SerialName("Workflow")
 @Serializable
 data class Workflow(
-    override val metadata: WorkflowMetadata,
+    override val metadata: WorkflowMetadata
 ) : WorkflowComponent
 {
     @Contextual

@@ -104,9 +104,11 @@ class DataRegistry
     /**
      * Infer file format from path or MIME type.
      */
-    private fun inferFormat(path: String, mimeType: String?): FileFormat {
+    private fun inferFormat( path: String, mimeType: String? ): FileFormat
+    {
         // Try MIME type first
-        if (mimeType != null) {
+        if (mimeType != null)
+        {
             return when {
                 mimeType.contains("csv") -> FileFormat.CSV
                 mimeType.contains("json") -> FileFormat.JSON
@@ -123,7 +125,8 @@ class DataRegistry
         return inferFromExtension(path)
     }
 
-    private fun inferFromExtension(path: String): FileFormat {
+    private fun inferFromExtension( path: String ): FileFormat
+    {
         return when (path.substringAfterLast('.', "").lowercase()) {
             "csv" -> FileFormat.CSV
             "json" -> FileFormat.JSON

@@ -3,7 +3,8 @@ package dk.cachet.carp.analytics.domain.execution
 import dk.cachet.carp.analytics.domain.process.ExternalProcess
 import kotlin.reflect.KClass
 
-interface IExecutionFactory {
+interface IExecutionFactory
+{
     /**
      * Registers an Executor for a specific Process type.
      * @param processType The class of the process.
@@ -20,5 +21,5 @@ interface IExecutionFactory {
      * @return The corresponding [Executor] instance.
      * @throws IllegalArgumentException If no Executor is registered for the given Process type.
      */
-    fun <P : ExternalProcess> getExecutor(process: P): Executor
+    fun <P : ExternalProcess> getExecutor( process: P ): Executor
 }

@@ -6,7 +6,8 @@ import kotlinx.serialization.Serializable
  * Enumeration of supported file formats for data serialization and deserialization.
  */
 @Serializable
-enum class FileFormat {
+enum class FileFormat
+{
     /** Comma-Separated Values */
     CSV,
 
@@ -39,7 +40,8 @@ enum class FileFormat {
  * Enumeration of supported database types.
  */
 @Serializable
-enum class DatabaseType {
+enum class DatabaseType
+{
     /** PostgreSQL relational database */
     POSTGRESQL,
 
@@ -63,7 +65,8 @@ enum class DatabaseType {
  * Enumeration of write modes for data destinations.
  */
 @Serializable
-enum class WriteMode {
+enum class WriteMode
+{
     /** Append new data to existing data */
     APPEND,
 
@@ -81,7 +84,8 @@ enum class WriteMode {
  * HTTP methods for API interactions.
  */
 @Serializable
-enum class HttpMethod {
+enum class HttpMethod
+{
     GET,
     POST,
     PUT,
