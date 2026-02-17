@@ -154,7 +154,6 @@ private val studyLiveStatus = StudyStatus.Live( studyId, studyName, studyCreated
 
 // Deployment data matching the example protocol.
 private val deploymentId = UUID( "c9cc5317-48da-45f2-958e-58bc07f34681" )
-private val deploymentName = "Boaty McBoatface"
 private val deploymentIds = setOf( deploymentId, UUID( "d4a9bba4-860e-4c58-a356-8a91605dc1ee" ) )
 private val deploymentCreatedOn = Instant.fromEpochSeconds( 1642504000 )
 private val participantId = UUID( "32880e82-01c9-40cf-a6ed-17ff3348f251" )
@@ -166,7 +165,6 @@ private val studyInvitation = StudyInvitation(
     ApplicationData( "{\"trialGroup\", \"A\"}" )
 )
 private val participantAssignedRoles = AssignedTo.Roles( setOf( participantRole.role ) )
-private val roleAssignment = setOf( AssignedParticipantRoles( participantId, participantAssignedRoles ) )
 private val participantInvitation = ParticipantInvitation(
     participantId,
     participantAssignedRoles,
@@ -385,17 +383,9 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
     RecruitmentService::inviteNewParticipantGroup to example(
         request = RecruitmentServiceRequest.InviteNewParticipantGroup(
             studyId,
-            setOf( AssignedParticipantRoles( participantId, participantAssignedRoles ) ),
-            deploymentName
+            setOf( AssignedParticipantRoles( participantId, participantAssignedRoles ) )
         ),
-        response = ParticipantGroupStatus.Invited(
-            deploymentId,
-            participants,
-            roleAssignment,
-            participantGroupInvitedOn,
-            invitedDeploymentStatus,
-            deploymentName
-        )
+        response = ParticipantGroupStatus.Invited( deploymentId, participants, setOf( AssignedParticipantRoles( participantId, participantAssignedRoles ) ), participantGroupInvitedOn, invitedDeploymentStatus )
     ),
     RecruitmentService::createParticipantGroup to example(
         request = RecruitmentServiceRequest.CreateParticipantGroup(
@@ -424,30 +414,11 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
     ),
     RecruitmentService::getParticipantGroupStatusList to example(
         request = RecruitmentServiceRequest.GetParticipantGroupStatusList( studyId ),
-        response = listOf(
-            ParticipantGroupStatus.Running(
-                deploymentId,
-                participants,
-                roleAssignment,
-                participantGroupInvitedOn,
-                runningDeploymentStatus,
-                runningDeploymentStatus.startedOn,
-                deploymentName
-            )
-        )
+        response = listOf( ParticipantGroupStatus.Running( deploymentId, participants, setOf( AssignedParticipantRoles( participantId, participantAssignedRoles ) ), participantGroupInvitedOn, runningDeploymentStatus, runningDeploymentStatus.startedOn ) )
     ),
     RecruitmentService::stopParticipantGroup to example(
         request = RecruitmentServiceRequest.StopParticipantGroup( studyId, deploymentId ),
-        response = ParticipantGroupStatus.Stopped(
-            deploymentId,
-            participants,
-            roleAssignment,
-            participantGroupInvitedOn,
-            stoppedDeploymentStatus,
-            stoppedDeploymentStatus.startedOn,
-            stoppedDeploymentStatus.stoppedOn,
-            deploymentName
-        )
+        response = ParticipantGroupStatus.Stopped( deploymentId, participants, setOf( AssignedParticipantRoles( participantId, participantAssignedRoles ) ), participantGroupInvitedOn, stoppedDeploymentStatus, stoppedDeploymentStatus.startedOn, stoppedDeploymentStatus.stoppedOn )
     ),
 
     // DeploymentService
@@ -537,6 +508,16 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
         request = DataStreamServiceRequest.GetDataStream( phoneGeoDataStream, 0, 100 ),
         response = MutableDataStreamBatch().apply { appendSequence( geoDataSequence ) }
     ),
+    DataStreamService::getBatchForStudyDeployments to example(
+        request = DataStreamServiceRequest.GetBatchForStudyDeployments(
+            studyDeploymentIds = deploymentIds,
+            dataTypes = null,
+            from = deploymentCreatedOn,
+            to = deploymentCreatedOn + 1.days
+        ),
+        response = phoneDataStreamBatch
+    ),
+
     DataStreamService::closeDataStreams to example(
         request = DataStreamServiceRequest.CloseDataStreams( deploymentIds )
     ),

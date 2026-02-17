@@ -5,7 +5,7 @@
             "__type": "dk.cachet.carp.data.infrastructure.DataStreamServiceRequest.GetDataStream",
             "apiVersion": "1.1",
             "dataStream": {
-                "studyDeploymentId": "dfd7a5be-6276-4cea-87a9-97b44e6a53ee",
+                "studyDeploymentId": "7c824b0d-1143-46db-8e66-0fa4f2a34af9",
                 "deviceRoleName": "Device",
                 "dataType": "dk.cachet.carp.stubpoint"
             },

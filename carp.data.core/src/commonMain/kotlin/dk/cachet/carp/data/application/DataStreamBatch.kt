@@ -3,6 +3,7 @@
 package dk.cachet.carp.data.application
 
 import dk.cachet.carp.common.application.data.Data
+import dk.cachet.carp.common.application.data.DataType
 import kotlinx.serialization.*
 import kotlinx.serialization.builtins.*
 import kotlinx.serialization.descriptors.*
@@ -90,7 +91,7 @@ class MutableDataStreamBatch : DataStreamBatch
     /**
      * Append all data stream sequences contained in [batch] to this batch.
      *
-     * @throws IllegalArgumentException when the start of any of the sequences contained in [batch]
+     * @throws IllegalArgumentException when the start of the sequences contained in [batch]
      *   precede the end of a previously appended sequence to the same data stream.
      */
     fun appendBatch( batch: DataStreamBatch )
