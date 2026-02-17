@@ -10,6 +10,14 @@ import kotlin.test.assertTrue
 
 class DefaultCommandGeneratorRegistryTest
 {
+    // Test environment implementation
+    private data class TestEnvironmentDefinition(
+        override val id: UUID,
+        override val name: String,
+        override val dependencies: List<String> = emptyList(),
+        override val environmentVariables: Map<String, String> = emptyMap()
+    ) : EnvironmentDefinition
+
     // Test command generator implementation
     private class TestCommandGenerator : CommandGenerator
     {
@@ -36,19 +44,19 @@ class DefaultCommandGeneratorRegistryTest
         // Clear any existing registrations
         DefaultCommandGeneratorRegistry.clear()
 
-        val testEnv = EnvironmentDefinition(UUID.randomUUID(), "test-env", emptyList())
+        val testEnv = TestEnvironmentDefinition(UUID.randomUUID(), "test-env", emptyList())
         val testGenerator = TestCommandGenerator()
 
         // Test registration by string name (simplified API)
-        DefaultCommandGeneratorRegistry.register("EnvironmentDefinition", testGenerator)
+        DefaultCommandGeneratorRegistry.register("TestEnvironmentDefinition", testGenerator)
 
         // Test keySelector function
         val key = DefaultCommandGeneratorRegistry.keySelector(testEnv)
-        assertEquals("EnvironmentDefinition", key)
+        assertEquals("TestEnvironmentDefinition", key)
 
         // Test registry contains the generator
-        assertTrue(DefaultCommandGeneratorRegistry.registry.containsKey("EnvironmentDefinition"))
-        assertEquals(testGenerator, DefaultCommandGeneratorRegistry.registry["EnvironmentDefinition"])
+        assertTrue(DefaultCommandGeneratorRegistry.registry.containsKey("TestEnvironmentDefinition"))
+        assertEquals(testGenerator, DefaultCommandGeneratorRegistry.registry["TestEnvironmentDefinition"])
 
         // Test get method
         val retrievedGenerator = DefaultCommandGeneratorRegistry.get(testEnv)
@@ -72,7 +80,7 @@ class DefaultCommandGeneratorRegistryTest
     {
         DefaultCommandGeneratorRegistry.clear()
 
-        val testEnv = EnvironmentDefinition(UUID.randomUUID(), "unknown-env", emptyList())
+        val testEnv = TestEnvironmentDefinition(UUID.randomUUID(), "unknown-env", emptyList())
 
         assertFailsWith<IllegalStateException> {
             DefaultCommandGeneratorRegistry.get(testEnv)

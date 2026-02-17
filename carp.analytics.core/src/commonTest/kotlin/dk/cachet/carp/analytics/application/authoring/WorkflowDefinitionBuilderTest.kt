@@ -445,13 +445,20 @@ class WorkflowDefinitionBuilderTest
 
     private fun createMockEnvironment( name: String ): EnvironmentDefinition
     {
-        return EnvironmentDefinition(
+        return MockEnvironmentDefinition(
             id = UUID.randomUUID(),
             name = name,
             dependencies = listOf("dependency1", "dependency2"),
             environmentVariables = mapOf("VAR1" to "value1", "VAR2" to "value2")
         )
     }
+
+    private data class MockEnvironmentDefinition(
+        override val id: UUID,
+        override val name: String,
+        override val dependencies: List<String> = emptyList(),
+        override val environmentVariables: Map<String, String> = emptyMap()
+    ) : EnvironmentDefinition
 
     // Mock task for testing
     private class MockTask : TaskDefinition
