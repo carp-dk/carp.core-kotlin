@@ -1,5 +1,6 @@
 package dk.cachet.carp.analytics.domain.data
 
+import dk.cachet.carp.common.application.UUID
 import kotlinx.serialization.Serializable
 
 /**
@@ -9,9 +10,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed interface DataSource
 {
-    /** The type of this data source */
-    val sourceType: DataSourceType
-
     /** Additional metadata specific to this source (key-value string pairs) */
     val metadata: Map<String, String>
 }
@@ -30,7 +28,7 @@ data class FileSystemSource(
     override val metadata: Map<String, String> = emptyMap()
 ) : DataSource
 {
-    override val sourceType: DataSourceType = DataSourceType.FILE_SYSTEM
+    val sourceType: DataSourceType = DataSourceType.FILE_SYSTEM
 }
 
 /**
@@ -49,7 +47,7 @@ data class UrlSource(
     override val metadata: Map<String, String> = emptyMap()
 ) : DataSource
 {
-    override val sourceType: DataSourceType = DataSourceType.HTTP
+    val sourceType: DataSourceType = DataSourceType.HTTP
 }
 
 /**
@@ -68,7 +66,7 @@ data class DatabaseSource(
     override val metadata: Map<String, String> = emptyMap()
 ) : DataSource
 {
-    override val sourceType: DataSourceType = DataSourceType.DATABASE
+    val sourceType: DataSourceType = DataSourceType.DATABASE
 }
 
 /**
@@ -83,7 +81,7 @@ data class InMemorySource(
     override val metadata: Map<String, String> = emptyMap()
 ) : DataSource
 {
-    override val sourceType: DataSourceType = DataSourceType.IN_MEMORY
+    val sourceType: DataSourceType = DataSourceType.IN_MEMORY
 }
 
 /**
@@ -106,7 +104,7 @@ data class ApiSource(
     override val metadata: Map<String, String> = emptyMap()
 ) : DataSource
 {
-    override val sourceType: DataSourceType = DataSourceType.API
+    val sourceType: DataSourceType = DataSourceType.API
 }
 
 /**
@@ -125,7 +123,7 @@ data class StreamSource(
     override val metadata: Map<String, String> = emptyMap()
 ) : DataSource
 {
-    override val sourceType: DataSourceType = DataSourceType.STREAM
+    val sourceType: DataSourceType = DataSourceType.STREAM
 }
 
 /**
@@ -154,4 +152,11 @@ sealed interface Authentication
     @Serializable
     data class OAuth2( val accessToken: String, val refreshToken: String? = null ) : Authentication
 }
+
+@Serializable
+data class StepOutputSource(
+    val stepId: UUID,
+    val outputId: UUID,
+    override val metadata: Map<String, String>
+) : DataSource
 

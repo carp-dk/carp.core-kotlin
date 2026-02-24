@@ -1,5 +1,6 @@
 package dk.cachet.carp.analytics.domain.data
 
+import dk.cachet.carp.common.application.UUID
 import kotlinx.serialization.Serializable
 
 /**
@@ -9,7 +10,7 @@ import kotlinx.serialization.Serializable
  */
 interface DataReference
 {
-    val identifier: String
+    val id: UUID
     val name: String
     val description: String?
     val schema: DataSchema?
@@ -18,7 +19,7 @@ interface DataReference
 /**
  * Specification for input data required by a workflow step.
  *
- * @property identifier Unique identifier for this input
+ * @property id Unique id for this input
  * @property name Human-readable name
  * @property description Optional description of what this input represents
  * @property schema Expected data structure
@@ -28,7 +29,7 @@ interface DataReference
  */
 @Serializable
 data class InputDataSpec(
-    override val identifier: String,
+    override val id: UUID,
     override val name: String,
     override val description: String? = null,
     override val schema: DataSchema? = null,
@@ -43,12 +44,6 @@ data class InputDataSpec(
     fun validate(): ValidationResult
     {
         val errors = mutableListOf<String>()
-
-        if ( identifier.isBlank() )
-        {
-            errors.add("Identifier cannot be blank")
-        }
-
         errors += validateSource( source )
 
         return if ( errors.isEmpty() ) ValidationResult.Success else ValidationResult.Failure( errors )
@@ -56,71 +51,83 @@ data class InputDataSpec(
 
     private fun validateSource( source: DataSource ): List<String>
     {
-        val errors = mutableListOf<String>()
-
-        when ( source )
+        return when ( source )
         {
-            is FileSystemSource ->
-            {
-                if ( source.path.isBlank() )
-                {
-                    errors.add("FileSystemSource path cannot be blank")
-                }
-            }
-
-            is UrlSource ->
-            {
-                if ( source.url.isBlank() )
-                {
-                    errors.add("UrlSource URL cannot be blank")
-                }
-            }
-
-            is DatabaseSource ->
-            {
-                if ( source.connectionString.isBlank() )
-                {
-                    errors.add("DatabaseSource connectionString cannot be blank")
-                }
-                if ( source.query.isBlank() )
-                {
-                    errors.add("DatabaseSource query cannot be blank")
-                }
-            }
-
-            is InMemorySource ->
-            {
-                if ( source.registryKey.isBlank() )
-                {
-                    errors.add("InMemorySource registryKey cannot be blank")
-                }
-            }
-
-            is ApiSource ->
-            {
-                if ( source.endpoint.isBlank() )
-                {
-                    errors.add("ApiSource endpoint cannot be blank")
-                }
-            }
-
-            is StreamSource ->
-            {
-                if ( source.streamId.isBlank() )
-                {
-                    errors.add("StreamSource streamId cannot be blank")
-                }
-            }
+            is FileSystemSource -> validateFileSystemSource( source )
+            is UrlSource -> validateUrlSource( source )
+            is DatabaseSource -> validateDatabaseSource( source )
+            is InMemorySource -> validateInMemorySource( source )
+            is ApiSource -> validateApiSource( source )
+            is StreamSource -> validateStreamSource( source )
+            is StepOutputSource -> validateStepOutputSource()
         }
+    }
 
+    private fun validateFileSystemSource( source: FileSystemSource ): List<String>
+    {
+        return if ( source.path.isBlank() )
+            listOf("FileSystemSource path cannot be blank")
+        else
+            emptyList()
+    }
+
+    private fun validateUrlSource( source: UrlSource ): List<String>
+    {
+        return if ( source.url.isBlank() )
+            listOf("UrlSource URL cannot be blank")
+        else
+            emptyList()
+    }
+
+    private fun validateDatabaseSource( source: DatabaseSource ): List<String>
+    {
+        val errors = mutableListOf<String>()
+        if ( source.connectionString.isBlank() )
+        {
+            errors.add("DatabaseSource connectionString cannot be blank")
+        }
+        if ( source.query.isBlank() )
+        {
+            errors.add("DatabaseSource query cannot be blank")
+        }
         return errors
+    }
+
+    private fun validateInMemorySource( source: InMemorySource ): List<String>
+    {
+        return if ( source.registryKey.isBlank() )
+            listOf("InMemorySource registryKey cannot be blank")
+        else
+            emptyList()
+    }
+
+    private fun validateApiSource( source: ApiSource ): List<String>
+    {
+        return if ( source.endpoint.isBlank() )
+            listOf("ApiSource endpoint cannot be blank")
+        else
+            emptyList()
+    }
+
+    private fun validateStreamSource( source: StreamSource ): List<String>
+    {
+        return if ( source.streamId.isBlank() )
+            listOf("StreamSource streamId cannot be blank")
+        else
+            emptyList()
+    }
+
+    private fun validateStepOutputSource(): List<String>
+    {
+        // UUID validation is handled by UUID constructor
+        return emptyList()
     }
 }
 
 /**
  * Specification for output data produced by a workflow step.
  *
- * @property identifier Unique identifier for this output
+ * @property id Unique id for this output
  * @property name Human-readable name
  * @property description Optional description of what this output represents
  * @property schema Structure of the output data
@@ -129,7 +136,7 @@ data class InputDataSpec(
  */
 @Serializable
 data class OutputDataSpec(
-    override val identifier: String,
+    override val id: UUID,
     override val name: String,
     override val description: String? = null,
     override val schema: DataSchema? = null,
@@ -143,12 +150,6 @@ data class OutputDataSpec(
     fun validate(): ValidationResult
     {
         val errors = mutableListOf<String>()
-
-        if ( identifier.isBlank() )
-        {
-            errors.add("Identifier cannot be blank")
-        }
-
         errors += validateDestination( destination )
 
         return if ( errors.isEmpty() ) ValidationResult.Success else ValidationResult.Failure( errors )
@@ -222,12 +223,6 @@ sealed class ValidationResult
     /** Validation failed with errors */
     @Serializable
     data class Failure( val errors: List<String> ) : ValidationResult()
-
-    val isSuccess: Boolean
-        get()
-        {
-            return this is Success
-        }
 
     val isFailure: Boolean
         get()

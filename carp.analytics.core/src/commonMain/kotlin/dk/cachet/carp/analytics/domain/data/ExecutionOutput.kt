@@ -13,7 +13,7 @@ private const val gb: Long = mb * 1024L
  * Represents what actually happened when a step executed, as opposed to
  * OutputDataSpec which represents the design-time specification.
  *
- * @property outputId References the OutputDataSpec identifier
+ * @property outputId References the OutputDataSpec id
  * @property actualLocation Where the data actually ended up (may differ from planned destination)
  * @property statistics Runtime metrics about the data
  * @property timestamp When this output was produced

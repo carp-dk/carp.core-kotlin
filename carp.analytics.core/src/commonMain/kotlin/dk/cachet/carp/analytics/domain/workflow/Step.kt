@@ -37,7 +37,7 @@ data class Step(
             if ( result.isFailure )
             {
                 errors.add(
-                    "Input '${input.identifier}': ${( result as ValidationResult.Failure ).errors.joinToString( ", " )}"
+                    "Input '${input.id}': ${( result as ValidationResult.Failure ).errors.joinToString( ", " )}"
                 )
             }
         }
@@ -48,7 +48,7 @@ data class Step(
             if ( result.isFailure )
             {
                 errors.add(
-                    "Output '${output.identifier}': ${(
+                    "Output '${output.id}': ${(
                             result as ValidationResult.Failure
                             ).errors.joinToString( ", " )}"
                 )
@@ -68,10 +68,10 @@ data class Step(
     /**
      * Checks if this step can consume the output of another step.
      */
-    fun canConsumeOutputOf( other: Step, outputId: String ): Boolean
+    fun canConsumeOutputOf( other: Step, outputId: UUID ): Boolean
     {
-        val otherOutput = other.outputs.find { it.identifier == outputId } ?: return false
-        val matchingInput = inputs.find { it.identifier == outputId }
+        val otherOutput = other.outputs.find { it.id == outputId } ?: return false
+        val matchingInput = inputs.find { it.id == outputId }
 
         if ( matchingInput != null )
         {

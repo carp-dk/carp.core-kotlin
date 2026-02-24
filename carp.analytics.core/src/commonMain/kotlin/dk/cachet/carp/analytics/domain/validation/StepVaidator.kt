@@ -24,7 +24,7 @@ object StepValidator
      * Configuration for validating a step-like object.
      *
      * @param S The step type to validate
-     * @param stepId Extract the unique identifier from a step
+     * @param stepId Extract the unique id from a step
      * @param outputIds Extract all output IDs from a step (used to check uniqueness)
      * @param missingRequiredInputSpecs Extract missing required input specifications (defaults to empty list)
      * @param specsMissingTypes Extract specification identifiers that are missing type information (defaults to empty list)

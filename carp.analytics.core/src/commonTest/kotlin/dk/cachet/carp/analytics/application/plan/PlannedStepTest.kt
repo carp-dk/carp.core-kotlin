@@ -1,0 +1,114 @@
+package dk.cachet.carp.analytics.application.plan
+
+import dk.cachet.carp.analytics.infrastructure.serialization.DspSerializer
+import dk.cachet.carp.common.application.UUID
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+
+class PlannedStepTest
+{
+
+    @Test
+    fun `serialization round-trip preserves CommandRun planned step`()
+    {
+        val inputBindingId = UUID.randomUUID()
+        val outputBindingId = UUID.randomUUID()
+        val dataRefId = UUID.randomUUID()
+        val dataSinkRefId = UUID.randomUUID()
+
+        val step = PlannedStep(
+            stepId = "s1",
+            name = "Example Command Step",
+            process = CommandSpec(
+                executable = "echo",
+                args = listOf("hello")
+            ),
+            bindings = ResolvedBindings(
+                inputs = mapOf(inputBindingId to DataRef(dataRefId, "text/plain")),
+                outputs = mapOf(outputBindingId to DataRef(dataSinkRefId, "text/plain"))
+            ),
+            environmentDefinitionId = UUID.randomUUID()
+        )
+
+        val encoded = DspSerializer.json.encodeToString(step)
+        val decoded = DspSerializer.json.decodeFromString<PlannedStep>(encoded)
+
+        assertEquals(step, decoded)
+    }
+
+    @Test
+    fun `serialization round-trip preserves InProcessRun planned step`()
+    {
+        val outputBindingId = UUID.randomUUID()
+        val dataSinkRefId = UUID.randomUUID()
+
+        val step = PlannedStep(
+            stepId = "s2",
+            name = "Example In-Process Step",
+            process = InTasksRun(
+                operationId = "analysis.example.v1",
+                parameters = mapOf("k" to "v")
+            ),
+            bindings = ResolvedBindings(
+                inputs = emptyMap(),
+                outputs = mapOf(outputBindingId to DataRef(dataSinkRefId, "application/json"))
+            ),
+            environmentDefinitionId = UUID.randomUUID()
+        )
+
+        val encoded = DspSerializer.json.encodeToString(step)
+        val decoded = DspSerializer.json.decodeFromString<PlannedStep>(encoded)
+
+        assertEquals(step, decoded)
+    }
+
+    @Test
+    fun `constructor validates required fields`()
+    {
+        assertFailsWith<IllegalArgumentException> {
+            PlannedStep(
+                stepId = "",
+                name = "ok",
+                process = InTasksRun("op"),
+                bindings = ResolvedBindings(),
+                environmentDefinitionId = UUID.randomUUID()
+            )
+        }
+
+        assertFailsWith<IllegalArgumentException> {
+            PlannedStep(
+                stepId = "ok",
+                name = "",
+                process = InTasksRun("op"),
+                bindings = ResolvedBindings(),
+                environmentDefinitionId = UUID.randomUUID()
+            )
+        }
+    }
+
+    @Test
+    fun `bindings are preserved and accessible`()
+    {
+        val inputBindingId = UUID.randomUUID()
+        val outputBindingId = UUID.randomUUID()
+        val dataRefId = UUID.randomUUID()
+        val dataSinkRefId = UUID.randomUUID()
+
+        val bindings = ResolvedBindings(
+            inputs = mapOf(inputBindingId to DataRef(dataRefId, "t")),
+            outputs = mapOf(outputBindingId to DataRef(dataSinkRefId, "t")),
+        )
+
+        val step = PlannedStep(
+            stepId = "s",
+            name = "Step",
+            process = InTasksRun("op"),
+            bindings = bindings,
+            environmentDefinitionId = UUID.randomUUID()
+        )
+
+        assertEquals(dataRefId, step.bindings.input(inputBindingId)?.id)
+        assertEquals(dataSinkRefId, step.bindings.output(outputBindingId)?.id)
+    }
+}

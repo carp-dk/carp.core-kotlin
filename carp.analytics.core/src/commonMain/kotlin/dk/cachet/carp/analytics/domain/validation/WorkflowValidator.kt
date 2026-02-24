@@ -8,7 +8,7 @@ package dk.cachet.carp.analytics.domain.validation
  * structure as long as extractors are provided for the necessary data.
  *
  * Validation checks:
- * - **Unique step IDs**: Ensures no two steps have the same identifier within a workflow
+ * - **Unique step IDs**: Ensures no two steps have the same id within a workflow
  * - **Valid dependencies**: Ensures all referenced dependencies point to existing steps
  * - **No cycles**: Detects circular dependencies in the workflow
  *
@@ -32,9 +32,9 @@ object WorkflowValidator
      *
      * @param W The workflow type to validate
      * @param S The step type within the workflow
-     * @param workflowId Extract the unique identifier from a workflow
+     * @param workflowId Extract the unique id from a workflow
      * @param steps Extract the list of steps from a workflow
-     * @param stepId Extract the unique identifier from a step
+     * @param stepId Extract the unique id from a step
      * @param dependencies Extract dependency step IDs from a step (defaults to empty list if no dependencies)
      * @param hasDependencyGraph Whether to perform dependency graph validation (refs and cycles). Defaults to true
      * @param workflowPath Generate a path string for error reporting (defaults to "workflows[{workflowId}]")
