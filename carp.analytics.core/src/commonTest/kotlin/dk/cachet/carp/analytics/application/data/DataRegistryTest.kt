@@ -74,5 +74,4 @@ class DataRegistryTest
         assertTrue(resolved is InMemoryData)
         assertEquals(dataSet2, (resolved).dataset)
     }
-
 }

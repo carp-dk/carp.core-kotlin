@@ -9,7 +9,8 @@ data class StepFailure(
 )
 
 @Serializable
-enum class FailureKind {
+enum class FailureKind
+{
     COMMAND_FAILED,
     TIMEOUT,
     CANCELLED,

@@ -62,7 +62,8 @@ class DataRegistry
      *
      * Converts all entries into [ExecutionOutputRef], resolving memory vs file-based handles.
      */
-    fun toExecutionOutputs(): List<ExecutionOutputRef> {
+    fun toExecutionOutputs(): List<ExecutionOutputRef>
+    {
         return data.map { (name, handle) ->
             val result: ExecutionOutputRef = when (handle) {
                 is FileData -> ExecutionOutputRef(

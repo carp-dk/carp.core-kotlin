@@ -394,6 +394,22 @@ configure( rootProject )
         multiplatformModules.each { classPaths += it.configurations.getByName("jvmCompileClasspath") }
         classpath.setFrom(classPaths)
     }
+    // Auto-fix task for analytics module only
+    task detektAnalyticsAutoFix(type: io.gitlab.arturbosch.detekt.Detekt) {
+        description = "Runs Detekt with auto-fix on carp.analytics.core module only (ignores unfixable issues)"
+        source = fileTree("$rootDir/carp.analytics.core") {
+            include('**/src/**')
+            exclude('**/node_modules/**', '**/resources/**', '**/build/**')
+        }
+        config.from("$rootDir/detekt-autofix.yml")  // Use simplified config without custom rules
+        buildUponDefaultConfig = true
+        autoCorrect = true  // Enable auto-fix
+        ignoreFailures = false
+        def classPaths = project.configurations.getByName("detekt")
+        // Add analytics module classpath only
+        classPaths += project(':carp.analytics.core').configurations.getByName("jvmCompileClasspath")
+        classpath.setFrom(classPaths)
+    }
     tasks.detekt.jvmTarget = "1.8"
     tasks.detekt.dependsOn ":carp.detekt:assemble" // Ensure 'carp.detekt' is built prior to running code analysis.
 }
@@ -418,4 +434,7 @@ allprojects {
             jvmTarget = "17"
         }
     }
+
+
 }
+

@@ -7,7 +7,7 @@ import kotlin.test.*
 class ExecutionPlanTest
 {
 
-    private fun step( id:  UUID): PlannedStep =
+    private fun step( id: UUID ): PlannedStep =
         PlannedStep(
             stepId = id,
             name = "Step $id",

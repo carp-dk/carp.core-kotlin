@@ -1,0 +1,96 @@
+complexity:
+  LongMethod:
+    excludes: ['**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/test/**']
+  LongParameterList:
+    excludes: ['**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/test/**']
+  TooManyFunctions:
+    ignorePrivate: true
+
+formatting:
+  ArgumentListWrapping:
+    excludes: ['**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/test/**']
+  Filename:
+    active: false
+  FunctionStartOfBodySpacing:
+    active: false
+  Indentation:
+    active: false
+  MaximumLineLength:
+    excludes: ['**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/test/**']
+  MultiLineIfElse:
+    active: false
+  NoConsecutiveBlankLines:
+    active: false
+  NoLineBreakAfterElse:
+    active: false
+  NoUnusedImports:
+    active: false
+  NoWildcardImports:
+    active: false
+  SpacingAroundCurly:
+    active: false
+  SpacingAroundKeyword:
+    active: false
+  SpacingAroundParens:
+    active: false
+  SpacingBetweenDeclarationsWithAnnotations:
+    active: false
+  SpacingBetweenDeclarationsWithComments:
+    active: false
+
+naming:
+  MemberNameEqualsClassName:
+    active: false
+  TopLevelPropertyNaming:
+    active: false
+
+performance:
+  ArrayPrimitive:
+    active: false
+
+potential-bugs:
+  EqualsAlwaysReturnsTrueOrFalse:
+    active: false
+  UnsafeCallOnNullableType:
+    active: false
+
+style:
+  EqualsNullCall:
+    active: false
+  DestructuringDeclarationWithTooManyEntries:
+    excludes: ['**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/test/**']
+  ForbiddenComment:
+    active: false
+  LoopWithTooManyJumpStatements:
+    active: false
+  MaxLineLength:
+    active: false
+  MayBeConst:
+    active: false
+  ProtectedMemberInFinalClass:
+    active: false
+  ReturnCount:
+    active: false
+  ThrowsCount:
+    active: false
+  UnnecessaryInheritance:
+    active: false
+  UnusedPrivateClass:
+    active: false
+  WildcardImport:
+    active: false
+
+# Disable custom verification rules that require annotation classes
+verify-implementation:
+  DataClass:
+    active: false
+  Immutable:
+    active: false
+
+# Disable custom CARP rules that aren't auto-fixable
+carp:
+  CurlyBracesOnSeparateLine:
+    active: false
+  SpacingInParentheses:
+    active: false
+

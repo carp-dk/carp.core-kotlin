@@ -23,12 +23,12 @@ interface Executor
      *
      * @param step The step to set up.
      */
-    fun setup( step: Step) {}
+    fun setup( step: Step ) {}
 
     /**
      * Executes the step's process with its configured inputs and outputs.
      *
      * @param step The step to execute.
      */
-    fun execute( step: Step)
+    fun execute( step: Step )
 }
