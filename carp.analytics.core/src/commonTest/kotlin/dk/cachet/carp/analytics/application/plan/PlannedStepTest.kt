@@ -18,7 +18,7 @@ class PlannedStepTest
         val dataSinkRefId = UUID.randomUUID()
 
         val step = PlannedStep(
-            stepId = "s1",
+            stepId = UUID.randomUUID(),
             name = "Example Command Step",
             process = CommandSpec(
                 executable = "echo",
@@ -44,7 +44,7 @@ class PlannedStepTest
         val dataSinkRefId = UUID.randomUUID()
 
         val step = PlannedStep(
-            stepId = "s2",
+            stepId = UUID.randomUUID(),
             name = "Example In-Process Step",
             process = InTasksRun(
                 operationId = "analysis.example.v1",
@@ -68,17 +68,7 @@ class PlannedStepTest
     {
         assertFailsWith<IllegalArgumentException> {
             PlannedStep(
-                stepId = "",
-                name = "ok",
-                process = InTasksRun("op"),
-                bindings = ResolvedBindings(),
-                environmentDefinitionId = UUID.randomUUID()
-            )
-        }
-
-        assertFailsWith<IllegalArgumentException> {
-            PlannedStep(
-                stepId = "ok",
+                stepId = UUID.randomUUID(),
                 name = "",
                 process = InTasksRun("op"),
                 bindings = ResolvedBindings(),
@@ -101,7 +91,7 @@ class PlannedStepTest
         )
 
         val step = PlannedStep(
-            stepId = "s",
+            stepId = UUID.randomUUID(),
             name = "Step",
             process = InTasksRun("op"),
             bindings = bindings,

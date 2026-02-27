@@ -7,7 +7,7 @@ import kotlin.test.*
 class ExecutionPlanTest
 {
 
-    private fun step( id: String ): PlannedStep =
+    private fun step( id:  UUID): PlannedStep =
         PlannedStep(
             stepId = id,
             name = "Step $id",
@@ -22,7 +22,7 @@ class ExecutionPlanTest
         val plan = ExecutionPlan(
             workflowId = "wf",
             planId = "plan",
-            steps = listOf(step("s1")),
+            steps = listOf(step(UUID.randomUUID())),
             issues = emptyList(),
             requiredEnvironmentHandles = emptyList()
         )
@@ -36,7 +36,7 @@ class ExecutionPlanTest
         val plan = ExecutionPlan(
             workflowId = " ",
             planId = "plan",
-            steps = listOf(step("s1"))
+            steps = listOf(step(UUID.randomUUID()))
         )
         assertFailsWith<IllegalArgumentException> { plan.validate() }
     }
@@ -47,7 +47,7 @@ class ExecutionPlanTest
         val plan = ExecutionPlan(
             workflowId = "wf",
             planId = " ",
-            steps = listOf(step("s1"))
+            steps = listOf(step(UUID.randomUUID()))
         )
         assertFailsWith<IllegalArgumentException> { plan.validate() }
     }
@@ -55,10 +55,11 @@ class ExecutionPlanTest
     @Test
     fun `validate rejects duplicate stepIds`()
     {
+        val stepId = UUID.randomUUID()
         val plan = ExecutionPlan(
             workflowId = "wf",
             planId = "plan",
-            steps = listOf(step("dup"), step("dup"))
+                steps = listOf(step(stepId), step(stepId))
         )
         assertFailsWith<IllegalArgumentException> { plan.validate() }
     }
@@ -70,7 +71,7 @@ class ExecutionPlanTest
         val plan = ExecutionPlan(
             workflowId = "wf",
             planId = "plan",
-            steps = listOf(step("s1")),
+            steps = listOf(step(UUID.randomUUID())),
             requiredEnvironmentHandles = listOf(
                 uuid,
                 uuid,
@@ -85,7 +86,7 @@ class ExecutionPlanTest
         val plan = ExecutionPlan(
             workflowId = "wf",
             planId = "plan",
-            steps = listOf(step("s1")),
+            steps = listOf(step(UUID.randomUUID())),
             issues = listOf(
                 PlanIssue(severity = PlanIssueSeverity.INFO, code = "I", message = "info"),
                 PlanIssue(severity = PlanIssueSeverity.ERROR, code = "E", message = "bad"),
@@ -102,7 +103,7 @@ class ExecutionPlanTest
         val plan = ExecutionPlan(
             workflowId = "wf",
             planId = "plan",
-            steps = listOf(step("s1")),
+            steps = listOf(step(UUID.randomUUID())),
             issues = listOf(
                 PlanIssue(severity = PlanIssueSeverity.INFO, code = "I", message = "info"),
                 PlanIssue(severity = PlanIssueSeverity.WARNING, code = "W", message = "warn"),
@@ -120,7 +121,7 @@ class ExecutionPlanTest
         val plan = ExecutionPlan(
             workflowId = "wf",
             planId = "plan",
-            steps = listOf(step("s1")),
+            steps = listOf(step(UUID.randomUUID())),
             issues = listOf(
                 PlanIssue(severity = PlanIssueSeverity.WARNING, code = "W1", message = "warn", stepId = UUID.randomUUID())
             ),
