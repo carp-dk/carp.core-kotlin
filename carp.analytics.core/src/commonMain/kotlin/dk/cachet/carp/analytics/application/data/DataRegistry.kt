@@ -1,13 +1,12 @@
 package dk.cachet.carp.analytics.application.data
 
-import dk.cachet.carp.analytics.domain.data.DataStatistics
-import dk.cachet.carp.analytics.domain.data.ExecutionOutput
+import dk.cachet.carp.analytics.application.execution.ExecutionOutputRef
+import dk.cachet.carp.analytics.domain.data.DataSchema
+import dk.cachet.carp.analytics.domain.data.DataSource
 import dk.cachet.carp.analytics.domain.data.FileFormat
 import dk.cachet.carp.analytics.domain.data.FileSystemSource
 import dk.cachet.carp.analytics.domain.data.InMemorySource
-import dk.cachet.carp.analytics.domain.execution.ArtifactType
-import dk.cachet.carp.analytics.domain.execution.ExecutionArtifact
-import kotlinx.datetime.Clock
+import dk.cachet.carp.common.application.UUID
 import kotlinx.serialization.Serializable
 
 /**
@@ -61,45 +60,31 @@ class DataRegistry
     /**
      * Return a list of structured outputs based on the current registry state.
      *
-     * Converts all entries into [ExecutionOutput], resolving memory vs file-based handles.
+     * Converts all entries into [ExecutionOutputRef], resolving memory vs file-based handles.
      */
-    fun toExecutionOutputs(): List<ExecutionOutput> =
-        data.map { (name, handle) ->
-            when (handle) {
-                is FileData -> ExecutionOutput(
-                    outputId = name,
-                    actualLocation = FileSystemSource(
+    fun toExecutionOutputs(): List<ExecutionOutputRef> {
+        return data.map { (name, handle) ->
+            val result: ExecutionOutputRef = when (handle) {
+                is FileData -> ExecutionOutputRef(
+                    outputId = UUID.randomUUID(), // Generate UUID for each output
+                    source = FileSystemSource(
                         path = handle.path,
                         format = inferFormat(handle.path, handle.mimeType)
                     ),
-                    statistics = DataStatistics(),
-                    timestamp = Clock.System.now(),
-                    success = true,
-                    errorMessage = null
+                    format = inferFormat(handle.path, handle.mimeType),
+                    schema = DataSchema(format = inferFormat(handle.path, handle.mimeType))
                 )
-                is InMemoryData -> ExecutionOutput(
-                    outputId = name,
-                    actualLocation = InMemorySource(
-                        registryKey = name
-                    ),
-                    statistics = DataStatistics(
-                        // TODO: Extract actual row count from ICarpTabularData if available
-                        rowCount = null
-                    ),
-                    timestamp = Clock.System.now(),
-                    success = true,
-                    errorMessage = null
+                is InMemoryData -> ExecutionOutputRef(
+                    outputId = UUID.randomUUID(), // Generate UUID for each output
+                    source = InMemorySource(registryKey = name),
+                    format = FileFormat.JSON, // Default format for in-memory data
+                    schema = DataSchema(format = FileFormat.JSON)
                 )
-                else -> ExecutionOutput(
-                    outputId = name,
-                    actualLocation = InMemorySource(registryKey = name),
-                    statistics = DataStatistics(),
-                    timestamp = Clock.System.now(),
-                    success = false,
-                    errorMessage = "Unknown DataHandle type: ${handle::class.simpleName}"
-                )
+                else -> throw IllegalArgumentException("Unknown DataHandle type: ${handle::class.simpleName}")
             }
+            result
         }
+    }
 
     /**
      * Infer file format from path or MIME type.
@@ -139,21 +124,4 @@ class DataRegistry
             else -> FileFormat.BINARY
         }
     }
-
-    /**
-     * Return a list of [ExecutionArtifact].
-     *
-     * Only includes file-based artifacts registered in this instance.
-     */
-    fun toArtifacts(): List<ExecutionArtifact> =
-        data.mapNotNull { (name, handle) ->
-            if (handle is FileData)
-                ExecutionArtifact(
-                    uri = handle.path,
-                    name = name,
-                    type = ArtifactType.FILE,
-                    mimeType = handle.mimeType
-                )
-            else null
-        }
 }

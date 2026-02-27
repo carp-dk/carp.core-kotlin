@@ -5,6 +5,7 @@
     "MaximumLineLength",
     "TopLevelPropertyNaming"
 )
+@file:OptIn(kotlin.time.ExperimentalTime::class)
 
 package dk.cachet.carp.rpc
 
@@ -12,13 +13,21 @@ import dk.cachet.carp.analytics.application.ExecutionService
 import dk.cachet.carp.analytics.application.ScheduleManagementService
 import dk.cachet.carp.analytics.application.TriggerService
 import dk.cachet.carp.analytics.application.WorkflowService
-import dk.cachet.carp.analytics.domain.execution.BasicExecutionResult
-import dk.cachet.carp.analytics.domain.execution.ExecutionStatus
-import dk.cachet.carp.analytics.domain.execution.ExecutorState
-import dk.cachet.carp.analytics.domain.tasks.TaskDefinition
+import dk.cachet.carp.analytics.application.execution.ExecutionOutputRef
+import dk.cachet.carp.analytics.application.execution.ExecutionReport
+import dk.cachet.carp.analytics.application.execution.ExecutionStatus
+import dk.cachet.carp.analytics.application.execution.ExecutorState
+import dk.cachet.carp.analytics.application.execution.StepRunResult
+import dk.cachet.carp.analytics.application.execution.FailureKind
+import dk.cachet.carp.analytics.application.execution.StepFailure
+import dk.cachet.carp.analytics.domain.data.DataSchema
+import dk.cachet.carp.analytics.domain.data.DataSource
+import dk.cachet.carp.analytics.domain.data.FileFormat
 import dk.cachet.carp.analytics.domain.trigger.ManualTrigger
 import dk.cachet.carp.analytics.domain.trigger.TriggerActivation
-import dk.cachet.carp.analytics.domain.workflow.*
+import dk.cachet.carp.analytics.domain.workflow.Version
+import dk.cachet.carp.analytics.domain.workflow.Workflow
+import dk.cachet.carp.analytics.domain.workflow.WorkflowMetadata
 import dk.cachet.carp.analytics.infrastructure.ExecutionServiceRequest
 import dk.cachet.carp.analytics.infrastructure.ScheduleManagementServiceRequest
 import dk.cachet.carp.analytics.infrastructure.TriggerServiceRequest
@@ -77,6 +86,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.Serializable
 import kotlin.reflect.KFunction
 import kotlin.reflect.KSuspendFunction3
 import kotlin.reflect.jvm.javaField
@@ -84,6 +94,7 @@ import kotlin.reflect.jvm.javaMethod
 import kotlin.reflect.jvm.kotlinFunction
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.seconds
+
 
 
 /**
@@ -315,13 +326,6 @@ private val exampleWorkflowMetadata = WorkflowMetadata(
     version = Version(1, 0)
 )
 
-class TestTask : TaskDefinition
-{
-    override val name: String = "TestInjectableProcess"
-    override val description: String = "A test process for injection."
-    override val id: UUID = UUID("00000000-0000-0000-0000-000000000456")
-}
-
 private val exampleWorkflow = Workflow(
     exampleWorkflowMetadata
 )
@@ -336,11 +340,19 @@ private val exampleExecutionState = ExecutorState(
     completedAt = null,
     studyId = studyId
 )
-private val exampleExecutionResult = BasicExecutionResult(
-    executionId = exampleExecutionId,
-    status = ExecutionStatus.RUNNING,
-    outputs = emptyList(), // or provide a list of OutputDataReference
-    artifacts = emptyList() // optional if you want to keep it minimal
+private val exampleExecutionResult = ExecutionReport(
+    runId = exampleExecutionId,
+    status = ExecutionStatus.SUCCEEDED,
+    stepResults = listOf(
+        StepRunResult(
+            stepId = UUID.randomUUID(),
+            status = ExecutionStatus.SUCCEEDED,
+            startedAt = kotlinx.datetime.Instant.fromEpochMilliseconds(1642505045000),
+            finishedAt = kotlinx.datetime.Instant.fromEpochMilliseconds(1642505145000),
+            failure = null,
+            outputs = emptyList()
+        )
+    )
 )
 
 // Example for trigger service request.

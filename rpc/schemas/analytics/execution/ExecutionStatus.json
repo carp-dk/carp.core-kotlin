@@ -4,9 +4,10 @@
   "title": "ExecutionStatus",
   "type": "string",
   "enum": [
-    "QUEUED",
+    "PENDING",
     "RUNNING",
     "SUCCEEDED",
-    "FAILED"
+    "FAILED",
+    "SKIPPED"
   ]
 }

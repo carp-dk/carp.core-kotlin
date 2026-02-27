@@ -1,4 +1,4 @@
-package dk.cachet.carp.analytics.domain.execution
+package dk.cachet.carp.analytics.application.execution
 
 import kotlinx.serialization.Serializable
 
@@ -10,10 +10,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 enum class ExecutionStatus
 {
-    COMPLETED,
-    FAILURE,
-    STARTING,
-    SKIPPED,
+    PENDING,
     RUNNING,
-    QUEUED
+    SUCCEEDED,
+    FAILED,
+    SKIPPED
 }

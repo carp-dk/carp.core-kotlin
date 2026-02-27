@@ -1,37 +1,69 @@
 {
   "$schema": "https://json-schema.org/draft/2019-09/schema",
-  "oneOf": [
-    { "$ref": "#/$defs/BasicExecutionResult" }
-  ],
+  "$ref": "#/$defs/ExecutionReport",
   "$defs": {
-    "ExecutionArtifact": {
+    "ExecutionOutputRef": {
       "type": "object",
       "properties": {
-        "uri": { "type": "string", "format": "uri" },
-        "name": { "type": "string" },
-        "type": { "$ref": "./ArtifactType.json" },
-        "mimeType": { "type": ["string", "null"] }
+        "outputId": { "type": "string", "format": "uuid" },
+        "source": { "type": "object", "additionalProperties": true },
+        "format": { "type": "string" },
+        "schema": { "type": "object", "additionalProperties": true }
       },
-      "required": ["uri", "name", "type"],
+      "required": ["outputId", "source", "format", "schema"],
       "additionalProperties": false
     },
-    "BasicExecutionResult": {
-      "$anchor": "BasicExecutionResult",
+    "StepFailure": {
       "type": "object",
       "properties": {
-        "executionId": { "type": "string", "format": "uuid" },
+        "kind": {
+          "type": "string",
+          "enum": ["COMMAND_FAILED", "TIMEOUT", "CANCELLED", "INFRASTRUCTURE", "UNKNOWN"]
+        },
+        "message": { "type": "string" }
+      },
+      "required": ["kind", "message"],
+      "additionalProperties": false
+    },
+    "StepRunResult": {
+      "type": "object",
+      "properties": {
+        "stepId": { "type": "string", "format": "uuid" },
         "status": { "$ref": "./ExecutionStatus.json" },
+        "startedAt": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+        "finishedAt": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+        "failure": {
+          "oneOf": [
+            { "$ref": "#/$defs/StepFailure" },
+            { "type": "null" }
+          ]
+        },
         "outputs": {
           "type": ["array", "null"],
-          "items": { "$ref": "./OutputDataReference.json" }
-        },
-        "artifacts": {
-          "type": "array",
-          "items": { "$ref": "#/$defs/ExecutionArtifact" },
-          "default": []
+          "items": { "$ref": "#/$defs/ExecutionOutputRef" }
         }
       },
-      "required": ["executionId", "status", "outputs"],
+      "required": ["stepId", "status", "startedAt", "finishedAt", "failure", "outputs"],
+      "additionalProperties": false
+    },
+    "ExecutionReport": {
+      "$anchor": "ExecutionReport",
+      "type": "object",
+      "properties": {
+        "runId": { "type": "string", "format": "uuid" },
+        "status": { "$ref": "./ExecutionStatus.json" },
+        "stepResults": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/StepRunResult" }
+        }
+      },
+      "required": ["runId", "status", "stepResults"],
       "additionalProperties": false
     }
   }

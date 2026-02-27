@@ -1,7 +1,7 @@
 package dk.cachet.carp.analytics.application
 
-import dk.cachet.carp.analytics.domain.execution.ExecutionResult
-import dk.cachet.carp.analytics.domain.execution.ExecutorState
+import dk.cachet.carp.analytics.application.execution.ExecutionReport
+import dk.cachet.carp.analytics.application.execution.ExecutorState
 import dk.cachet.carp.analytics.domain.workflow.Workflow
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.application.services.ApiVersion
@@ -43,7 +43,7 @@ interface ExecutionService : ApplicationService<ExecutionService, ExecutionServi
     /**
      * Retrieve the result of a completed execution.
      */
-    suspend fun getExecutionResult( executionId: UUID ): ExecutionResult?
+    suspend fun getExecutionResult( executionId: UUID ): ExecutionReport?
 
     /**
      * Query past execution jobs by study/workflow/time range.

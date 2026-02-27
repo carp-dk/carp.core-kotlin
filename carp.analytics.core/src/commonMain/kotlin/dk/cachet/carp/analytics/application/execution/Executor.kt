@@ -1,4 +1,4 @@
-package dk.cachet.carp.analytics.domain.execution
+package dk.cachet.carp.analytics.application.execution
 
 import dk.cachet.carp.analytics.domain.workflow.Step
 
@@ -10,7 +10,7 @@ import dk.cachet.carp.analytics.domain.workflow.Step
  * - Executing the step's process with its inputs/outputs
  * - Cleaning up resources after execution
  *
- * The executor receives a complete [Step] which contains:
+ * The executor receives a complete [dk.cachet.carp.analytics.domain.workflow.Step] which contains:
  * - The process to execute
  * - The execution context (environment, variables)
  * - Input/output specifications
@@ -23,12 +23,12 @@ interface Executor
      *
      * @param step The step to set up.
      */
-    fun setup( step: Step ) {}
+    fun setup( step: Step) {}
 
     /**
      * Executes the step's process with its configured inputs and outputs.
      *
      * @param step The step to execute.
      */
-    fun execute( step: Step )
+    fun execute( step: Step)
 }

@@ -1,6 +1,5 @@
 package dk.cachet.carp.analytics.application.execution
 
-import dk.cachet.carp.analytics.domain.execution.ExecutorState
 import dk.cachet.carp.analytics.domain.workflow.Workflow
 
 /**

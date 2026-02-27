@@ -1,8 +1,8 @@
 package dk.cachet.carp.analytics.infrastructure
 
 import dk.cachet.carp.analytics.application.ExecutionService
-import dk.cachet.carp.analytics.domain.execution.BasicExecutionResult
-import dk.cachet.carp.analytics.domain.execution.ExecutorState
+import dk.cachet.carp.analytics.application.execution.ExecutionReport
+import dk.cachet.carp.analytics.application.execution.ExecutorState
 import dk.cachet.carp.analytics.domain.workflow.Workflow
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.application.services.ApiVersion
@@ -49,9 +49,9 @@ sealed class ExecutionServiceRequest<out TReturn> : ApplicationServiceRequest<Ex
     }
 
     @Serializable
-    data class GetExecutionResult( val executionId: UUID ) : ExecutionServiceRequest<BasicExecutionResult?>()
+    data class GetExecutionResult( val executionId: UUID ) : ExecutionServiceRequest<ExecutionReport?>()
     {
-        override fun getResponseSerializer() = BasicExecutionResult.serializer().nullable
+        override fun getResponseSerializer() = ExecutionReport.serializer().nullable
     }
 
     @Serializable

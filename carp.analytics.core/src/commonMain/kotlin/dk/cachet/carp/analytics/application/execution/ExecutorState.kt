@@ -1,4 +1,4 @@
-package dk.cachet.carp.analytics.domain.execution
+package dk.cachet.carp.analytics.application.execution
 
 import dk.cachet.carp.common.application.UUID
 import kotlinx.datetime.Instant
