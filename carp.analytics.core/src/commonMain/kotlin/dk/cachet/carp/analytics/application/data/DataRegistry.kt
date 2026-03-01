@@ -1,8 +1,7 @@
 package dk.cachet.carp.analytics.application.data
 
-import dk.cachet.carp.analytics.application.execution.ExecutionOutputRef
+import dk.cachet.carp.analytics.application.execution.OutputRef
 import dk.cachet.carp.analytics.domain.data.DataSchema
-import dk.cachet.carp.analytics.domain.data.DataSource
 import dk.cachet.carp.analytics.domain.data.FileFormat
 import dk.cachet.carp.analytics.domain.data.FileSystemSource
 import dk.cachet.carp.analytics.domain.data.InMemorySource
@@ -60,13 +59,13 @@ class DataRegistry
     /**
      * Return a list of structured outputs based on the current registry state.
      *
-     * Converts all entries into [ExecutionOutputRef], resolving memory vs file-based handles.
+     * Converts all entries into [OutputRef], resolving memory vs file-based handles.
      */
-    fun toExecutionOutputs(): List<ExecutionOutputRef>
+    fun toExecutionOutputs(): List<OutputRef>
     {
         return data.map { (name, handle) ->
-            val result: ExecutionOutputRef = when (handle) {
-                is FileData -> ExecutionOutputRef(
+            val result: OutputRef = when (handle) {
+                is FileData -> OutputRef(
                     outputId = UUID.randomUUID(), // Generate UUID for each output
                     source = FileSystemSource(
                         path = handle.path,
@@ -75,7 +74,7 @@ class DataRegistry
                     format = inferFormat(handle.path, handle.mimeType),
                     schema = DataSchema(format = inferFormat(handle.path, handle.mimeType))
                 )
-                is InMemoryData -> ExecutionOutputRef(
+                is InMemoryData -> OutputRef(
                     outputId = UUID.randomUUID(), // Generate UUID for each output
                     source = InMemorySource(registryKey = name),
                     format = FileFormat.JSON, // Default format for in-memory data

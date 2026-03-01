@@ -12,5 +12,6 @@ data class StepRunResult(
     val startedAt: Instant?,
     val finishedAt: Instant?,
     val failure: StepFailure?,
-    val outputs: List<ExecutionOutputRef>?
+    val outputs: List<OutputRef>? = emptyList(),
+    val detail: StepRunDetail? = null
 )

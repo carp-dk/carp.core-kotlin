@@ -2,6 +2,65 @@
   "$schema": "https://json-schema.org/draft/2019-09/schema",
   "$ref": "#/$defs/ExecutionReport",
   "$defs": {
+    "OutputRef": {
+      "type": "object",
+      "properties": {
+        "outputId": { "type": "string", "format": "uuid" },
+        "source": { "type": "object", "additionalProperties": true },
+        "format": { "type": "object", "additionalProperties": true },
+        "schema": { "type": "object", "additionalProperties": true }
+      },
+      "required": ["outputId", "source", "format", "schema"],
+      "additionalProperties": false
+    },
+    "StepRunDetail": {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": ["array", "null"],
+          "items": { "type": "string" }
+        },
+        "workingDirectory": { "type": ["string", "null"] },
+        "exitCode": { "type": ["integer", "null"] },
+        "stdout": {
+          "oneOf": [
+            { "$ref": "#/$defs/ResourceRef" },
+            { "type": "null" }
+          ]
+        },
+        "stderr": {
+          "oneOf": [
+            { "$ref": "#/$defs/ResourceRef" },
+            { "type": "null" }
+          ]
+        },
+        "log": {
+          "oneOf": [
+            { "$ref": "#/$defs/ResourceRef" },
+            { "type": "null" }
+          ]
+        },
+        "metrics": {
+          "type": ["object", "null"],
+          "additionalProperties": { "type": "number" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "ResourceRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["RELATIVE_PATH", "URI"]
+        },
+        "value": { "type": "string" },
+        "mediaType": { "type": ["string", "null"] },
+        "byteSize": { "type": ["integer", "null"] }
+      },
+      "required": ["kind", "value"],
+      "additionalProperties": false
+    },
     "ExecutionOutputRef": {
       "type": "object",
       "properties": {
@@ -46,10 +105,16 @@
         },
         "outputs": {
           "type": ["array", "null"],
-          "items": { "$ref": "#/$defs/ExecutionOutputRef" }
+          "items": { "$ref": "#/$defs/OutputRef" }
+        },
+        "detail": {
+          "oneOf": [
+            { "$ref": "#/$defs/StepRunDetail" },
+            { "type": "null" }
+          ]
         }
       },
-      "required": ["stepId", "status", "startedAt", "finishedAt", "failure", "outputs"],
+      "required": ["stepId", "status", "startedAt", "finishedAt", "failure"],
       "additionalProperties": false
     },
     "ExecutionReport": {
@@ -58,12 +123,20 @@
       "properties": {
         "runId": { "type": "string", "format": "uuid" },
         "status": { "$ref": "./ExecutionStatus.json" },
+        "startTime": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+        "finishTime": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
         "stepResults": {
           "type": "array",
           "items": { "$ref": "#/$defs/StepRunResult" }
         }
       },
-      "required": ["runId", "status", "stepResults"],
+      "required": ["runId", "status", "startTime", "finishTime", "stepResults"],
       "additionalProperties": false
     }
   }

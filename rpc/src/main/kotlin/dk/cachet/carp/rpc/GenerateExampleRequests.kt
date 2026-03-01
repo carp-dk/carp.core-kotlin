@@ -5,7 +5,7 @@
     "MaximumLineLength",
     "TopLevelPropertyNaming"
 )
-@file:OptIn(kotlin.time.ExperimentalTime::class)
+@file:OptIn(ExperimentalTime::class)
 
 package dk.cachet.carp.rpc
 
@@ -13,16 +13,10 @@ import dk.cachet.carp.analytics.application.ExecutionService
 import dk.cachet.carp.analytics.application.ScheduleManagementService
 import dk.cachet.carp.analytics.application.TriggerService
 import dk.cachet.carp.analytics.application.WorkflowService
-import dk.cachet.carp.analytics.application.execution.ExecutionOutputRef
 import dk.cachet.carp.analytics.application.execution.ExecutionReport
 import dk.cachet.carp.analytics.application.execution.ExecutionStatus
 import dk.cachet.carp.analytics.application.execution.ExecutorState
 import dk.cachet.carp.analytics.application.execution.StepRunResult
-import dk.cachet.carp.analytics.application.execution.FailureKind
-import dk.cachet.carp.analytics.application.execution.StepFailure
-import dk.cachet.carp.analytics.domain.data.DataSchema
-import dk.cachet.carp.analytics.domain.data.DataSource
-import dk.cachet.carp.analytics.domain.data.FileFormat
 import dk.cachet.carp.analytics.domain.trigger.ManualTrigger
 import dk.cachet.carp.analytics.domain.trigger.TriggerActivation
 import dk.cachet.carp.analytics.domain.workflow.Version
@@ -86,7 +80,6 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.Serializable
 import kotlin.reflect.KFunction
 import kotlin.reflect.KSuspendFunction3
 import kotlin.reflect.jvm.javaField
@@ -94,7 +87,7 @@ import kotlin.reflect.jvm.javaMethod
 import kotlin.reflect.jvm.kotlinFunction
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.seconds
-
+import kotlin.time.ExperimentalTime
 
 
 /**
@@ -347,12 +340,15 @@ private val exampleExecutionResult = ExecutionReport(
         StepRunResult(
             stepId = UUID.randomUUID(),
             status = ExecutionStatus.SUCCEEDED,
-            startedAt = kotlinx.datetime.Instant.fromEpochMilliseconds(1642505045000),
-            finishedAt = kotlinx.datetime.Instant.fromEpochMilliseconds(1642505145000),
+            startedAt = Instant.fromEpochMilliseconds(1642505045000),
+            finishedAt = Instant.fromEpochMilliseconds(1642505145000),
             failure = null,
             outputs = emptyList()
         )
-    )
+
+    ),
+    startTime = null,
+    finishTime = null
 )
 
 // Example for trigger service request.
