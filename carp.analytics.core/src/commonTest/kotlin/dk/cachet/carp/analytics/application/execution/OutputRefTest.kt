@@ -4,9 +4,9 @@ import dk.cachet.carp.analytics.domain.data.*
 import dk.cachet.carp.common.application.NamespacedId
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.infrastructure.test.createTestJSON
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.decodeFromString
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 
 /**
@@ -47,7 +47,7 @@ class OutputRefTest
         val outputRef = OutputRef(
             outputId = UUID.randomUUID(),
             source = UrlSource(
-                url = "http://api.example.com/data.json",
+                url = "https://api.example.com/data.json",
                 format = FileFormat.JSON
             ),
             format = FileFormat.JSON,
