@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class StepRunDetail(
     val command: List<String>? = null,
-    val workingDirectory: String? = null,   // relative path
+    val workingDirectory: String? = null, // relative path
 
     val exitCode: Int? = null,
 

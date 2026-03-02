@@ -1,8 +1,8 @@
 package dk.cachet.carp.analytics.application.execution
 
 import dk.cachet.carp.common.application.UUID
-import kotlinx.serialization.Serializable
 import kotlinx.datetime.Instant
+import kotlinx.serialization.Serializable
 
 @Serializable
 data class ExecutionReport(

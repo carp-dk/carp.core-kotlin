@@ -20,7 +20,7 @@ class ExecutionWorkspaceTest
         val result1 = workspace.stepDir(stepId)
         val result2 = workspace.stepDir(stepId)
 
-        assertEquals("steps/${stepId}", result1)
+        assertEquals("steps/$stepId", result1)
         assertEquals(result1, result2, "stepDir should be deterministic")
     }
 
@@ -31,7 +31,7 @@ class ExecutionWorkspaceTest
 
         val result = workspace.stepInputsDir(stepId)
 
-        assertEquals("steps/${stepId}/inputs", result)
+        assertEquals("steps/$stepId/inputs", result)
     }
 
     @Test
@@ -41,7 +41,7 @@ class ExecutionWorkspaceTest
 
         val result = workspace.stepOutputsDir(stepId)
 
-        assertEquals("steps/${stepId}/outputs", result)
+        assertEquals("steps/$stepId/outputs", result)
     }
 
     @Test
@@ -51,7 +51,7 @@ class ExecutionWorkspaceTest
 
         val result = workspace.stepLogsDir(stepId)
 
-        assertEquals("steps/${stepId}/logs", result)
+        assertEquals("steps/$stepId/logs", result)
     }
 
     @Test

@@ -1,5 +1,6 @@
 package dk.cachet.carp.analytics.application.execution.workspace
 
+import dk.cachet.carp.analytics.application.plan.ExecutionPlan
 import dk.cachet.carp.common.application.UUID
 
 /**
@@ -12,12 +13,13 @@ import dk.cachet.carp.common.application.UUID
 interface WorkspaceManager
 {
     /**
-     * Creates a new execution workspace for the given run ID.
+     * Creates a new execution workspace for the given execution plan and run ID.
      *
+     * @param plan The execution plan containing workflow and step information
      * @param runId Unique identifier for the execution run
      * @return A new ExecutionWorkspace instance
      */
-    fun createWorkspace(runId: UUID): ExecutionWorkspace
+    fun create(plan: ExecutionPlan, runId: UUID): ExecutionWorkspace
 
     /**
      * Prepares the directory structure for a specific step within the workspace.

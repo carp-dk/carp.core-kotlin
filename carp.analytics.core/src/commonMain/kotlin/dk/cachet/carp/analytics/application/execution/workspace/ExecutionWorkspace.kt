@@ -29,7 +29,7 @@ data class ExecutionWorkspace(
      */
     fun stepDir(stepId: UUID): String
     {
-        return "$STEPS_DIR/${stepId.toString()}"
+        return "$STEPS_DIR/$stepId"
     }
 
     /**
@@ -40,7 +40,7 @@ data class ExecutionWorkspace(
      */
     fun stepInputsDir(stepId: UUID): String
     {
-        return "$STEPS_DIR/${stepId.toString()}/$INPUTS_DIR"
+        return "$STEPS_DIR/$stepId/$INPUTS_DIR"
     }
 
     /**
@@ -51,7 +51,7 @@ data class ExecutionWorkspace(
      */
     fun stepOutputsDir(stepId: UUID): String
     {
-        return "$STEPS_DIR/${stepId.toString()}/$OUTPUTS_DIR"
+        return "$STEPS_DIR/$stepId/$OUTPUTS_DIR"
     }
 
     /**
@@ -62,6 +62,6 @@ data class ExecutionWorkspace(
      */
     fun stepLogsDir(stepId: UUID): String
     {
-        return "$STEPS_DIR/${stepId.toString()}/$LOGS_DIR"
+        return "$STEPS_DIR/$stepId/$LOGS_DIR"
     }
 }
