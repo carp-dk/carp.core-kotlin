@@ -31,6 +31,17 @@ interface WorkspaceManager
      * @param stepId The step identifier UUID
      */
     fun prepareStepDirectories(workspace: ExecutionWorkspace, stepId: UUID)
+
+    /**
+     * Returns the absolute path string of the step's working directory within this workspace.
+     *
+     * This allows infrastructure runners to resolve a concrete on-disk path without
+     * needing a separate base-root parameter — the manager already owns that knowledge.
+     *
+     * @param workspace The execution workspace produced by [create].
+     * @param stepId    The step whose working directory should be resolved.
+     * @return Absolute path string, or null if this manager cannot resolve filesystem paths
+     *         (e.g. a stub or in-memory implementation).
+     */
+    fun resolveStepWorkingDir(workspace: ExecutionWorkspace, stepId: UUID): String? = null
 }
-
-

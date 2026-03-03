@@ -15,5 +15,6 @@ enum class FailureKind
     TIMEOUT,
     CANCELLED,
     INFRASTRUCTURE,
+    OUTPUT_MISSING,
     UNKNOWN
 }

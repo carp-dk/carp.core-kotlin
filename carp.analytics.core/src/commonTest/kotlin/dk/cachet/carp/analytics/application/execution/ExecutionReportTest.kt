@@ -128,7 +128,7 @@ class ExecutionReportTest
     {
         val executionReport = ExecutionReport(
             runId = UUID.randomUUID(),
-            planId =UUID.randomUUID(),
+            planId = UUID.randomUUID(),
             startedAt = Instant.parse("2026-03-02T08:00:00Z"),
             finishedAt = null,
             status = ExecutionStatus.RUNNING,
