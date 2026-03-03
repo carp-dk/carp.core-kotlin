@@ -8,11 +8,12 @@ import kotlinx.serialization.Serializable
 
 /**
  * A structured, bindable output produced by a step execution.
+ * A structured, bindable output produced by a step execution.
  */
 @Serializable
 data class OutputRef(
     val outputId: UUID,
     val source: DataSource,
     val format: FileFormat,
-    val schema: DataSchema
+    val schema: DataSchema,
 )

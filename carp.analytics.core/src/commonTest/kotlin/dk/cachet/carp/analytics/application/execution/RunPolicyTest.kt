@@ -6,7 +6,12 @@ import kotlin.test.assertNull
 
 class RunPolicyTest
 {
-    private class TestPolicy( override val timeoutMs: Long? ) : RunPolicy
+    private class TestPolicy(
+        override val stopOnFailure: Boolean = true,
+        override val timeoutMs: Long?,
+        override val failOnWarnings: Boolean = true,
+        override val maxAttempts: Int = 1
+    ) : RunPolicy
 
     @Test
     fun `timeoutMs is returned correctly`()

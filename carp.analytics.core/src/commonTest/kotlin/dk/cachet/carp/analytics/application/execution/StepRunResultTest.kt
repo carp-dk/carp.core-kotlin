@@ -1,6 +1,5 @@
 package dk.cachet.carp.analytics.application.execution
 
-import dk.cachet.carp.analytics.domain.data.*
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.infrastructure.test.createTestJSON
 import kotlinx.datetime.Instant
@@ -27,11 +26,11 @@ class StepRunResultTest
             finishedAt = Instant.parse("2026-03-02T10:05:00Z"),
             failure = null,
             outputs = listOf(
-                OutputRef(
+                ProducedOutputRef(
                     outputId = UUID.randomUUID(),
-                    source = FileSystemSource("/data/result.json", FileFormat.JSON),
-                    format = FileFormat.JSON,
-                    schema = DataSchema(FileFormat.JSON, jsonSchema = """{"type": "object"}""")
+                    location = ResourceRef(ResourceKind.RELATIVE_PATH, "steps/step-123/outputs/result.json"),
+                    sizeBytes = 1024L,
+                    contentType = "application/json"
                 )
             ),
             detail = StepRunDetail(
@@ -108,7 +107,7 @@ class StepRunResultTest
         val deserialized = json.decodeFromString<StepRunResult>(serialized)
 
         assertEquals(stepRunResult, deserialized)
-        assertTrue(deserialized.outputs!!.isEmpty())
+        assertTrue(deserialized.outputs?.isEmpty() == true)
     }
 
     @Test
@@ -121,27 +120,24 @@ class StepRunResultTest
             finishedAt = Instant.parse("2026-03-02T11:00:00Z"),
             failure = null,
             outputs = listOf(
-                OutputRef(
+                ProducedOutputRef(
                     outputId = UUID.randomUUID(),
-                    source = FileSystemSource("/data/results1.csv", FileFormat.CSV),
-                    format = FileFormat.CSV,
-                    schema = DataSchema(FileFormat.CSV)
+                    location = ResourceRef(ResourceKind.RELATIVE_PATH, "steps/step-456/outputs/results1.csv"),
+                    sizeBytes = 2048L,
+                    contentType = "text/csv"
                 ),
-                OutputRef(
+                ProducedOutputRef(
                     outputId = UUID.randomUUID(),
-                    source = FileSystemSource("/data/results2.json", FileFormat.JSON),
-                    format = FileFormat.JSON,
-                    schema = DataSchema(FileFormat.JSON)
+                    location = ResourceRef(ResourceKind.RELATIVE_PATH, "steps/step-456/outputs/results2.json"),
+                    sizeBytes = 1536L,
+                    contentType = "application/json"
                 ),
-                OutputRef(
+                ProducedOutputRef(
                     outputId = UUID.randomUUID(),
-                    source = DatabaseSource(
-                        "postgresql://localhost/db",
-                        "SELECT * FROM processed_data",
-                        DatabaseType.POSTGRESQL
-                    ),
-                    format = FileFormat.JSON,
-                    schema = DataSchema(FileFormat.JSON)
+                    location = ResourceRef(ResourceKind.URI, "s3://bucket/processed_data.parquet"),
+                    sizeBytes = 10240L,
+                    sha256 = "abc123def456",
+                    contentType = "application/octet-stream"
                 )
             )
         )
@@ -150,7 +146,7 @@ class StepRunResultTest
         val deserialized = json.decodeFromString<StepRunResult>(serialized)
 
         assertEquals(stepRunResult, deserialized)
-        assertEquals(3, deserialized.outputs!!.size)
+        assertEquals(3, deserialized.outputs?.size)
     }
 
     @Test
@@ -231,11 +227,12 @@ class StepRunResultTest
             finishedAt = Instant.parse("2026-03-02T08:30:00Z"),
             failure = null,
             outputs = listOf(
-                OutputRef(
+                ProducedOutputRef(
                     outputId = UUID.randomUUID(),
-                    source = StreamSource("kafka-topic", "kafka"),
-                    format = FileFormat.JSON,
-                    schema = DataSchema(FileFormat.JSON)
+                    location = ResourceRef(ResourceKind.RELATIVE_PATH, "steps/step-789/outputs/processed.json"),
+                    sizeBytes = 4096L,
+                    sha256 = "def789ghi012",
+                    contentType = "application/json"
                 )
             ),
             detail = StepRunDetail(

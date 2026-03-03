@@ -1,6 +1,5 @@
 package dk.cachet.carp.analytics.application.execution
 
-import dk.cachet.carp.analytics.domain.data.*
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.infrastructure.test.createTestJSON
 import kotlinx.datetime.Instant
@@ -23,9 +22,10 @@ class ExecutionReportTest
     {
         val executionReport = ExecutionReport(
             runId = UUID.randomUUID(),
+            planId = UUID.randomUUID(),
+            startedAt = Instant.parse("2026-03-02T09:00:00Z"),
+            finishedAt = Instant.parse("2026-03-02T10:30:00Z"),
             status = ExecutionStatus.SUCCEEDED,
-            startTime = Instant.parse("2026-03-02T09:00:00Z"),
-            finishTime = Instant.parse("2026-03-02T10:30:00Z"),
             stepResults = listOf(
                 StepRunResult(
                     stepId = UUID.randomUUID(),
@@ -34,11 +34,11 @@ class ExecutionReportTest
                     finishedAt = Instant.parse("2026-03-02T09:15:00Z"),
                     failure = null,
                     outputs = listOf(
-                        OutputRef(
+                        ProducedOutputRef(
                             outputId = UUID.randomUUID(),
-                            source = FileSystemSource("/tmp/step1_output.csv", FileFormat.CSV),
-                            format = FileFormat.CSV,
-                            schema = DataSchema(FileFormat.CSV)
+                            location = ResourceRef(ResourceKind.RELATIVE_PATH, "steps/step1/outputs/step1_output.csv"),
+                            sizeBytes = 2048L,
+                            contentType = "text/csv"
                         )
                     )
                 ),
@@ -49,11 +49,11 @@ class ExecutionReportTest
                     finishedAt = Instant.parse("2026-03-02T10:30:00Z"),
                     failure = null,
                     outputs = listOf(
-                        OutputRef(
+                        ProducedOutputRef(
                             outputId = UUID.randomUUID(),
-                            source = UrlSource("http://results.example.com/final.json", FileFormat.JSON),
-                            format = FileFormat.JSON,
-                            schema = DataSchema(FileFormat.JSON)
+                            location = ResourceRef(ResourceKind.URI, "http://results.example.com/final.json"),
+                            sizeBytes = 1024L,
+                            contentType = "application/json"
                         )
                     )
                 )
@@ -71,9 +71,10 @@ class ExecutionReportTest
     {
         val executionReport = ExecutionReport(
             runId = UUID.randomUUID(),
+            planId = UUID.randomUUID(),
+            startedAt = Instant.parse("2026-03-02T09:00:00Z"),
+            finishedAt = Instant.parse("2026-03-02T09:05:00Z"),
             status = ExecutionStatus.FAILED,
-            startTime = Instant.parse("2026-03-02T09:00:00Z"),
-            finishTime = Instant.parse("2026-03-02T09:05:00Z"),
             stepResults = listOf(
                 StepRunResult(
                     stepId = UUID.randomUUID(),
@@ -109,9 +110,10 @@ class ExecutionReportTest
     {
         val executionReport = ExecutionReport(
             runId = UUID.randomUUID(),
+            planId = UUID.randomUUID(),
+            startedAt = null,
+            finishedAt = null,
             status = ExecutionStatus.PENDING,
-            startTime = null,
-            finishTime = null,
             stepResults = emptyList()
         )
 
@@ -126,9 +128,10 @@ class ExecutionReportTest
     {
         val executionReport = ExecutionReport(
             runId = UUID.randomUUID(),
+            planId =UUID.randomUUID(),
+            startedAt = Instant.parse("2026-03-02T08:00:00Z"),
+            finishedAt = null,
             status = ExecutionStatus.RUNNING,
-            startTime = Instant.parse("2026-03-02T08:00:00Z"),
-            finishTime = null,
             stepResults = listOf(
                 StepRunResult(
                     stepId = UUID.randomUUID(),
@@ -137,19 +140,11 @@ class ExecutionReportTest
                     finishedAt = Instant.parse("2026-03-02T08:30:00Z"),
                     failure = null,
                     outputs = listOf(
-                        OutputRef(
+                        ProducedOutputRef(
                             outputId = UUID.randomUUID(),
-                            source = DatabaseSource(
-                                connectionString = "postgresql://user@host:5432/db",
-                                query = "SELECT * FROM processed_data",
-                                databaseType = DatabaseType.POSTGRESQL
-                            ),
-                            format = FileFormat.JSON,
-                            schema = DataSchema(
-                                format = FileFormat.JSON,
-                                jsonSchema = """{"type": "array", "items": {"type": "object"}}""",
-                                encoding = "UTF-8"
-                            )
+                            location = ResourceRef(ResourceKind.URI, "postgresql://user@host:5432/db/processed_data"),
+                            sizeBytes = 4096L,
+                            contentType = "application/json"
                         )
                     ),
                     detail = StepRunDetail(
@@ -189,7 +184,7 @@ class ExecutionReportTest
 
         assertEquals(executionReport, deserialized)
         assertEquals(ExecutionStatus.RUNNING, deserialized.status)
-        assertNull(deserialized.finishTime)
+        assertNull(deserialized.finishedAt)
         assertEquals(2, deserialized.stepResults.size)
     }
 
@@ -198,9 +193,10 @@ class ExecutionReportTest
     {
         val executionReport = ExecutionReport(
             runId = UUID.randomUUID(),
+            planId = UUID.randomUUID(),
+            startedAt = Instant.parse("2026-03-02T10:00:00Z"),
+            finishedAt = null,
             status = ExecutionStatus.RUNNING,
-            startTime = Instant.parse("2026-03-02T10:00:00Z"),
-            finishTime = null,
             stepResults = listOf(
                 StepRunResult(
                     stepId = UUID.randomUUID(),
@@ -253,9 +249,10 @@ class ExecutionReportTest
     {
         val executionReport = ExecutionReport(
             runId = UUID.randomUUID(),
+            planId = UUID.randomUUID(),
+            startedAt = Instant.parse("2026-03-02T10:00:00Z"),
+            finishedAt = Instant.parse("2026-03-02T10:00:01Z"),
             status = ExecutionStatus.SUCCEEDED,
-            startTime = Instant.parse("2026-03-02T10:00:00Z"),
-            finishTime = Instant.parse("2026-03-02T10:00:01Z"),
             stepResults = emptyList()
         )
 
@@ -277,11 +274,11 @@ class ExecutionReportTest
                 finishedAt = if (i <= 90) Instant.parse("2026-03-02T10:00:00Z").plus((i + 1).seconds) else null,
                 failure = null,
                 outputs = if (i % 10 == 0) listOf(
-                    OutputRef(
+                    ProducedOutputRef(
                         outputId = UUID.randomUUID(),
-                        source = FileSystemSource("/tmp/step$i.json", FileFormat.JSON),
-                        format = FileFormat.JSON,
-                        schema = DataSchema(FileFormat.JSON)
+                        location = ResourceRef(ResourceKind.RELATIVE_PATH, "steps/step$i/outputs/step$i.json"),
+                        sizeBytes = 1024L,
+                        contentType = "application/json"
                     )
                 ) else emptyList()
             )
@@ -289,9 +286,10 @@ class ExecutionReportTest
 
         val executionReport = ExecutionReport(
             runId = UUID.randomUUID(),
+            planId = UUID.randomUUID(),
+            startedAt = Instant.parse("2026-03-02T10:00:00Z"),
+            finishedAt = null,
             status = ExecutionStatus.RUNNING,
-            startTime = Instant.parse("2026-03-02T10:00:00Z"),
-            finishTime = null,
             stepResults = steps
         )
 
@@ -306,14 +304,15 @@ class ExecutionReportTest
     @Test
     fun serialization_preserves_precise_timestamps()
     {
-        val startTime = Instant.parse("2026-03-02T10:15:30.123456789Z")
-        val finishTime = Instant.parse("2026-03-02T10:20:45.987654321Z")
+        val startedAt = Instant.parse("2026-03-02T10:15:30.123456789Z")
+        val finishedAt = Instant.parse("2026-03-02T10:20:45.987654321Z")
 
         val executionReport = ExecutionReport(
             runId = UUID.randomUUID(),
+            planId = UUID.randomUUID(),
+            startedAt = startedAt,
+            finishedAt = finishedAt,
             status = ExecutionStatus.SUCCEEDED,
-            startTime = startTime,
-            finishTime = finishTime,
             stepResults = emptyList()
         )
 
@@ -321,8 +320,8 @@ class ExecutionReportTest
         val deserialized = json.decodeFromString<ExecutionReport>(serialized)
 
         assertEquals(executionReport, deserialized)
-        assertEquals(startTime, deserialized.startTime)
-        assertEquals(finishTime, deserialized.finishTime)
+        assertEquals(startedAt, deserialized.startedAt)
+        assertEquals(finishedAt, deserialized.finishedAt)
     }
 
     @Test
@@ -331,9 +330,10 @@ class ExecutionReportTest
         val specificUuid = UUID.parse("550e8400-e29b-41d4-a716-446655440000")
         val executionReport = ExecutionReport(
             runId = specificUuid,
+            planId = UUID.randomUUID(),
+            startedAt = null,
+            finishedAt = null,
             status = ExecutionStatus.SUCCEEDED,
-            startTime = null,
-            finishTime = null,
             stepResults = emptyList()
         )
 
@@ -350,10 +350,11 @@ class ExecutionReportTest
         ExecutionStatus.entries.forEach { status ->
             val executionReport = ExecutionReport(
                 runId = UUID.randomUUID(),
-                status = status,
-                startTime = if (status != ExecutionStatus.PENDING) Instant.parse("2026-03-02T10:00:00Z") else null,
-                finishTime = if (status in listOf(ExecutionStatus.SUCCEEDED, ExecutionStatus.FAILED, ExecutionStatus.SKIPPED))
+                planId = UUID.randomUUID(),
+                startedAt = if (status != ExecutionStatus.PENDING) Instant.parse("2026-03-02T10:00:00Z") else null,
+                finishedAt = if (status in listOf(ExecutionStatus.SUCCEEDED, ExecutionStatus.FAILED, ExecutionStatus.SKIPPED))
                     Instant.parse("2026-03-02T10:01:00Z") else null,
+                status = status,
                 stepResults = emptyList()
             )
 
