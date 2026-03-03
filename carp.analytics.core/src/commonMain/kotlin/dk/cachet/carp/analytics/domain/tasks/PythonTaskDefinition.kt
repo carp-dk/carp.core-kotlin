@@ -14,7 +14,6 @@ import kotlinx.serialization.Serializable
  * Responsibilities of this class:
  * - Identify the Python code to run via [entryPoint] ([Script] or [Module]).
  * - Carry a structured [args] list using the shared [ArgToken] DSL.
- * - Optionally declare a [workingDirectory] hint for path-relative scripts.
  *
  * Explicitly **not** the responsibility of this class:
  * - Resolving a Python executable or conda/venv environment.
