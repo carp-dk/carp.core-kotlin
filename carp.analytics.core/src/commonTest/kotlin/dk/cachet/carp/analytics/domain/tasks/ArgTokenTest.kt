@@ -1,6 +1,6 @@
 package dk.cachet.carp.analytics.domain.tasks
 
-import dk.cachet.carp.analytics.infrastructure.serialization.DspSerializer
+import dk.cachet.carp.analytics.infrastructure.serialization.CoreAnalyticsSerializer
 import dk.cachet.carp.common.application.UUID
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -67,8 +67,8 @@ class ArgTokenTest
         )
 
         tokens.forEach { original ->
-            val encoded = DspSerializer.json.encodeToString(original)
-            val decoded = DspSerializer.json.decodeFromString<ArgToken>(encoded)
+            val encoded = CoreAnalyticsSerializer.json.encodeToString(original)
+            val decoded = CoreAnalyticsSerializer.json.decodeFromString<ArgToken>(encoded)
             assertEquals(original, decoded)
         }
     }
@@ -85,8 +85,8 @@ class ArgTokenTest
             OutputRef(outputId)
         )
 
-        val encoded = DspSerializer.json.encodeToString(tokens)
-        val decoded = DspSerializer.json.decodeFromString<List<ArgToken>>(encoded)
+        val encoded = CoreAnalyticsSerializer.json.encodeToString(tokens)
+        val decoded = CoreAnalyticsSerializer.json.decodeFromString<List<ArgToken>>(encoded)
 
         assertEquals(tokens.size, decoded.size)
         assertEquals(tokens, decoded)
@@ -104,10 +104,10 @@ class ArgTokenTest
         val param = ParamRef("test")
 
         // Verify serialization includes correct type discriminators
-        val literalJson = DspSerializer.json.encodeToString<ArgToken>(literal)
-        val inputJson = DspSerializer.json.encodeToString<ArgToken>(input)
-        val outputJson = DspSerializer.json.encodeToString<ArgToken>(output)
-        val paramJson = DspSerializer.json.encodeToString<ArgToken>(param)
+        val literalJson = CoreAnalyticsSerializer.json.encodeToString<ArgToken>(literal)
+        val inputJson = CoreAnalyticsSerializer.json.encodeToString<ArgToken>(input)
+        val outputJson = CoreAnalyticsSerializer.json.encodeToString<ArgToken>(output)
+        val paramJson = CoreAnalyticsSerializer.json.encodeToString<ArgToken>(param)
 
         assertTrue(literalJson.contains("\"type\":\"Literal\""))
         assertTrue(inputJson.contains("\"type\":\"InputRef\""))
@@ -127,8 +127,8 @@ class ArgTokenTest
         assertEquals("   ", whitespace.value)
 
         // All should serialize/deserialize correctly
-        val encodedSpecial = DspSerializer.json.encodeToString<ArgToken>(specialChars)
-        val decodedSpecial = DspSerializer.json.decodeFromString<ArgToken>(encodedSpecial)
+        val encodedSpecial = CoreAnalyticsSerializer.json.encodeToString<ArgToken>(specialChars)
+        val decodedSpecial = CoreAnalyticsSerializer.json.decodeFromString<ArgToken>(encodedSpecial)
         assertEquals(specialChars, decodedSpecial)
     }
 
@@ -163,8 +163,8 @@ class ArgTokenTest
 
         // All should serialize correctly
         listOf(simple, dashed, underscored, dotted).forEach { param ->
-            val encoded = DspSerializer.json.encodeToString<ArgToken>(param)
-            val decoded = DspSerializer.json.decodeFromString<ArgToken>(encoded)
+            val encoded = CoreAnalyticsSerializer.json.encodeToString<ArgToken>(param)
+            val decoded = CoreAnalyticsSerializer.json.decodeFromString<ArgToken>(encoded)
             assertEquals(param, decoded)
         }
     }

@@ -1,6 +1,6 @@
 package dk.cachet.carp.analytics.application.plan
 
-import dk.cachet.carp.analytics.infrastructure.serialization.DspSerializer
+import dk.cachet.carp.analytics.infrastructure.serialization.CoreAnalyticsSerializer
 import dk.cachet.carp.common.application.UUID
 import kotlin.test.*
 
@@ -128,8 +128,8 @@ class ExecutionPlanTest
             requiredEnvironmentHandles = listOf(uuid)
         )
 
-        val encoded = DspSerializer.json.encodeToString(plan)
-        val decoded = DspSerializer.json.decodeFromString<ExecutionPlan>(encoded)
+        val encoded = CoreAnalyticsSerializer.json.encodeToString(plan)
+        val decoded = CoreAnalyticsSerializer.json.decodeFromString<ExecutionPlan>(encoded)
 
         assertEquals(plan, decoded)
     }

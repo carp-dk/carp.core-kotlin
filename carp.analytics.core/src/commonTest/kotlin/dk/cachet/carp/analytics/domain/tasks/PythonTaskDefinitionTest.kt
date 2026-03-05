@@ -1,6 +1,6 @@
 package dk.cachet.carp.analytics.domain.tasks
 
-import dk.cachet.carp.analytics.infrastructure.serialization.DspSerializer
+import dk.cachet.carp.analytics.infrastructure.serialization.CoreAnalyticsSerializer
 import dk.cachet.carp.common.application.UUID
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -41,8 +41,8 @@ class PythonTaskDefinitionTest
     fun `Script serialization round-trip`()
     {
         val original = Script("pipeline/run.py")
-        val encoded = DspSerializer.json.encodeToString(original)
-        val decoded = DspSerializer.json.decodeFromString<PythonEntryPoint>(encoded)
+        val encoded = CoreAnalyticsSerializer.json.encodeToString(original)
+        val decoded = CoreAnalyticsSerializer.json.decodeFromString<PythonEntryPoint>(encoded)
         assertEquals(original, decoded)
         assertTrue(decoded is Script)
     }
@@ -50,7 +50,7 @@ class PythonTaskDefinitionTest
     @Test
     fun `Script SerialName is correct`()
     {
-        val encoded = DspSerializer.json.encodeToString(Script("run.py") as PythonEntryPoint)
+        val encoded = CoreAnalyticsSerializer.json.encodeToString(Script("run.py") as PythonEntryPoint)
         assertTrue(encoded.contains("\"type\":\"Script\""), "Expected 'Script' discriminator, got: $encoded")
     }
 
@@ -76,8 +76,8 @@ class PythonTaskDefinitionTest
     fun `Module serialization round-trip`()
     {
         val original = Module("mypackage.cli")
-        val encoded = DspSerializer.json.encodeToString(original)
-        val decoded = DspSerializer.json.decodeFromString<PythonEntryPoint>(encoded)
+        val encoded = CoreAnalyticsSerializer.json.encodeToString(original)
+        val decoded = CoreAnalyticsSerializer.json.decodeFromString<PythonEntryPoint>(encoded)
         assertEquals(original, decoded)
         assertTrue(decoded is Module)
     }
@@ -85,7 +85,7 @@ class PythonTaskDefinitionTest
     @Test
     fun `Module SerialName is correct`()
     {
-        val encoded = DspSerializer.json.encodeToString(Module("pkg.main") as PythonEntryPoint)
+        val encoded = CoreAnalyticsSerializer.json.encodeToString(Module("pkg.main") as PythonEntryPoint)
         assertTrue(encoded.contains("\"type\":\"Module\""), "Expected 'Module' discriminator, got: $encoded")
     }
 
@@ -236,8 +236,8 @@ class PythonTaskDefinitionTest
             args = listOf(Literal("--verbose"), InputRef(UUID.randomUUID())),
         )
 
-        val encoded = DspSerializer.json.encodeToString(original)
-        val decoded = DspSerializer.json.decodeFromString<PythonTaskDefinition>(encoded)
+        val encoded = CoreAnalyticsSerializer.json.encodeToString(original)
+        val decoded = CoreAnalyticsSerializer.json.decodeFromString<PythonTaskDefinition>(encoded)
 
         assertEquals(original, decoded)
     }
@@ -252,8 +252,8 @@ class PythonTaskDefinitionTest
             args = listOf(ParamRef("epochs"), OutputRef(UUID.randomUUID()))
         )
 
-        val encoded = DspSerializer.json.encodeToString(original)
-        val decoded = DspSerializer.json.decodeFromString<PythonTaskDefinition>(encoded)
+        val encoded = CoreAnalyticsSerializer.json.encodeToString(original)
+        val decoded = CoreAnalyticsSerializer.json.decodeFromString<PythonTaskDefinition>(encoded)
 
         assertEquals(original, decoded)
     }
@@ -267,8 +267,8 @@ class PythonTaskDefinitionTest
             entryPoint = Script("run.py")
         )
 
-        val encoded = DspSerializer.json.encodeToString(task)
-        val decoded = DspSerializer.json.decodeFromString<PythonTaskDefinition>(encoded)
+        val encoded = CoreAnalyticsSerializer.json.encodeToString(task)
+        val decoded = CoreAnalyticsSerializer.json.decodeFromString<PythonTaskDefinition>(encoded)
 
         assertEquals(task, decoded)
         assertNull(decoded.description)
@@ -284,8 +284,8 @@ class PythonTaskDefinitionTest
             args = emptyList()
         )
 
-        val encoded = DspSerializer.json.encodeToString(task)
-        val decoded = DspSerializer.json.decodeFromString<PythonTaskDefinition>(encoded)
+        val encoded = CoreAnalyticsSerializer.json.encodeToString(task)
+        val decoded = CoreAnalyticsSerializer.json.decodeFromString<PythonTaskDefinition>(encoded)
 
         assertEquals(emptyList(), decoded.args)
     }
@@ -299,8 +299,8 @@ class PythonTaskDefinitionTest
             entryPoint = Script("run.py")
         )
 
-        val encoded = DspSerializer.json.encodeToString(original)
-        val decoded = DspSerializer.json.decodeFromString<TaskDefinition>(encoded)
+        val encoded = CoreAnalyticsSerializer.json.encodeToString(original)
+        val decoded = CoreAnalyticsSerializer.json.decodeFromString<TaskDefinition>(encoded)
 
         assertEquals(original, decoded)
         assertTrue(decoded is PythonTaskDefinition)
@@ -316,7 +316,7 @@ class PythonTaskDefinitionTest
             entryPoint = Module("pkg")
         )
 
-        val encoded = DspSerializer.json.encodeToString<TaskDefinition>(task)
+        val encoded = CoreAnalyticsSerializer.json.encodeToString<TaskDefinition>(task)
         assertTrue(
             encoded.contains("\"type\":\"PythonTaskDefinition\""),
             "Expected 'PythonTaskDefinition' discriminator, got: $encoded"

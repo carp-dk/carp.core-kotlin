@@ -1,6 +1,6 @@
 package dk.cachet.carp.analytics.domain.tasks
 
-import dk.cachet.carp.analytics.infrastructure.serialization.DspSerializer
+import dk.cachet.carp.analytics.infrastructure.serialization.CoreAnalyticsSerializer
 import dk.cachet.carp.common.application.UUID
 import kotlin.test.*
 
@@ -128,8 +128,8 @@ class CommandTaskDefinitionTest
             )
         )
 
-        val encoded = DspSerializer.json.encodeToString(original)
-        val decoded = DspSerializer.json.decodeFromString<CommandTaskDefinition>(encoded)
+        val encoded = CoreAnalyticsSerializer.json.encodeToString(original)
+        val decoded = CoreAnalyticsSerializer.json.decodeFromString<CommandTaskDefinition>(encoded)
 
         assertEquals(original, decoded)
         assertEquals(original.id, decoded.id)
@@ -148,8 +148,8 @@ class CommandTaskDefinitionTest
             executable = "test"
         )
 
-        val encoded = DspSerializer.json.encodeToString(task)
-        val decoded = DspSerializer.json.decodeFromString<CommandTaskDefinition>(encoded)
+        val encoded = CoreAnalyticsSerializer.json.encodeToString(task)
+        val decoded = CoreAnalyticsSerializer.json.decodeFromString<CommandTaskDefinition>(encoded)
 
         assertEquals(task, decoded)
         assertEquals(null, decoded.description)
@@ -165,8 +165,8 @@ class CommandTaskDefinitionTest
             args = emptyList()
         )
 
-        val encoded = DspSerializer.json.encodeToString(task)
-        val decoded = DspSerializer.json.decodeFromString<CommandTaskDefinition>(encoded)
+        val encoded = CoreAnalyticsSerializer.json.encodeToString(task)
+        val decoded = CoreAnalyticsSerializer.json.decodeFromString<CommandTaskDefinition>(encoded)
 
         assertEquals(task, decoded)
         assertEquals(emptyList(), decoded.args)
@@ -181,8 +181,8 @@ class CommandTaskDefinitionTest
             executable = "python"
         )
 
-        val encoded = DspSerializer.json.encodeToString(original)
-        val decoded = DspSerializer.json.decodeFromString<TaskDefinition>(encoded)
+        val encoded = CoreAnalyticsSerializer.json.encodeToString(original)
+        val decoded = CoreAnalyticsSerializer.json.decodeFromString<TaskDefinition>(encoded)
 
         assertEquals(original, decoded)
         assertTrue(decoded is CommandTaskDefinition)
@@ -198,7 +198,7 @@ class CommandTaskDefinitionTest
             executable = "test"
         )
 
-        val encoded = DspSerializer.json.encodeToString<TaskDefinition>(task)
+        val encoded = CoreAnalyticsSerializer.json.encodeToString<TaskDefinition>(task)
         assertTrue(encoded.contains("\"type\":\"CommandTaskDefinition\""))
     }
 }

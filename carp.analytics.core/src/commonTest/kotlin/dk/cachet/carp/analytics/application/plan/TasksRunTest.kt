@@ -1,6 +1,6 @@
 package dk.cachet.carp.analytics.application.plan
 
-import dk.cachet.carp.analytics.infrastructure.serialization.DspSerializer
+import dk.cachet.carp.analytics.infrastructure.serialization.CoreAnalyticsSerializer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -17,8 +17,8 @@ class TasksRunTest
             args = listOf("-c", "print('hi')")
         )
 
-        val encoded = DspSerializer.json.encodeToString(run)
-        val decoded = DspSerializer.json.decodeFromString<TasksRun>(encoded)
+        val encoded = CoreAnalyticsSerializer.json.encodeToString(run)
+        val decoded = CoreAnalyticsSerializer.json.decodeFromString<TasksRun>(encoded)
 
         assertEquals(run, decoded)
     }
@@ -38,8 +38,8 @@ class TasksRunTest
             parameters = mapOf("k" to "v")
         )
 
-        val encoded = DspSerializer.json.encodeToString(run)
-        val decoded = DspSerializer.json.decodeFromString<TasksRun>(encoded)
+        val encoded = CoreAnalyticsSerializer.json.encodeToString(run)
+        val decoded = CoreAnalyticsSerializer.json.decodeFromString<TasksRun>(encoded)
 
         assertEquals(run, decoded)
     }

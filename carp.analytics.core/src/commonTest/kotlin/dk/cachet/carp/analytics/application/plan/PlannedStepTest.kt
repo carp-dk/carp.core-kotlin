@@ -1,6 +1,6 @@
 package dk.cachet.carp.analytics.application.plan
 
-import dk.cachet.carp.analytics.infrastructure.serialization.DspSerializer
+import dk.cachet.carp.analytics.infrastructure.serialization.CoreAnalyticsSerializer
 import dk.cachet.carp.common.application.UUID
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -31,8 +31,8 @@ class PlannedStepTest
             environmentDefinitionId = UUID.randomUUID()
         )
 
-        val encoded = DspSerializer.json.encodeToString(step)
-        val decoded = DspSerializer.json.decodeFromString<PlannedStep>(encoded)
+        val encoded = CoreAnalyticsSerializer.json.encodeToString(step)
+        val decoded = CoreAnalyticsSerializer.json.decodeFromString<PlannedStep>(encoded)
 
         assertEquals(step, decoded)
     }
@@ -57,8 +57,8 @@ class PlannedStepTest
             environmentDefinitionId = UUID.randomUUID()
         )
 
-        val encoded = DspSerializer.json.encodeToString(step)
-        val decoded = DspSerializer.json.decodeFromString<PlannedStep>(encoded)
+        val encoded = CoreAnalyticsSerializer.json.encodeToString(step)
+        val decoded = CoreAnalyticsSerializer.json.decodeFromString<PlannedStep>(encoded)
 
         assertEquals(step, decoded)
     }
