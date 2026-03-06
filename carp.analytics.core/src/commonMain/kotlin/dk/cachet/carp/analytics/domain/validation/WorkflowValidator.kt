@@ -94,7 +94,7 @@ object WorkflowValidator
         return duplicates.map { dup ->
             ValidationIssue(
                 severity = ValidationSeverity.ERROR,
-                code = "WORKFLOW_STEP_ID_DUPLICATE",
+                code = ValidationErrorCode.WORKFLOW_STEP_ID_DUPLICATE,
                 message = "Workflow '$wid' has duplicate step id '$dup'. Step ids must be unique within a workflow.",
                 path = "$wPath.steps",
                 subjectId = wid
@@ -128,7 +128,7 @@ object WorkflowValidator
                 {
                     issues += ValidationIssue(
                         severity = ValidationSeverity.ERROR,
-                        code = "WORKFLOW_DEP_REFERENCE_MISSING",
+                        code = ValidationErrorCode.WORKFLOW_DEP_REFERENCE_MISSING,
                         message = "Workflow '$wid' step '$sid' references missing dependency '$dep'.",
                         path = "${config.stepPath( workflow, s )}.dependencies",
                         subjectId = wid
@@ -167,7 +167,7 @@ object WorkflowValidator
         return cycles.map { cycle ->
             ValidationIssue(
                 severity = ValidationSeverity.ERROR,
-                code = "WORKFLOW_DEP_CYCLE_DETECTED",
+                code = ValidationErrorCode.WORKFLOW_DEP_CYCLE_DETECTED,
                 message = "Workflow '$wid' has a dependency cycle: ${cycle.joinToString( " -> " )}.",
                 path = "$wPath.steps",
                 subjectId = wid

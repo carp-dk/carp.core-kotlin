@@ -86,7 +86,7 @@ object StepValidator
         return duplicates.map { dup ->
             ValidationIssue(
                 severity = ValidationSeverity.ERROR,
-                code = "STEP_OUTPUT_DUPLICATE_ID",
+                code = ValidationErrorCode.STEP_OUTPUT_PORT_DUPLICATE_ID,
                 message = "Step '$sid' has duplicate output id '$dup'. Output ids must be unique within a step.",
                 path = "$basePath.outputs",
                 subjectId = sid
@@ -112,7 +112,7 @@ object StepValidator
         return missing.map { m ->
             ValidationIssue(
                 severity = ValidationSeverity.ERROR,
-                code = "STEP_INPUT_REQUIRED_MISSING",
+                code = ValidationErrorCode.STEP_INPUT_REQUIRED_MISSING,
                 message = "Step '$sid' is missing required input spec '$m'.",
                 path = "$basePath.inputs",
                 subjectId = sid
@@ -138,7 +138,7 @@ object StepValidator
         return missingTypes.map { spec ->
             ValidationIssue(
                 severity = ValidationSeverity.ERROR,
-                code = "STEP_SPEC_TYPE_MISSING",
+                code = ValidationErrorCode.STEP_SPEC_TYPE_MISSING,
                 message = "Step '$sid' has spec '$spec' with missing type, but types are required by the model.",
                 path = "$basePath.specs",
                 subjectId = sid

@@ -5,7 +5,7 @@ import kotlin.test.*
 /**
  * Test suite for [StepValidator].
  *
- * This test suite validates the behavior of the generic step validator using a simple test step model.
+ * This test suite validates the behaviour of the generic step validator using a simple test step model.
  */
 class StepValidatorTest
 {
@@ -65,7 +65,7 @@ class StepValidatorTest
 
         val issue = result.issues[0]
         assertEquals( ValidationSeverity.ERROR, issue.severity )
-        assertEquals( "STEP_OUTPUT_DUPLICATE_ID", issue.code )
+        assertEquals( ValidationErrorCode.STEP_OUTPUT_PORT_DUPLICATE_ID, issue.code )
         assertEquals( "s1", issue.subjectId )
         assertTrue( issue.message.contains( "out1" ) )
         assertTrue( issue.path!!.contains( "outputs" ) )
@@ -81,8 +81,7 @@ class StepValidatorTest
         assertFalse( result.isValid )
         assertEquals( 2, result.issues.size )
 
-        val codes = result.issues.map { it.code }
-        assertTrue( codes.all { it == "STEP_OUTPUT_DUPLICATE_ID" } )
+        assertTrue( result.issues.all { it.code == ValidationErrorCode.STEP_OUTPUT_PORT_DUPLICATE_ID } )
     }
 
     @Test
@@ -128,7 +127,7 @@ class StepValidatorTest
 
         val issue = result.issues[0]
         assertEquals( ValidationSeverity.ERROR, issue.severity )
-        assertEquals( "STEP_INPUT_REQUIRED_MISSING", issue.code )
+        assertEquals( ValidationErrorCode.STEP_INPUT_REQUIRED_MISSING, issue.code )
         assertTrue( issue.message.contains( "input1" ) )
         assertTrue( issue.path!!.contains( "inputs" ) )
     }
@@ -147,8 +146,7 @@ class StepValidatorTest
         assertFalse( result.isValid )
         assertEquals( 3, result.issues.size )
 
-        val codes = result.issues.map { it.code }
-        assertTrue( codes.all { it == "STEP_INPUT_REQUIRED_MISSING" } )
+        assertTrue( result.issues.all { it.code == ValidationErrorCode.STEP_INPUT_REQUIRED_MISSING } )
     }
 
     // ============ Tests: Spec Type Presence ============
@@ -176,7 +174,7 @@ class StepValidatorTest
 
         val issue = result.issues[0]
         assertEquals( ValidationSeverity.ERROR, issue.severity )
-        assertEquals( "STEP_SPEC_TYPE_MISSING", issue.code )
+        assertEquals( ValidationErrorCode.STEP_SPEC_TYPE_MISSING, issue.code )
         assertTrue( issue.message.contains( "input1" ) )
         assertTrue( issue.path!!.contains( "specs" ) )
     }
@@ -195,8 +193,7 @@ class StepValidatorTest
         assertFalse( result.isValid )
         assertEquals( 3, result.issues.size )
 
-        val codes = result.issues.map { it.code }
-        assertTrue( codes.all { it == "STEP_SPEC_TYPE_MISSING" } )
+        assertTrue( result.issues.all { it.code == ValidationErrorCode.STEP_SPEC_TYPE_MISSING } )
     }
 
     // ============ Tests: Combined Issues ============
@@ -217,9 +214,9 @@ class StepValidatorTest
         assertEquals( 3, result.issues.size )
 
         val codes = result.issues.map { it.code }
-        assertTrue( codes.contains( "STEP_OUTPUT_DUPLICATE_ID" ) )
-        assertTrue( codes.contains( "STEP_INPUT_REQUIRED_MISSING" ) )
-        assertTrue( codes.contains( "STEP_SPEC_TYPE_MISSING" ) )
+        assertTrue( codes.contains( ValidationErrorCode.STEP_OUTPUT_PORT_DUPLICATE_ID ) )
+        assertTrue( codes.contains( ValidationErrorCode.STEP_INPUT_REQUIRED_MISSING ) )
+        assertTrue( codes.contains( ValidationErrorCode.STEP_SPEC_TYPE_MISSING ) )
     }
 
     @Test
@@ -270,7 +267,7 @@ class StepValidatorTest
 
         assertFalse( result.isValid )
         assertEquals( 1, result.issues.size )
-        assertEquals( "STEP_OUTPUT_DUPLICATE_ID", result.issues[0].code )
+        assertEquals( ValidationErrorCode.STEP_OUTPUT_PORT_DUPLICATE_ID, result.issues[0].code )
         assertEquals( "custom", result.issues[0].subjectId )
     }
 
@@ -320,7 +317,7 @@ class StepValidatorTest
 
         assertFalse( result.isValid )
         assertEquals( 3, result.issues.size )
-        assertTrue( result.issues.all { it.code == "STEP_OUTPUT_DUPLICATE_ID" } )
+        assertTrue( result.issues.all { it.code == ValidationErrorCode.STEP_OUTPUT_PORT_DUPLICATE_ID } )
     }
 
     // ============ Tests: ValidationResult Integration ============
@@ -356,8 +353,8 @@ class StepValidatorTest
         val config = createConfig()
         val result = StepValidator.validate( step, config )
 
-        val outputIssue = result.issues.find { it.code == "STEP_OUTPUT_DUPLICATE_ID" }
-        val inputIssue = result.issues.find { it.code == "STEP_INPUT_REQUIRED_MISSING" }
+        val outputIssue = result.issues.find { it.code == ValidationErrorCode.STEP_OUTPUT_PORT_DUPLICATE_ID }
+        val inputIssue = result.issues.find { it.code == ValidationErrorCode.STEP_INPUT_REQUIRED_MISSING }
 
         assertNotNull( outputIssue )
         assertNotNull( inputIssue )

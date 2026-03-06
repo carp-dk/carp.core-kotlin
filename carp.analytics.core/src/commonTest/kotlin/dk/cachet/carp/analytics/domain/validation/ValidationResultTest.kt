@@ -18,12 +18,12 @@ class ValidationResultTest
         val issues = listOf(
             ValidationIssue(
                 severity = ValidationSeverity.INFO,
-                code = "I001",
+                code = ValidationErrorCode.MISSING_METADATA,
                 message = "This is an info message"
             ),
             ValidationIssue(
                 severity = ValidationSeverity.WARNING,
-                code = "W001",
+                code = ValidationErrorCode.NAMING_CONVENTION_VIOLATION,
                 message = "This is a warning message"
             )
         )
@@ -37,7 +37,7 @@ class ValidationResultTest
         val issues = listOf(
             ValidationIssue(
                 severity = ValidationSeverity.ERROR,
-                code = "E001",
+                code = ValidationErrorCode.WORKFLOW_STEP_ID_DUPLICATE,
                 message = "This is an error message"
             )
         )
@@ -51,17 +51,17 @@ class ValidationResultTest
         val issues = listOf(
             ValidationIssue(
                 severity = ValidationSeverity.INFO,
-                code = "I001",
+                code = ValidationErrorCode.MISSING_METADATA,
                 message = "Info message"
             ),
             ValidationIssue(
                 severity = ValidationSeverity.WARNING,
-                code = "W001",
+                code = ValidationErrorCode.NAMING_CONVENTION_VIOLATION,
                 message = "Warning message"
             ),
             ValidationIssue(
                 severity = ValidationSeverity.ERROR,
-                code = "E001",
+                code = ValidationErrorCode.WORKFLOW_STEP_ID_DUPLICATE,
                 message = "Error message"
             )
         )
@@ -81,7 +81,7 @@ class ValidationResultTest
     {
         val issue = ValidationIssue(
             severity = ValidationSeverity.ERROR,
-            code = "E001",
+            code = ValidationErrorCode.INVALID_UUID_FORMAT,
             message = "Error message",
             path = "/some/path",
             subjectId = "subject123"
@@ -89,7 +89,7 @@ class ValidationResultTest
         val result = ValidationResult( listOf( issue ) )
 
         assertEquals( 1, result.issues.size )
-        assertEquals( "E001", result.issues[0].code )
+        assertEquals( ValidationErrorCode.INVALID_UUID_FORMAT, result.issues[0].code )
         assertEquals( "/some/path", result.issues[0].path )
         assertEquals( "subject123", result.issues[0].subjectId )
     }
@@ -99,12 +99,12 @@ class ValidationResultTest
     {
         val issue1 = ValidationIssue(
             severity = ValidationSeverity.WARNING,
-            code = "W001",
+            code = ValidationErrorCode.NAMING_CONVENTION_VIOLATION,
             message = "Same warning"
         )
         val issue2 = ValidationIssue(
             severity = ValidationSeverity.WARNING,
-            code = "W001",
+            code = ValidationErrorCode.NAMING_CONVENTION_VIOLATION,
             message = "Same warning"
         )
 

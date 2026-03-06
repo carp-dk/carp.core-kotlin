@@ -10,7 +10,7 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 /**
- * Comprehensive test suite for [PythonTaskDefinition], [Script], and [Module].
+ * Test suite for [PythonTaskDefinition], [Script], and [Module].
  *
  * Tests cover construction validation, interface compliance, serialization round-trips,
  * and polymorphic dispatch.  No runtime/execution behaviour is tested — this class is
@@ -41,7 +41,7 @@ class PythonTaskDefinitionTest
     fun `Script serialization round-trip`()
     {
         val original = Script("pipeline/run.py")
-        val encoded = CoreAnalyticsSerializer.json.encodeToString(original)
+        val encoded = CoreAnalyticsSerializer.json.encodeToString(original as PythonEntryPoint)
         val decoded = CoreAnalyticsSerializer.json.decodeFromString<PythonEntryPoint>(encoded)
         assertEquals(original, decoded)
         assertTrue(decoded is Script)
@@ -76,7 +76,7 @@ class PythonTaskDefinitionTest
     fun `Module serialization round-trip`()
     {
         val original = Module("mypackage.cli")
-        val encoded = CoreAnalyticsSerializer.json.encodeToString(original)
+        val encoded = CoreAnalyticsSerializer.json.encodeToString(original as PythonEntryPoint)
         val decoded = CoreAnalyticsSerializer.json.decodeFromString<PythonEntryPoint>(encoded)
         assertEquals(original, decoded)
         assertTrue(decoded is Module)
@@ -109,7 +109,6 @@ class PythonTaskDefinitionTest
         assertTrue(task.entryPoint is Script)
         assertEquals("scripts/preprocess.py", task.entryPoint.scriptPath)
         assertEquals(emptyList(), task.args)
-
     }
 
     @Test
@@ -177,26 +176,6 @@ class PythonTaskDefinitionTest
                 id = UUID.randomUUID(),
                 name = "   ",
                 entryPoint = Module("pkg")
-            )
-        }
-    }
-
-    @Test
-    fun `rejects blank workingDirectory when provided`()
-    {
-        assertFailsWith<IllegalArgumentException> {
-            PythonTaskDefinition(
-                id = UUID.randomUUID(),
-                name = "task",
-                entryPoint = Script("run.py"),
-            )
-        }
-
-        assertFailsWith<IllegalArgumentException> {
-            PythonTaskDefinition(
-                id = UUID.randomUUID(),
-                name = "task",
-                entryPoint = Script("run.py"),
             )
         }
     }

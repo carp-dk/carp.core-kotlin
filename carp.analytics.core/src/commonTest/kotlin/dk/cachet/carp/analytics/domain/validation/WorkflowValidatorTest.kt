@@ -83,7 +83,7 @@ class WorkflowValidatorTest
 
         val issue = result.issues[0]
         assertEquals( ValidationSeverity.ERROR, issue.severity )
-        assertEquals( "WORKFLOW_STEP_ID_DUPLICATE", issue.code )
+        assertEquals( ValidationErrorCode.WORKFLOW_STEP_ID_DUPLICATE, issue.code )
         assertTrue( issue.message.contains( "s1" ) )
         assertTrue( issue.path!!.contains( "steps" ) )
     }
@@ -107,7 +107,7 @@ class WorkflowValidatorTest
         assertEquals( 2, result.issues.size )
 
         val codes = result.issues.map { it.code }
-        assertTrue( codes.all { it == "WORKFLOW_STEP_ID_DUPLICATE" } )
+        assertTrue( codes.all { it == ValidationErrorCode.WORKFLOW_STEP_ID_DUPLICATE } )
     }
 
     @Test
@@ -167,7 +167,7 @@ class WorkflowValidatorTest
 
         val issue = result.issues[0]
         assertEquals( ValidationSeverity.ERROR, issue.severity )
-        assertEquals( "WORKFLOW_DEP_REFERENCE_MISSING", issue.code )
+        assertEquals( ValidationErrorCode.WORKFLOW_DEP_REFERENCE_MISSING, issue.code )
         assertTrue( issue.message.contains( "missing" ) )
         assertTrue( issue.message.contains( "s2" ) )
     }
@@ -189,7 +189,7 @@ class WorkflowValidatorTest
         assertEquals( 2, result.issues.size )
 
         val codes = result.issues.map { it.code }
-        assertTrue( codes.all { it == "WORKFLOW_DEP_REFERENCE_MISSING" } )
+        assertTrue( codes.all { it == ValidationErrorCode.WORKFLOW_DEP_REFERENCE_MISSING } )
     }
 
     @Test
@@ -269,7 +269,7 @@ class WorkflowValidatorTest
         assertEquals( 1, result.issues.size )
 
         val issue = result.issues[0]
-        assertEquals( "WORKFLOW_DEP_CYCLE_DETECTED", issue.code )
+        assertEquals( ValidationErrorCode.WORKFLOW_DEP_CYCLE_DETECTED, issue.code )
         assertTrue( issue.message.contains( "cycle" ) )
     }
 
@@ -290,7 +290,7 @@ class WorkflowValidatorTest
         assertEquals( 1, result.issues.size )
 
         val issue = result.issues[0]
-        assertEquals( "WORKFLOW_DEP_CYCLE_DETECTED", issue.code )
+        assertEquals( ValidationErrorCode.WORKFLOW_DEP_CYCLE_DETECTED, issue.code )
         assertTrue( issue.message.contains( "cycle" ) )
     }
 
@@ -312,7 +312,7 @@ class WorkflowValidatorTest
         assertEquals( 1, result.issues.size )
 
         val issue = result.issues[0]
-        assertEquals( "WORKFLOW_DEP_CYCLE_DETECTED", issue.code )
+        assertEquals( ValidationErrorCode.WORKFLOW_DEP_CYCLE_DETECTED, issue.code )
         assertTrue( issue.message.contains( "s1" ) || issue.message.contains( "s2" ) || issue.message.contains( "s3" ) )
     }
 
@@ -335,7 +335,7 @@ class WorkflowValidatorTest
         assertEquals( 2, result.issues.size )
 
         val codes = result.issues.map { it.code }
-        assertTrue( codes.all { it == "WORKFLOW_DEP_CYCLE_DETECTED" } )
+        assertTrue( codes.all { it == ValidationErrorCode.WORKFLOW_DEP_CYCLE_DETECTED } )
     }
 
     @Test
@@ -381,7 +381,7 @@ class WorkflowValidatorTest
         // Should only catch duplicate step ID, not missing dependency
         assertFalse( result.isValid )
         assertEquals( 1, result.issues.size )
-        assertEquals( "WORKFLOW_STEP_ID_DUPLICATE", result.issues[0].code )
+        assertEquals( ValidationErrorCode.WORKFLOW_STEP_ID_DUPLICATE, result.issues[0].code )
     }
 
     @Test
@@ -428,9 +428,9 @@ class WorkflowValidatorTest
         assertTrue( result.issues.size >= 3 )
 
         val codes = result.issues.map { it.code }
-        assertTrue( codes.contains( "WORKFLOW_STEP_ID_DUPLICATE" ) )
-        assertTrue( codes.contains( "WORKFLOW_DEP_REFERENCE_MISSING" ) )
-        assertTrue( codes.contains( "WORKFLOW_DEP_CYCLE_DETECTED" ) )
+        assertTrue( codes.contains( ValidationErrorCode.WORKFLOW_STEP_ID_DUPLICATE ) )
+        assertTrue( codes.contains( ValidationErrorCode.WORKFLOW_DEP_REFERENCE_MISSING ) )
+        assertTrue( codes.contains( ValidationErrorCode.WORKFLOW_DEP_CYCLE_DETECTED ) )
     }
 
     @Test
@@ -654,8 +654,8 @@ class WorkflowValidatorTest
         val config = createConfig()
         val result = WorkflowValidator.validate( workflow, config )
 
-        val idIssue = result.issues.find { it.code == "WORKFLOW_STEP_ID_DUPLICATE" }
-        val refIssue = result.issues.find { it.code == "WORKFLOW_DEP_REFERENCE_MISSING" }
+        val idIssue = result.issues.find { it.code == ValidationErrorCode.WORKFLOW_STEP_ID_DUPLICATE }
+        val refIssue = result.issues.find { it.code == ValidationErrorCode.WORKFLOW_DEP_REFERENCE_MISSING }
 
         assertNotNull( idIssue )
         assertNotNull( refIssue )

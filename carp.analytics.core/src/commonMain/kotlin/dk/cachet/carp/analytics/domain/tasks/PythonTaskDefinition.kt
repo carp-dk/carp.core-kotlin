@@ -49,7 +49,6 @@ data class PythonTaskDefinition(
     init
     {
         require(name.isNotBlank()) { "PythonTaskDefinition name must not be blank" }
-
     }
 }
 

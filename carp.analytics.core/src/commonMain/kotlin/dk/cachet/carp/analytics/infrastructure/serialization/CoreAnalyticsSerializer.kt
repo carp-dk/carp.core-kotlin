@@ -1,3 +1,5 @@
+@file:Suppress("detekt:IgnoredReturnValue")
+
 package dk.cachet.carp.analytics.infrastructure.serialization
 
 import dk.cachet.carp.analytics.application.plan.CommandSpec
@@ -5,20 +7,28 @@ import dk.cachet.carp.analytics.application.plan.InTasksRun
 import dk.cachet.carp.analytics.application.plan.TasksRun
 import dk.cachet.carp.analytics.domain.data.ApiDestination
 import dk.cachet.carp.analytics.domain.data.ApiSource
-import dk.cachet.carp.analytics.domain.data.DatabaseDestination
-import dk.cachet.carp.analytics.domain.data.DatabaseSource
 import dk.cachet.carp.analytics.domain.data.DataDestination
 import dk.cachet.carp.analytics.domain.data.DataSource
+import dk.cachet.carp.analytics.domain.data.DatabaseDestination
+import dk.cachet.carp.analytics.domain.data.DatabaseSource
 import dk.cachet.carp.analytics.domain.data.FileDestination
 import dk.cachet.carp.analytics.domain.data.FileSystemSource
 import dk.cachet.carp.analytics.domain.data.InMemorySource
 import dk.cachet.carp.analytics.domain.data.RegistryDestination
+import dk.cachet.carp.analytics.domain.data.StepOutputSource
 import dk.cachet.carp.analytics.domain.data.StreamDestination
 import dk.cachet.carp.analytics.domain.data.StreamSource
-import dk.cachet.carp.analytics.domain.data.StepOutputSource
 import dk.cachet.carp.analytics.domain.data.UrlSource
+import dk.cachet.carp.analytics.domain.tasks.ArgToken
 import dk.cachet.carp.analytics.domain.tasks.CommandTaskDefinition
+import dk.cachet.carp.analytics.domain.tasks.InputRef
+import dk.cachet.carp.analytics.domain.tasks.Literal
+import dk.cachet.carp.analytics.domain.tasks.Module
+import dk.cachet.carp.analytics.domain.tasks.OutputRef
+import dk.cachet.carp.analytics.domain.tasks.ParamRef
+import dk.cachet.carp.analytics.domain.tasks.PythonEntryPoint
 import dk.cachet.carp.analytics.domain.tasks.PythonTaskDefinition
+import dk.cachet.carp.analytics.domain.tasks.Script
 import dk.cachet.carp.analytics.domain.tasks.TaskDefinition
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
@@ -36,6 +46,18 @@ object CoreAnalyticsSerializer
         polymorphic(TaskDefinition::class) {
             subclass(CommandTaskDefinition::class)
             subclass(PythonTaskDefinition::class)
+        }
+
+        polymorphic(PythonEntryPoint::class) {
+            subclass(Script::class)
+            subclass(Module::class)
+        }
+
+        polymorphic(ArgToken::class) {
+            subclass(Literal::class)
+            subclass(InputRef::class)
+            subclass(OutputRef::class)
+            subclass(ParamRef::class)
         }
 
         // Data sources (7 types)

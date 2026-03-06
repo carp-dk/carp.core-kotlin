@@ -51,6 +51,8 @@ performance:
 potential-bugs:
   EqualsAlwaysReturnsTrueOrFalse:
     active: false
+  IgnoredReturnValue:
+    excludes: ['**/infrastructure/serialization/CoreAnalyticsSerializer.kt']
   UnsafeCallOnNullableType:
     active: false
 
