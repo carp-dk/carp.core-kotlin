@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class CommandSpec(
     val executable: String,
-    val args: List<String> = emptyList(),
+    val args: List<ExpandedArg> = emptyList(),
 ) : TasksRun
 {
     init

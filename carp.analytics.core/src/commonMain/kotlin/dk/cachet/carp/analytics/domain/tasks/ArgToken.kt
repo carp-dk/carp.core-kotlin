@@ -6,8 +6,6 @@ import kotlinx.serialization.Serializable
 
 /**
  * Represents a single token in a command argument list.
- *
- * This is a strongly-typed alternative to shell string interpolation.
  */
 @Serializable
 sealed interface ArgToken
@@ -51,3 +49,20 @@ data class OutputRef( val outputId: UUID ) : ArgToken
 @Serializable
 @SerialName("ParamRef")
 data class ParamRef( val name: String ) : ArgToken
+
+
+/**
+ * Reference to input data with string template for path substitution at runtime.
+ */
+data class InputPathSubstitutionRef(
+    val inputId: UUID,
+    val template: String
+) : ArgToken
+
+/**
+ * Reference to output data with string template for path substitution at runtime.
+ */
+data class OutputPathSubstitutionRef(
+    val outputId: UUID,
+    val template: String
+) : ArgToken
