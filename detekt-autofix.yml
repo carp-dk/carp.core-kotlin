@@ -89,10 +89,9 @@ verify-implementation:
   Immutable:
     active: false
 
-# Disable custom CARP rules that aren't auto-fixable
 carp:
   CurlyBracesOnSeparateLine:
-    active: false
+    active: true
   SpacingInParentheses:
-    active: false
+    active: true
 

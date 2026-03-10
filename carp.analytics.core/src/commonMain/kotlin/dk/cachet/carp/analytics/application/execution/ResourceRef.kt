@@ -20,7 +20,8 @@ data class ResourceRef(
 )
 
 @Serializable
-enum class ResourceKind {
+enum class ResourceKind
+{
     RELATIVE_PATH,
     URI
 }

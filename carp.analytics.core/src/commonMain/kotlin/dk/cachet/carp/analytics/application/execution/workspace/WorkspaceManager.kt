@@ -19,7 +19,7 @@ interface WorkspaceManager
      * @param runId Unique identifier for the execution run
      * @return A new ExecutionWorkspace instance
      */
-    fun create(plan: ExecutionPlan, runId: UUID): ExecutionWorkspace
+    fun create( plan: ExecutionPlan, runId: UUID ): ExecutionWorkspace
 
     /**
      * Prepares the directory structure for a specific step within the workspace.
@@ -30,7 +30,7 @@ interface WorkspaceManager
      * @param workspace The execution workspace
      * @param stepId The step identifier UUID
      */
-    fun prepareStepDirectories(workspace: ExecutionWorkspace, stepId: UUID)
+    fun prepareStepDirectories( workspace: ExecutionWorkspace, stepId: UUID )
 
     /**
      * Returns the absolute path string of the step's working directory within this workspace.
@@ -43,5 +43,5 @@ interface WorkspaceManager
      * @return Absolute path string, or null if this manager cannot resolve filesystem paths
      *         (e.g. a stub or in-memory implementation).
      */
-    fun resolveStepWorkingDir(workspace: ExecutionWorkspace, stepId: UUID): String? = null
+    fun resolveStepWorkingDir( workspace: ExecutionWorkspace, stepId: UUID ): String? = null
 }

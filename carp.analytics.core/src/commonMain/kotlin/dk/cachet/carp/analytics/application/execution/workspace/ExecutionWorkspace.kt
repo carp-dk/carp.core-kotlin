@@ -27,7 +27,7 @@ data class ExecutionWorkspace(
      * @param stepId The step identifier UUID.
      * @return Relative path "steps/{stepId}"
      */
-    fun stepDir(stepId: UUID): String
+    fun stepDir( stepId: UUID ): String
     {
         return "$STEPS_DIR/$stepId"
     }
@@ -38,7 +38,7 @@ data class ExecutionWorkspace(
      * @param stepId The step identifier UUID.
      * @return Relative path "steps/{stepId}/inputs"
      */
-    fun stepInputsDir(stepId: UUID): String
+    fun stepInputsDir( stepId: UUID ): String
     {
         return "$STEPS_DIR/$stepId/$INPUTS_DIR"
     }
@@ -49,7 +49,7 @@ data class ExecutionWorkspace(
      * @param stepId The step identifier UUID.
      * @return Relative path "steps/{stepId}/outputs"
      */
-    fun stepOutputsDir(stepId: UUID): String
+    fun stepOutputsDir( stepId: UUID ): String
     {
         return "$STEPS_DIR/$stepId/$OUTPUTS_DIR"
     }
@@ -60,7 +60,7 @@ data class ExecutionWorkspace(
      * @param stepId The step identifier UUID.
      * @return Relative path "steps/{stepId}/logs"
      */
-    fun stepLogsDir(stepId: UUID): String
+    fun stepLogsDir( stepId: UUID ): String
     {
         return "$STEPS_DIR/$stepId/$LOGS_DIR"
     }

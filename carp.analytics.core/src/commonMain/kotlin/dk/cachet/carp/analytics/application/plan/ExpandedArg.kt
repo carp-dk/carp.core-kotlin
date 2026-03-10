@@ -15,14 +15,15 @@ import kotlinx.serialization.Serializable
 
  */
 @Serializable
-sealed interface ExpandedArg {
+sealed interface ExpandedArg
+{
 
     /**
      * A literal string argument with no special resolution needed.
      * @property value The literal string value
      */
     @Serializable
-    data class Literal(val value: String) : ExpandedArg
+    data class Literal( val value: String ) : ExpandedArg
 
     /**
      * A reference to input or output data that must be resolved to a physical path.

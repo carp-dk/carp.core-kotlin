@@ -1,6 +1,7 @@
 package dk.cachet.carp.analytics.domain.validation
 
-enum class ValidationErrorCode(val value: String) {
+enum class ValidationErrorCode( val value: String )
+{
     // Workflow-level errors
     WORKFLOW_STEP_ID_DUPLICATE("workflow-step-id-duplicate"),
     WORKFLOW_MISSING_ENVIRONMENT("workflow-missing-environment"),
