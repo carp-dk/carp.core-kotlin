@@ -13,7 +13,7 @@ class ExecutionPlanTest
             name = "Step $id",
             process = InTasksRun(operationId = "op-$id"),
             bindings = ResolvedBindings(),
-            environmentDefinitionId = UUID.randomUUID()
+            environmentRef = UUID.randomUUID()
         )
 
     @Test
@@ -24,7 +24,7 @@ class ExecutionPlanTest
             planId = "plan",
             steps = listOf(step(UUID.randomUUID())),
             issues = emptyList(),
-            requiredEnvironmentHandles = emptyList()
+            requiredEnvironmentRefs = emptyMap()
         )
 
         plan.validate() // should not throw
@@ -60,22 +60,6 @@ class ExecutionPlanTest
             workflowId = "wf",
             planId = "plan",
                 steps = listOf(step(stepId), step(stepId))
-        )
-        assertFailsWith<IllegalArgumentException> { plan.validate() }
-    }
-
-    @Test
-    fun `validate rejects duplicate environment handle ids`()
-    {
-        val uuid = UUID.randomUUID()
-        val plan = ExecutionPlan(
-            workflowId = "wf",
-            planId = "plan",
-            steps = listOf(step(UUID.randomUUID())),
-            requiredEnvironmentHandles = listOf(
-                uuid,
-                uuid,
-            )
         )
         assertFailsWith<IllegalArgumentException> { plan.validate() }
     }
@@ -125,7 +109,9 @@ class ExecutionPlanTest
             issues = listOf(
                 PlanIssue(severity = PlanIssueSeverity.WARNING, code = "W1", message = "warn", stepId = UUID.randomUUID())
             ),
-            requiredEnvironmentHandles = listOf(uuid)
+            requiredEnvironmentRefs = mapOf(
+                uuid to SystemEnvironmentRef(id = uuid.toString(), dependencies = emptyList())
+            )
         )
 
         val encoded = CoreAnalyticsSerializer.json.encodeToString(plan)

@@ -15,7 +15,7 @@ data class ExecutionPlan(
     val planId: String,
     val steps: List<PlannedStep>,
     val issues: List<PlanIssue> = emptyList(),
-    val requiredEnvironmentHandles: List<UUID> = emptyList(),
+    val requiredEnvironmentRefs: Map<UUID, EnvironmentRef> = emptyMap()
 )
 {
     fun validate()
@@ -34,13 +34,6 @@ data class ExecutionPlan(
         require(ids.size == ids.distinct().size) {
             "steps contains duplicate stepId(s): ${ids.groupBy { it }.filterValues { it.size > 1 }.keys}"
         }
-
-        // cross-object check: duplicates
-        require(requiredEnvironmentHandles.size == requiredEnvironmentHandles.distinct().size) {
-            "requiredEnvironmentHandles contains duplicate handleId(s): ${
-                requiredEnvironmentHandles.groupBy { it }.filterValues { it.size > 1 }.keys
-            }"
-        }
     }
 
     fun hasErrors(): Boolean = issues.any { it.severity == PlanIssueSeverity.ERROR }
@@ -50,4 +43,7 @@ data class ExecutionPlan(
      * (Warnings/Info do not block.)
      */
     fun isRunnable(): Boolean = !hasErrors()
+
+    fun computeHash(): String = PlanHasher.computeHash(this)
+    fun diagnostics(): PlanDiagnostics = PlanDiagnosticsBuilder.build(this)
 }

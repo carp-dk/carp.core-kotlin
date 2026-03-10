@@ -35,7 +35,7 @@ class CommandSpecTest
     {
         val run = CommandSpec(
             executable = "python",
-            args = listOf("-c", "print('hi')")
+            args = listOf("-c", "print('hi')").map { ExpandedArg.Literal(it) }
         )
 
         val encoded = json.encodeToString(run)
@@ -53,7 +53,7 @@ class CommandSpecTest
         val emptyExArgs = assertFailsWith<IllegalArgumentException> {
             CommandSpec(
                 executable = "",
-                args = listOf("-c", "print('hi')")
+                args = listOf("-c", "print('hi')").map { ExpandedArg.Literal(it) }
             )
         }
         assertEquals("CommandRun.executable must not be blank.", emptyExArgs.message)
@@ -67,11 +67,11 @@ class CommandSpecTest
     {
         val base = CommandSpec(
             executable = "prog",
-            args = listOf("--x"),
+            args = listOf(ExpandedArg.Literal("--x")),
         )
 
         val diffExec = base.copy(executable = "other")
-        val diffArgs = base.copy(args = listOf("--different"))
+        val diffArgs = base.copy(args = listOf(ExpandedArg.Literal("--different")))
 
         assertEquals(base, base)
 

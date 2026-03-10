@@ -14,7 +14,7 @@ class TasksRunTest
     {
         val run: TasksRun = CommandSpec(
             executable = "python",
-            args = listOf("-c", "print('hi')")
+            args = listOf("-c", "print('hi')").map { ExpandedArg.Literal(it) }
         )
 
         val encoded = CoreAnalyticsSerializer.json.encodeToString(run)

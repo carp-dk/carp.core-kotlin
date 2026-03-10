@@ -22,13 +22,13 @@ class PlannedStepTest
             name = "Example Command Step",
             process = CommandSpec(
                 executable = "echo",
-                args = listOf("hello")
+                args = listOf(ExpandedArg.Literal("hello"))
             ),
             bindings = ResolvedBindings(
                 inputs = mapOf(inputBindingId to DataRef(dataRefId, "text/plain")),
                 outputs = mapOf(outputBindingId to DataRef(dataSinkRefId, "text/plain"))
             ),
-            environmentDefinitionId = UUID.randomUUID()
+            environmentRef = UUID.randomUUID()
         )
 
         val encoded = CoreAnalyticsSerializer.json.encodeToString(step)
@@ -54,7 +54,7 @@ class PlannedStepTest
                 inputs = emptyMap(),
                 outputs = mapOf(outputBindingId to DataRef(dataSinkRefId, "application/json"))
             ),
-            environmentDefinitionId = UUID.randomUUID()
+            environmentRef = UUID.randomUUID()
         )
 
         val encoded = CoreAnalyticsSerializer.json.encodeToString(step)
@@ -72,7 +72,7 @@ class PlannedStepTest
                 name = "",
                 process = InTasksRun("op"),
                 bindings = ResolvedBindings(),
-                environmentDefinitionId = UUID.randomUUID()
+                environmentRef = UUID.randomUUID()
             )
         }
     }
@@ -95,7 +95,7 @@ class PlannedStepTest
             name = "Step",
             process = InTasksRun("op"),
             bindings = bindings,
-            environmentDefinitionId = UUID.randomUUID()
+            environmentRef = UUID.randomUUID()
         )
 
         assertEquals(dataRefId, step.bindings.input(inputBindingId)?.id)

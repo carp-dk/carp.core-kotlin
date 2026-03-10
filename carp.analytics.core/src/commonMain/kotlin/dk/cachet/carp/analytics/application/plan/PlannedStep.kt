@@ -12,7 +12,7 @@ data class PlannedStep(
     val name: String,
     val process: TasksRun,
     val bindings: ResolvedBindings,
-    val environmentDefinitionId: UUID
+    val environmentRef: UUID?
 )
 {
     init
