@@ -1,19 +1,48 @@
 package dk.cachet.carp.analytics.application.plan
 
+import dk.cachet.carp.common.application.UUID
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class PlanDiagnostics(
-    val planId: String, // Which plan
-    val workflowId: String, // From which workflow
-    val stepCount: Int, // How many steps
+    val planId: String,
+    val workflowId: String,
+    val timestamp: String, // ISO-8601 timestamp
+
+    // Counts
+    val stepCount: Int,
+    val environmentCount: Int,
+    val bindingCount: Int,
+
+    // Execution
+    val executionOrder: List<String>, // Step IDs in order
+
+    // Issues
+    val issueSummary: IssueSummary,
+    val issues: List<PlanIssue>,
+
+    // Steps
+    val stepSummaries: List<PlannedStepSummary>,
+
+    // Hash
+    val planHash: String,
+
+    // Validity
+    val isValid: Boolean
 )
 
-object PlanDiagnosticsBuilder
-{
-    fun build(plan: ExecutionPlan): PlanDiagnostics = PlanDiagnostics(
-        planId = TODO(),
-        workflowId = TODO(),
-        stepCount = TODO()
-    )
-}
+@Serializable
+data class IssueSummary(
+    val errorCount: Int,
+    val warningCount: Int,
+    val infoCount: Int
+)
+
+@Serializable
+data class PlannedStepSummary(
+    val stepId: UUID,
+    val name: String,
+    val environmentId: UUID?,
+    val inputCount: Int,
+    val outputCount: Int
+)

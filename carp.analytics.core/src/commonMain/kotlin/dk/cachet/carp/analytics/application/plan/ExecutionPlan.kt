@@ -44,6 +44,6 @@ data class ExecutionPlan(
      */
     fun isRunnable(): Boolean = !hasErrors()
 
-    fun computeHash(): String = PlanHasher.computeHash(this)
-    fun diagnostics(): PlanDiagnostics = PlanDiagnosticsBuilder.build(this)
+    fun diagnostics( hasher: PlanHasher ): PlanDiagnostics =
+        PlanDiagnosticsBuilder.build( this, hasher )
 }
