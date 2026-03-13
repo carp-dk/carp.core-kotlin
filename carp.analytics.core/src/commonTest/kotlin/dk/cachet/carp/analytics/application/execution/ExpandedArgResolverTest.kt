@@ -29,11 +29,12 @@ class ExpandedArgResolverTest
     fun resolvedStringUsesResolver()
     {
         val arg = ExpandedArg.DataReference( UUID( "550e8400-e29b-41d4-a716-446655440000" ) )
-        val resolver = object : ExpandedArgResolver
-        {
-            override fun resolveDataRefPath( dataRefId: UUID ) = "/workspace/data.csv"
-            override fun getEnvVar( name: String ) = null
-        }
+        val resolver =
+            object : ExpandedArgResolver
+            {
+                override fun resolveDataRefPath( dataRefId: UUID ) = "/workspace/data.csv"
+                override fun getEnvVar( name: String ) = null
+            }
         val result = arg.toResolvedString(resolver, ArgumentDisplayMode.RESOLVED)
         assertEquals("/workspace/data.csv", result)
     }
@@ -50,11 +51,12 @@ class ExpandedArgResolverTest
     fun verboseIncludesBoth()
     {
         val arg = ExpandedArg.DataReference(UUID("550e8400-e29b-41d4-a716-446655440000"))
-        val resolver = object : ExpandedArgResolver
-        {
-            override fun resolveDataRefPath( dataRefId: UUID ) = "/workspace/data.csv"
-            override fun getEnvVar( name: String ) = null
-        }
+        val resolver =
+            object : ExpandedArgResolver
+            {
+                override fun resolveDataRefPath( dataRefId: UUID ) = "/workspace/data.csv"
+                override fun getEnvVar( name: String ) = null
+            }
         val result = arg.toResolvedString(resolver, ArgumentDisplayMode.VERBOSE)
         assertTrue(result.contains("/workspace/data.csv"))
         assertTrue(result.contains("550e8400"))
@@ -67,11 +69,12 @@ class ExpandedArgResolverTest
             template = "--input=$()",
             dataRefId = UUID("550e8400-e29b-41d4-a716-446655440000")
         )
-        val resolver = object : ExpandedArgResolver
-        {
-            override fun resolveDataRefPath( dataRefId: UUID ) = "/workspace/data.csv"
-            override fun getEnvVar( name: String ) = null
-        }
+        val resolver =
+            object : ExpandedArgResolver
+            {
+                override fun resolveDataRefPath( dataRefId: UUID ) = "/workspace/data.csv"
+                override fun getEnvVar( name: String ) = null
+            }
         val result = arg.toResolvedString(resolver)
         assertEquals("--input=/workspace/data.csv", result)
     }
@@ -83,11 +86,12 @@ class ExpandedArgResolverTest
             ExpandedArg.Literal("extract.py"),
             ExpandedArg.DataReference(UUID("550e8400-e29b-41d4-a716-446655440000"))
         )
-        val resolver = object : ExpandedArgResolver
-        {
-            override fun resolveDataRefPath( dataRefId: UUID ) = "/workspace/data.csv"
-            override fun getEnvVar( name: String ) = null
-        }
+        val resolver =
+            object : ExpandedArgResolver
+            {
+                override fun resolveDataRefPath( dataRefId: UUID ) = "/workspace/data.csv"
+                override fun getEnvVar( name: String ) = null
+            }
         val results = args.toResolvedStrings(resolver)
         assertEquals(2, results.size)
         assertEquals("extract.py", results[0])

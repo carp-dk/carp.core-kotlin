@@ -11,7 +11,8 @@ import kotlinx.datetime.Clock
  */
 class InMemoryArtefactStore(
     private val clock: Clock = Clock.System
-) : ArtefactStore {
+) : ArtefactStore
+{
 
     private val _registry = mutableMapOf<UUID, ArtefactRecord>()
 
@@ -21,8 +22,10 @@ class InMemoryArtefactStore(
         outputId: UUID,
         location: ResourceRef,
         metadata: ArtefactMetadata
-    ): ProducedOutputRef? {
-        return try {
+    ): ProducedOutputRef?
+    {
+        return try
+        {
             val producedRef = ProducedOutputRef(
                 outputId = outputId,
                 location = location,
@@ -40,15 +43,17 @@ class InMemoryArtefactStore(
 
             _registry[outputId] = record
             producedRef
-        } catch (_: Exception) {
+        }
+        catch ( _: Exception )
+        {
             null
         }
     }
 
-    override fun getArtefact(outputId: UUID): ProducedOutputRef? =
+    override fun getArtefact( outputId: UUID ): ProducedOutputRef? =
         _registry[outputId]?.producedOutputRef
 
-    override fun getArtefactsByStep(stepId: UUID): List<ProducedOutputRef> =
+    override fun getArtefactsByStep( stepId: UUID ): List<ProducedOutputRef> =
         _registry.values
             .filter { it.stepId == stepId }
             .map { it.producedOutputRef }
@@ -56,6 +61,6 @@ class InMemoryArtefactStore(
     override fun getAllArtefacts(): List<ProducedOutputRef> =
         _registry.values.map { it.producedOutputRef }
 
-    override fun resolvePath(outputId: UUID): String? =
+    override fun resolvePath( outputId: UUID ): String? =
         getArtefact(outputId)?.location?.value
 }
