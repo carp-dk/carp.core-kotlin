@@ -191,6 +191,7 @@ class MutableDataStreamBatchTest
         val appendBatch = MutableDataStreamBatch().apply {
             appendSequence( createStubSequence( 0, stubDataTimeSpan ) )
             appendSequence( createStubSequence( 0, stubDataPoint ) ) // Overlaps.
+            appendSequence( createStubSequence( 2, stubDataPoint ) )
         }
 
         assertFailsWith<IllegalArgumentException> { batch.appendBatch( appendBatch ) }
