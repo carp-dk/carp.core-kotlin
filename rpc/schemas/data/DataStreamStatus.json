@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "type": "object",
+  "properties": {
+    "dataStream": { "$ref": "DataStreamId.json" },
+    "lastSequenceId": { "type": [ "integer", "null" ] },
+    "isOpen": { "type": "boolean" }
+  },
+  "required": [ "dataStream", "lastSequenceId", "isOpen" ],
+  "additionalProperties": false
+}

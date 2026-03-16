@@ -1,0 +1,13 @@
+[
+    {
+        "outcome": "Failed",
+        "request": {
+            "__type": "dk.cachet.carp.data.infrastructure.DataStreamServiceRequest.GetDataStreamsStatus",
+            "apiVersion": "1.1",
+            "studyDeploymentId": "4d260a37-2959-4512-b307-93be5b171ebb"
+        },
+        "precedingEvents": [],
+        "publishedEvents": [],
+        "exceptionType": "IllegalArgumentException"
+    }
+]

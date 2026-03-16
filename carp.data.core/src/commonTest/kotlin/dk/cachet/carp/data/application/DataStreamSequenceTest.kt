@@ -9,9 +9,6 @@ import dk.cachet.carp.data.infrastructure.measurement
 import kotlin.test.*
 
 
-private val stubDataPointStream = dataStreamId<StubDataPoint>( UUID.randomUUID(), "Device" )
-
-
 /**
  * Tests for implementations of [DataStreamSequence].
  */

@@ -8,6 +8,7 @@ import dk.cachet.carp.data.application.DataStreamBatch
 import dk.cachet.carp.data.application.DataStreamBatchSerializer
 import dk.cachet.carp.data.application.DataStreamId
 import dk.cachet.carp.data.application.DataStreamService
+import dk.cachet.carp.data.application.DataStreamStatus
 import dk.cachet.carp.data.application.DataStreamsConfiguration
 import kotlinx.serialization.*
 import kotlin.js.JsExport
@@ -51,6 +52,13 @@ sealed class DataStreamServiceRequest<out TReturn> : ApplicationServiceRequest<D
     ) : DataStreamServiceRequest<DataStreamBatch>()
     {
         override fun getResponseSerializer() = DataStreamBatchSerializer
+    }
+
+    @Serializable
+    data class GetDataStreamsStatus( val studyDeploymentId: UUID ) :
+        DataStreamServiceRequest<List<DataStreamStatus>>()
+    {
+        override fun getResponseSerializer() = serializer<List<DataStreamStatus>>()
     }
 
     @Serializable

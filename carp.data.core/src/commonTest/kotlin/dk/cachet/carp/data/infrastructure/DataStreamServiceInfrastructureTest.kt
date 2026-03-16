@@ -25,6 +25,7 @@ class DataStreamServiceRequestsTest : ApplicationServiceRequestsTest<DataStreamS
                 DataStreamId( UUID.randomUUID(), "Device", DataType( "some", "type" ) ),
                 0
             ),
+            DataStreamServiceRequest.GetDataStreamsStatus( UUID.randomUUID() ),
             DataStreamServiceRequest.CloseDataStreams( setOf( UUID.randomUUID() ) ),
             DataStreamServiceRequest.RemoveDataStreams( setOf( UUID.randomUUID() ) )
         )

@@ -129,6 +129,59 @@ interface DataStreamServiceTest
     }
 
     @Test
+    fun getDataStreamsStatus_returns_all_expected_streams() = runTest {
+        val service = createService()
+        val dataPointStream = dataStreamId<StubDataPoint>( stubDeploymentId, stubSequenceDeviceRoleName )
+        val dataTimeSpanStream = dataStreamId<StubDataTimeSpan>( stubDeploymentId, stubSequenceDeviceRoleName )
+        val expectedStreams = setOf(
+            DataStreamsConfiguration.ExpectedDataStream.fromDataStreamId( dataPointStream ),
+            DataStreamsConfiguration.ExpectedDataStream.fromDataStreamId( dataTimeSpanStream )
+        )
+        service.openDataStreams( DataStreamsConfiguration( stubDeploymentId, expectedStreams ) )
+
+        val batch = MutableDataStreamBatch().apply {
+            appendSequence( createStubSequence( 0, StubDataPoint(), StubDataPoint() ) )
+        }
+        service.appendToDataStreams( stubDeploymentId, batch )
+
+        val expectedStatus = setOf(
+            DataStreamStatus( dataPointStream, lastSequenceId = 1, isOpen = true ),
+            DataStreamStatus( dataTimeSpanStream, lastSequenceId = null, isOpen = true )
+        )
+        val retrievedStatus = service.getDataStreamsStatus( stubDeploymentId )
+        assertEquals( expectedStatus, retrievedStatus.toSet() )
+    }
+
+    @Test
+    fun getDataStreamsStatus_fails_for_unopened_deployment() = runTest {
+        val service = createService()
+
+        assertFailsWith<IllegalArgumentException> { service.getDataStreamsStatus( stubDeploymentId ) }
+    }
+
+    @Test
+    fun getDataStreamsStatus_for_closed_dataStreamIds_succeeds() = runTest {
+        val service = createServiceWithOpenStubDataPointStream()
+        val batch = MutableDataStreamBatch().apply {
+            appendSequence( createStubSequence( 0, StubDataPoint(), StubDataPoint() ) )
+        }
+        service.appendToDataStreams( stubDeploymentId, batch )
+        service.closeDataStreams( setOf( stubDeploymentId ) )
+
+        val expectedStatus = DataStreamStatus( stubDataPointStream, lastSequenceId = 1, isOpen = false )
+        val lastSequenceIds = service.getDataStreamsStatus( stubDeploymentId )
+        assertEquals( expectedStatus, lastSequenceIds.singleOrNull() )
+    }
+
+    @Test
+    fun getDataStreamsStatus_for_removed_dataStreamIds_fails() = runTest {
+        val service = createServiceWithOpenStubDataPointStream()
+        service.removeDataStreams( setOf( stubDeploymentId ) )
+
+        assertFailsWith<IllegalArgumentException> { service.getDataStreamsStatus( stubDeploymentId ) }
+    }
+
+    @Test
     fun closeDataStreams_succeeds() = runTest {
         val service = createServiceWithOpenStubDataPointStream()
 
