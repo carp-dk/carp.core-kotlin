@@ -1,5 +1,6 @@
 package dk.cachet.carp.analytics.application.execution
 
+import dk.cachet.carp.analytics.infrastructure.execution.EnvironmentExecutionLogs
 import dk.cachet.carp.common.application.UUID
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
@@ -23,5 +24,6 @@ data class ExecutionReport(
     val finishedAt: Instant?,
     val status: ExecutionStatus,
     val stepResults: List<StepRunResult>,
-    val issues: List<ExecutionIssue> = emptyList()
+    val issues: List<ExecutionIssue> = emptyList(),
+    val environmentLogs: EnvironmentExecutionLogs = EnvironmentExecutionLogs()
 )

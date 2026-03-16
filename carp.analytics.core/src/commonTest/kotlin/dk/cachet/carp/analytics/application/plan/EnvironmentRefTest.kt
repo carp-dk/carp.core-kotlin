@@ -55,4 +55,153 @@ class EnvironmentRefTest
             assertTrue(template.contains("{args}"), "${ref::class.simpleName} missing {args}")
         }
     }
+    @Test
+    fun createsREnvironmentRef()
+    {
+        val ref = REnvironmentRef(
+            id = "r-env-001",
+            rVersion = "4.3.0",
+            rPackages = listOf("ggplot2", "dplyr")
+        )
+
+        assertEquals("r-env-001", ref.id)
+        assertEquals("4.3.0", ref.rVersion)
+        assertEquals(2, ref.rPackages.size)
+    }
+
+    @Test
+    fun generatesDescriptiveName()
+    {
+        val ref = REnvironmentRef(
+            id = "r-env-001",
+            rVersion = "4.3.0"
+        )
+
+        assertEquals("R-4.3.0", ref.name)
+    }
+
+    @Test
+    fun getExecutionTemplate()
+    {
+        val ref = REnvironmentRef(
+            id = "r-env-001",
+            rVersion = "4.3.0"
+        )
+
+        val template = ref.generateExecutionTemplate()
+
+        assertTrue(template.contains("Rscript"))
+        assertTrue(template.contains("{executable}"))
+    }
+
+    @Test
+    fun acceptsRenvLockFile()
+    {
+        val ref = REnvironmentRef(
+            id = "r-env-001",
+            rVersion = "4.3.0",
+            renvLockFile = "/path/to/renv.lock"
+        )
+
+        assertEquals("/path/to/renv.lock", ref.renvLockFile)
+    }
+
+    @Test
+    fun acceptsInstallationPath()
+    {
+        val ref = REnvironmentRef(
+            id = "r-env-001",
+            rVersion = "4.3.0",
+            rPackages = listOf("ggplot2"),
+            installationPath = "/opt/R/4.3.0"
+        )
+
+        assertEquals("/opt/R/4.3.0", ref.installationPath)
+    }
+
+    @Test
+    fun validatesSuccessfully()
+    {
+        val ref = REnvironmentRef(
+            id = "r-env-001",
+            rVersion = "4.3.0",
+            rPackages = listOf("ggplot2")
+        )
+
+        val errors = ref.validate()
+
+        assertTrue(errors.isEmpty())
+    }
+
+    @Test
+    fun validatesWithRenvLockFile()
+    {
+        val ref = REnvironmentRef(
+            id = "r-env-001",
+            rVersion = "4.3.0",
+            renvLockFile = "/path/to/renv.lock"
+        )
+
+        val errors = ref.validate()
+
+        assertTrue(errors.isEmpty())
+    }
+
+    @Test
+    fun rejectsEmptyId()
+    {
+        val ref = REnvironmentRef(
+            id = "",
+            rVersion = "4.3.0",
+            rPackages = listOf("ggplot2")
+        )
+
+        val errors = ref.validate()
+
+        assertTrue(errors.any { it.contains("ID") })
+    }
+
+    @Test
+    fun rejectsMissingPackagesAndLockFile()
+    {
+        val ref = REnvironmentRef(
+            id = "r-env-001",
+            rVersion = "4.3.0",
+            rPackages = emptyList(),
+            renvLockFile = null
+        )
+
+        val errors = ref.validate()
+
+        assertTrue(errors.any { it.contains("renvLockFile or rPackages") })
+    }
+
+    @Test
+    fun supportsEnvironmentVariables()
+    {
+        val ref = REnvironmentRef(
+            id = "r-env-001",
+            rVersion = "4.3.0",
+            rPackages = listOf("ggplot2"),
+            environmentVariables = mapOf(
+                "R_LIBS" to "/usr/local/lib/R/site-library",
+                "R_HOME" to "/opt/R/4.3.0"
+            )
+        )
+
+        assertEquals(2, ref.environmentVariables.size)
+    }
+
+    @Test
+    fun supportsAdditionalDependencies()
+    {
+        val ref = REnvironmentRef(
+            id = "r-env-001",
+            rVersion = "4.3.0",
+            rPackages = listOf("ggplot2"),
+            dependencies = listOf("pandoc", "ghostscript")
+        )
+
+        assertEquals(2, ref.dependencies.size)
+    }
 }

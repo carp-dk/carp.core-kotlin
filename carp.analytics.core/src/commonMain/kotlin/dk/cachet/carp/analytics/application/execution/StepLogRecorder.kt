@@ -1,8 +1,8 @@
 package dk.cachet.carp.analytics.application.execution
 
+import dk.cachet.carp.analytics.application.execution.workspace.ExecutionWorkspace
 import dk.cachet.carp.analytics.application.plan.PlannedStep
 import dk.cachet.carp.analytics.application.runtime.CommandResult
-import dk.cachet.carp.analytics.application.execution.workspace.ExecutionWorkspace
 import dk.cachet.carp.common.application.UUID
 import kotlinx.datetime.Instant
 
@@ -21,7 +21,8 @@ import kotlinx.datetime.Instant
  * - S3-backed (future)
  * - Datadog (future)
  */
-interface StepLogRecorder {
+interface StepLogRecorder
+{
     /**
      * Record logs from a command execution result.
      *

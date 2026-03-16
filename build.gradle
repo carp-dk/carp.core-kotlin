@@ -1,3 +1,5 @@
+import org.gradle.api.internal.project.DefaultProject
+
 // Load plugin dependencies and initialize build variables.
 buildscript {
     ext {
@@ -36,7 +38,7 @@ buildscript {
             apacheCommons:'2.19.0'
         ]
 
-        commonModule = subprojects.find { it.name == 'carp.common' }
+        commonModule = subprojects.find { it.name == 'carp.common' } as DefaultProject
         coreModules = subprojects.findAll { it.name.endsWith( '.core' ) }
         testModules = subprojects.findAll { it.name == 'carp.common.test' || it.name == 'carp.test' }
         publishNpmModule = subprojects.find { it.name == 'publish-npm-packages' }
@@ -396,19 +398,23 @@ configure( rootProject )
     }
     // Auto-fix task for analytics module only
     task detektAnalyticsAutoFix(type: io.gitlab.arturbosch.detekt.Detekt) {
-        description = "Runs Detekt with auto-fix on carp.analytics.core module only (ignores unfixable issues)"
+        description = "Runs Detekt with auto-fix on carp.analytics.core module only "
         source = fileTree("$rootDir/carp.analytics.core") {
             include('**/src/**')
             exclude('**/node_modules/**', '**/resources/**', '**/build/**')
         }
-        config.from("$rootDir/detekt-autofix.yml")  // Use simplified config without custom rules
+        config.setFrom("$rootDir/detekt-autofix.yml")
         buildUponDefaultConfig = true
         autoCorrect = true  // Enable auto-fix
         ignoreFailures = false
+        // Use the same classpath as the main detekt task so custom rules are available during auto-fix.
         def classPaths = project.configurations.getByName("detekt")
-        // Add analytics module classpath only
-        classPaths += project(':carp.analytics.core').configurations.getByName("jvmCompileClasspath")
+        def analyticsModule = subprojects.find { it.name == 'carp.analytics.core' }
+        if (analyticsModule != null) {
+            classPaths += analyticsModule.configurations.getByName("jvmCompileClasspath")
+        }
         classpath.setFrom(classPaths)
+        dependsOn ":carp.detekt:assemble"
     }
     tasks.detekt.jvmTarget = "1.8"
     tasks.detekt.dependsOn ":carp.detekt:assemble" // Ensure 'carp.detekt' is built prior to running code analysis.

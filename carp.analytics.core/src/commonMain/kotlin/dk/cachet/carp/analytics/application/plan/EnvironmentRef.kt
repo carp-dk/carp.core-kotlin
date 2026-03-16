@@ -82,3 +82,76 @@ data class SystemEnvironmentRef(
 
     override fun generateExecutionTemplate(): String = "{executable} {args}"
 }
+
+/**
+ * Runtime reference to an R environment.
+ *
+ * Serializable, immutable, created during planning phase.
+ * Used to pass R environment specification to execution layer.
+ *
+ * Extends the sealed EnvironmentRef hierarchy:
+ * - CondaEnvironmentRef
+ * - PixiEnvironmentRef
+ * - SystemEnvironmentRef
+ * - REnvironmentRef ← NEW
+ */
+@Serializable
+@SerialName("REnvironmentRef")
+data class REnvironmentRef(
+    override val id: String,
+    val rVersion: String,
+    val rPackages: List<String> = emptyList(),
+    val renvLockFile: String? = null,
+    val installationPath: String? = null,
+    override val dependencies: List<String> = emptyList(),
+    val environmentVariables: Map<String, String> = emptyMap()
+) : EnvironmentRef
+{
+
+    /**
+     * Descriptive name for this R environment.
+     * Used in logs and displays.
+     */
+    val name: String
+        get() = "R-$rVersion"
+
+    /**
+     * Get command template for executing in R environment.
+     *
+     * Example: "Rscript script.R"
+     */
+    override fun generateExecutionTemplate(): String
+    {
+        return "Rscript {executable} {args}"
+    }
+
+    /**
+     * Validate this R environment reference.
+     */
+    fun validate(): List<String>
+    {
+        val errors = mutableListOf<String>()
+
+        if (id.isBlank())
+        {
+            errors.add("Environment ID cannot be blank")
+        }
+
+        if (rVersion.isBlank())
+        {
+            errors.add("R version cannot be blank")
+        }
+
+        if (renvLockFile == null && rPackages.isEmpty())
+        {
+            errors.add("Either renvLockFile or rPackages must be specified")
+        }
+
+        return errors
+    }
+
+    override fun generateSetupCommand(): String
+    {
+        TODO("Not yet implemented")
+    }
+}

@@ -89,6 +89,7 @@ verify-implementation:
   Immutable:
     active: false
 
+
 carp:
   CurlyBracesOnSeparateLine:
     active: true
