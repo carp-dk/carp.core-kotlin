@@ -271,6 +271,10 @@ private val phoneDataStreamBatch = MutableDataStreamBatch().apply {
     appendSequence( geoDataSequence )
     appendSequence( stepsDataSequence )
 }
+private val dataStreamSequenceIds = listOf(
+    DataStreamStatus( phoneGeoDataStream, geoDataSequence.range.last, true ),
+    DataStreamStatus( phoneStepsDataStream, stepsDataSequence.range.last, true )
+)
 
 
 private fun <TService : ApplicationService<TService, *>, TResponse> example(
@@ -554,6 +558,10 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
     DataStreamService::getDataStream to example(
         request = DataStreamServiceRequest.GetDataStream( phoneGeoDataStream, 0, 100 ),
         response = MutableDataStreamBatch().apply { appendSequence( geoDataSequence ) }
+    ),
+    DataStreamService::getDataStreamsStatus to example(
+        request = DataStreamServiceRequest.GetDataStreamsStatus( deploymentId ),
+        response = dataStreamSequenceIds
     ),
     DataStreamService::closeDataStreams to example(
         request = DataStreamServiceRequest.CloseDataStreams( deploymentIds )

@@ -61,6 +61,13 @@ interface DataStreamService : ApplicationService<DataStreamService, DataStreamSe
     ): DataStreamBatch
 
     /**
+     * Retrieve status for each configured data stream in [studyDeploymentId].
+     *
+     * @throws IllegalArgumentException when no data streams were ever opened for [studyDeploymentId].
+     */
+    suspend fun getDataStreamsStatus( studyDeploymentId: UUID ): List<DataStreamStatus>
+
+    /**
      * Stop accepting incoming data for all data streams for each of the [studyDeploymentIds].
      *
      * @throws IllegalArgumentException when no data streams were ever opened for any of the [studyDeploymentIds].
