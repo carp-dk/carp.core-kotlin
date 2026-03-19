@@ -10,11 +10,12 @@ import dk.cachet.carp.common.application.UUID
  * Represents a run-scoped workspace.
  *
  * This is a pure, deterministic workspace model that provides logical path construction
- * without any filesystem access or IO operations. All paths are relative to the
- * [executionRoot] identifier.
+ * without any filesystem access or IO operations. The [executionRoot] is the workspace
+ * root directory (typically an absolute filesystem path), and helper methods return
+ * relative subpaths inside that root.
  *
  * @param runId Unique identifier for this execution run
- * @param executionRoot Logical root identifier (not a filesystem path)
+ * @param executionRoot Workspace root identifier (usually an absolute filesystem path)
  */
 data class ExecutionWorkspace(
     val runId: UUID,
