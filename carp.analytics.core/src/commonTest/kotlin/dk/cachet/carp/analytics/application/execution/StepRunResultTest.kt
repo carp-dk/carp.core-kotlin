@@ -1,5 +1,6 @@
 package dk.cachet.carp.analytics.application.execution
 
+import dk.cachet.carp.analytics.domain.workflow.StepMetadata
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.infrastructure.test.createTestJSON
 import kotlinx.datetime.Instant
@@ -20,7 +21,10 @@ class StepRunResultTest
     fun can_serialize_and_deserialize_StepRunResult_successful()
     {
         val stepRunResult = StepRunResult(
-            stepId = UUID.randomUUID(),
+            stepMetadata = StepMetadata(
+                        id = UUID.randomUUID(),
+                        name = "Data Preparation"
+                    ),
             status = ExecutionStatus.SUCCEEDED,
             startedAt = Instant.parse("2026-03-02T10:00:00Z"),
             finishedAt = Instant.parse("2026-03-02T10:05:00Z"),
@@ -50,7 +54,10 @@ class StepRunResultTest
     fun can_serialize_and_deserialize_StepRunResult_with_failure()
     {
         val stepRunResult = StepRunResult(
-            stepId = UUID.randomUUID(),
+            stepMetadata = StepMetadata(
+                        id = UUID.randomUUID(),
+                        name = "Data Preparation"
+                    ),
             status = ExecutionStatus.FAILED,
             startedAt = Instant.parse("2026-03-02T10:00:00Z"),
             finishedAt = Instant.parse("2026-03-02T10:01:00Z"),
@@ -75,7 +82,10 @@ class StepRunResultTest
     fun can_serialize_and_deserialize_StepRunResult_minimal()
     {
         val stepRunResult = StepRunResult(
-            stepId = UUID.randomUUID(),
+            stepMetadata = StepMetadata(
+                        id = UUID.randomUUID(),
+                        name = "Data Preparation"
+                    ),
             status = ExecutionStatus.PENDING,
             startedAt = null,
             finishedAt = null,
@@ -94,7 +104,10 @@ class StepRunResultTest
     fun can_serialize_and_deserialize_StepRunResult_with_empty_outputs()
     {
         val stepRunResult = StepRunResult(
-            stepId = UUID.randomUUID(),
+            stepMetadata = StepMetadata(
+                        id = UUID.randomUUID(),
+                        name = "Data Preparation"
+                    ),
             status = ExecutionStatus.SUCCEEDED,
             startedAt = Instant.parse("2026-03-02T09:00:00Z"),
             finishedAt = Instant.parse("2026-03-02T09:05:00Z"),
@@ -114,7 +127,10 @@ class StepRunResultTest
     fun can_serialize_and_deserialize_StepRunResult_with_multiple_outputs()
     {
         val stepRunResult = StepRunResult(
-            stepId = UUID.randomUUID(),
+            stepMetadata = StepMetadata(
+                        id = UUID.randomUUID(),
+                        name = "Data Preparation"
+                    ),
             status = ExecutionStatus.SUCCEEDED,
             startedAt = Instant.parse("2026-03-02T10:00:00Z"),
             finishedAt = Instant.parse("2026-03-02T11:00:00Z"),
@@ -153,7 +169,10 @@ class StepRunResultTest
     fun can_serialize_and_deserialize_StepRunResult_running()
     {
         val stepRunResult = StepRunResult(
-            stepId = UUID.randomUUID(),
+            stepMetadata = StepMetadata(
+                        id = UUID.randomUUID(),
+                        name = "Data Preparation"
+                    ),
             status = ExecutionStatus.RUNNING,
             startedAt = Instant.parse("2026-03-02T10:00:00Z"),
             finishedAt = null,
@@ -177,7 +196,10 @@ class StepRunResultTest
     fun can_serialize_and_deserialize_StepRunResult_skipped()
     {
         val stepRunResult = StepRunResult(
-            stepId = UUID.randomUUID(),
+            stepMetadata = StepMetadata(
+                        id = UUID.randomUUID(),
+                        name = "Data Preparation"
+                    ),
             status = ExecutionStatus.SKIPPED,
             startedAt = null,
             finishedAt = null,
@@ -201,7 +223,10 @@ class StepRunResultTest
 
         failureKinds.forEach { failureKind ->
             val stepRunResult = StepRunResult(
-                stepId = UUID.randomUUID(),
+                stepMetadata = StepMetadata(
+                        id = UUID.randomUUID(),
+                        name = "Data Preparation"
+                    ),
                 status = ExecutionStatus.FAILED,
                 startedAt = Instant.parse("2026-03-02T10:00:00Z"),
                 finishedAt = Instant.parse("2026-03-02T10:01:00Z"),
@@ -221,7 +246,10 @@ class StepRunResultTest
     fun can_serialize_and_deserialize_StepRunResult_with_complex_detail()
     {
         val stepRunResult = StepRunResult(
-            stepId = UUID.randomUUID(),
+            stepMetadata = StepMetadata(
+                        id = UUID.randomUUID(),
+                        name = "Data Preparation"
+                    ),
             status = ExecutionStatus.SUCCEEDED,
             startedAt = Instant.parse("2026-03-02T08:00:00Z"),
             finishedAt = Instant.parse("2026-03-02T08:30:00Z"),
@@ -266,7 +294,10 @@ class StepRunResultTest
         val finishTime = Instant.parse("2026-03-02T10:20:45.987654321Z")
 
         val stepRunResult = StepRunResult(
-            stepId = UUID.randomUUID(),
+            stepMetadata = StepMetadata(
+                id = UUID.randomUUID(),
+                name = "Data Preparation"
+            ),
             status = ExecutionStatus.SUCCEEDED,
             startedAt = startTime,
             finishedAt = finishTime,
@@ -287,7 +318,10 @@ class StepRunResultTest
     {
         val specificUuid = UUID.parse("550e8400-e29b-41d4-a716-446655440000")
         val stepRunResult = StepRunResult(
-            stepId = specificUuid,
+            stepMetadata = StepMetadata(
+                id = specificUuid,
+                name = "Data Preparation"
+            ),
             status = ExecutionStatus.SUCCEEDED,
             startedAt = null,
             finishedAt = null,
@@ -298,7 +332,7 @@ class StepRunResultTest
         val serialized = json.encodeToString(stepRunResult)
         val deserialized = json.decodeFromString<StepRunResult>(serialized)
 
-        assertEquals(specificUuid, deserialized.stepId)
+        assertEquals(specificUuid, deserialized.stepMetadata.id)
         assertEquals(stepRunResult, deserialized)
     }
 }

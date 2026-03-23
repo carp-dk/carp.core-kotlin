@@ -5,6 +5,7 @@ import dk.cachet.carp.analytics.application.plan.InTasksRun
 import dk.cachet.carp.analytics.application.plan.PlannedStep
 import dk.cachet.carp.analytics.application.plan.ResolvedBindings
 import dk.cachet.carp.analytics.application.runtime.CommandResult
+import dk.cachet.carp.analytics.domain.workflow.StepMetadata
 import dk.cachet.carp.common.application.UUID
 import kotlinx.datetime.Instant
 import kotlin.test.Test
@@ -56,14 +57,14 @@ class StepLogRecorderTest
         val recordedAt = Instant.parse("2026-03-13T10:30:00Z")
 
         val record = LogRecord(
-            stepId = stepId,
+            stepMetadata = StepMetadata(id = stepId, name = "Test Step"),
             location = location,
             hasStdout = true,
             hasStderr = false,
             recordedAt = recordedAt
         )
 
-        assertEquals(stepId, record.stepId)
+        assertEquals(stepId, record.stepMetadata.id)
         assertEquals(location, record.location)
         assertEquals(true, record.hasStdout)
         assertEquals(false, record.hasStderr)
@@ -75,7 +76,7 @@ class StepLogRecorderTest
     fun logRecord_copy_changes_only_selected_fields()
     {
         val original = LogRecord(
-            stepId = UUID.randomUUID(),
+            stepMetadata = StepMetadata("Test Step", UUID.randomUUID() ),
             location = ResourceRef(ResourceKind.RELATIVE_PATH, "steps/a/logs/combined.log"),
             hasStdout = true,
             hasStderr = false,
@@ -85,7 +86,7 @@ class StepLogRecorderTest
         val updated = original.copy(hasStderr = true)
 
         assertNotEquals(original, updated)
-        assertEquals(original.stepId, updated.stepId)
+        assertEquals(original.stepMetadata, updated.stepMetadata)
         assertEquals(original.location, updated.location)
         assertEquals(original.hasStdout, updated.hasStdout)
         assertEquals(true, updated.hasStderr)
@@ -115,8 +116,10 @@ class StepLogRecorderTest
 
     private fun createStep(): PlannedStep =
         PlannedStep(
-            stepId = UUID.randomUUID(),
-            name = "Step",
+            metadata = StepMetadata(
+                id = UUID.randomUUID(),
+                name = "Test Step"
+            ),
             process = InTasksRun(operationId = "op.test"),
             bindings = ResolvedBindings(),
             environmentRef = UUID.randomUUID()

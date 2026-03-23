@@ -67,7 +67,7 @@ class ExpandedArgResolverTest
     {
         val arg = ExpandedArg.PathSubstitution(
             template = "--input=$()",
-            dataRefId = UUID("550e8400-e29b-41d4-a716-446655440000")
+            id = UUID("550e8400-e29b-41d4-a716-446655440000")
         )
         val resolver =
             object : ExpandedArgResolver

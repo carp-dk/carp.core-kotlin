@@ -1,4 +1,4 @@
-package dk.cachet.carp.analytics.application.execution
+package dk.cachet.carp.analytics.application.exceptions
 
 import dk.cachet.carp.common.application.UUID
 import kotlin.test.Test
@@ -43,10 +43,10 @@ class WorkflowExecutionExceptionTest
         val envId = UUID.randomUUID()
         val exception = EnvironmentSetupException(
             message = "Env setup failed",
-            envId = envId
+            envId = envId.toString()
         )
 
-        assertEquals(envId, exception.envId)
+        assertEquals(envId.toString(), exception.envId)
     }
 
     @Test
@@ -118,7 +118,7 @@ class WorkflowExecutionExceptionTest
     {
         val exc1: WorkflowExecutionException = StepExecutionException("msg", UUID.randomUUID())
         val exc2: WorkflowExecutionException = DataResolutionException("msg", UUID.randomUUID())
-        val exc3: WorkflowExecutionException = EnvironmentSetupException("msg", UUID.randomUUID())
+        val exc3: WorkflowExecutionException = EnvironmentSetupException("msg", UUID.randomUUID().toString())
 
         assertTrue(exc1 is StepExecutionException)
         assertTrue(exc2 is DataResolutionException)

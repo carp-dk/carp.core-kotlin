@@ -3,7 +3,7 @@ package dk.cachet.carp.analytics.application.execution
 import dk.cachet.carp.analytics.application.execution.workspace.ExecutionWorkspace
 import dk.cachet.carp.analytics.application.plan.PlannedStep
 import dk.cachet.carp.analytics.application.runtime.CommandResult
-import dk.cachet.carp.common.application.UUID
+import dk.cachet.carp.analytics.domain.workflow.StepMetadata
 import kotlinx.datetime.Instant
 
 
@@ -44,7 +44,7 @@ interface StepLogRecorder
  * Used internally by implementations for tracking.
  */
 data class LogRecord(
-    val stepId: UUID,
+    val stepMetadata: StepMetadata,
     val location: ResourceRef,
     val hasStdout: Boolean,
     val hasStderr: Boolean,

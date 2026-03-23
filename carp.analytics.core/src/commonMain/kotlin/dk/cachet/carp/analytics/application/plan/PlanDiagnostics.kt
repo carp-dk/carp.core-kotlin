@@ -1,5 +1,6 @@
 package dk.cachet.carp.analytics.application.plan
 
+import dk.cachet.carp.analytics.domain.workflow.StepMetadata
 import dk.cachet.carp.common.application.UUID
 import kotlinx.serialization.Serializable
 
@@ -40,8 +41,7 @@ data class IssueSummary(
 
 @Serializable
 data class PlannedStepSummary(
-    val stepId: UUID,
-    val name: String,
+    val metadata: StepMetadata,
     val environmentId: UUID?,
     val inputCount: Int,
     val outputCount: Int

@@ -1,5 +1,6 @@
 package dk.cachet.carp.analytics.application.plan
 
+import dk.cachet.carp.analytics.domain.workflow.StepMetadata
 import dk.cachet.carp.common.application.UUID
 import kotlinx.serialization.Serializable
 
@@ -8,8 +9,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class PlannedStep(
-    val stepId: UUID,
-    val name: String,
+    val metadata: StepMetadata,
     val process: TasksRun,
     val bindings: ResolvedBindings,
     val environmentRef: UUID?
@@ -17,7 +17,7 @@ data class PlannedStep(
 {
     init
     {
-        require(name.isNotBlank())
+        require(metadata.name.isNotBlank() )
         {
             "PlannedStep.name must not be blank."
         }

@@ -17,7 +17,7 @@ package dk.cachet.carp.analytics.domain.validation
  * val config = WorkflowValidator.Config(
  *     workflowId = { workflow -> workflow.id },
  *     steps = { workflow -> workflow.steps },
- *     stepId = { step -> step.id },
+ *     stepMetadata = { step -> step.id },
  *     dependencies = { step -> step.dependsOn },
  *     hasDependencyGraph = true
  * )
@@ -38,7 +38,7 @@ object WorkflowValidator
      * @param dependencies Extract dependency step IDs from a step (defaults to empty list if no dependencies)
      * @param hasDependencyGraph Whether to perform dependency graph validation (refs and cycles). Defaults to true
      * @param workflowPath Generate a path string for error reporting (defaults to "workflows[{workflowId}]")
-     * @param stepPath Generate a path string for a specific step in error reporting (defaults to "steps[{stepId}]")
+     * @param stepPath Generate a path string for a specific step in error reporting (defaults to "steps[{stepMetadata}]")
      */
     data class Config<W, S>(
         val workflowId: (W) -> String,

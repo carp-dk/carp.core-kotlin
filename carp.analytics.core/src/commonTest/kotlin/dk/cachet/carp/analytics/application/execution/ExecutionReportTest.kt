@@ -1,5 +1,6 @@
 package dk.cachet.carp.analytics.application.execution
 
+import dk.cachet.carp.analytics.domain.workflow.StepMetadata
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.infrastructure.test.createTestJSON
 import kotlinx.datetime.Instant
@@ -28,7 +29,10 @@ class ExecutionReportTest
             status = ExecutionStatus.SUCCEEDED,
             stepResults = listOf(
                 StepRunResult(
-                    stepId = UUID.randomUUID(),
+                    stepMetadata = StepMetadata(
+                        id = UUID.randomUUID(),
+                        name = "Data Preparation"
+                    ),
                     status = ExecutionStatus.SUCCEEDED,
                     startedAt = Instant.parse("2026-03-02T09:00:00Z"),
                     finishedAt = Instant.parse("2026-03-02T09:15:00Z"),
@@ -43,7 +47,10 @@ class ExecutionReportTest
                     )
                 ),
                 StepRunResult(
-                    stepId = UUID.randomUUID(),
+                    stepMetadata = StepMetadata(
+                        id = UUID.randomUUID(),
+                        name = "Data Preparation"
+                    ),
                     status = ExecutionStatus.SUCCEEDED,
                     startedAt = Instant.parse("2026-03-02T09:15:00Z"),
                     finishedAt = Instant.parse("2026-03-02T10:30:00Z"),
@@ -51,7 +58,7 @@ class ExecutionReportTest
                     outputs = listOf(
                         ProducedOutputRef(
                             outputId = UUID.randomUUID(),
-                            location = ResourceRef(ResourceKind.URI, "http://results.example.com/final.json"),
+                            location = ResourceRef(ResourceKind.URI, "https://results.example.com/final.json"),
                             sizeBytes = 1024L,
                             contentType = "application/json"
                         )
@@ -77,7 +84,10 @@ class ExecutionReportTest
             status = ExecutionStatus.FAILED,
             stepResults = listOf(
                 StepRunResult(
-                    stepId = UUID.randomUUID(),
+                    stepMetadata = StepMetadata(
+                        id = UUID.randomUUID(),
+                        name = "Data Preparation"
+                    ),
                     status = ExecutionStatus.SUCCEEDED,
                     startedAt = Instant.parse("2026-03-02T09:00:00Z"),
                     finishedAt = Instant.parse("2026-03-02T09:02:00Z"),
@@ -85,14 +95,17 @@ class ExecutionReportTest
                     outputs = emptyList()
                 ),
                 StepRunResult(
-                    stepId = UUID.randomUUID(),
+                    stepMetadata = StepMetadata(
+                        id = UUID.randomUUID(),
+                        name = "Data Preparation"
+                    ),
                     status = ExecutionStatus.FAILED,
                     startedAt = Instant.parse("2026-03-02T09:02:00Z"),
                     finishedAt = Instant.parse("2026-03-02T09:05:00Z"),
                     failure = StepFailure(FailureKind.INFRASTRUCTURE, "Network connection lost"),
                     outputs = emptyList(),
                     detail = StepRunDetail(
-                        command = listOf("curl", "http://unavailable-service.com/data"),
+                        command = listOf("curl", "https://unavailable-service.com/data"),
                         exitCode = 7
                     )
                 )
@@ -134,7 +147,10 @@ class ExecutionReportTest
             status = ExecutionStatus.RUNNING,
             stepResults = listOf(
                 StepRunResult(
-                    stepId = UUID.randomUUID(),
+                    stepMetadata = StepMetadata(
+                        id = UUID.randomUUID(),
+                        name = "Data Preparation"
+                    ),
                     status = ExecutionStatus.SUCCEEDED,
                     startedAt = Instant.parse("2026-03-02T08:00:00Z"),
                     finishedAt = Instant.parse("2026-03-02T08:30:00Z"),
@@ -163,7 +179,10 @@ class ExecutionReportTest
                     )
                 ),
                 StepRunResult(
-                    stepId = UUID.randomUUID(),
+                    stepMetadata = StepMetadata(
+                        id = UUID.randomUUID(),
+                        name = "Data Preparation"
+                    ),
                     status = ExecutionStatus.RUNNING,
                     startedAt = Instant.parse("2026-03-02T08:30:00Z"),
                     finishedAt = null,
@@ -199,7 +218,10 @@ class ExecutionReportTest
             status = ExecutionStatus.RUNNING,
             stepResults = listOf(
                 StepRunResult(
-                    stepId = UUID.randomUUID(),
+                    stepMetadata = StepMetadata(
+                        id = UUID.randomUUID(),
+                        name = "Data Preparation"
+                    ),
                     status = ExecutionStatus.SUCCEEDED,
                     startedAt = Instant.parse("2026-03-02T10:00:00Z"),
                     finishedAt = Instant.parse("2026-03-02T10:05:00Z"),
@@ -207,7 +229,10 @@ class ExecutionReportTest
                     outputs = emptyList()
                 ),
                 StepRunResult(
-                    stepId = UUID.randomUUID(),
+                    stepMetadata = StepMetadata(
+                        id = UUID.randomUUID(),
+                        name = "Data Preparation"
+                    ),
                     status = ExecutionStatus.RUNNING,
                     startedAt = Instant.parse("2026-03-02T10:05:00Z"),
                     finishedAt = null,
@@ -215,7 +240,10 @@ class ExecutionReportTest
                     outputs = null
                 ),
                 StepRunResult(
-                    stepId = UUID.randomUUID(),
+                    stepMetadata = StepMetadata(
+                        id = UUID.randomUUID(),
+                        name = "Data Preparation"
+                    ),
                     status = ExecutionStatus.PENDING,
                     startedAt = null,
                     finishedAt = null,
@@ -223,7 +251,10 @@ class ExecutionReportTest
                     outputs = null
                 ),
                 StepRunResult(
-                    stepId = UUID.randomUUID(),
+                    stepMetadata = StepMetadata(
+                        id = UUID.randomUUID(),
+                        name = "Data Preparation"
+                    ),
                     status = ExecutionStatus.SKIPPED,
                     startedAt = null,
                     finishedAt = null,
@@ -268,7 +299,10 @@ class ExecutionReportTest
     {
         val steps = (1..100).map { i ->
             StepRunResult(
-                stepId = UUID.randomUUID(),
+                stepMetadata = StepMetadata(
+                        id = UUID.randomUUID(),
+                        name = "Data Preparation"
+                    ),
                 status = if (i <= 90) ExecutionStatus.SUCCEEDED else ExecutionStatus.RUNNING,
                 startedAt = Instant.parse("2026-03-02T10:00:00Z").plus(i.seconds),
                 finishedAt = if (i <= 90) Instant.parse("2026-03-02T10:00:00Z").plus((i + 1).seconds) else null,

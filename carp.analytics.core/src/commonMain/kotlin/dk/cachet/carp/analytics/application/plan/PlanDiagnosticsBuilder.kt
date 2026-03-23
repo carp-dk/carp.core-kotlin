@@ -16,8 +16,7 @@ object PlanDiagnosticsBuilder
         // Create step summaries
         val stepSummaries = plan.steps.map { step ->
             PlannedStepSummary(
-                stepId = step.stepId,
-                name = step.name,
+                metadata = step.metadata,
                 environmentId = step.environmentRef,
                 inputCount = step.bindings.inputs.size,
                 outputCount = step.bindings.outputs.size
@@ -38,7 +37,7 @@ object PlanDiagnosticsBuilder
             stepCount = plan.steps.size,
             environmentCount = plan.requiredEnvironmentRefs.size,
             bindingCount = plan.steps.sumOf { it.bindings.inputs.size + it.bindings.outputs.size },
-            executionOrder = plan.steps.map { it.stepId.toString() },
+            executionOrder = plan.steps.map { "${it.metadata.name} (${it.metadata.id})" },
             issueSummary = IssueSummary(errorCount, warningCount, infoCount),
             issues = plan.issues,
             stepSummaries = stepSummaries,

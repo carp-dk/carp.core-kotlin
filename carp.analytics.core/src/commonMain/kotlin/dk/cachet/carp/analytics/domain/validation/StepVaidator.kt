@@ -9,7 +9,7 @@ package dk.cachet.carp.analytics.domain.validation
  * Usage:
  * ```
  * val config = StepValidator.Config(
- *     stepId = { step -> step.id },
+ *     stepMetadata = { step -> step.id },
  *     outputIds = { step -> step.outputs.map { it.id } },
  *     missingRequiredInputSpecs = { step -> findMissingRequired(step) },
  *     specsMissingTypes = { step -> findMissingTypes(step) }
@@ -28,7 +28,7 @@ object StepValidator
      * @param outputIds Extract all output IDs from a step (used to check uniqueness)
      * @param missingRequiredInputSpecs Extract missing required input specifications (defaults to empty list)
      * @param specsMissingTypes Extract specification identifiers that are missing type information (defaults to empty list)
-     * @param stepPath Generate a path string for error reporting (defaults to "steps[{stepId}]")
+     * @param stepPath Generate a path string for error reporting (defaults to "steps[{stepMetadata}]")
      */
     data class Config<S>(
         val stepId: (S) -> String,

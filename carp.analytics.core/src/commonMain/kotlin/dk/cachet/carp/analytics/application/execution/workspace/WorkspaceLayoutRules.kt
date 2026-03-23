@@ -7,7 +7,7 @@ package dk.cachet.carp.analytics.application.execution.workspace
  * ```
  * executionRoot/
  *   steps/
- *     {stepId}/
+ *     {stepMetadata}/
  *       inputs/
  *       outputs/
  *       logs/

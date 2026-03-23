@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
  *
  * Semantics:
  * - [location] MUST be workspace-root-relative (ResourceKind.RELATIVE_PATH)
- * - For step outputs, [location] MUST resolve under: steps/{stepId}/outputs/
+ * - For step outputs, [location] MUST resolve under: steps/{stepMetadata}/outputs/
  *
  * Rich metadata such as schema/format belongs on OutputDataSpec (author/plan time),
  * not on this runtime record.

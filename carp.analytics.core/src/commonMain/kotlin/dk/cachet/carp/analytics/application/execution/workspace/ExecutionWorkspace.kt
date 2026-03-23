@@ -26,7 +26,7 @@ data class ExecutionWorkspace(
      * Returns the step directory path for the given step ID.
      *
      * @param stepId The step identifier UUID.
-     * @return Relative path "steps/{stepId}"
+     * @return Relative path "steps/{stepMetadata}"
      */
     fun stepDir( stepId: UUID ): String
     {
@@ -37,7 +37,7 @@ data class ExecutionWorkspace(
      * Returns the step inputs directory path for the given step ID.
      *
      * @param stepId The step identifier UUID.
-     * @return Relative path "steps/{stepId}/inputs"
+     * @return Relative path "steps/{stepMetadata}/inputs"
      */
     fun stepInputsDir( stepId: UUID ): String
     {
@@ -48,7 +48,7 @@ data class ExecutionWorkspace(
      * Returns the step outputs directory path for the given step ID.
      *
      * @param stepId The step identifier UUID.
-     * @return Relative path "steps/{stepId}/outputs"
+     * @return Relative path "steps/{stepMetadata}/outputs"
      */
     fun stepOutputsDir( stepId: UUID ): String
     {
@@ -59,7 +59,7 @@ data class ExecutionWorkspace(
      * Returns the step logs directory path for the given step ID.
      *
      * @param stepId The step identifier UUID.
-     * @return Relative path "steps/{stepId}/logs"
+     * @return Relative path "steps/{stepMetadata}/logs"
      */
     fun stepLogsDir( stepId: UUID ): String
     {

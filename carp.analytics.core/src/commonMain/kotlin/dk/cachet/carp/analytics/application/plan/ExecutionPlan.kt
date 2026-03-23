@@ -28,11 +28,15 @@ data class ExecutionPlan(
         {
             "planId must not be blank."
         }
+        require(steps.isNotEmpty())
+        {
+            "steps must not be empty."
+        }
 
         // ensuring stepIds are unique
-        val ids = steps.map { it.stepId }
+        val ids = steps.map { it.metadata.id }
         require(ids.size == ids.distinct().size) {
-            "steps contains duplicate stepId(s): ${ids.groupBy { it }.filterValues { it.size > 1 }.keys}"
+            "steps contains duplicate stepMetadata(s): ${ids.groupBy { it }.filterValues { it.size > 1 }.keys}"
         }
     }
 

@@ -1,6 +1,6 @@
 package dk.cachet.carp.analytics.application.execution
 
-import dk.cachet.carp.common.application.UUID
+import dk.cachet.carp.analytics.domain.workflow.StepMetadata
 import kotlinx.serialization.Serializable
 
 /**
@@ -8,13 +8,13 @@ import kotlinx.serialization.Serializable
  *
  * Examples: workspace creation errors, policy violations, unexpected orchestrator state.
  *
- * @param stepId  Associated step, or null for run-level issues.
+ * @param stepMetadata  Associated step metadata, or null for run-level issues.
  * @param kind    Categorizes the issue.
  * @param message Human-readable description.
  */
 @Serializable
 data class ExecutionIssue(
-    val stepId: UUID? = null,
+    val stepMetadata: StepMetadata? = null,
     val kind: ExecutionIssueKind,
     val message: String
 )
