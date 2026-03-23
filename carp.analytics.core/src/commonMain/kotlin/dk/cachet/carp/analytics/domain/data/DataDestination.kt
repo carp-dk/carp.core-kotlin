@@ -1,4 +1,6 @@
-﻿package dk.cachet.carp.analytics.domain.data import kotlinx.serialization.Serializable
+﻿package dk.cachet.carp.analytics.domain.data
+
+import kotlinx.serialization.Serializable
 
 /**
  * Represents a destination where processed data can be written.
