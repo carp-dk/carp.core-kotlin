@@ -3,6 +3,7 @@ package dk.cachet.carp.common.infrastructure.serialization
 import dk.cachet.carp.common.application.devices.DefaultDeviceRegistration
 import dk.cachet.carp.common.infrastructure.test.StubDeviceConfiguration
 import dk.cachet.carp.common.infrastructure.test.StubPrimaryDeviceConfiguration
+import dk.cachet.carp.test.TestClock
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import kotlin.test.*
@@ -126,12 +127,16 @@ class CustomDeviceRegistrationTest
     @Test
     fun initialization_from_json_extracts_base_DeviceRegistration_properties()
     {
-        val registration = DefaultDeviceRegistration()
+        val expectedRegistrationCreatedOn = TestClock.now()
+        val registration = DefaultDeviceRegistration(
+            registrationCreatedOn = expectedRegistrationCreatedOn
+        )
         val serialized: String = JSON.encodeToString( DefaultDeviceRegistration.serializer(), registration )
 
         val custom = CustomDeviceRegistration( "Irrelevant", serialized, JSON )
         assertEquals( registration.deviceId, custom.deviceId )
         assertEquals( registration.deviceDisplayName, custom.deviceDisplayName )
+        assertEquals( expectedRegistrationCreatedOn, custom.registrationCreatedOn )
     }
 
     @Serializable

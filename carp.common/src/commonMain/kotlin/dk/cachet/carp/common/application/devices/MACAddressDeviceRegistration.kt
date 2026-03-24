@@ -1,8 +1,12 @@
+@file:Suppress( "NON_EXPORTABLE_TYPE" )
+
 package dk.cachet.carp.common.application.devices
 
 import dk.cachet.carp.common.application.ApplicationData
 import dk.cachet.carp.common.application.MACAddress
 import dk.cachet.carp.common.infrastructure.serialization.NotSerializable
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlinx.serialization.*
 import kotlin.js.JsExport
 
@@ -15,7 +19,9 @@ import kotlin.js.JsExport
 data class MACAddressDeviceRegistration(
     val macAddress: MACAddress,
     override val deviceDisplayName: String? = null,
-    override val additionalSpecifications: ApplicationData? = null
+    override val additionalSpecifications: ApplicationData? = null,
+    @Required
+    override val registrationCreatedOn: Instant = Clock.System.now()
 ) : DeviceRegistration()
 {
     @Required

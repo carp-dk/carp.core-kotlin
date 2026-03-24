@@ -37,7 +37,6 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlin.reflect.KFunction
 import kotlin.reflect.KSuspendFunction3
-import kotlin.reflect.jvm.javaField
 import kotlin.reflect.jvm.javaMethod
 import kotlin.reflect.jvm.kotlinFunction
 import kotlin.time.Duration.Companion.days
@@ -77,16 +76,6 @@ fun generateExampleRequests( serviceInfo: ApplicationServiceInfo ): List<Example
         )
     }
 }
-
-private fun <T : DeviceRegistration> T.setRegistrationCreatedOn( createdOn: Instant ): T
-{
-    val backingField = DeviceRegistration::registrationCreatedOn.javaField!!
-    backingField.isAccessible = true
-    backingField.set( this, createdOn )
-
-    return this
-}
-
 
 // Example protocol with a single smartphone.
 private val ownerId = UUID( "491f03fc-964b-4783-86a6-a528bbfe4e94" )
@@ -193,10 +182,10 @@ private val bikeBeaconPreregistration = bikeBeacon.createRegistration {
     majorId = 42
     minorId = 42
     additionalSpecifications = ApplicationData( """{"Model": "AnyBeacon B42"}""" )
-}.setRegistrationCreatedOn( deploymentCreatedOn )
+}.copy( registrationCreatedOn = deploymentCreatedOn )
 private val phoneRegistration = phone.createRegistration {
     deviceId = UUID( "fc7b41b0-e9e2-4b5d-8c3d-5119b556a3f0" ).toString()
-}.setRegistrationCreatedOn( Instant.fromEpochSeconds( 1642514110 ) )
+}.copy( registrationCreatedOn = Instant.fromEpochSeconds( 1642514110 ) )
 private val bikeBeaconStatus = DeviceDeploymentStatus.Registered( bikeBeacon, phoneRegistration, false, emptySet(), emptySet() )
 private val participantStatusList = listOf(
     ParticipantStatus( participantId, participantAssignedRoles, setOf( phone.roleName ) )
