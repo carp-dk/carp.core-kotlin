@@ -12,6 +12,8 @@ import dk.cachet.carp.common.application.sampling.NoOptionsSamplingScheme
 import dk.cachet.carp.common.application.sampling.SamplingConfiguration
 import dk.cachet.carp.common.application.tasks.TaskConfigurationList
 import dk.cachet.carp.common.infrastructure.serialization.NotSerializable
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlinx.serialization.*
 import kotlin.js.JsExport
 import kotlin.reflect.KClass
@@ -79,7 +81,9 @@ data class AltBeaconDeviceRegistration(
      */
     val referenceRssi: Short,
     override val deviceDisplayName: String? = null, // TODO: We could map known manufacturerId's to display names.
-    override val additionalSpecifications: ApplicationData? = null
+    override val additionalSpecifications: ApplicationData? = null,
+    @Required
+    override val registrationCreatedOn: Instant = Clock.System.now()
 ) : DeviceRegistration()
 {
     companion object

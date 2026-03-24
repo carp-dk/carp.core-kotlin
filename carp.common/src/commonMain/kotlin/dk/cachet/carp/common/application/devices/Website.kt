@@ -9,6 +9,8 @@ import dk.cachet.carp.common.application.sampling.DataTypeSamplingSchemeMap
 import dk.cachet.carp.common.application.sampling.SamplingConfiguration
 import dk.cachet.carp.common.application.tasks.TaskConfigurationList
 import dk.cachet.carp.common.infrastructure.serialization.NotSerializable
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 import kotlin.js.JsExport
@@ -52,7 +54,9 @@ data class WebsiteDeviceRegistration(
      */
     val userAgent: String,
     override val deviceDisplayName: String? = userAgent,
-    override val additionalSpecifications: ApplicationData? = null
+    override val additionalSpecifications: ApplicationData? = null,
+    @Required
+    override val registrationCreatedOn: Instant = Clock.System.now()
 ) : DeviceRegistration()
 {
     @Required

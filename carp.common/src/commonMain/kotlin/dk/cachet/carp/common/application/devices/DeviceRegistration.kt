@@ -1,4 +1,4 @@
-@file:Suppress( "NON_EXPORTABLE_TYPE" )
+@file:Suppress( "NON_EXPORTABLE_TYPE", "UnnecessaryAbstractClass" )
 
 package dk.cachet.carp.common.application.devices
 
@@ -6,7 +6,6 @@ import dk.cachet.carp.common.application.ApplicationData
 import dk.cachet.carp.common.application.Immutable
 import dk.cachet.carp.common.application.ImplementAsDataClass
 import dk.cachet.carp.common.infrastructure.serialization.NotSerializable
-import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.serialization.*
 import kotlin.js.JsExport
@@ -41,7 +40,7 @@ abstract class DeviceRegistration
     abstract val deviceDisplayName: String?
 
     @Required
-    val registrationCreatedOn: Instant = Clock.System.now()
+    abstract val registrationCreatedOn: Instant
 
     /**
      * Additional device specifications which may be relevant to the researcher when interpreting collected data.

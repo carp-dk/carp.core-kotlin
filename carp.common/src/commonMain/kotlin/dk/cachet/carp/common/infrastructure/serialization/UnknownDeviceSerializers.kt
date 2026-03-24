@@ -11,6 +11,7 @@ import dk.cachet.carp.common.application.devices.DeviceRegistrationBuilder
 import dk.cachet.carp.common.application.devices.PrimaryDeviceConfiguration
 import dk.cachet.carp.common.application.sampling.DataTypeSamplingSchemeMap
 import dk.cachet.carp.common.application.sampling.SamplingConfiguration
+import kotlinx.datetime.Instant
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 import kotlin.reflect.KClass
@@ -180,11 +181,13 @@ data class CustomDeviceRegistration internal constructor(
     private data class BaseMembers(
         override val deviceId: String,
         override val deviceDisplayName: String? = null,
+        override val registrationCreatedOn: Instant,
         override val additionalSpecifications: ApplicationData? = null
     ) : DeviceRegistration()
 
     override val deviceId: String
     override val deviceDisplayName: String?
+    override val registrationCreatedOn: Instant
     override val additionalSpecifications: ApplicationData?
 
     init
@@ -193,6 +196,7 @@ data class CustomDeviceRegistration internal constructor(
         val baseMembers = json.decodeFromString( BaseMembers.serializer(), jsonSource )
         deviceId = baseMembers.deviceId
         deviceDisplayName = baseMembers.deviceDisplayName
+        registrationCreatedOn = baseMembers.registrationCreatedOn
         additionalSpecifications = baseMembers.additionalSpecifications
     }
 }
