@@ -1,7 +1,6 @@
 package dk.cachet.carp.analytics.application.data
 
 import dk.cachet.carp.analytics.domain.data.ICarpTabularData
-import dk.cachet.carp.analytics.domain.data.InMemorySource
 import kotlin.test.*
 
 class DataRegistryTest

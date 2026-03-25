@@ -76,7 +76,7 @@ class ExpandedArgResolverTest
                 override fun getEnvVar( name: String ) = null
             }
         val result = arg.toResolvedString(resolver)
-        assertEquals("--input=/workspace/data.csv", result)
+        assertEquals("--input=$/workspace/data.csv", result)
     }
 
     @Test

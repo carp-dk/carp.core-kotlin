@@ -57,20 +57,21 @@ data class ColumnSpec(
     val defaultValue: String? = null
 )
 
+
 /**
- * Constraints for validating data quality.
+ * Data constraints for validating input/output values.
  *
- * @property minRows Minimum number of rows expected
- * @property maxRows Maximum number of rows allowed
- * @property requiredColumns Columns that must be present
- * @property uniqueColumns Columns that must have unique values
- * @property notNullColumns Columns that cannot contain null values
+ * Optional validation rules applied at execution time.
+ *
+ * @property minSize Minimum data size (bytes) — null for no limit
+ * @property maxSize Maximum data size (bytes) — null for no limit
+ * @property allowedFormats List of allowed formats — empty for no restriction
+ * @property customValidation Custom validation rules (regex patterns, format validators, etc.)
  */
 @Serializable
 data class DataConstraints(
-    val minRows: Long? = null,
-    val maxRows: Long? = null,
-    val requiredColumns: List<String> = emptyList(),
-    val uniqueColumns: List<String> = emptyList(),
-    val notNullColumns: List<String> = emptyList()
+    val minSize: Long? = null,
+    val maxSize: Long? = null,
+    val allowedFormats: List<String> = emptyList(),
+    val customValidation: Map<String, String> = emptyMap()
 )

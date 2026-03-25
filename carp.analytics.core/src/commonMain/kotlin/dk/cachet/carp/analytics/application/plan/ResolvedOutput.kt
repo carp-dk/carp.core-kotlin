@@ -1,22 +1,27 @@
 package dk.cachet.carp.analytics.application.plan
 
+import dk.cachet.carp.analytics.domain.data.DataLocation
+import dk.cachet.carp.analytics.domain.data.FileLocation
 import dk.cachet.carp.analytics.domain.data.OutputDataSpec
 import kotlinx.serialization.Serializable
 
+
 /**
- * Resolved output binding carrying both original specification and resolved destination.
+ * Resolved output after planning phase.
  *
- * @property spec The original output specification with all metadata
- * @property resolvedDestination The resolved data destination with materialized paths
+ * @property spec The output data specification (unchanged from authored step)
+ * @property location The fully resolved DataLocation with concrete path
  */
 @Serializable
 data class ResolvedOutput(
     val spec: OutputDataSpec,
-    val resolvedDestination: ResolvedDataDestination
+    val location: DataLocation
 )
 {
-    init
-    {
-        require( spec.name.isNotBlank() ) { "Output spec name must not be blank" }
-    }
+    /**
+     * Get the file path from this resolved output.
+     *
+     * @return The path if location is FileLocation, null otherwise
+     */
+    fun getPath(): String? = (location as? FileLocation)?.path
 }

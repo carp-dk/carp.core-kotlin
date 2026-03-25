@@ -64,26 +64,6 @@ data class Step(
             StepValidationResult.Invalid( errors )
         }
     }
-
-    /**
-     * Checks if this step can consume the output of another step.
-     */
-    fun canConsumeOutputOf( other: Step, outputId: UUID ): Boolean
-    {
-        val otherOutput = other.outputs.find { it.id == outputId } ?: return false
-        val matchingInput = inputs.find { it.id == outputId }
-
-        if ( matchingInput != null )
-        {
-            if ( matchingInput.schema != null && otherOutput.schema != null )
-            {
-                return matchingInput.schema.isCompatibleWith( otherOutput.schema )
-            }
-            return true
-        }
-
-        return false
-    }
 }
 
 /**

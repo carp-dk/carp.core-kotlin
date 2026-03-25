@@ -1,6 +1,9 @@
 package dk.cachet.carp.analytics.application.plan
 
-import dk.cachet.carp.analytics.domain.data.*
+import dk.cachet.carp.analytics.domain.data.FileFormat
+import dk.cachet.carp.analytics.domain.data.FileLocation
+import dk.cachet.carp.analytics.domain.data.InputDataSpec
+import dk.cachet.carp.analytics.domain.data.OutputDataSpec
 import dk.cachet.carp.common.application.UUID
 import kotlin.test.*
 
@@ -14,49 +17,55 @@ import kotlin.test.*
  * - Multiple inputs and outputs
  * - Asymmetric bindings (only inputs or only outputs)
  * - Lookup edge cases (null returns, not exceptions)
+ *
+ * Uses unified DataLocation model.
  */
 class ResolvedBindingsTest
 {
     private fun createTestResolvedInput(
         id: UUID = UUID.randomUUID(),
-        name: String = "input"
+        name: String = "input",
+        path: String = "input.csv"
     ): ResolvedInput
     {
         val spec = InputDataSpec(
             id = id,
             name = name,
-            source = FileSystemSource(
-                path = "input.csv",
+            location = FileLocation(
+                path = path,
+                format = FileFormat.CSV
+            ),
+            stepRef = null // External input
+        )
+        return ResolvedInput(
+            spec = spec,
+            location = FileLocation(
+                path = "/workspace/input/$name.csv",
                 format = FileFormat.CSV
             )
         )
-        val source = ResolvedDataSource.FileSystem(
-            original = spec.source as FileSystemSource,
-            resolvedPath = "/workspace/input/$name.csv"
-        )
-        return ResolvedInput( spec = spec, resolvedSource = source )
     }
 
     private fun createTestResolvedOutput(
         id: UUID = UUID.randomUUID(),
-        name: String = "output"
+        name: String = "output",
     ): ResolvedOutput
     {
         val spec = OutputDataSpec(
             id = id,
             name = name,
-            destination = FileDestination(
-                path = "output.csv",
-                format = FileFormat.CSV,
-                overwrite = false,
-                writeMode = WriteMode.ERROR_IF_EXISTS
+            location = FileLocation(
+                path = "", // Empty, will be generated
+                format = FileFormat.CSV
             )
         )
-        val destination = ResolvedDataDestination.File(
-            original = spec.destination as FileDestination,
-            resolvedPath = "/workspace/output/$name.csv"
+        return ResolvedOutput(
+            spec = spec,
+            location = FileLocation(
+                path = "/workspace/output/$name.csv",
+                format = FileFormat.CSV
+            )
         )
-        return ResolvedOutput( spec = spec, resolvedDestination = destination )
     }
 
     // Input Lookup Tests
@@ -267,8 +276,12 @@ class ResolvedBindingsTest
     @Test
     fun `bindings with many inputs and outputs scale correctly`()
     {
-        val inputs = List( 50 ) { UUID.randomUUID() }.associateWith { id -> createTestResolvedInput( id = id, name = "input-$id" ) }
-        val outputs = List( 50 ) { UUID.randomUUID() }.associateWith { id -> createTestResolvedOutput( id = id, name = "output-$id" ) }
+        val inputs = List( 50 ) {
+            UUID.randomUUID()
+        }.associateWith { id -> createTestResolvedInput( id = id, name = "input-$id" ) }
+        val outputs = List( 50 ) {
+            UUID.randomUUID()
+        }.associateWith { id -> createTestResolvedOutput( id = id, name = "output-$id" ) }
 
         val bindings = ResolvedBindings( inputs = inputs, outputs = outputs )
 
@@ -369,7 +382,7 @@ class ResolvedBindingsTest
     // Edge Cases Tests
 
     @Test
-    fun `lookup with null UUID returns null instead of crashing`()
+    fun `lookup with unknown UUID returns null instead of crashing`()
     {
         val bindings = ResolvedBindings(
             inputs = mapOf(
@@ -413,10 +426,10 @@ class ResolvedBindingsTest
 
         // Verify lookups are independent
         assertNotNull( bindings.input( inputId ) )
-        assertNull( bindings.output( inputId ) )  // Wrong type
+        assertNull( bindings.output( inputId ) ) // Wrong type
 
         assertNotNull( bindings.output( outputId ) )
-        assertNull( bindings.input( outputId ) )  // Wrong type
+        assertNull( bindings.input( outputId ) ) // Wrong type
 
         assertNull( bindings.input( otherId ) )
         assertNull( bindings.output( otherId ) )
@@ -462,7 +475,8 @@ class ResolvedBindingsTest
         val bindings = ResolvedBindings( inputs = inputs )
 
         var count = 0
-        for ( (_, input) in bindings.inputs ) {
+        for ( (_, input) in bindings.inputs )
+        {
             assertNotNull( input )
             count++
         }
@@ -478,7 +492,8 @@ class ResolvedBindingsTest
         val bindings = ResolvedBindings( outputs = outputs )
 
         var count = 0
-        for ( (_, output) in bindings.outputs ) {
+        for ( (_, output) in bindings.outputs )
+        {
             assertNotNull( output )
             count++
         }

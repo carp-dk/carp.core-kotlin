@@ -24,7 +24,7 @@ data class ResolvedBindings(
      * @param id The input port ID
      * @return ResolvedInput if found, null otherwise
      */
-    fun input(id: UUID): ResolvedInput? = inputs[id]
+    fun input( id: UUID ): ResolvedInput? = inputs[id]
 
     /**
      * Retrieves a resolved output binding by ID.
@@ -32,5 +32,5 @@ data class ResolvedBindings(
      * @param id The output port ID
      * @return ResolvedOutput if found, null otherwise
      */
-    fun output(id: UUID): ResolvedOutput? = outputs[id]
+    fun output( id: UUID ): ResolvedOutput? = outputs[id]
 }

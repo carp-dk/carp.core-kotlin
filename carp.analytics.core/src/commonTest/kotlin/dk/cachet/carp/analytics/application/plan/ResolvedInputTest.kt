@@ -1,71 +1,68 @@
 package dk.cachet.carp.analytics.application.plan
 
-import dk.cachet.carp.analytics.domain.data.DataSchema
 import dk.cachet.carp.analytics.domain.data.FileFormat
-import dk.cachet.carp.analytics.domain.data.FileSystemSource
+import dk.cachet.carp.analytics.domain.data.FileLocation
 import dk.cachet.carp.analytics.domain.data.InputDataSpec
 import dk.cachet.carp.common.application.UUID
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertIs
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 /**
- * Comprehensive unit tests for [ResolvedInput] and [ResolvedOutput].
+ * Comprehensive unit tests for [ResolvedInput] using unified DataLocation model.
  *
  * Tests:
- * - Creation with specs and resolved sources/destinations
- * - Accessing spec and resolved properties
- * - Validation (blank name check)
+ * - Creation with specs and resolved locations
+ * - Accessing spec and location properties
+ * - Validation (spec name check)
  * - Field preservation across creation
- * - Error message clarity
+ * - External vs step-based inputs (stepRef null vs non-null)
+ * - Location path access via helper method
  */
 class ResolvedInputTest
 {
     private fun createTestSpec(
         id: UUID = UUID.randomUUID(),
         name: String = "test-input",
-        description: String = "Test input"
+        description: String = "Test input",
+        stepRef: String? = null // null = external, non-null = from step
     ): InputDataSpec
     {
         return InputDataSpec(
             id = id,
             name = name,
             description = description,
-            schema = DataSchema(
-                format = FileFormat.CSV,
-                encoding = "UTF-8"
-            ),
-            source = FileSystemSource(
-                path = "test.csv",
+            location = FileLocation(
+                path = if ( stepRef == null ) "test.csv" else "",
                 format = FileFormat.CSV
             ),
+            stepRef = stepRef,
             required = true
         )
     }
 
-    private fun createTestResolvedSource(): ResolvedDataSource
+    private fun createTestLocation( path: String = "/workspace/input/test.csv" ): FileLocation
     {
-        return ResolvedDataSource.FileSystem(
-            original = FileSystemSource(
-                path = "test.csv",
-                format = FileFormat.CSV
-            ),
-            resolvedPath = "/workspace/input/test.csv"
+        return FileLocation(
+            path = path,
+            format = FileFormat.CSV
         )
     }
 
-    // ─────────────────────────────────────────────────────────────────────
     // Creation Tests
-    // ─────────────────────────────────────────────────────────────────────
 
     @Test
-    fun `ResolvedInput creation with valid spec and source succeeds`()
+    fun `ResolvedInput creation with valid spec and location succeeds`()
     {
         val spec = createTestSpec()
-        val source = createTestResolvedSource()
+        val location = createTestLocation()
 
-        val resolved = ResolvedInput( spec = spec, resolvedSource = source )
+        val resolved = ResolvedInput( spec = spec, location = location )
 
         assertEquals( spec, resolved.spec )
-        assertEquals( source, resolved.resolvedSource )
+        assertEquals( location, resolved.location )
     }
 
     @Test
@@ -77,9 +74,9 @@ class ResolvedInputTest
             name = "my-input",
             description = "My input description"
         )
-        val source = createTestResolvedSource()
+        val location = createTestLocation()
 
-        val resolved = ResolvedInput( spec = spec, resolvedSource = source )
+        val resolved = ResolvedInput( spec = spec, location = location )
 
         assertEquals( inputId, resolved.spec.id )
         assertEquals( "my-input", resolved.spec.name )
@@ -87,203 +84,198 @@ class ResolvedInputTest
         assertEquals( true, resolved.spec.required )
     }
 
-    @Test
-    fun `ResolvedInput exposes spec schema information`()
-    {
-        val spec = createTestSpec()
-        val source = createTestResolvedSource()
-
-        val resolved = ResolvedInput( spec = spec, resolvedSource = source )
-
-        assertNotNull( resolved.spec.schema )
-        assertEquals( FileFormat.CSV, resolved.spec.schema.format)
-        assertEquals( "UTF-8", resolved.spec.schema.encoding)
-    }
-
-    // ─────────────────────────────────────────────────────────────────────
-    // Source Access Tests
-    // ─────────────────────────────────────────────────────────────────────
+    // Location Access Tests
 
     @Test
-    fun `ResolvedInput provides access to resolved source properties`()
+    fun `ResolvedInput provides access to unified DataLocation`()
     {
         val spec = createTestSpec()
         val resolvedPath = "/workspace/input/specific/path/data.csv"
-        val source = ResolvedDataSource.FileSystem(
-            original = FileSystemSource(
-                path = "data.csv",
-                format = FileFormat.CSV
-            ),
-            resolvedPath = resolvedPath
+        val location = FileLocation(
+            path = resolvedPath,
+            format = FileFormat.CSV
         )
 
-        val resolved = ResolvedInput( spec = spec, resolvedSource = source )
+        val resolved = ResolvedInput( spec = spec, location = location )
 
-        assertIs<ResolvedDataSource.FileSystem>( resolved.resolvedSource )
-        assertEquals( resolvedPath, resolved.resolvedSource.resolvedPath )
-        assertEquals( FileFormat.CSV, (resolved.resolvedSource).original.format )
+        assertIs<FileLocation>( resolved.location )
+        assertEquals( resolvedPath, resolved.location.path )
+        assertEquals( FileFormat.CSV, resolved.location.format )
     }
 
     @Test
-    fun `ResolvedInput can work with different source types`()
+    fun `ResolvedInput helper method getPath returns correct path`()
     {
         val spec = createTestSpec()
-        val urlSource = ResolvedDataSource.Url(
-            original = dk.cachet.carp.analytics.domain.data.UrlSource(
-                url = "https://example.com/data.csv",
-                format = FileFormat.CSV
-            )
+        val location = createTestLocation( "/workspace/test.csv" )
+
+        val resolved = ResolvedInput( spec = spec, location = location )
+
+        val path = resolved.getPath()
+        assertNotNull( path )
+        assertEquals( "/workspace/test.csv", path )
+    }
+
+    // External vs Step-Based Input Tests
+
+    @Test
+    fun `ResolvedInput for external input has null stepRef`()
+    {
+        val spec = createTestSpec( stepRef = null ) // External
+        val location = createTestLocation()
+
+        val resolved = ResolvedInput( spec = spec, location = location )
+
+        assertNull( resolved.spec.stepRef )
+        assertEquals( "/workspace/input/test.csv", ( resolved.location as FileLocation ).path )
+    }
+
+    @Test
+    fun `ResolvedInput for step-based input has stepRef`()
+    {
+        val spec = createTestSpec( stepRef = "step-1" ) // From step-1
+        val location = FileLocation(
+            path = "/workspace/outputs/step-1/output.csv",
+            format = FileFormat.CSV
         )
 
-        val resolved = ResolvedInput( spec = spec, resolvedSource = urlSource )
+        val resolved = ResolvedInput( spec = spec, location = location )
 
-        assertIs<ResolvedDataSource.Url>( resolved.resolvedSource )
-        assertEquals( "https://example.com/data.csv", (resolved.resolvedSource).original.url )
+        assertEquals( "step-1", resolved.spec.stepRef )
+        assertEquals( "/workspace/outputs/step-1/output.csv", ( resolved.location as FileLocation ).path )
     }
 
-    // ─────────────────────────────────────────────────────────────────────
-    // Validation Tests
-    // ─────────────────────────────────────────────────────────────────────
-
-    @Test
-    fun `ResolvedInput throws when spec name is empty string`()
-    {
-        val spec = createTestSpec( name = "" )
-        val source = createTestResolvedSource()
-
-        val exception = assertFailsWith<IllegalArgumentException> {
-            ResolvedInput( spec = spec, resolvedSource = source )
-        }
-
-        assertEquals( "Input spec name must not be blank", exception.message )
-    }
-
-    @Test
-    fun `ResolvedInput throws when spec name is whitespace only`()
-    {
-        val spec = createTestSpec( name = "   " )
-        val source = createTestResolvedSource()
-
-        val exception = assertFailsWith<IllegalArgumentException> {
-            ResolvedInput( spec = spec, resolvedSource = source )
-        }
-
-        assertEquals( "Input spec name must not be blank", exception.message )
-    }
-
-    @Test
-    fun `ResolvedInput throws when spec name contains only tabs`()
-    {
-        val spec = createTestSpec( name = "\t\t\t" )
-        val source = createTestResolvedSource()
-
-        val exception = assertFailsWith<IllegalArgumentException> {
-            ResolvedInput( spec = spec, resolvedSource = source )
-        }
-
-        assertEquals( "Input spec name must not be blank", exception.message )
-    }
-
-    @Test
-    fun `ResolvedInput throws when spec name contains only newlines`()
-    {
-        val spec = createTestSpec( name = "\n\n\n" )
-        val source = createTestResolvedSource()
-
-        val exception = assertFailsWith<IllegalArgumentException> {
-            ResolvedInput( spec = spec, resolvedSource = source )
-        }
-
-        assertEquals( "Input spec name must not be blank", exception.message )
-    }
-
-    @Test
-    fun `ResolvedInput accepts spec name with leading or trailing spaces if non-blank`()
-    {
-        // Note: depends on .isNotBlank() semantics - spaces make it non-blank
-        val spec = createTestSpec( name = " input " )
-        val source = createTestResolvedSource()
-
-        // This should succeed because .isNotBlank() returns true for " input "
-        val resolved = ResolvedInput( spec = spec, resolvedSource = source )
-
-        assertEquals( " input ", resolved.spec.name )
-    }
-
-    // ─────────────────────────────────────────────────────────────────────
     // Field Preservation Tests
-    // ─────────────────────────────────────────────────────────────────────
 
     @Test
-    fun `ResolvedInput preserves spec schema through construction`()
-    {
-        val spec = InputDataSpec(
-            id = UUID.randomUUID(),
-            name = "input",
-            description = "Test",
-            schema = DataSchema(
-                format = FileFormat.JSON,
-                encoding = "UTF-16"
-            ),
-            source = FileSystemSource(
-                path = "test.json",
-                format = FileFormat.JSON
-            ),
-            required = false
-        )
-        val source = createTestResolvedSource()
-
-        val resolved = ResolvedInput( spec = spec, resolvedSource = source )
-
-        assertNotNull( resolved.spec.schema )
-        assertEquals( FileFormat.JSON, resolved.spec.schema.format )
-        assertEquals( "UTF-16", resolved.spec.schema.encoding )
-    }
-
-    @Test
-    fun `ResolvedInput preserves source through access chain`()
+    fun `ResolvedInput preserves location through construction`()
     {
         val spec = createTestSpec()
         val originalPath = "/workspace/input/deep/nested/path/file.csv"
-        val source = ResolvedDataSource.FileSystem(
-            original = FileSystemSource(
-                path = "file.csv",
-                format = FileFormat.CSV
-            ),
-            resolvedPath = originalPath
+        val location = FileLocation(
+            path = originalPath,
+            format = FileFormat.CSV
         )
 
-        val resolved = ResolvedInput( spec = spec, resolvedSource = source )
+        val resolved = ResolvedInput( spec = spec, location = location )
 
-        // Access through the resolved input
-        val retrievedSource = resolved.resolvedSource as ResolvedDataSource.FileSystem
-        assertEquals( originalPath, retrievedSource.resolvedPath )
+        val retrievedPath = (resolved.location as FileLocation).path
+        assertEquals( originalPath, retrievedPath )
     }
 
-    // ─────────────────────────────────────────────────────────────────────
-    // Different Spec Types Tests
-    // ─────────────────────────────────────────────────────────────────────
+    // Different Location Format Tests
 
     @Test
-    fun `ResolvedInput works with optional input`()
+    fun `ResolvedInput works with different file formats`()
     {
-        val spec = createTestSpec().copy( required = false )
-        val source = createTestResolvedSource()
+        val spec = InputDataSpec(
+            id = UUID.randomUUID(),
+            name = "json-input",
+            location = FileLocation( path = "test.json", format = FileFormat.JSON ),
+            required = true
+        )
+        val location = FileLocation(
+            path = "/workspace/input/data.json",
+            format = FileFormat.JSON
+        )
 
-        val resolved = ResolvedInput( spec = spec, resolvedSource = source )
+        val resolved = ResolvedInput( spec = spec, location = location )
 
-        assertEquals( false, resolved.spec.required )
+        assertEquals( FileFormat.JSON, ( resolved.location as FileLocation ).format )
     }
 
     @Test
     fun `ResolvedInput works with required input`()
     {
         val spec = createTestSpec().copy( required = true )
-        val source = createTestResolvedSource()
+        val location = createTestLocation()
 
-        val resolved = ResolvedInput( spec = spec, resolvedSource = source )
+        val resolved = ResolvedInput( spec = spec, location = location )
 
         assertEquals( true, resolved.spec.required )
     }
-}
 
+    @Test
+    fun `ResolvedInput works with optional input`()
+    {
+        val spec = createTestSpec().copy( required = false )
+        val location = createTestLocation()
+
+        val resolved = ResolvedInput( spec = spec, location = location )
+
+        assertEquals( false, resolved.spec.required )
+    }
+
+    // Data Origin Detection Tests
+
+    @Test
+    fun `detecting external input from null stepRef`()
+    {
+        val spec = createTestSpec( stepRef = null )
+        val location = createTestLocation()
+
+        val resolved = ResolvedInput( spec = spec, location = location )
+
+        // External data: stepRef is null
+        assertNull( resolved.spec.stepRef )
+    }
+
+    @Test
+    fun `detecting step-produced input from non-null stepRef`()
+    {
+        val spec = createTestSpec( stepRef = "upstream-step" )
+        val location = FileLocation(
+            path = "/workspace/outputs/upstream-step/result.csv",
+            format = FileFormat.CSV
+        )
+
+        val resolved = ResolvedInput( spec = spec, location = location )
+
+        // Step-produced data: stepRef is non-null
+        assertEquals( "upstream-step", resolved.spec.stepRef )
+    }
+
+    // Location Path Variants Tests
+
+    @Test
+    fun `ResolvedInput handles absolute paths`()
+    {
+        val spec = createTestSpec()
+        val location = FileLocation(
+            path = "/absolute/path/to/file.csv",
+            format = FileFormat.CSV
+        )
+
+        val resolved = ResolvedInput( spec = spec, location = location )
+
+        assertEquals( "/absolute/path/to/file.csv", resolved.getPath() )
+    }
+
+    @Test
+    fun `ResolvedInput handles relative paths`()
+    {
+        val spec = createTestSpec()
+        val location = FileLocation(
+            path = "relative/path/to/file.csv",
+            format = FileFormat.CSV
+        )
+
+        val resolved = ResolvedInput( spec = spec, location = location )
+
+        assertEquals( "relative/path/to/file.csv", resolved.getPath() )
+    }
+
+    @Test
+    fun `ResolvedInput handles workspace-relative paths`()
+    {
+        val spec = createTestSpec()
+        val location = FileLocation(
+            path = "/workspace/outputs/step-1/result.csv",
+            format = FileFormat.CSV
+        )
+
+        val resolved = ResolvedInput( spec = spec, location = location )
+
+        assertEquals( "/workspace/outputs/step-1/result.csv", resolved.getPath() )
+    }
+}

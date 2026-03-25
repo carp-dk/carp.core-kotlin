@@ -2,64 +2,50 @@ package dk.cachet.carp.analytics.domain.data
 
 import kotlinx.serialization.Serializable
 
-/**
- * Enumeration of supported file formats for data serialization and deserialization.
- */
-@Serializable
-enum class FileFormat
-{
-    /** Comma-Separated Values */
-    CSV,
+// FILE FORMAT ENUM
 
-    /** JavaScript Object Notation */
-    JSON,
-
-    /** Apache Parquet columnar storage */
-    PARQUET,
-
-    /** Apache Avro serialization */
-    AVRO,
-
-    /** Extensible Markup Language */
-    XML,
-
-    /** Microsoft Excel spreadsheet */
-    EXCEL,
-
-    /** Generic binary format */
-    BINARY,
-
-    /** Tab-Separated Values */
-    TSV,
-
-    /** YAML Ain't Markup Language */
-    YAML
-}
 
 /**
- * Enumeration of supported database types.
+ * File format enumeration.
+ *
+ * Specifies the serialization format of data for parsing/writing.
+ *
+ * Each enum value has:
+ * - `mimeType`: Standard MIME type
+ * - `extension`: File extension (without dot)
+ * - `isBinary`: Whether binary or text format
  */
 @Serializable
-enum class DatabaseType
+enum class FileFormat(
+    val mimeType: String,
+    val extension: String,
+    val isBinary: Boolean
+)
 {
-    /** PostgreSQL relational database */
-    POSTGRESQL,
+    // Tabular Formats
+    CSV( "text/csv", "csv", false ),
+    TSV( "text/tab-separated-values", "tsv", false ),
+    EXCEL( "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "xlsx", true ),
 
-    /** MySQL relational database */
-    MYSQL,
+    // Semi-Structured Formats
+    JSON( "application/json", "json", false ),
+    XML( "application/xml", "xml", false ),
+    YAML( "application/x-yaml", "yaml", false ),
 
-    /** SQLite embedded database */
-    SQLITE,
+    // Binary Columnar Formats
+    PARQUET( "application/octet-stream", "parquet", true ),
+    AVRO( "application/octet-stream", "avro", true ),
 
-    /** MongoDB document database */
-    MONGODB,
+    // Generic Binary
+    BINARY( "application/octet-stream", "bin", true );
 
-    /** MariaDB relational database */
-    MARIADB,
-
-    /** Microsoft SQL Server */
-    SQLSERVER
+    /**
+     * Check if this format is text-based.
+     */
+    val isText: Boolean
+        get() = !isBinary
 }
+
 
 /**
  * Enumeration of write modes for data destinations.
@@ -78,20 +64,5 @@ enum class WriteMode
 
     /** Create new file with unique name if exists */
     CREATE_NEW
-}
-
-/**
- * HTTP methods for API interactions.
- */
-@Serializable
-enum class HttpMethod
-{
-    GET,
-    POST,
-    PUT,
-    DELETE,
-    PATCH,
-    HEAD,
-    OPTIONS
 }
 

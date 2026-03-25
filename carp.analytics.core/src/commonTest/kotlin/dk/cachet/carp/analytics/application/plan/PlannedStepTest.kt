@@ -1,19 +1,17 @@
 package dk.cachet.carp.analytics.application.plan
 
-import dk.cachet.carp.analytics.domain.data.FileSystemSource
-import dk.cachet.carp.analytics.domain.data.FileDestination
+import dk.cachet.carp.analytics.domain.data.FileFormat
+import dk.cachet.carp.analytics.domain.data.FileLocation
 import dk.cachet.carp.analytics.domain.data.InputDataSpec
 import dk.cachet.carp.analytics.domain.data.OutputDataSpec
-import dk.cachet.carp.analytics.domain.data.FileFormat
-import dk.cachet.carp.analytics.domain.data.WriteMode
 import dk.cachet.carp.analytics.domain.workflow.StepMetadata
 import dk.cachet.carp.analytics.domain.workflow.Version
 import dk.cachet.carp.analytics.infrastructure.serialization.CoreAnalyticsSerializer
 import dk.cachet.carp.common.application.UUID
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 import kotlin.test.assertIs
+import kotlin.test.assertNotNull
 
 /**
  * Tests for [PlannedStep] serialization and binding resolution.
@@ -23,51 +21,46 @@ import kotlin.test.assertIs
  * - Process specifications (CommandSpec, InTasksRun)
  * - ResolvedBindings with ResolvedInput and ResolvedOutput
  * - Environment references
+ *
+ * Uses unified DataLocation model (FileLocation for all file operations).
  */
 class PlannedStepTest
 {
-    // Helper to create ResolvedInput
+    // Helper to create ResolvedInput with unified DataLocation model
     private fun createResolvedInput(
         id: UUID = UUID.randomUUID(),
-        name: String = "test-input"
+        name: String = "test-input",
+        path: String = "/workspace/input/input.csv"
     ): ResolvedInput
     {
         val spec = InputDataSpec(
             id = id,
             name = name,
-            source = FileSystemSource(
-                path = "input.csv",
-                format = FileFormat.CSV
-            )
+            location = FileLocation( path = path, format = FileFormat.CSV ),
+            stepRef = null // External input
         )
-        val source = ResolvedDataSource.FileSystem(
-            original = spec.source as FileSystemSource,
-            resolvedPath = "/workspace/input/input.csv"
+        return ResolvedInput(
+            spec = spec,
+            location = FileLocation( path = path, format = FileFormat.CSV )
         )
-        return ResolvedInput( spec = spec, resolvedSource = source )
     }
 
-    // Helper to create ResolvedOutput
+    // Helper to create ResolvedOutput with unified DataLocation model
     private fun createResolvedOutput(
         id: UUID = UUID.randomUUID(),
-        name: String = "test-output"
+        name: String = "test-output",
+        path: String = "/workspace/output/output.csv"
     ): ResolvedOutput
     {
         val spec = OutputDataSpec(
             id = id,
             name = name,
-            destination = FileDestination(
-                path = "output.csv",
-                format = FileFormat.CSV,
-                overwrite = false,
-                writeMode = WriteMode.ERROR_IF_EXISTS
-            )
+            location = FileLocation( path = "", format = FileFormat.CSV ) // Empty, will be generated
         )
-        val destination = ResolvedDataDestination.File(
-            original = spec.destination as FileDestination,
-            resolvedPath = "/workspace/output/output.csv"
+        return ResolvedOutput(
+            spec = spec,
+            location = FileLocation( path = path, format = FileFormat.CSV ) // Generated/resolved path
         )
-        return ResolvedOutput( spec = spec, resolvedDestination = destination )
     }
 
     @Test
@@ -232,12 +225,13 @@ class PlannedStepTest
     }
 
     @Test
-    fun `resolved input preserves source information`()
+    fun `resolved input preserves location information`()
     {
         val stepId = UUID.randomUUID()
         val inputId = UUID.randomUUID()
+        val inputPath = "/workspace/data/input.csv"
 
-        val inputBinding = createResolvedInput( id = inputId, name = "input-with-source" )
+        val inputBinding = createResolvedInput( id = inputId, name = "input-with-location", path = inputPath )
 
         val bindings = ResolvedBindings(
             inputs = mapOf( inputId to inputBinding )
@@ -257,19 +251,20 @@ class PlannedStepTest
         val retrieved = step.bindings.input( inputId )
         assertNotNull( retrieved )
 
-        // Verify resolved source is preserved
-        val source = retrieved.resolvedSource as? ResolvedDataSource.FileSystem
-        assertNotNull( source )
-        assertEquals( "/workspace/input/input.csv", source.resolvedPath )
+        // Verify unified DataLocation is preserved
+        assertIs<FileLocation>( retrieved.location )
+        assertEquals( inputPath, retrieved.location.path )
+        assertEquals( FileFormat.CSV, retrieved.location.format )
     }
 
     @Test
-    fun `resolved output preserves destination information`()
+    fun `resolved output preserves location information`()
     {
         val stepId = UUID.randomUUID()
         val outputId = UUID.randomUUID()
+        val outputPath = "/workspace/outputs/result.csv"
 
-        val outputBinding = createResolvedOutput( id = outputId, name = "output-with-dest" )
+        val outputBinding = createResolvedOutput( id = outputId, name = "output-with-location", path = outputPath )
 
         val bindings = ResolvedBindings(
             outputs = mapOf( outputId to outputBinding )
@@ -289,10 +284,10 @@ class PlannedStepTest
         val retrieved = step.bindings.output( outputId )
         assertNotNull( retrieved )
 
-        // Verify resolved destination is preserved
-        val destination = retrieved.resolvedDestination as? ResolvedDataDestination.File
-        assertNotNull( destination )
-        assertEquals( "/workspace/output/output.csv", destination.resolvedPath )
+        // Verify unified DataLocation is preserved
+        assertIs<FileLocation>( retrieved.location )
+        assertEquals( outputPath, retrieved.location.path )
+        assertEquals( FileFormat.CSV, retrieved.location.format )
     }
 
     @Test
@@ -333,13 +328,13 @@ class PlannedStepTest
 
         // Verify all inputs are accessible
         assertEquals( 2, step.bindings.inputs.size )
-        assertEquals( "input-1", step.bindings.input( input1Id )?.spec?.name ?: "Missing")
-        assertEquals( "input-2", step.bindings.input( input2Id )?.spec?.name ?: "Missing")
+        assertEquals( "input-1", step.bindings.input( input1Id )?.spec?.name ?: "Missing" )
+        assertEquals( "input-2", step.bindings.input( input2Id )?.spec?.name ?: "Missing" )
 
         // Verify all outputs are accessible
         assertEquals( 2, step.bindings.outputs.size )
-        assertEquals( "output-1", step.bindings.output( output1Id )?.spec?.name ?: "Missing")
-        assertEquals( "output-2", step.bindings.output( output2Id )?.spec?.name ?: "Missing")
+        assertEquals( "output-1", step.bindings.output( output1Id )?.spec?.name ?: "Missing" )
+        assertEquals( "output-2", step.bindings.output( output2Id )?.spec?.name ?: "Missing" )
     }
 
     @Test

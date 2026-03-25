@@ -52,42 +52,73 @@ fun ExpandedArg.toResolvedString(
 {
     is ExpandedArg.Literal -> value
 
-    is ExpandedArg.DataReference ->
+    is ExpandedArg.DataReference -> resolveDataReference( this, resolver, mode )
+
+    is ExpandedArg.PathSubstitution -> resolvePathSubstitution( this, resolver, mode )
+
+    is ExpandedArg.EnvironmentVariable -> resolveEnvironmentVariable( this, resolver, mode )
+}
+
+// Helper functions extracted to keep the public API function simple and under complexity threshold.
+private fun resolveDataReference(
+    arg: ExpandedArg.DataReference,
+    resolver: ExpandedArgResolver,
+    mode: ArgumentDisplayMode
+): String
+{
+    val resolved = resolver.resolveDataRefPath( arg.id )
+    return if ( resolved != null )
     {
-        val resolved = resolver.resolveDataRefPath( id )
-        when
+        if ( mode == ArgumentDisplayMode.VERBOSE )
         {
-            resolved != null && mode == ArgumentDisplayMode.VERBOSE ->
-                "$resolved ($id)"
-            resolved != null ->
-                resolved
-            else ->
-                id.toString()
+            "$resolved (${arg.id})"
+        }
+        else
+        {
+            resolved
         }
     }
-
-    is ExpandedArg.PathSubstitution ->
+    else
     {
-        val resolved = resolver.resolveDataRefPath( id )
-        val value = resolved ?: id.toString()
-        val expanded = template.replace( "()", value )
-        when ( mode )
-        {
-            ArgumentDisplayMode.VERBOSE -> "$expanded [$id]"
-            else -> expanded
-        }
+        arg.id.toString()
     }
+}
 
-    is ExpandedArg.EnvironmentVariable ->
+private fun resolvePathSubstitution(
+    arg: ExpandedArg.PathSubstitution,
+    resolver: ExpandedArgResolver,
+    mode: ArgumentDisplayMode
+): String
+{
+    val resolved = resolver.resolveDataRefPath( arg.id )
+    val value = resolved ?: arg.id.toString()
+    val expanded = arg.template.replace( "()", value )
+    return if ( mode == ArgumentDisplayMode.VERBOSE )
     {
-        val envValue = resolver.getEnvVar( name )
-        val value = envValue ?: "$(env.$name)"
-        val expanded = template.replace( "()", value )
-        when ( mode )
-        {
-            ArgumentDisplayMode.VERBOSE -> "$expanded (env: $name)"
-            else -> expanded
-        }
+        "$expanded [${arg.id}]"
+    }
+    else
+    {
+        expanded
+    }
+}
+
+private fun resolveEnvironmentVariable(
+    arg: ExpandedArg.EnvironmentVariable,
+    resolver: ExpandedArgResolver,
+    mode: ArgumentDisplayMode
+): String
+{
+    val envValue = resolver.getEnvVar( arg.name )
+    val value = envValue ?: "$(env.${arg.name})"
+    val expanded = arg.template.replace( "()", value )
+    return if ( mode == ArgumentDisplayMode.VERBOSE )
+    {
+        "$expanded (env: ${arg.name})"
+    }
+    else
+    {
+        expanded
     }
 }
 
@@ -100,13 +131,3 @@ fun List<ExpandedArg>.toResolvedStrings(
     resolver: ExpandedArgResolver = NoOpResolver,
     mode: ArgumentDisplayMode = ArgumentDisplayMode.RESOLVED
 ): List<String> = map { it.toResolvedString( resolver, mode ) }
-
-/**
- * Create a command line string from expanded arguments.
- *
- * Joins all arguments with spaces, suitable for logging or display.
- */
-fun List<ExpandedArg>.toResolvedCommandLine(
-    resolver: ExpandedArgResolver = NoOpResolver,
-    mode: ArgumentDisplayMode = ArgumentDisplayMode.RESOLVED
-): String = toResolvedStrings( resolver, mode ).joinToString( " " )

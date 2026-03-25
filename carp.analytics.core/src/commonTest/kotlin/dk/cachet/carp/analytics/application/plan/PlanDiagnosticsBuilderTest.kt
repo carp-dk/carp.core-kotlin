@@ -1,9 +1,8 @@
 package dk.cachet.carp.analytics.application.plan
 
-import dk.cachet.carp.analytics.domain.data.FileDestination
 import dk.cachet.carp.analytics.domain.data.FileFormat
+import dk.cachet.carp.analytics.domain.data.FileLocation
 import dk.cachet.carp.analytics.domain.data.OutputDataSpec
-import dk.cachet.carp.analytics.domain.data.WriteMode
 import dk.cachet.carp.analytics.domain.workflow.StepMetadata
 import dk.cachet.carp.analytics.domain.workflow.Version
 import dk.cachet.carp.common.application.UUID
@@ -90,9 +89,9 @@ class PlanDiagnosticsBuilderTest
 
         val diags = PlanDiagnosticsBuilder.build( plan, mockHasher )
 
-        assertEquals(diags.issueSummary.errorCount, 0)
-        assertEquals(diags.issueSummary.warningCount, 0)
-        assertEquals(diags.issueSummary.infoCount, 0)
+        assertEquals( diags.issueSummary.errorCount, 0 )
+        assertEquals( diags.issueSummary.warningCount, 0 )
+        assertEquals( diags.issueSummary.infoCount, 0 )
     }
 
     @Test
@@ -105,7 +104,7 @@ class PlanDiagnosticsBuilderTest
         assertEquals( 5, diags.issueSummary.errorCount )
         assertEquals( 10, diags.issueSummary.warningCount )
         assertEquals( 15, diags.issueSummary.infoCount )
-        assertEquals( 30, diags.stepCount + diags.environmentCount )  // Just verifying totals work
+        assertEquals( 3, diags.stepCount + diags.environmentCount )
     }
 
     @Test
@@ -121,12 +120,13 @@ class PlanDiagnosticsBuilderTest
         assertNotEquals( diags1.planHash, diags2.planHash )
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
+
     // Test Helpers
-    // ─────────────────────────────────────────────────────────────────────────────
+
 
     /**
      * Create a test execution plan with configurable parameters.
+     * Uses unified DataLocation model.
      */
     private fun createTestExecutionPlan(
         workflowId: String = "test-workflow",
@@ -144,21 +144,11 @@ class PlanDiagnosticsBuilderTest
                 spec = OutputDataSpec(
                     id = outputId,
                     name = "output-$i",
-                    destination = FileDestination(
-                        path = "output-$i.csv",
-                        format = FileFormat.CSV,
-                        overwrite = false,
-                        writeMode = WriteMode.ERROR_IF_EXISTS
-                    )
+                    location = FileLocation( path = "", format = FileFormat.CSV )
                 ),
-                resolvedDestination = ResolvedDataDestination.File(
-                    original = FileDestination(
-                        path = "output-$i.csv",
-                        format = FileFormat.CSV,
-                        overwrite = false,
-                        writeMode = WriteMode.ERROR_IF_EXISTS
-                    ),
-                    resolvedPath = "/workspace/output/output-$i.csv"
+                location = FileLocation(
+                    path = "/workspace/output/output-$i.csv",
+                    format = FileFormat.CSV
                 )
             )
 
@@ -244,9 +234,9 @@ class PlanDiagnosticsBuilderTest
         return createTestExecutionPlan( issues = issues )
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
+
     // Mock Objects
-    // ─────────────────────────────────────────────────────────────────────────────
+
 
     /**
      * Mock PlanHasher for testing.

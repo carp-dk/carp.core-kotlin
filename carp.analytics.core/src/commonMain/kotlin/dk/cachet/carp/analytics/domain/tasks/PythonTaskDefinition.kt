@@ -13,7 +13,7 @@ import kotlinx.serialization.Serializable
  *
  * Responsibilities of this class:
  * - Identify the Python code to run via [entryPoint] ([Script] or [Module]).
- * - Carry a structured [args] list using the shared [ArgToken] DSL.
+ * - Carry a structured [args] list using the shared [dk.cachet.carp.analytics.domain.tasks.ArgToken] DSL.
  *
  * Explicitly **not** the responsibility of this class:
  * - Resolving a Python executable or conda/venv environment.
@@ -44,7 +44,7 @@ data class PythonTaskDefinition(
      */
     val args: List<ArgToken> = emptyList(),
 
-) : TaskDefinition
+    ) : TaskDefinition
 {
     init
     {

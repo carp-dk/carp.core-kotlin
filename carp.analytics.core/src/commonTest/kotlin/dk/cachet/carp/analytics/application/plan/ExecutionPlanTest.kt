@@ -201,7 +201,7 @@ class ExecutionPlanTest
                     severity = PlanIssueSeverity.WARNING,
                     code = "W1",
                     message = "Plan-level warning",
-                    stepId = null  // Not tied to a specific step
+                    stepId = null // Not tied to a specific step
                 )
             )
         )

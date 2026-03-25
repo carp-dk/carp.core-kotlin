@@ -1,17 +1,23 @@
 package dk.cachet.carp.analytics.application.plan
 
-import dk.cachet.carp.analytics.domain.data.*
+import dk.cachet.carp.analytics.domain.data.FileFormat
+import dk.cachet.carp.analytics.domain.data.FileLocation
+import dk.cachet.carp.analytics.domain.data.OutputDataSpec
 import dk.cachet.carp.common.application.UUID
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertIs
+import kotlin.test.assertNotNull
 
 /**
- * Comprehensive unit tests for [ResolvedOutput].
+ * Comprehensive unit tests for [ResolvedOutput] using unified DataLocation model.
  *
  * Tests:
- * - Creation with specs and resolved destinations
- * - Accessing spec and resolved properties
- * - Validation (blank name check)
+ * - Creation with specs and resolved locations
+ * - Accessing spec and location properties
  * - Field preservation across creation
+ * - Location path access via helper method
+ * - Path generation for outputs with empty initial path
  */
 class ResolvedOutputTest
 {
@@ -25,47 +31,34 @@ class ResolvedOutputTest
             id = id,
             name = name,
             description = description,
-            schema = DataSchema(
-                format = FileFormat.CSV,
-                encoding = "UTF-8"
-            ),
-            destination = FileDestination(
-                path = "output.csv",
-                format = FileFormat.CSV,
-                overwrite = false,
-                writeMode = WriteMode.ERROR_IF_EXISTS
+            location = FileLocation(
+                path = "", // Empty, will be generated at planning time
+                format = FileFormat.CSV
             ),
             format = FileFormat.CSV
         )
     }
 
-    private fun createTestResolvedDestination(): ResolvedDataDestination
+    private fun createTestLocation( path: String = "/workspace/output/output.csv" ): FileLocation
     {
-        return ResolvedDataDestination.File(
-            original = FileDestination(
-                path = "output.csv",
-                format = FileFormat.CSV,
-                overwrite = false,
-                writeMode = WriteMode.ERROR_IF_EXISTS
-            ),
-            resolvedPath = "/workspace/output/output.csv"
+        return FileLocation(
+            path = path,
+            format = FileFormat.CSV
         )
     }
 
-    // ─────────────────────────────────────────────────────────────────────
     // Creation Tests
-    // ─────────────────────────────────────────────────────────────────────
 
     @Test
-    fun `ResolvedOutput creation with valid spec and destination succeeds`()
+    fun `ResolvedOutput creation with valid spec and location succeeds`()
     {
         val spec = createTestSpec()
-        val destination = createTestResolvedDestination()
+        val location = createTestLocation()
 
-        val resolved = ResolvedOutput( spec = spec, resolvedDestination = destination )
+        val resolved = ResolvedOutput( spec = spec, location = location )
 
         assertEquals( spec, resolved.spec )
-        assertEquals( destination, resolved.resolvedDestination )
+        assertEquals( location, resolved.location )
     }
 
     @Test
@@ -77,9 +70,9 @@ class ResolvedOutputTest
             name = "my-output",
             description = "My output description"
         )
-        val destination = createTestResolvedDestination()
+        val location = createTestLocation()
 
-        val resolved = ResolvedOutput( spec = spec, resolvedDestination = destination )
+        val resolved = ResolvedOutput( spec = spec, location = location )
 
         assertEquals( outputId, resolved.spec.id )
         assertEquals( "my-output", resolved.spec.name )
@@ -87,189 +80,229 @@ class ResolvedOutputTest
         assertEquals( FileFormat.CSV, resolved.spec.format )
     }
 
-    @Test
-    fun `ResolvedOutput exposes spec schema information`()
-    {
-        val spec = createTestSpec()
-        val destination = createTestResolvedDestination()
-
-        val resolved = ResolvedOutput( spec = spec, resolvedDestination = destination )
-
-        assertNotNull( resolved.spec.schema )
-        assertEquals( FileFormat.CSV, resolved.spec.schema.format)
-        assertEquals( "UTF-8", resolved.spec.schema.encoding)
-    }
-
-    // ─────────────────────────────────────────────────────────────────────
-    // Destination Access Tests
-    // ─────────────────────────────────────────────────────────────────────
+    // Location Access Tests
 
     @Test
-    fun `ResolvedOutput provides access to resolved destination properties`()
+    fun `ResolvedOutput provides access to unified DataLocation`()
     {
         val spec = createTestSpec()
         val resolvedPath = "/workspace/output/specific/path/results.csv"
-        val destination = ResolvedDataDestination.File(
-            original = FileDestination(
-                path = "results.csv",
-                format = FileFormat.CSV,
-                overwrite = false,
-                writeMode = WriteMode.ERROR_IF_EXISTS
-            ),
-            resolvedPath = resolvedPath
+        val location = FileLocation(
+            path = resolvedPath,
+            format = FileFormat.CSV
         )
 
-        val resolved = ResolvedOutput( spec = spec, resolvedDestination = destination )
+        val resolved = ResolvedOutput( spec = spec, location = location )
 
-        assertIs<ResolvedDataDestination.File>( resolved.resolvedDestination )
-        assertEquals( resolvedPath, resolved.resolvedDestination.resolvedPath )
-        assertEquals( FileFormat.CSV, resolved.resolvedDestination.original.format )
+        assertIs<FileLocation>( resolved.location )
+        assertEquals( resolvedPath, resolved.location.path )
+        assertEquals( FileFormat.CSV, resolved.location.format )
     }
 
     @Test
-    fun `ResolvedOutput can work with different destination types`()
+    fun `ResolvedOutput helper method getPath returns correct path`()
     {
         val spec = createTestSpec()
-        val registryDest = ResolvedDataDestination.Registry(
-            original = RegistryDestination(
-                key = "results",
-                overwrite = true
-            )
+        val location = createTestLocation( "/workspace/results.csv" )
+
+        val resolved = ResolvedOutput( spec = spec, location = location )
+
+        val path = resolved.getPath()
+        assertNotNull( path )
+        assertEquals( "/workspace/results.csv", path )
+    }
+
+    // Auto-Generated Path Tests
+
+    @Test
+    fun `ResolvedOutput with auto-generated path format`()
+    {
+        val spec = createTestSpec( name = "results" )
+        // Path was empty in spec, generated by planner
+        val location = FileLocation(
+            path = "/workspace/outputs/Process Data/results.csv",
+            format = FileFormat.CSV
         )
 
-        val resolved = ResolvedOutput( spec = spec, resolvedDestination = registryDest )
+        val resolved = ResolvedOutput( spec = spec, location = location )
 
-        assertIs<ResolvedDataDestination.Registry>( resolved.resolvedDestination )
-        assertEquals( "results", resolved.resolvedDestination.original.key )
-    }
-
-    // ─────────────────────────────────────────────────────────────────────
-    // Validation Tests
-    // ─────────────────────────────────────────────────────────────────────
-
-    @Test
-    fun `ResolvedOutput throws when spec name is empty string`()
-    {
-        val spec = createTestSpec( name = "" )
-        val destination = createTestResolvedDestination()
-
-        val exception = assertFailsWith<IllegalArgumentException> {
-            ResolvedOutput( spec = spec, resolvedDestination = destination )
-        }
-
-        assertEquals( "Output spec name must not be blank", exception.message )
+        // Spec still has empty path, but resolved location has generated path
+        assertEquals( "", ( resolved.spec.location as FileLocation ).path )
+        assertEquals( "/workspace/outputs/Process Data/results.csv", ( resolved.location as FileLocation ).path )
     }
 
     @Test
-    fun `ResolvedOutput throws when spec name is whitespace only`()
-    {
-        val spec = createTestSpec( name = "   " )
-        val destination = createTestResolvedDestination()
-
-        val exception = assertFailsWith<IllegalArgumentException> {
-            ResolvedOutput( spec = spec, resolvedDestination = destination )
-        }
-
-        assertEquals( "Output spec name must not be blank", exception.message )
-    }
-
-    @Test
-    fun `ResolvedOutput throws when spec name contains only tabs and newlines`()
-    {
-        val spec = createTestSpec( name = "\t\n\t\n" )
-        val destination = createTestResolvedDestination()
-
-        val exception = assertFailsWith<IllegalArgumentException> {
-            ResolvedOutput( spec = spec, resolvedDestination = destination )
-        }
-
-        assertEquals( "Output spec name must not be blank", exception.message )
-    }
-
-    @Test
-    fun `ResolvedOutput accepts spec name with leading or trailing spaces if non-blank`()
-    {
-        val spec = createTestSpec( name = " output " )
-        val destination = createTestResolvedDestination()
-
-        val resolved = ResolvedOutput( spec = spec, resolvedDestination = destination )
-
-        assertEquals( " output ", resolved.spec.name )
-    }
-
-    // ─────────────────────────────────────────────────────────────────────
-    // Field Preservation Tests
-    // ─────────────────────────────────────────────────────────────────────
-
-    @Test
-    fun `ResolvedOutput preserves spec schema through construction`()
+    fun `ResolvedOutput with explicit path overrides generation`()
     {
         val spec = OutputDataSpec(
             id = UUID.randomUUID(),
-            name = "output",
-            description = "Test",
-            schema = DataSchema(
-                format = FileFormat.JSON,
-                encoding = "UTF-16"
+            name = "report",
+            location = FileLocation(
+                path = "/custom/output/location/report.csv", // Explicit path
+                format = FileFormat.CSV
             ),
-            destination = FileDestination(
-                path = "output.json",
-                format = FileFormat.JSON,
-                overwrite = true,
-                writeMode = WriteMode.OVERWRITE
-            ),
-            format = FileFormat.JSON
+            format = FileFormat.CSV
         )
-        val destination = createTestResolvedDestination()
+        val location = FileLocation(
+            path = "/custom/output/location/report.csv",
+            format = FileFormat.CSV
+        )
 
-        val resolved = ResolvedOutput( spec = spec, resolvedDestination = destination )
+        val resolved = ResolvedOutput( spec = spec, location = location )
 
-        assertNotNull( resolved.spec.schema )
-        assertEquals( FileFormat.JSON, resolved.spec.schema.format)
-        assertEquals( "UTF-16", resolved.spec.schema.encoding)
-        assertEquals( FileFormat.JSON, resolved.spec.format )
+        // Explicit path is preserved
+        assertEquals( "/custom/output/location/report.csv", ( resolved.spec.location as FileLocation ).path )
+        assertEquals( "/custom/output/location/report.csv", ( resolved.location as FileLocation ).path )
     }
 
+
+    // Field Preservation Tests
+
+
     @Test
-    fun `ResolvedOutput preserves destination through access chain`()
+    fun `ResolvedOutput preserves location through construction`()
     {
         val spec = createTestSpec()
         val originalPath = "/workspace/output/deep/nested/path/results.csv"
-        val destination = ResolvedDataDestination.File(
-            original = FileDestination(
-                path = "results.csv",
-                format = FileFormat.CSV,
-                overwrite = false,
-                writeMode = WriteMode.ERROR_IF_EXISTS
-            ),
-            resolvedPath = originalPath
+        val location = FileLocation(
+            path = originalPath,
+            format = FileFormat.CSV
         )
 
-        val resolved = ResolvedOutput( spec = spec, resolvedDestination = destination )
+        val resolved = ResolvedOutput( spec = spec, location = location )
 
-        val retrievedDest = resolved.resolvedDestination as ResolvedDataDestination.File
-        assertEquals( originalPath, retrievedDest.resolvedPath )
+        val retrievedPath = (resolved.location as FileLocation).path
+        assertEquals( originalPath, retrievedPath )
     }
 
-    // ─────────────────────────────────────────────────────────────────────
-    // Write Mode Tests
-    // ─────────────────────────────────────────────────────────────────────
+
+    // Different Location Format Tests
+
 
     @Test
-    fun `ResolvedOutput tracks write modes correctly`()
+    fun `ResolvedOutput works with different file formats`()
     {
-        val errorIfExists = createTestSpec().copy(
-            destination = FileDestination(
-                path = "output.csv",
-                format = FileFormat.CSV,
-                overwrite = false,
-                writeMode = WriteMode.ERROR_IF_EXISTS
-            )
+        val spec = OutputDataSpec(
+            id = UUID.randomUUID(),
+            name = "json-output",
+            location = FileLocation( path = "", format = FileFormat.JSON ),
+            format = FileFormat.JSON
         )
-        val destination = createTestResolvedDestination()
+        val location = FileLocation(
+            path = "/workspace/outputs/data.json",
+            format = FileFormat.JSON
+        )
 
-        val resolved = ResolvedOutput( spec = errorIfExists, resolvedDestination = destination )
+        val resolved = ResolvedOutput( spec = spec, location = location )
 
-        assertEquals( WriteMode.ERROR_IF_EXISTS, ( resolved.spec.destination as FileDestination ).writeMode )
+        assertEquals( FileFormat.JSON, ( resolved.location as FileLocation ).format )
+    }
+
+    @Test
+    fun `ResolvedOutput works with Parquet format`()
+    {
+        val spec = OutputDataSpec(
+            id = UUID.randomUUID(),
+            name = "parquet-output",
+            location = FileLocation( path = "", format = FileFormat.PARQUET ),
+            format = FileFormat.PARQUET
+        )
+        val location = FileLocation(
+            path = "/workspace/outputs/data.parquet",
+            format = FileFormat.PARQUET
+        )
+
+        val resolved = ResolvedOutput( spec = spec, location = location )
+
+        assertEquals( FileFormat.PARQUET, ( resolved.location as FileLocation ).format )
+    }
+
+
+    // Location Path Variants Tests
+
+
+    @Test
+    fun `ResolvedOutput handles absolute paths`()
+    {
+        val spec = createTestSpec()
+        val location = FileLocation(
+            path = "/absolute/path/to/output.csv",
+            format = FileFormat.CSV
+        )
+
+        val resolved = ResolvedOutput( spec = spec, location = location )
+
+        assertEquals( "/absolute/path/to/output.csv", resolved.getPath() )
+    }
+
+    @Test
+    fun `ResolvedOutput handles workspace-relative paths`()
+    {
+        val spec = createTestSpec()
+        val location = FileLocation(
+            path = "/workspace/outputs/step-name/output.csv",
+            format = FileFormat.CSV
+        )
+
+        val resolved = ResolvedOutput( spec = spec, location = location )
+
+        assertEquals( "/workspace/outputs/step-name/output.csv", resolved.getPath() )
+    }
+
+    @Test
+    fun `ResolvedOutput preserves format for extension inference`()
+    {
+        val spec = createTestSpec()
+        // Planner can use location.format to infer extension
+        val location = FileLocation(
+            path = "/workspace/outputs/step-1/output.csv",
+            format = FileFormat.CSV
+        )
+
+        val resolved = ResolvedOutput( spec = spec, location = location )
+
+        // When generating filenames, executor can use:
+        // "${path.substring(0, path.lastIndexOf('/'))}/output${format.extension}"
+        assertEquals( FileFormat.CSV, ( resolved.location as FileLocation ).format )
+        assertEquals( "csv", resolved.location.format.extension)
+    }
+
+
+    // Multiple Output Tests
+
+
+    @Test
+    fun `ResolvedOutput with multiple outputs from same step`()
+    {
+        val output1Id = UUID.randomUUID()
+        val output2Id = UUID.randomUUID()
+
+        val spec1 = OutputDataSpec(
+            id = output1Id,
+            name = "results-1",
+            location = FileLocation( path = "", format = FileFormat.CSV ),
+            format = FileFormat.CSV
+        )
+        val spec2 = OutputDataSpec(
+            id = output2Id,
+            name = "results-2",
+            location = FileLocation( path = "", format = FileFormat.JSON ),
+            format = FileFormat.JSON
+        )
+
+        val location1 = FileLocation(
+            path = "/workspace/outputs/step-name/results-1.csv",
+            format = FileFormat.CSV
+        )
+        val location2 = FileLocation(
+            path = "/workspace/outputs/step-name/results-2.json",
+            format = FileFormat.JSON
+        )
+
+        val resolved1 = ResolvedOutput( spec = spec1, location = location1 )
+        val resolved2 = ResolvedOutput( spec = spec2, location = location2 )
+
+        assertEquals( "/workspace/outputs/step-name/results-1.csv", resolved1.getPath() )
+        assertEquals( "/workspace/outputs/step-name/results-2.json", resolved2.getPath() )
     }
 }
