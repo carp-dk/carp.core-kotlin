@@ -85,10 +85,10 @@ data class FileLocation(
         {
             path.startsWith( "/" ) -> this // Absolute path: use as-is
             path.isBlank() -> copy( // Empty path: generate from workspace + step + output
-                path = "$workspaceDirectory/outputs/$stepName/$outputName.${format.extension}"
+                path = "$workspaceDirectory/outputs//$outputName.${format.extension}"
             )
             else -> copy( // Relative path: resolve relative to step outputs
-                path = "$workspaceDirectory/outputs/$stepName/$path"
+                path = "$workspaceDirectory/outputs/$path"
             )
         }
     }

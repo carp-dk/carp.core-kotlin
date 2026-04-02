@@ -140,7 +140,8 @@ class StepLogRecorderTest
     private fun createWorkspace(): ExecutionWorkspace =
         ExecutionWorkspace(
             runId = UUID.randomUUID(),
-            executionRoot = "runs/test"
+            executionRoot = "runs/test",
+            workflowName = "Test Workflow"
         )
 }
 

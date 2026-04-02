@@ -1,159 +1,364 @@
 package dk.cachet.carp.analytics.application.execution.workspace
 
 import dk.cachet.carp.common.application.UUID
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 /**
- * Tests for [ExecutionWorkspace] to ensure deterministic behaviour with UUID step identifiers.
+ * Tests for [ExecutionWorkspace] with human-readable step names.
+ *
+ * Verifies that:
+ * - Step names are formatted correctly
+ * - Paths use human-readable workflow and step names instead of UUIDs
+ * - Index prefixes keep steps sorted
+ * - Lookup methods work correctly
  */
 class ExecutionWorkspaceTest
 {
-    private val testRunId = UUID.randomUUID()
-    private val testExecutionRoot = "test-execution-root"
-    private val workspace = ExecutionWorkspace(testRunId, testExecutionRoot)
 
     @Test
-    fun stepDir_produces_deterministic_paths()
+    fun `StepInfo formats directory name with index and name`()
     {
+        // Arrange
+        val stepInfo = StepInfo(
+            id = UUID.randomUUID(),
+            name = "Import Data",
+            executionIndex = 0
+        )
+
+        // Act
+        val dirName = stepInfo.toDirectoryName()
+
+        // Assert
+        assertEquals( "01_import_data", dirName )
+    }
+
+    @Test
+    fun `StepInfo handles multiple spaces in name`()
+    {
+        // Arrange
+        val stepInfo = StepInfo(
+            id = UUID.randomUUID(),
+            name = "Process EEG Signal",
+            executionIndex = 1
+        )
+
+        // Act
+        val dirName = stepInfo.toDirectoryName()
+
+        // Assert
+        assertEquals( "02_process_eeg_signal", dirName )
+    }
+
+    @Test
+    fun `StepInfo handles dashes in name`()
+    {
+        // Arrange
+        val stepInfo = StepInfo(
+            id = UUID.randomUUID(),
+            name = "Extract-Features",
+            executionIndex = 2
+        )
+
+        // Act
+        val dirName = stepInfo.toDirectoryName()
+
+        // Assert
+        assertEquals( "03_extract_features", dirName )
+    }
+
+    @Test
+    fun `StepInfo pads index to 2 digits`()
+    {
+        // Arrange
+        val steps = listOf(
+            StepInfo( UUID.randomUUID(), "First", 0 ),
+            StepInfo( UUID.randomUUID(), "Tenth", 9 ),
+            StepInfo( UUID.randomUUID(), "Eleventh", 10 )
+        )
+
+        // Act & Assert
+        assertEquals( "01_first", steps[0].toDirectoryName() )
+        assertEquals( "10_tenth", steps[1].toDirectoryName() )
+        assertEquals( "11_eleventh", steps[2].toDirectoryName() )
+    }
+
+    @Test
+    fun `workspace stepDir returns human-readable path`()
+    {
+        // Arrange
         val stepId = UUID.randomUUID()
+        val stepInfo = StepInfo(
+            id = stepId,
+            name = "Import Data",
+            executionIndex = 0
+        )
+        val workspace = ExecutionWorkspace(
+            runId = UUID.randomUUID(),
+            executionRoot = "/workspace/signal_processing/run_123",
+            workflowName = "Signal Processing Pipeline",
+            stepInfos = mapOf( stepId to stepInfo )
+        )
 
-        val result1 = workspace.stepDir(stepId)
-        val result2 = workspace.stepDir(stepId)
+        // Act
+        val stepPath = workspace.stepDir( stepId )
 
-        assertEquals("steps/$stepId", result1)
-        assertEquals(result1, result2, "stepDir should be deterministic")
+        // Assert
+        assertEquals( "steps/01_import_data", stepPath )
     }
 
     @Test
-    fun stepInputsDir_produces_correct_structure()
+    fun `workspace stepInputsDir returns correct path`()
     {
+        // Arrange
         val stepId = UUID.randomUUID()
+        val stepInfo = StepInfo(
+            id = stepId,
+            name = "Process Data",
+            executionIndex = 1
+        )
+        val workspace = ExecutionWorkspace(
+            runId = UUID.randomUUID(),
+            executionRoot = "/workspace",
+            workflowName = "Pipeline",
+            stepInfos = mapOf( stepId to stepInfo )
+        )
 
-        val result = workspace.stepInputsDir(stepId)
+        // Act
+        val inputPath = workspace.stepInputsDir( stepId )
 
-        assertEquals("steps/$stepId/inputs", result)
+        // Assert
+        assertEquals( "steps/02_process_data/inputs", inputPath )
     }
 
     @Test
-    fun stepOutputsDir_produces_correct_structure()
+    fun `workspace stepOutputsDir returns correct path`()
     {
+        // Arrange
         val stepId = UUID.randomUUID()
+        val stepInfo = StepInfo(
+            id = stepId,
+            name = "Extract Features",
+            executionIndex = 2
+        )
+        val workspace = ExecutionWorkspace(
+            runId = UUID.randomUUID(),
+            executionRoot = "/workspace",
+            workflowName = "Pipeline",
+            stepInfos = mapOf( stepId to stepInfo )
+        )
 
-        val result = workspace.stepOutputsDir(stepId)
+        // Act
+        val outputPath = workspace.stepOutputsDir( stepId )
 
-        assertEquals("steps/$stepId/outputs", result)
+        // Assert
+        assertEquals( "steps/03_extract_features/outputs", outputPath )
     }
 
     @Test
-    fun stepLogsDir_produces_correct_structure()
+    fun `workspace stepLogsDir returns correct path`()
     {
+        // Arrange
         val stepId = UUID.randomUUID()
+        val stepInfo = StepInfo(
+            id = stepId,
+            name = "Generate Report",
+            executionIndex = 3
+        )
+        val workspace = ExecutionWorkspace(
+            runId = UUID.randomUUID(),
+            executionRoot = "/workspace",
+            workflowName = "Pipeline",
+            stepInfos = mapOf( stepId to stepInfo )
+        )
 
-        val result = workspace.stepLogsDir(stepId)
+        // Act
+        val logsPath = workspace.stepLogsDir( stepId )
 
-        assertEquals("steps/$stepId/logs", result)
+        // Assert
+        assertEquals( "steps/04_generate_report/logs", logsPath )
     }
 
     @Test
-    fun all_subdirectory_functions_are_deterministic()
+    fun `workspace stepDir throws for unknown step ID`()
     {
+        // Arrange
+        val knownStep = UUID.randomUUID()
+        val unknownStep = UUID.randomUUID()
+        val workspace = ExecutionWorkspace(
+            runId = UUID.randomUUID(),
+            executionRoot = "/workspace",
+            workflowName = "Pipeline",
+            stepInfos = mapOf(
+                knownStep to StepInfo( knownStep, "Known", 0 )
+            )
+        )
+
+        // Act & Assert
+        assertFailsWith<IllegalArgumentException> {
+            workspace.stepDir( unknownStep )
+        }
+    }
+
+    @Test
+    fun `workspace getStepName returns correct name`()
+    {
+        // Arrange
         val stepId = UUID.randomUUID()
+        val workspace = ExecutionWorkspace(
+            runId = UUID.randomUUID(),
+            executionRoot = "/workspace",
+            workflowName = "Pipeline",
+            stepInfos = mapOf(
+                stepId to StepInfo( stepId, "Import Data", 0 )
+            )
+        )
 
-        val stepDir1 = workspace.stepDir(stepId)
-        val stepDir2 = workspace.stepDir(stepId)
-        val inputsDir1 = workspace.stepInputsDir(stepId)
-        val inputsDir2 = workspace.stepInputsDir(stepId)
-        val outputsDir1 = workspace.stepOutputsDir(stepId)
-        val outputsDir2 = workspace.stepOutputsDir(stepId)
-        val logsDir1 = workspace.stepLogsDir(stepId)
-        val logsDir2 = workspace.stepLogsDir(stepId)
+        // Act
+        val name = workspace.getStepName( stepId )
 
-        assertEquals(stepDir1, stepDir2)
-        assertEquals(inputsDir1, inputsDir2)
-        assertEquals(outputsDir1, outputsDir2)
-        assertEquals(logsDir1, logsDir2)
+        // Assert
+        assertEquals( "Import Data", name )
     }
 
     @Test
-    fun different_step_uuids_produce_different_paths()
+    fun `workspace getStepName returns null for unknown step`()
     {
-        val stepId1 = UUID.randomUUID()
-        val stepId2 = UUID.randomUUID()
+        // Arrange
+        val workspace = ExecutionWorkspace(
+            runId = UUID.randomUUID(),
+            executionRoot = "/workspace",
+            workflowName = "Pipeline",
+            stepInfos = emptyMap()
+        )
 
-        val stepDir1 = workspace.stepDir(stepId1)
-        val stepDir2 = workspace.stepDir(stepId2)
-        val inputsDir1 = workspace.stepInputsDir(stepId1)
-        val inputsDir2 = workspace.stepInputsDir(stepId2)
-        val outputsDir1 = workspace.stepOutputsDir(stepId1)
-        val outputsDir2 = workspace.stepOutputsDir(stepId2)
-        val logsDir1 = workspace.stepLogsDir(stepId1)
-        val logsDir2 = workspace.stepLogsDir(stepId2)
+        // Act
+        val name = workspace.getStepName( UUID.randomUUID() )
 
-        assertNotEquals(stepDir1, stepDir2, "Different UUIDs should produce different step directories")
-        assertNotEquals(inputsDir1, inputsDir2, "Different UUIDs should produce different input directories")
-        assertNotEquals(outputsDir1, outputsDir2, "Different UUIDs should produce different output directories")
-        assertNotEquals(logsDir1, logsDir2, "Different UUIDs should produce different log directories")
+        // Assert
+        assertNull( name )
     }
 
     @Test
-    fun paths_contain_proper_uuid_string_representation()
+    fun `workspace getStepDirName returns formatted name`()
     {
+        // Arrange
         val stepId = UUID.randomUUID()
-        val expectedUuidString = stepId.toString()
+        val workspace = ExecutionWorkspace(
+            runId = UUID.randomUUID(),
+            executionRoot = "/workspace",
+            workflowName = "Pipeline",
+            stepInfos = mapOf(
+                stepId to StepInfo( stepId, "Process EEG", 1 )
+            )
+        )
 
-        val stepDir = workspace.stepDir(stepId)
-        val inputsDir = workspace.stepInputsDir(stepId)
-        val outputsDir = workspace.stepOutputsDir(stepId)
-        val logsDir = workspace.stepLogsDir(stepId)
+        // Act
+        val dirName = workspace.getStepDirName( stepId )
 
-        assertTrue(stepDir.contains(expectedUuidString), "stepDir should contain UUID string")
-        assertTrue(inputsDir.contains(expectedUuidString), "inputsDir should contain UUID string")
-        assertTrue(outputsDir.contains(expectedUuidString), "outputsDir should contain UUID string")
-        assertTrue(logsDir.contains(expectedUuidString), "logsDir should contain UUID string")
+        // Assert
+        assertEquals( "02_process_eeg", dirName )
     }
 
     @Test
-    fun workspace_fields_are_preserved()
+    fun `workspace getStepIdsInOrder returns steps sorted by execution index`()
     {
-        assertEquals(testRunId, workspace.runId)
-        assertEquals(testExecutionRoot, workspace.executionRoot)
+        // Arrange
+        val step1 = UUID.randomUUID()
+        val step2 = UUID.randomUUID()
+        val step3 = UUID.randomUUID()
+
+        val workspace = ExecutionWorkspace(
+            runId = UUID.randomUUID(),
+            executionRoot = "/workspace",
+            workflowName = "Pipeline",
+            stepInfos = mapOf(
+                step3 to StepInfo( step3, "Third", 2 ),
+                step1 to StepInfo( step1, "First", 0 ),
+                step2 to StepInfo( step2, "Second", 1 )
+            )
+        )
+
+        // Act
+        val orderedIds = workspace.getStepIdsInOrder()
+
+        // Assert
+        assertEquals( listOf( step1, step2, step3 ), orderedIds )
     }
 
     @Test
-    fun data_class_equality_works_correctly()
+    fun `workspace toReadableString produces human-friendly output`()
     {
-        val workspace1 = ExecutionWorkspace(testRunId, testExecutionRoot)
-        val workspace2 = ExecutionWorkspace(testRunId, testExecutionRoot)
-        val workspace3 = ExecutionWorkspace(UUID.randomUUID(), testExecutionRoot)
-        val workspace4 = ExecutionWorkspace(testRunId, "different-root")
+        // Arrange
+        val step1 = UUID.randomUUID()
+        val step2 = UUID.randomUUID()
 
-        assertEquals(workspace1, workspace2, "Same content should be equal")
-        assertNotEquals(workspace1, workspace3, "Different runId should not be equal")
-        assertNotEquals(workspace1, workspace4, "Different executionRoot should not be equal")
+        val workspace = ExecutionWorkspace(
+            runId = UUID.parse( "550e8400-e29b-41d4-a716-446655440000" ),
+            executionRoot = "/workspace",
+            workflowName = "Signal Processing Pipeline",
+            stepInfos = mapOf(
+                step1 to StepInfo( step1, "Import Data", 0 ),
+                step2 to StepInfo( step2, "Process EEG", 1 )
+            )
+        )
+
+        // Act
+        val readable = workspace.toReadableString()
+
+        // Assert
+        assertTrue( readable.contains( "Signal Processing Pipeline" ) )
+        assertTrue( readable.contains( "550e8400-e29b-41d4-a716-446655440000" ) )
+        assertTrue( readable.contains( "01_import_data" ) )
+        assertTrue( readable.contains( "02_process_eeg" ) )
     }
 
     @Test
-    fun uuid_based_paths_are_safe_by_design()
+    fun `complete workflow example with multiple steps`()
     {
-        // UUIDs are inherently safe - they don't contain path traversal characters
-        // This test verifies that UUID.toString() produces safe path components
-        val stepId = UUID.randomUUID()
-        val uuidString = stepId.toString()
+        // Arrange: Create a realistic signal processing workflow
+        val importStep = UUID.randomUUID()
+        val preprocessStep = UUID.randomUUID()
+        val extractStep = UUID.randomUUID()
+        val reportStep = UUID.randomUUID()
 
-        assertFalse(uuidString.contains(".."), "UUID string should not contain path traversal")
-        assertFalse(uuidString.contains("/"), "UUID string should not contain forward slash")
-        assertFalse(uuidString.contains("\\"), "UUID string should not contain backslash")
+        val workspace = ExecutionWorkspace(
+            runId = UUID.parse( "a1b2c3d4-0000-0000-0000-000000000001" ),
+            executionRoot = "/data/workspaces/signal_processing/run_a1b2c3d4",
+            workflowName = "EEG Signal Processing",
+            stepInfos = mapOf(
+                importStep to StepInfo( importStep, "Validate Input", 0 ),
+                preprocessStep to StepInfo( preprocessStep, "Preprocess EEG", 1 ),
+                extractStep to StepInfo( extractStep, "Extract Features", 2 ),
+                reportStep to StepInfo( reportStep, "Generate Report", 3 )
+            )
+        )
 
-        // Verify the paths are safe
-        val stepDir = workspace.stepDir(stepId)
-        val inputsDir = workspace.stepInputsDir(stepId)
-        val outputsDir = workspace.stepOutputsDir(stepId)
-        val logsDir = workspace.stepLogsDir(stepId)
+        // Act: Verify complete path construction
+        val importPath = workspace.stepOutputsDir( importStep )
+        val preprocessPath = workspace.stepInputsDir( preprocessStep )
+        val extractPath = workspace.stepOutputsDir( extractStep )
+        val reportPath = workspace.stepLogsDir( reportStep )
 
-        // All paths should start with "steps/" and not contain dangerous characters
-        assertTrue(stepDir.startsWith("steps/"))
-        assertTrue(inputsDir.startsWith("steps/"))
-        assertTrue(outputsDir.startsWith("steps/"))
-        assertTrue(logsDir.startsWith("steps/"))
+        // Assert: Paths should be human-readable and in order
+        assertEquals( "steps/01_validate_input/outputs", importPath )
+        assertEquals( "steps/02_preprocess_eeg/inputs", preprocessPath )
+        assertEquals( "steps/03_extract_features/outputs", extractPath )
+        assertEquals( "steps/04_generate_report/logs", reportPath )
+
+        // Verify ordering
+        val orderedSteps = workspace.getStepIdsInOrder()
+        assertEquals( listOf( importStep, preprocessStep, extractStep, reportStep ), orderedSteps )
+
+        // Verify human-readable output
+        val readable = workspace.toReadableString()
+        assertTrue( readable.contains( "EEG Signal Processing" ) )
+        assertTrue( readable.contains( "01_validate_input" ) )
+        assertTrue( readable.contains( "02_preprocess_eeg" ) )
+        assertTrue( readable.contains( "03_extract_features" ) )
+        assertTrue( readable.contains( "04_generate_report" ) )
     }
 }
