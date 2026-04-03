@@ -1,5 +1,6 @@
 package dk.cachet.carp.analytics.domain.data
 
+import dk.cachet.carp.analytics.application.execution.workspace.WorkspacePathFormatter
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -32,18 +33,17 @@ sealed interface DataLocation
     val metadata: Map<String, String>
 
     /**
-     * Resolve this location given workspace context.
+     * Resolve this location to a concrete or workspace-relative path.
      *
-     * For FileLocation: generates `/workspace/outputs/{stepName}/{outputName}.{ext}` if path is blank.
-     * For other types: returns self (no path generation needed).
+     * Called only for **outputs** during planning.
+     * External inputs bypass this method entirely.
      *
-     * @param workspaceDirectory Base workspace directory (e.g., `/workspace`)
-     * @param stepName Step name for path generation
-     * @param outputName Output name for path generation
-     * @return Resolved location (usually self, except FileLocation with blank path)
+     * @param executionIndex 0-based step execution index (used to build step directory name)
+     * @param stepName Human-readable step name (used to build step directory name)
+     * @param outputName Output port name (used as filename when path is blank)
      */
     fun resolve(
-        workspaceDirectory: String,
+        executionIndex: Int,
         stepName: String,
         outputName: String
     ): DataLocation
@@ -76,20 +76,25 @@ data class FileLocation(
 ) : DataLocation
 {
     override fun resolve(
-        workspaceDirectory: String,
+        executionIndex: Int,
         stepName: String,
         outputName: String
-    ): FileLocation
-    {
-        return when
-        {
-            path.startsWith( "/" ) -> this // Absolute path: use as-is
-            path.isBlank() -> copy( // Empty path: generate from workspace + step + output
-                path = "$workspaceDirectory/outputs//$outputName.${format.extension}"
-            )
-            else -> copy( // Relative path: resolve relative to step outputs
-                path = "$workspaceDirectory/outputs/$path"
-            )
+    ): FileLocation {
+        return when {
+            // Absolute path — use as-is
+            path.startsWith("/") || path.matches(Regex("^[A-Za-z]:.*")) -> this
+
+            // Blank path — generate workspace-relative path
+            path.isBlank() -> {
+                val stepDir = WorkspacePathFormatter.formatStepDirName(executionIndex, stepName)
+                copy(path = "steps/$stepDir/outputs/$outputName.${format.extension}")
+            }
+
+            // Relative path — treat as sub-path of step's outputs dir
+            else -> {
+                val stepDir = WorkspacePathFormatter.formatStepDirName(executionIndex, stepName)
+                copy(path = "steps/$stepDir/outputs/$path")
+            }
         }
     }
 }
@@ -122,7 +127,7 @@ data class InMemoryLocation(
 ) : DataLocation
 {
     override fun resolve(
-        workspaceDirectory: String,
+        executionIndex: Int,
         stepName: String,
         outputName: String
     ): InMemoryLocation
@@ -161,7 +166,7 @@ data class UrlLocation(
 ) : DataLocation
 {
     override fun resolve(
-        workspaceDirectory: String,
+        executionIndex: Int,
         stepName: String,
         outputName: String
     ): UrlLocation
@@ -202,7 +207,7 @@ data class DatabaseLocation(
 ) : DataLocation
 {
     override fun resolve(
-        workspaceDirectory: String,
+        executionIndex: Int,
         stepName: String,
         outputName: String
     ): DatabaseLocation
@@ -243,7 +248,7 @@ data class ApiLocation(
 ) : DataLocation
 {
     override fun resolve(
-        workspaceDirectory: String,
+        executionIndex: Int,
         stepName: String,
         outputName: String
     ): ApiLocation
@@ -285,7 +290,7 @@ data class StreamLocation(
 ) : DataLocation
 {
     override fun resolve(
-        workspaceDirectory: String,
+        executionIndex: Int,
         stepName: String,
         outputName: String
     ): StreamLocation
