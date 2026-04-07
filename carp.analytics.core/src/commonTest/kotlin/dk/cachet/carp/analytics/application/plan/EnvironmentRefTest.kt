@@ -45,7 +45,7 @@ class EnvironmentRefTest
     {
         val refs: List<EnvironmentRef> = listOf(
             CondaEnvironmentRef("e1", "n", emptyList()),
-            PixiEnvironmentRef("e2", emptyList()),
+            PixiEnvironmentRef("e2", "pixi-env", emptyList()),
             SystemEnvironmentRef("e3")
         )
 
@@ -54,6 +54,44 @@ class EnvironmentRefTest
             assertTrue(template.contains("{executable}"), "${ref::class.simpleName} missing {executable}")
             assertTrue(template.contains("{args}"), "${ref::class.simpleName} missing {args}")
         }
+    }
+
+    @Test
+    fun pixi_setup_command_includes_all_components()
+    {
+        val ref = PixiEnvironmentRef(
+            id = "pixi-env-1",
+            name = "mypixi",
+            dependencies = listOf("numpy", "scipy"),
+            channels = listOf("conda-forge", "defaults"),
+            pythonVersion = "3.12"
+        )
+
+        val cmd = ref.generateSetupCommand()
+
+        assertTrue(cmd.contains("pixi add"))
+        assertTrue(cmd.contains("-c conda-forge"))
+        assertTrue(cmd.contains("python=3.12"))
+        assertTrue(cmd.contains("numpy scipy"))
+    }
+
+    @Test
+    fun pixi_uses_default_channels()
+    {
+        val ref = PixiEnvironmentRef(
+            id = "pixi-env-2",
+            name = "default-channels",
+            dependencies = emptyList()
+        )
+
+        assertEquals(listOf("conda-forge", "defaults"), ref.channels)
+    }
+
+    @Test
+    fun pixi_execution_template_correct()
+    {
+        val ref = PixiEnvironmentRef("pixi-1", "mypixi", emptyList())
+        assertEquals("pixi run {executable} {args}", ref.generateExecutionTemplate())
     }
     @Test
     fun createsREnvironmentRef()

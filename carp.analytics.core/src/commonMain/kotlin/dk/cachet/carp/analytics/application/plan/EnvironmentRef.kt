@@ -53,15 +53,18 @@ data class CondaEnvironmentRef(
 @SerialName("pixi")
 data class PixiEnvironmentRef(
     override val id: String,
+    val name: String,
     override val dependencies: List<String>,
+    val channels: List<String> = listOf("conda-forge"),
     val pythonVersion: String = "3.12"
 ) : EnvironmentRef
 {
 
     override fun generateSetupCommand(): String
     {
+        val channelFlags = channels.joinToString(" ") { "-c $it" }
         val depsStr = dependencies.joinToString(" ")
-        return "pixi add $depsStr python=$pythonVersion"
+        return "pixi add $channelFlags python=$pythonVersion $depsStr"
     }
 
     override fun generateExecutionTemplate(): String
