@@ -22,6 +22,9 @@ enum class FileFormat(
     val isBinary: Boolean
 )
 {
+    // Text Formats
+    TXT( "text/plain", "txt", false ),
+
     // Tabular Formats
     CSV( "text/csv", "csv", false ),
     TSV( "text/tab-separated-values", "tsv", false ),
@@ -37,7 +40,10 @@ enum class FileFormat(
     AVRO( "application/octet-stream", "avro", true ),
 
     // Generic Binary
-    BINARY( "application/octet-stream", "bin", true );
+    BINARY( "application/octet-stream", "bin", true ),
+
+    // Generic/Unknown Formats
+    UNKNOWN( "application/octet-stream", "", false );
 
     /**
      * Check if this format is text-based.

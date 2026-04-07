@@ -32,7 +32,7 @@ object PlanDiagnosticsBuilder
         // Build diagnostics
         return PlanDiagnostics(
             planId = plan.planId,
-            workflowId = plan.workflowId,
+            workflowId = plan.workflowName,
             timestamp = Clock.System.now().toString(),
             stepCount = plan.steps.size,
             environmentCount = plan.requiredEnvironmentRefs.size,

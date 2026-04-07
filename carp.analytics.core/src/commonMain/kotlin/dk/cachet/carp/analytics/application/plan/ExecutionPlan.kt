@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class ExecutionPlan(
-    val workflowId: String,
+    val workflowName: String,
     val planId: String,
     val steps: List<PlannedStep>,
     val issues: List<PlanIssue> = emptyList(),
@@ -20,9 +20,9 @@ data class ExecutionPlan(
 {
     fun validate()
     {
-        require(workflowId.isNotBlank())
+        require(workflowName.isNotBlank())
         {
-            "workflowId must not be blank."
+            "workflowName must not be blank."
         }
         require(planId.isNotBlank())
         {

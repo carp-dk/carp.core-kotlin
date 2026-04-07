@@ -179,7 +179,7 @@ class PlanDiagnosticsBuilderTest
         }
 
         return ExecutionPlan(
-            workflowId = workflowId,
+            workflowName = workflowId,
             planId = planId,
             steps = steps,
             issues = issues,

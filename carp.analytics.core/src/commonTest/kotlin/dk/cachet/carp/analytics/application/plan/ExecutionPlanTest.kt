@@ -34,7 +34,7 @@ class ExecutionPlanTest
     fun `validate passes for minimal valid plan`()
     {
         val plan = ExecutionPlan(
-            workflowId = "wf",
+            workflowName = "wf",
             planId = "plan",
             steps = listOf( step( UUID.randomUUID() ) ),
             issues = emptyList(),
@@ -48,7 +48,7 @@ class ExecutionPlanTest
     fun `validate rejects blank workflowId`()
     {
         val plan = ExecutionPlan(
-            workflowId = " ",
+            workflowName = " ",
             planId = "plan",
             steps = listOf( step( UUID.randomUUID() ) )
         )
@@ -59,7 +59,7 @@ class ExecutionPlanTest
     fun `validate rejects blank planId`()
     {
         val plan = ExecutionPlan(
-            workflowId = "wf",
+            workflowName = "wf",
             planId = " ",
             steps = listOf( step( UUID.randomUUID() ) )
         )
@@ -71,7 +71,7 @@ class ExecutionPlanTest
     {
         val stepId = UUID.randomUUID()
         val plan = ExecutionPlan(
-            workflowId = "wf",
+            workflowName = "wf",
             planId = "plan",
             steps = listOf( step( stepId ), step( stepId ) )
         )
@@ -82,7 +82,7 @@ class ExecutionPlanTest
     fun `validate rejects empty steps list`()
     {
         val plan = ExecutionPlan(
-            workflowId = "wf",
+            workflowName = "wf",
             planId = "plan",
             steps = emptyList()
         )
@@ -93,7 +93,7 @@ class ExecutionPlanTest
     fun `hasErrors true when any ERROR issue exists`()
     {
         val plan = ExecutionPlan(
-            workflowId = "wf",
+            workflowName = "wf",
             planId = "plan",
             steps = listOf( step( UUID.randomUUID() ) ),
             issues = listOf(
@@ -110,7 +110,7 @@ class ExecutionPlanTest
     fun `hasErrors false when only INFO and WARNING issues exist`()
     {
         val plan = ExecutionPlan(
-            workflowId = "wf",
+            workflowName = "wf",
             planId = "plan",
             steps = listOf( step( UUID.randomUUID() ) ),
             issues = listOf(
@@ -127,7 +127,7 @@ class ExecutionPlanTest
     fun `isRunnable true when no errors and steps not empty`()
     {
         val plan = ExecutionPlan(
-            workflowId = "wf",
+            workflowName = "wf",
             planId = "plan",
             steps = listOf( step( UUID.randomUUID() ) ),
             issues = emptyList()
@@ -140,7 +140,7 @@ class ExecutionPlanTest
     fun `plan with no issues has empty issues list`()
     {
         val plan = ExecutionPlan(
-            workflowId = "wf",
+            workflowName = "wf",
             planId = "plan",
             steps = listOf( step( UUID.randomUUID() ) )
         )
@@ -156,7 +156,7 @@ class ExecutionPlanTest
         val issueStepId = UUID.randomUUID()
 
         val plan = ExecutionPlan(
-            workflowId = "test-workflow",
+            workflowName = "test-workflow",
             planId = "plan-123",
             steps = listOf( step( stepId ) ),
             issues = listOf(
@@ -182,7 +182,7 @@ class ExecutionPlanTest
         val decoded = CoreAnalyticsSerializer.json.decodeFromString<ExecutionPlan>( encoded )
 
         assertEquals( plan, decoded )
-        assertEquals( "test-workflow", decoded.workflowId )
+        assertEquals( "test-workflow", decoded.workflowName )
         assertEquals( "plan-123", decoded.planId )
         assertEquals( 1, decoded.steps.size )
         assertEquals( 1, decoded.issues.size )
@@ -193,7 +193,7 @@ class ExecutionPlanTest
     fun `plan issue with null stepId is preserved`()
     {
         val plan = ExecutionPlan(
-            workflowId = "wf",
+            workflowName = "wf",
             planId = "plan",
             steps = listOf( step( UUID.randomUUID() ) ),
             issues = listOf(
@@ -217,7 +217,7 @@ class ExecutionPlanTest
     fun `multiple issues are preserved in order`()
     {
         val plan = ExecutionPlan(
-            workflowId = "wf",
+            workflowName = "wf",
             planId = "plan",
             steps = listOf( step( UUID.randomUUID() ) ),
             issues = listOf(
@@ -243,7 +243,7 @@ class ExecutionPlanTest
         val steps = stepIds.map { step( it ) }
 
         val plan = ExecutionPlan(
-            workflowId = "wf",
+            workflowName = "wf",
             planId = "plan",
             steps = steps
         )
@@ -279,7 +279,7 @@ class ExecutionPlanTest
         )
 
         val plan = ExecutionPlan(
-            workflowId = "wf",
+            workflowName = "wf",
             planId = "plan",
             steps = listOf( step( UUID.randomUUID() ) ),
             requiredEnvironmentRefs = environments
