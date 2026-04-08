@@ -7,5 +7,5 @@ import dk.cachet.carp.analytics.domain.workflow.WorkflowDefinition
  */
 interface ExecutionPlanner
 {
-    fun plan(definition: WorkflowDefinition): ExecutionPlan
+    fun plan( definition: WorkflowDefinition ): ExecutionPlan
 }

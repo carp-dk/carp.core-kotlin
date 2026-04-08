@@ -79,19 +79,22 @@ data class FileLocation(
         executionIndex: Int,
         stepName: String,
         outputName: String
-    ): FileLocation {
+    ): FileLocation
+    {
         return when {
             // Absolute path — use as-is
             path.startsWith("/") || path.matches(Regex("^[A-Za-z]:.*")) -> this
 
             // Blank path — generate workspace-relative path
-            path.isBlank() -> {
+            path.isBlank() ->
+            {
                 val stepDir = WorkspacePathFormatter.formatStepDirName(executionIndex, stepName)
                 copy(path = "steps/$stepDir/outputs/$outputName.${format.extension}")
             }
 
             // Relative path — treat as sub-path of step's outputs dir
-            else -> {
+            else ->
+            {
                 val stepDir = WorkspacePathFormatter.formatStepDirName(executionIndex, stepName)
                 copy(path = "steps/$stepDir/outputs/$path")
             }

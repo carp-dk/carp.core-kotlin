@@ -30,13 +30,14 @@ object WorkspacePathFormatter
      * Format: {1-based zero-padded index}_{snake_case_step_name}
      * Example: executionIndex=2, stepName="Extract Features" → "03_extract_features"
      */
-    fun formatStepDirName(executionIndex: Int, stepName: String): String {
+    fun formatStepDirName( executionIndex: Int, stepName: String ): String
+    {
         val paddedIndex = (executionIndex + 1).toString().padStart(2, '0')
         val formattedName = stepName
             .replace(" ", "_")
             .replace("-", "_")
             .replace("[^a-zA-Z0-9_]".toRegex(), "")
             .lowercase()
-        return "${paddedIndex}_${formattedName}"
+        return "${paddedIndex}_$formattedName"
     }
 }
