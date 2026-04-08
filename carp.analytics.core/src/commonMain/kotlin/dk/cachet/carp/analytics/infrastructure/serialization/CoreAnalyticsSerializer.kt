@@ -14,6 +14,7 @@ import dk.cachet.carp.analytics.domain.tasks.OutputRef
 import dk.cachet.carp.analytics.domain.tasks.ParamRef
 import dk.cachet.carp.analytics.domain.tasks.PythonEntryPoint
 import dk.cachet.carp.analytics.domain.tasks.PythonTaskDefinition
+import dk.cachet.carp.analytics.domain.tasks.RTaskDefinition
 import dk.cachet.carp.analytics.domain.tasks.Script
 import dk.cachet.carp.analytics.domain.tasks.TaskDefinition
 import kotlinx.serialization.json.Json
@@ -32,6 +33,7 @@ object CoreAnalyticsSerializer
         polymorphic(TaskDefinition::class) {
             subclass(CommandTaskDefinition::class)
             subclass(PythonTaskDefinition::class)
+            subclass(RTaskDefinition::class)
         }
 
         polymorphic(PythonEntryPoint::class) {

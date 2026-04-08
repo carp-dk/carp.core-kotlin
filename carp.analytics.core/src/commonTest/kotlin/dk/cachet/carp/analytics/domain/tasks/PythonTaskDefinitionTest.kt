@@ -19,9 +19,7 @@ import kotlin.test.assertTrue
 class PythonTaskDefinitionTest
 {
 
-    // ---------------------------------------------------------------------------
     // PythonEntryPoint — Script
-    // ---------------------------------------------------------------------------
 
     @Test
     fun `Script creates valid instance`()
@@ -54,9 +52,7 @@ class PythonTaskDefinitionTest
         assertTrue(encoded.contains("\"type\":\"Script\""), "Expected 'Script' discriminator, got: $encoded")
     }
 
-    // ---------------------------------------------------------------------------
     // PythonEntryPoint — Module
-    // ---------------------------------------------------------------------------
 
     @Test
     fun `Module creates valid instance`()
@@ -89,9 +85,7 @@ class PythonTaskDefinitionTest
         assertTrue(encoded.contains("\"type\":\"Module\""), "Expected 'Module' discriminator, got: $encoded")
     }
 
-    // ---------------------------------------------------------------------------
     // PythonTaskDefinition — construction
-    // ---------------------------------------------------------------------------
 
     @Test
     fun `creates minimal PythonTaskDefinition with Script entry point`()
@@ -156,9 +150,7 @@ class PythonTaskDefinitionTest
         assertEquals(args, task.args)
     }
 
-    // ---------------------------------------------------------------------------
     // PythonTaskDefinition — validation
-    // ---------------------------------------------------------------------------
 
     @Test
     fun `rejects blank name`()
@@ -180,9 +172,7 @@ class PythonTaskDefinitionTest
         }
     }
 
-    // ---------------------------------------------------------------------------
     // PythonTaskDefinition — TaskDefinition interface
-    // ---------------------------------------------------------------------------
 
     @Test
     fun `implements TaskDefinition interface correctly`()
@@ -200,9 +190,7 @@ class PythonTaskDefinitionTest
         assertNull(taskDef.description)
     }
 
-    // ---------------------------------------------------------------------------
     // PythonTaskDefinition — serialization
-    // ---------------------------------------------------------------------------
 
     @Test
     fun `serialization round-trip with Script entry point`()
@@ -302,9 +290,7 @@ class PythonTaskDefinitionTest
         )
     }
 
-    // ---------------------------------------------------------------------------
     // PythonTaskDefinition — no execution-related concerns
-    // ---------------------------------------------------------------------------
 
     @Test
     fun `task definition carries no executable field`()

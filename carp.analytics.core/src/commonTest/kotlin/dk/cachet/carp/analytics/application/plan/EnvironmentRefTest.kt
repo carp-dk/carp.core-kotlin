@@ -98,24 +98,15 @@ class EnvironmentRefTest
     {
         val ref = REnvironmentRef(
             id = "r-env-001",
+            name = "r-analysis",
             rVersion = "4.3.0",
             rPackages = listOf("ggplot2", "dplyr")
         )
 
         assertEquals("r-env-001", ref.id)
+        assertEquals("r-analysis", ref.name)
         assertEquals("4.3.0", ref.rVersion)
         assertEquals(2, ref.rPackages.size)
-    }
-
-    @Test
-    fun generatesDescriptiveName()
-    {
-        val ref = REnvironmentRef(
-            id = "r-env-001",
-            rVersion = "4.3.0"
-        )
-
-        assertEquals("R-4.3.0", ref.name)
     }
 
     @Test
@@ -123,6 +114,7 @@ class EnvironmentRefTest
     {
         val ref = REnvironmentRef(
             id = "r-env-001",
+            name = "r-analysis",
             rVersion = "4.3.0"
         )
 
@@ -137,6 +129,7 @@ class EnvironmentRefTest
     {
         val ref = REnvironmentRef(
             id = "r-env-001",
+            name = "r-renv-env",
             rVersion = "4.3.0",
             renvLockFile = "/path/to/renv.lock"
         )
@@ -149,6 +142,7 @@ class EnvironmentRefTest
     {
         val ref = REnvironmentRef(
             id = "r-env-001",
+            name = "r-custom-install",
             rVersion = "4.3.0",
             rPackages = listOf("ggplot2"),
             installationPath = "/opt/R/4.3.0"
@@ -162,6 +156,7 @@ class EnvironmentRefTest
     {
         val ref = REnvironmentRef(
             id = "r-env-001",
+            name = "r-analysis",
             rVersion = "4.3.0",
             rPackages = listOf("ggplot2")
         )
@@ -176,6 +171,7 @@ class EnvironmentRefTest
     {
         val ref = REnvironmentRef(
             id = "r-env-001",
+            name = "r-renv-env",
             rVersion = "4.3.0",
             renvLockFile = "/path/to/renv.lock"
         )
@@ -190,6 +186,7 @@ class EnvironmentRefTest
     {
         val ref = REnvironmentRef(
             id = "",
+            name = "r-analysis",
             rVersion = "4.3.0",
             rPackages = listOf("ggplot2")
         )
@@ -204,6 +201,7 @@ class EnvironmentRefTest
     {
         val ref = REnvironmentRef(
             id = "r-env-001",
+            name = "r-analysis",
             rVersion = "4.3.0",
             rPackages = emptyList(),
             renvLockFile = null
@@ -219,6 +217,7 @@ class EnvironmentRefTest
     {
         val ref = REnvironmentRef(
             id = "r-env-001",
+            name = "r-with-vars",
             rVersion = "4.3.0",
             rPackages = listOf("ggplot2"),
             environmentVariables = mapOf(
@@ -235,6 +234,7 @@ class EnvironmentRefTest
     {
         val ref = REnvironmentRef(
             id = "r-env-001",
+            name = "r-with-deps",
             rVersion = "4.3.0",
             rPackages = listOf("ggplot2"),
             dependencies = listOf("pandoc", "ghostscript")
