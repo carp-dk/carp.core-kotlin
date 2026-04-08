@@ -102,6 +102,7 @@ data class SystemEnvironmentRef(
 @SerialName("REnvironmentRef")
 data class REnvironmentRef(
     override val id: String,
+    val name: String,
     val rVersion: String,
     val rPackages: List<String> = emptyList(),
     val renvLockFile: String? = null,
@@ -110,14 +111,6 @@ data class REnvironmentRef(
     val environmentVariables: Map<String, String> = emptyMap()
 ) : EnvironmentRef
 {
-
-    /**
-     * Descriptive name for this R environment.
-     * Used in logs and displays.
-     */
-    val name: String
-        get() = "R-$rVersion"
-
     /**
      * Get command template for executing in R environment.
      *
