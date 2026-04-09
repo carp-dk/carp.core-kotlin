@@ -376,8 +376,10 @@ class RTaskDefinitionTest
 
 
 // Helper function for inequality assertions
-private fun <T> assertNotEquals(expected: T, actual: T, message: String? = null) {
-    if (expected == actual) {
+private fun <T> assertNotEquals( expected: T, actual: T, message: String? = null )
+{
+    if (expected == actual)
+    {
         throw AssertionError(message ?: "Expected values to be different, but both are: $expected")
     }
 }
