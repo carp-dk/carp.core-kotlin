@@ -25,7 +25,8 @@ data class StepMetadata(
     override val name: String,
     override val id: UUID,
     override val description: String? = null,
-    override val version: Version = Version(1)
+    override val version: Version = Version(1),
+    val descriptorId: String? = null
 ) : ComponentMetadata
 
 @Serializable
