@@ -164,6 +164,14 @@ class RecruitmentTest
 
         assertEquals( updatedGroupRepresentation, group.representation )
         assertEquals( updatedAssignments, group.roleAssignments )
+        assertEquals(
+            Recruitment.Event.ParticipantGroupUpdated(
+                group.id,
+                updatedAssignments,
+                updatedGroupRepresentation
+            ),
+            recruitment.consumeEvents().last()
+        )
     }
 
     @Test
@@ -185,6 +193,88 @@ class RecruitmentTest
         recruitment.updateParticipantGroup( group.id, representation = removedGroupRepresentation )
 
         assertEquals( removedGroupRepresentation, group.representation )
+        assertEquals(
+            listOf(
+                Recruitment.Event.ParticipantGroupUpdated( group.id, null, updatedGroupRepresentation ),
+                Recruitment.Event.ParticipantGroupUpdated( group.id, null, removedGroupRepresentation )
+            ),
+            recruitment.consumeEvents().filterIsInstance<Recruitment.Event.ParticipantGroupUpdated>()
+        )
+    }
+
+    @Test
+    fun updateParticipantGroup_updates_assignments_only_and_emits_event()
+    {
+        val sut = createParticipantGroupUpdateSUT()
+
+        sut.recruitment.updateParticipantGroup( sut.group.id, participants = sut.updatedAssignments )
+
+        assertEquals( sut.updatedAssignments, sut.group.roleAssignments )
+        assertEquals( sut.initialRepresentation, sut.group.representation )
+        assertEquals(
+            Recruitment.Event.ParticipantGroupUpdated( sut.group.id, sut.updatedAssignments, null ),
+            sut.recruitment.consumeEvents().last()
+        )
+    }
+
+    @Test
+    fun updateParticipantGroup_unchanged_assignments_with_new_representation_emits_representation_only()
+    {
+        val sut = createParticipantGroupUpdateSUT()
+        sut.recruitment.updateParticipantGroup( sut.group.id, sut.initialAssignments, sut.updatedRepresentation )
+
+        assertEquals( sut.initialAssignments, sut.group.roleAssignments )
+        assertEquals( sut.updatedRepresentation, sut.group.representation )
+        assertEquals(
+            Recruitment.Event.ParticipantGroupUpdated( sut.group.id, null, sut.updatedRepresentation ),
+            sut.recruitment.consumeEvents().last()
+        )
+    }
+
+    @Test
+    fun updateParticipantGroup_updated_assignments_with_unchanged_representation_emits_assignments_only()
+    {
+        val sut = createParticipantGroupUpdateSUT()
+        sut.recruitment.updateParticipantGroup( sut.group.id, sut.updatedAssignments, sut.initialRepresentation )
+
+        assertEquals( sut.updatedAssignments, sut.group.roleAssignments )
+        assertEquals( sut.initialRepresentation, sut.group.representation )
+        assertEquals(
+            Recruitment.Event.ParticipantGroupUpdated( sut.group.id, sut.updatedAssignments, null ),
+            sut.recruitment.consumeEvents().last()
+        )
+    }
+
+    @Test
+    fun updateParticipantGroup_no_op_update_does_not_emit_event()
+    {
+        val sut = createParticipantGroupUpdateSUT()
+        sut.recruitment.updateParticipantGroup( sut.group.id )
+
+        val updateEvents = sut.recruitment.consumeEvents().filterIsInstance<Recruitment.Event.ParticipantGroupUpdated>()
+        assertEquals( 0, updateEvents.count() )
+    }
+
+    @Test
+    fun updateParticipantGroup_unchanged_assignments_does_not_emit_event()
+    {
+        val sut = createParticipantGroupUpdateSUT()
+        sut.recruitment.updateParticipantGroup( sut.group.id, participants = sut.initialAssignments )
+
+        assertEquals( sut.initialAssignments, sut.group.roleAssignments )
+        val updateEvents = sut.recruitment.consumeEvents().filterIsInstance<Recruitment.Event.ParticipantGroupUpdated>()
+        assertEquals( 0, updateEvents.count() )
+    }
+
+    @Test
+    fun updateParticipantGroup_unchanged_representation_does_not_emit_event()
+    {
+        val sut = createParticipantGroupUpdateSUT()
+        sut.recruitment.updateParticipantGroup( sut.group.id, representation = sut.initialRepresentation )
+
+        assertEquals( sut.initialRepresentation, sut.group.representation )
+        val updateEvents = sut.recruitment.consumeEvents().filterIsInstance<Recruitment.Event.ParticipantGroupUpdated>()
+        assertEquals( 0, updateEvents.count() )
     }
 
     @Test
@@ -201,6 +291,8 @@ class RecruitmentTest
         val updatedAssignments = setOf( AssignedParticipantRoles( participant2.id, AssignedTo.All ) )
         assertFailsWith<IllegalStateException>
             { recruitment.updateParticipantGroup( group.id, updatedAssignments ) }
+        val updateEvents = recruitment.consumeEvents().filterIsInstance<Recruitment.Event.ParticipantGroupUpdated>()
+        assertEquals( 0, updateEvents.count() )
     }
 
     @Test
@@ -381,5 +473,35 @@ class RecruitmentTest
         val protocol = createSinglePrimaryDeviceProtocol().getSnapshot()
         recruitment.lockInStudy( protocol, StudyInvitation( "Study" ) )
         return recruitment
+    }
+
+    private data class ParticipantGroupUpdateSUT(
+        val recruitment: Recruitment,
+        val group: StagedParticipantGroup,
+        val initialAssignments: Set<AssignedParticipantRoles>,
+        val updatedAssignments: Set<AssignedParticipantRoles>,
+        val initialRepresentation: ParticipantGroupRepresentation,
+        val updatedRepresentation: ParticipantGroupRepresentation
+    )
+
+    private fun createParticipantGroupUpdateSUT(): ParticipantGroupUpdateSUT
+    {
+        val recruitment = createReadyRecruitment()
+        val participant1 = recruitment.addParticipant( participantEmail )
+        val participant2 = recruitment.addParticipant( EmailAddress( "test2@test.com" ) )
+        val initialAssignments = setOf( AssignedParticipantRoles( participant1.id, AssignedTo.All ) )
+        val updatedAssignments = setOf( AssignedParticipantRoles( participant2.id, AssignedTo.All ) )
+        val initialRepresentation = ParticipantGroupRepresentation( "Initial name" )
+        val updatedRepresentation = ParticipantGroupRepresentation( "Updated name" )
+        val group = recruitment.addParticipantGroup( initialAssignments, initialRepresentation )
+
+        return ParticipantGroupUpdateSUT(
+            recruitment,
+            group,
+            initialAssignments,
+            updatedAssignments,
+            initialRepresentation,
+            updatedRepresentation
+        )
     }
 }
