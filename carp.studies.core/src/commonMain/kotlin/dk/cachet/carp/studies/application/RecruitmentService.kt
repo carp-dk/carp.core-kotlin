@@ -9,6 +9,7 @@ import dk.cachet.carp.common.application.services.IntegrationEvent
 import dk.cachet.carp.common.application.users.Username
 import dk.cachet.carp.studies.application.users.AssignedParticipantRoles
 import dk.cachet.carp.studies.application.users.Participant
+import dk.cachet.carp.studies.application.users.ParticipantGroupRepresentation
 import dk.cachet.carp.studies.application.users.ParticipantGroupStatus
 import kotlinx.serialization.*
 
@@ -86,8 +87,10 @@ interface RecruitmentService : ApplicationService<RecruitmentService, Recruitmen
 
     /**
      * Create a new participant [group] of previously added participants for the study with the given [studyId],
-     * and an optional [name] representing this group, but do not yet send out invitations.
+     * and a [representation] representing this group, but do not yet send out invitations.
      * This is used to create a group of participants which can be deployed at a later time.
+     *
+     * [ParticipantGroupRepresentation.Default] is used when no [representation] is passed.
      *
      * As long as no final study protocol is locked in for the study, a participant group can't be created
      * since participant roles to which participants need to be assigned are unknown.
@@ -101,16 +104,17 @@ interface RecruitmentService : ApplicationService<RecruitmentService, Recruitmen
         groupId: UUID,
         group: Set<AssignedParticipantRoles>,
         studyId: UUID,
-        name: String? = null
+        representation: ParticipantGroupRepresentation = ParticipantGroupRepresentation.Default
     ): ParticipantGroupStatus
 
     /**
      * Update the participant group for the specified [groupId].
      *
-     * Participant assignments can't be changed after the group has been invited; the group name can always be updated.
+     * Participant assignments can't be changed after the group has been invited; the group representation can always
+     * be updated.
      *
      * @param group If set, role assignments are updated; unchanged otherwise.
-     * @param name If set, the group name is updated; unchanged otherwise.
+     * @param representation If set, group representation is updated; unchanged otherwise.
      * @throws IllegalArgumentException when:
      *  - the participant group with [groupId] does not exist
      *  - any of the participant roles specified in [group] does not exist
@@ -120,7 +124,7 @@ interface RecruitmentService : ApplicationService<RecruitmentService, Recruitmen
     suspend fun updateParticipantGroup(
         groupId: UUID,
         group: Set<AssignedParticipantRoles>? = null,
-        name: String? = null
+        representation: ParticipantGroupRepresentation? = null
     ): ParticipantGroupStatus
 
     /**

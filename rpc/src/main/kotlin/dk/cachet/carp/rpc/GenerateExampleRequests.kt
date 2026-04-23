@@ -409,7 +409,7 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
             deploymentId,
             setOf( AssignedParticipantRoles( participantId, participantAssignedRoles ) ),
             studyId,
-            deploymentName
+            ParticipantGroupRepresentation( deploymentName )
         ),
         response = ParticipantGroupStatus.Staged(
             deploymentId,
@@ -422,7 +422,7 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
         request = RecruitmentServiceRequest.UpdateParticipantGroup(
             deploymentId,
             group = updatedRoleAssignment,
-            name = updatedDeploymentName
+            representation = ParticipantGroupRepresentation( updatedDeploymentName )
         ),
         response = ParticipantGroupStatus.Staged(
             deploymentId,

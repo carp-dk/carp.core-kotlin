@@ -14,7 +14,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "4365b1c4-acf8-4f99-b28b-69f1dfd9c17c",
+                    "ownerId": "427d0900-c27a-4834-9c9a-b16a6e3e0a7e",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -30,7 +30,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "4365b1c4-acf8-4f99-b28b-69f1dfd9c17c",
+                    "ownerId": "427d0900-c27a-4834-9c9a-b16a6e3e0a7e",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -38,10 +38,10 @@
                         "name": "Test"
                     },
                     "protocolSnapshot": {
-                        "id": "2e512576-ace2-4e74-ab61-2ae67fa84a8a",
-                        "createdOn": "2026-02-13T09:25:42.659650Z",
+                        "id": "1fb2282b-c6ae-4b5d-9e1d-67f2d92d18b2",
+                        "createdOn": "2026-04-15T11:59:17.876460Z",
                         "version": 0,
-                        "ownerId": "2b385aa9-61a8-4c3a-a75a-3cd90cc08cd1",
+                        "ownerId": "9cc37700-5d7f-4596-988b-fc1712f79668",
                         "name": "Test protocol",
                         "primaryDevices": [
                             {
@@ -104,7 +104,7 @@
         "request": {
             "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.CreateParticipantGroup",
             "apiVersion": "1.3",
-            "groupId": "d18dbbf6-9543-41cc-93d9-a3ab3ec596ab",
+            "groupId": "285ff5e7-3df6-406e-acae-7e87ea9afb20",
             "group": [
                 {
                     "participantId": "00000000-0000-0000-0000-000000000002",
@@ -119,7 +119,7 @@
         "publishedEvents": [],
         "response": {
             "__type": "dk.cachet.carp.studies.application.users.ParticipantGroupStatus.Staged",
-            "id": "d18dbbf6-9543-41cc-93d9-a3ab3ec596ab",
+            "id": "285ff5e7-3df6-406e-acae-7e87ea9afb20",
             "participants": [
                 {
                     "accountIdentity": {
@@ -144,13 +144,13 @@
         "request": {
             "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.InviteParticipantGroup",
             "apiVersion": "1.3",
-            "groupId": "d18dbbf6-9543-41cc-93d9-a3ab3ec596ab"
+            "groupId": "285ff5e7-3df6-406e-acae-7e87ea9afb20"
         },
         "precedingEvents": [],
         "publishedEvents": [],
         "response": {
             "__type": "dk.cachet.carp.studies.application.users.ParticipantGroupStatus.Invited",
-            "id": "d18dbbf6-9543-41cc-93d9-a3ab3ec596ab",
+            "id": "285ff5e7-3df6-406e-acae-7e87ea9afb20",
             "participants": [
                 {
                     "accountIdentity": {
@@ -172,7 +172,7 @@
             "studyDeploymentStatus": {
                 "__type": "dk.cachet.carp.deployments.application.StudyDeploymentStatus.Invited",
                 "createdOn": "1970-01-01T00:00:00Z",
-                "studyDeploymentId": "d18dbbf6-9543-41cc-93d9-a3ab3ec596ab",
+                "studyDeploymentId": "285ff5e7-3df6-406e-acae-7e87ea9afb20",
                 "deviceStatusList": [
                     {
                         "__type": "dk.cachet.carp.deployments.application.DeviceDeploymentStatus.Unregistered",
@@ -210,7 +210,7 @@
         "request": {
             "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.UpdateParticipantGroup",
             "apiVersion": "1.3",
-            "groupId": "d18dbbf6-9543-41cc-93d9-a3ab3ec596ab",
+            "groupId": "285ff5e7-3df6-406e-acae-7e87ea9afb20",
             "group": [
                 {
                     "participantId": "00000000-0000-0000-0000-000000000003",

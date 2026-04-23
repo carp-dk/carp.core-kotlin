@@ -33,6 +33,7 @@ import studies = dk.cachet.carp.studies
 import StudyStatus = studies.application.StudyStatus
 import AssignedParticipantRoles = studies.application.users.AssignedParticipantRoles
 import Participant = studies.application.users.Participant
+import ParticipantGroupRepresentation = studies.application.users.ParticipantGroupRepresentation
 import ParticipantGroupStatus = studies.application.users.ParticipantGroupStatus
 import participantIds = studies.application.users.participantIds
 import participantRoles = studies.application.users.participantRoles
@@ -103,7 +104,7 @@ describe( "carp-studies-core", () => {
                 groupId,
                 KtSet.fromJsSet( assignedRoles ),
                 studyId,
-                "Test group"
+                new ParticipantGroupRepresentation( "Test group" )
             )
 
             const serializer = RecruitmentServiceRequest.Serializer

@@ -9,6 +9,7 @@ import dk.cachet.carp.common.infrastructure.services.ApplicationServiceRequest
 import dk.cachet.carp.studies.application.RecruitmentService
 import dk.cachet.carp.studies.application.users.AssignedParticipantRoles
 import dk.cachet.carp.studies.application.users.Participant
+import dk.cachet.carp.studies.application.users.ParticipantGroupRepresentation
 import dk.cachet.carp.studies.application.users.ParticipantGroupStatus
 import kotlinx.serialization.*
 import kotlin.js.JsExport
@@ -79,7 +80,7 @@ sealed class RecruitmentServiceRequest<out TReturn> : ApplicationServiceRequest<
         val groupId: UUID,
         val group: Set<AssignedParticipantRoles>,
         val studyId: UUID,
-        val name: String? = null
+        val representation: ParticipantGroupRepresentation = ParticipantGroupRepresentation.Default
     ) : RecruitmentServiceRequest<ParticipantGroupStatus>()
     {
         override fun getResponseSerializer() = serializer<ParticipantGroupStatus>()
@@ -89,7 +90,7 @@ sealed class RecruitmentServiceRequest<out TReturn> : ApplicationServiceRequest<
     data class UpdateParticipantGroup(
         val groupId: UUID,
         val group: Set<AssignedParticipantRoles>? = null,
-        val name: String? = null
+        val representation: ParticipantGroupRepresentation? = null
     ) : RecruitmentServiceRequest<ParticipantGroupStatus>()
     {
         override fun getResponseSerializer() = serializer<ParticipantGroupStatus>()
