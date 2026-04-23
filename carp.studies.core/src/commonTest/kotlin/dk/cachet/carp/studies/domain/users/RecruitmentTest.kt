@@ -112,7 +112,7 @@ class RecruitmentTest
 
         val roleAssignment = setOf( AssignedParticipantRoles( participant.id, AssignedTo.All ) )
         val group = recruitment.addParticipantGroup( roleAssignment, groupName )
-        assertEquals( Recruitment.Event.ParticipantGroupAdded( roleAssignment ), recruitment.consumeEvents().last() )
+        assertEquals( Recruitment.Event.ParticipantGroupAdded( roleAssignment, groupName ), recruitment.consumeEvents().last() )
         assertEquals(
             participant.id,
             recruitment.participantGroups[ group.id ]?.participantIds?.singleOrNull()

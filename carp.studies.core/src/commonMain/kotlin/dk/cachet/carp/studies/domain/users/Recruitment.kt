@@ -201,7 +201,7 @@ class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: I
         group.addParticipants( participants )
 
         _participantGroups[ group.id ] = group
-        event( Event.ParticipantGroupAdded( participants, null ) )
+        event( Event.ParticipantGroupAdded( participants, name ) )
 
         return group
     }
