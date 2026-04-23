@@ -36,6 +36,16 @@ class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: I
             val participants: Set<AssignedParticipantRoles>,
             val representation: ParticipantGroupRepresentation = ParticipantGroupRepresentation.Default
         ) : Event()
+
+        /**
+         * Indicates the participant group with [groupId] was updated.
+         * A `null` value means no change; otherwise, the value is set.
+         */
+        data class ParticipantGroupUpdated(
+            val groupId: UUID,
+            val participants: Set<AssignedParticipantRoles>? = null,
+            val representation: ParticipantGroupRepresentation? = null
+        ) : Event()
     }
 
 
@@ -230,6 +240,7 @@ class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: I
             { "Participant group with ID \"$groupId\" does not exist." }
 
         val newRoleAssignments = participants != null && group.roleAssignments != participants
+        val newRepresentation = representation != null && group.representation != representation
         if ( newRoleAssignments )
         {
             check( !group.isDeployed )
@@ -242,7 +253,15 @@ class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: I
             group.replaceParticipants( participants )
         }
 
-        if ( representation != null ) group.representation = representation
+        if ( newRepresentation ) group.representation = representation
+        if ( newRoleAssignments || newRepresentation )
+            event(
+                Event.ParticipantGroupUpdated(
+                    groupId,
+                    participants.takeIf { newRoleAssignments },
+                    representation.takeIf { newRepresentation }
+                )
+            )
     }
 
     /**
