@@ -8,6 +8,7 @@ import dk.cachet.carp.deployments.application.users.StudyInvitation
 import dk.cachet.carp.protocols.domain.StudyProtocol
 import dk.cachet.carp.protocols.infrastructure.test.createComplexProtocol
 import dk.cachet.carp.studies.application.users.AssignedParticipantRoles
+import dk.cachet.carp.studies.application.users.ParticipantGroupRepresentation
 import dk.cachet.carp.studies.domain.users.Recruitment
 
 
@@ -39,7 +40,7 @@ fun createComplexRecruitment(): Recruitment
         val roleAssignment = AssignedParticipantRoles( participant.id, AssignedTo.All )
         val name = "Test Group"
         lockInStudy( createComplexProtocol().getSnapshot(), StudyInvitation( "Test" ) )
-        addParticipantGroup( setOf( roleAssignment ), name )
+        addParticipantGroup( setOf( roleAssignment ), ParticipantGroupRepresentation( name ) )
     }
 
     return recruitment

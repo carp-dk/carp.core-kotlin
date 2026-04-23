@@ -14,7 +14,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "86cfd915-fc98-4a2c-833f-aceb843be1c2",
+                    "ownerId": "e8bceac5-cf32-4d20-b7ad-dc6b4f8249f8",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -30,7 +30,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "86cfd915-fc98-4a2c-833f-aceb843be1c2",
+                    "ownerId": "e8bceac5-cf32-4d20-b7ad-dc6b4f8249f8",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -38,10 +38,10 @@
                         "name": "Test"
                     },
                     "protocolSnapshot": {
-                        "id": "b949a528-7ef0-4c0c-8af8-d6a2c9695470",
-                        "createdOn": "2026-02-13T09:25:42.530284Z",
+                        "id": "541c546d-0c6a-4a9c-bc0f-a76780530c50",
+                        "createdOn": "2026-04-30T17:27:25.444161Z",
                         "version": 0,
-                        "ownerId": "bd22a480-4e22-4b47-81d8-39006efc1829",
+                        "ownerId": "c99e300d-37f5-4dc0-ac58-7f209885b987",
                         "name": "Test protocol",
                         "primaryDevices": [
                             {
@@ -84,27 +84,9 @@
     {
         "outcome": "Succeeded",
         "request": {
-            "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.AddParticipantByEmailAddress",
-            "apiVersion": "1.3",
-            "studyId": "00000000-0000-0000-0000-000000000001",
-            "email": "test2@test.com"
-        },
-        "precedingEvents": [],
-        "publishedEvents": [],
-        "response": {
-            "accountIdentity": {
-                "__type": "dk.cachet.carp.common.application.users.EmailAccountIdentity",
-                "emailAddress": "test2@test.com"
-            },
-            "id": "00000000-0000-0000-0000-000000000003"
-        }
-    },
-    {
-        "outcome": "Succeeded",
-        "request": {
             "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.CreateParticipantGroup",
             "apiVersion": "1.3",
-            "groupId": "09fd3467-f0e9-4085-9d92-1a50b4aa63f1",
+            "groupId": "c196f978-7c1f-4696-94cc-d0c4220c71d5",
             "group": [
                 {
                     "participantId": "00000000-0000-0000-0000-000000000002",
@@ -114,13 +96,15 @@
                 }
             ],
             "studyId": "00000000-0000-0000-0000-000000000001",
-            "name": "Initial name"
+            "representation": {
+                "name": "Initial name"
+            }
         },
         "precedingEvents": [],
         "publishedEvents": [],
         "response": {
             "__type": "dk.cachet.carp.studies.application.users.ParticipantGroupStatus.Staged",
-            "id": "09fd3467-f0e9-4085-9d92-1a50b4aa63f1",
+            "id": "c196f978-7c1f-4696-94cc-d0c4220c71d5",
             "participants": [
                 {
                     "accountIdentity": {
@@ -144,9 +128,27 @@
     {
         "outcome": "Succeeded",
         "request": {
+            "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.AddParticipantByEmailAddress",
+            "apiVersion": "1.3",
+            "studyId": "00000000-0000-0000-0000-000000000001",
+            "email": "test2@test.com"
+        },
+        "precedingEvents": [],
+        "publishedEvents": [],
+        "response": {
+            "accountIdentity": {
+                "__type": "dk.cachet.carp.common.application.users.EmailAccountIdentity",
+                "emailAddress": "test2@test.com"
+            },
+            "id": "00000000-0000-0000-0000-000000000003"
+        }
+    },
+    {
+        "outcome": "Succeeded",
+        "request": {
             "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.UpdateParticipantGroup",
             "apiVersion": "1.3",
-            "groupId": "09fd3467-f0e9-4085-9d92-1a50b4aa63f1",
+            "groupId": "c196f978-7c1f-4696-94cc-d0c4220c71d5",
             "group": [
                 {
                     "participantId": "00000000-0000-0000-0000-000000000003",
@@ -155,13 +157,15 @@
                     }
                 }
             ],
-            "name": "Updated name"
+            "representation": {
+                "name": "Updated name"
+            }
         },
         "precedingEvents": [],
         "publishedEvents": [],
         "response": {
             "__type": "dk.cachet.carp.studies.application.users.ParticipantGroupStatus.Staged",
-            "id": "09fd3467-f0e9-4085-9d92-1a50b4aa63f1",
+            "id": "c196f978-7c1f-4696-94cc-d0c4220c71d5",
             "participants": [
                 {
                     "accountIdentity": {
@@ -180,6 +184,40 @@
                 }
             ],
             "name": "Updated name"
+        }
+    },
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.UpdateParticipantGroup",
+            "apiVersion": "1.3",
+            "groupId": "c196f978-7c1f-4696-94cc-d0c4220c71d5",
+            "representation": {
+                "name": null
+            }
+        },
+        "precedingEvents": [],
+        "publishedEvents": [],
+        "response": {
+            "__type": "dk.cachet.carp.studies.application.users.ParticipantGroupStatus.Staged",
+            "id": "c196f978-7c1f-4696-94cc-d0c4220c71d5",
+            "participants": [
+                {
+                    "accountIdentity": {
+                        "__type": "dk.cachet.carp.common.application.users.EmailAccountIdentity",
+                        "emailAddress": "test2@test.com"
+                    },
+                    "id": "00000000-0000-0000-0000-000000000003"
+                }
+            ],
+            "assignedParticipantRoles": [
+                {
+                    "participantId": "00000000-0000-0000-0000-000000000003",
+                    "assignedRoles": {
+                        "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                    }
+                }
+            ]
         }
     }
 ]

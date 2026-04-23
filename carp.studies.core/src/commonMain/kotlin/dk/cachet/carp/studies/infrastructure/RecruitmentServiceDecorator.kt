@@ -9,6 +9,7 @@ import dk.cachet.carp.common.infrastructure.services.Command
 import dk.cachet.carp.studies.application.RecruitmentService
 import dk.cachet.carp.studies.application.users.AssignedParticipantRoles
 import dk.cachet.carp.studies.application.users.Participant
+import dk.cachet.carp.studies.application.users.ParticipantGroupRepresentation
 
 
 class RecruitmentServiceDecorator(
@@ -50,14 +51,14 @@ class RecruitmentServiceDecorator(
         groupId: UUID,
         group: Set<AssignedParticipantRoles>,
         studyId: UUID,
-        name: String?
-    ) = invoke( RecruitmentServiceRequest.CreateParticipantGroup( groupId, group, studyId, name ) )
+        representation: ParticipantGroupRepresentation
+    ) = invoke( RecruitmentServiceRequest.CreateParticipantGroup( groupId, group, studyId, representation ) )
 
     override suspend fun updateParticipantGroup(
         groupId: UUID,
         group: Set<AssignedParticipantRoles>?,
-        name: String?
-    ) = invoke( RecruitmentServiceRequest.UpdateParticipantGroup( groupId, group, name ) )
+        representation: ParticipantGroupRepresentation?
+    ) = invoke( RecruitmentServiceRequest.UpdateParticipantGroup( groupId, group, representation ) )
 
     override suspend fun inviteParticipantGroup( groupId: UUID ) =
         invoke( RecruitmentServiceRequest.InviteParticipantGroup( groupId ) )
@@ -83,9 +84,9 @@ object RecruitmentServiceInvoker : ApplicationServiceInvoker<RecruitmentService,
             is RecruitmentServiceRequest.InviteNewParticipantGroup ->
                 service.inviteNewParticipantGroup( studyId, group )
             is RecruitmentServiceRequest.CreateParticipantGroup ->
-                service.createParticipantGroup(groupId, group, studyId, name )
+                service.createParticipantGroup( groupId, group, studyId, representation )
             is RecruitmentServiceRequest.UpdateParticipantGroup ->
-                service.updateParticipantGroup( groupId, group, name )
+                service.updateParticipantGroup( groupId, group, representation )
             is RecruitmentServiceRequest.InviteParticipantGroup -> service.inviteParticipantGroup( groupId )
             is RecruitmentServiceRequest.GetParticipantGroupStatusList ->
                 service.getParticipantGroupStatusList( studyId )

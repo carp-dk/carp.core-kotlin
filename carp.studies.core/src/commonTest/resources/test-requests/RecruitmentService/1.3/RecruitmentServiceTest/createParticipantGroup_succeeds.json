@@ -14,7 +14,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "e242263c-66e6-4a41-ba28-743fcc893ac5",
+                    "ownerId": "4f98c8f2-4e5c-4857-b155-d61ef25474e4",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -30,7 +30,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "e242263c-66e6-4a41-ba28-743fcc893ac5",
+                    "ownerId": "4f98c8f2-4e5c-4857-b155-d61ef25474e4",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -38,10 +38,10 @@
                         "name": "Test"
                     },
                     "protocolSnapshot": {
-                        "id": "536b7f87-100c-4fae-9f34-b0ef7445f812",
-                        "createdOn": "2025-12-18T18:25:02.696394200Z",
+                        "id": "5ecc3a83-d81e-45fa-859d-a0d4ebb42b07",
+                        "createdOn": "2026-04-09T13:43:20.851926Z",
                         "version": 0,
-                        "ownerId": "71fdb370-7db7-4509-b52d-5972ec342d28",
+                        "ownerId": "4cbea443-3b1a-44c2-b819-b73d5cddd687",
                         "name": "Test protocol",
                         "primaryDevices": [
                             {
@@ -86,7 +86,7 @@
         "request": {
             "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.CreateParticipantGroup",
             "apiVersion": "1.3",
-            "groupId": "65ba4a06-c874-43de-b8a5-bcf956cb4765",
+            "groupId": "7fd649c7-7da5-466c-9046-ac40a488ec41",
             "group": [
                 {
                     "participantId": "00000000-0000-0000-0000-000000000002",
@@ -96,13 +96,15 @@
                 }
             ],
             "studyId": "00000000-0000-0000-0000-000000000001",
-            "name": "Test Group"
+            "representation": {
+                "name": "Test Group"
+            }
         },
         "precedingEvents": [],
         "publishedEvents": [],
         "response": {
             "__type": "dk.cachet.carp.studies.application.users.ParticipantGroupStatus.Staged",
-            "id": "65ba4a06-c874-43de-b8a5-bcf956cb4765",
+            "id": "7fd649c7-7da5-466c-9046-ac40a488ec41",
             "participants": [
                 {
                     "accountIdentity": {

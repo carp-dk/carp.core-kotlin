@@ -9,6 +9,7 @@ import dk.cachet.carp.deployments.application.users.StudyInvitation
 import dk.cachet.carp.protocols.infrastructure.test.createEmptyProtocol
 import dk.cachet.carp.protocols.infrastructure.test.createSinglePrimaryDeviceProtocol
 import dk.cachet.carp.studies.application.users.AssignedParticipantRoles
+import dk.cachet.carp.studies.application.users.ParticipantGroupRepresentation
 import dk.cachet.carp.studies.application.users.ParticipantGroupStatus
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Clock
@@ -105,19 +106,19 @@ class RecruitmentTest
         val recruitment = Recruitment( studyId )
         val participant = recruitment.addParticipant( participantEmail )
         val protocol = createEmptyProtocol()
-        val groupName = "Test Group"
+        val groupRepresentation = ParticipantGroupRepresentation( "Test Group" )
         recruitment.lockInStudy( protocol.getSnapshot(), StudyInvitation( "Some study" ) )
 
         assertTrue( recruitment.getStatus() is RecruitmentStatus.ReadyForDeployment )
 
         val roleAssignment = setOf( AssignedParticipantRoles( participant.id, AssignedTo.All ) )
-        val group = recruitment.addParticipantGroup( roleAssignment, groupName )
-        assertEquals( Recruitment.Event.ParticipantGroupAdded( roleAssignment, groupName ), recruitment.consumeEvents().last() )
+        val group = recruitment.addParticipantGroup( roleAssignment, groupRepresentation )
+        assertEquals( Recruitment.Event.ParticipantGroupAdded( roleAssignment, groupRepresentation ), recruitment.consumeEvents().last() )
         assertEquals(
             participant.id,
             recruitment.participantGroups[ group.id ]?.participantIds?.singleOrNull()
         )
-        assertEquals( groupName, group.name )
+        assertEquals( groupRepresentation.name, group.name )
     }
 
     @Test
@@ -147,37 +148,44 @@ class RecruitmentTest
     }
 
     @Test
-    fun updateParticipantGroup_updates_assignments_and_name_for_staged_group()
+    fun updateParticipantGroup_updates_assignments_and_representation_for_staged_group()
     {
         val recruitment = createReadyRecruitment()
         val participant1 = recruitment.addParticipant( participantEmail )
         val participant2 = recruitment.addParticipant( EmailAddress( "test2@test.com" ) )
         val group = recruitment.addParticipantGroup(
             setOf( AssignedParticipantRoles( participant1.id, AssignedTo.All ) ),
-            "Initial name"
+            ParticipantGroupRepresentation( "Initial name" )
         )
 
         val updatedAssignments = setOf( AssignedParticipantRoles( participant2.id, AssignedTo.All ) )
-        recruitment.updateParticipantGroup( group.id, updatedAssignments, "Updated name" )
+        val updatedGroupRepresentation = ParticipantGroupRepresentation( "Updated name" )
+        recruitment.updateParticipantGroup( group.id, updatedAssignments, updatedGroupRepresentation )
 
-        assertEquals( "Updated name", group.name )
+        assertEquals( updatedGroupRepresentation.name, group.name )
         assertEquals( updatedAssignments, group.roleAssignments )
     }
 
     @Test
-    fun updateParticipantGroup_allows_name_change_after_deployed()
+    fun updateParticipantGroup_allows_representation_change_after_deployed()
     {
         val recruitment = createReadyRecruitment()
         val participant = recruitment.addParticipant( participantEmail )
         val group = recruitment.addParticipantGroup(
             setOf( AssignedParticipantRoles( participant.id, AssignedTo.All ) ),
-            "Initial name"
+            ParticipantGroupRepresentation( "Initial name" )
         )
         group.markAsDeployed()
 
-        recruitment.updateParticipantGroup( group.id, name = "Renamed after deploy" )
+        val updatedGroupRepresentation = ParticipantGroupRepresentation( "Renamed after deploy" )
+        recruitment.updateParticipantGroup( group.id, representation = updatedGroupRepresentation )
 
-        assertEquals( "Renamed after deploy", group.name )
+        assertEquals( updatedGroupRepresentation.name, group.name )
+        assertEquals( updatedGroupRepresentation, ParticipantGroupRepresentation( group.name ) )
+        val removedGroupRepresentation = ParticipantGroupRepresentation( null )
+        recruitment.updateParticipantGroup( group.id, representation = removedGroupRepresentation )
+
+        assertEquals( removedGroupRepresentation, ParticipantGroupRepresentation( group.name ) )
     }
 
     @Test
@@ -205,7 +213,13 @@ class RecruitmentTest
 
         val unknownId = UUID.randomUUID()
         assertFailsWith<IllegalArgumentException>
-            { recruitment.updateParticipantGroup( unknownId, assignments, "Updated name" ) }
+            {
+                recruitment.updateParticipantGroup(
+                    unknownId,
+                    assignments,
+                    ParticipantGroupRepresentation( "Updated name" )
+                )
+            }
     }
 
     @Test
@@ -243,7 +257,7 @@ class RecruitmentTest
         val participant = recruitment.addParticipant( participantEmail )
         val group = recruitment.addParticipantGroup(
             setOf( AssignedParticipantRoles( participant.id, AssignedTo.All ) ),
-            "Test Group"
+            ParticipantGroupRepresentation( "Test Group" )
         )
         group.markAsDeployed()
         val deploymentStatus =
@@ -299,8 +313,8 @@ class RecruitmentTest
         val participant2 = recruitment.addParticipant( EmailAddress( "test2@test.com" ) )
         val assignedRoles1 = AssignedParticipantRoles( participant1.id, AssignedTo.All )
         val assignedRoles2 = AssignedParticipantRoles( participant2.id, AssignedTo.All )
-        val deployedGroup = recruitment.addParticipantGroup( setOf( assignedRoles1 ), "Deployed Group" )
-        val stagedGroup = recruitment.addParticipantGroup( setOf( assignedRoles2 ), "Staged Group" )
+        val deployedGroup = recruitment.addParticipantGroup( setOf( assignedRoles1 ), ParticipantGroupRepresentation( "Deployed Group" ) )
+        val stagedGroup = recruitment.addParticipantGroup( setOf( assignedRoles2 ), ParticipantGroupRepresentation( "Staged Group" ) )
         deployedGroup.markAsDeployed()
         val deploymentStatus =
             StudyDeploymentStatus.DeployingDevices(

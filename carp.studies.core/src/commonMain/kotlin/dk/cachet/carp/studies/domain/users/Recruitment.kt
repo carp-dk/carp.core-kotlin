@@ -15,6 +15,7 @@ import dk.cachet.carp.deployments.application.users.StudyInvitation
 import dk.cachet.carp.protocols.application.StudyProtocolSnapshot
 import dk.cachet.carp.studies.application.users.AssignedParticipantRoles
 import dk.cachet.carp.studies.application.users.Participant
+import dk.cachet.carp.studies.application.users.ParticipantGroupRepresentation
 import dk.cachet.carp.studies.application.users.ParticipantGroupStatus
 import dk.cachet.carp.studies.application.users.participantIds
 import kotlinx.datetime.Clock
@@ -33,7 +34,7 @@ class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: I
         data class ParticipantAdded( val participant: Participant ) : Event()
         data class ParticipantGroupAdded(
             val participants: Set<AssignedParticipantRoles>,
-            val name: String? = null
+            val representation: ParticipantGroupRepresentation = ParticipantGroupRepresentation.Default
         ) : Event()
     }
 
@@ -179,7 +180,9 @@ class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: I
     private val _participantGroups: MutableMap<UUID, StagedParticipantGroup> = mutableMapOf()
 
     /**
-     * Create and add the [participants] with assigned roles to a participant group, and optionally give it a [name].
+     * Create and add the [participants] with assigned roles to a participant group, and give it a [representation].
+     *
+     * [ParticipantGroupRepresentation.Default] is used when no [representation] is passed.
      *
      * @throws IllegalArgumentException when:
      *  - one or more of the participants aren't in this recruitment.
@@ -188,7 +191,7 @@ class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: I
      */
     fun addParticipantGroup(
         participants: Set<AssignedParticipantRoles>,
-        name: String? = null,
+        representation: ParticipantGroupRepresentation = ParticipantGroupRepresentation.Default,
         id: UUID = UUID.randomUUID()
     ): StagedParticipantGroup
     {
@@ -197,17 +200,17 @@ class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: I
 
         validateRoleAssignments( status.studyProtocol, participants )
 
-        val group = StagedParticipantGroup( id, name )
+        val group = StagedParticipantGroup( id, representation.name )
         group.addParticipants( participants )
 
         _participantGroups[ group.id ] = group
-        event( Event.ParticipantGroupAdded( participants, name ) )
+        event( Event.ParticipantGroupAdded( participants, representation ) )
 
         return group
     }
 
     /**
-     * Update the [participants] and/or [name] of an existing participant group with the specified [groupId].
+     * Update the [participants] and/or [representation] of an existing participant group with the specified [groupId].
      *
      * @throws IllegalArgumentException when:
      *  - the participant group with [groupId] does not exist.
@@ -220,7 +223,7 @@ class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: I
     fun updateParticipantGroup(
         groupId: UUID,
         participants: Set<AssignedParticipantRoles>? = null,
-        name: String? = null
+        representation: ParticipantGroupRepresentation? = null
     )
     {
         val group = requireNotNull( _participantGroups[ groupId ] )
@@ -239,7 +242,7 @@ class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: I
             group.replaceParticipants( participants )
         }
 
-        if ( name != null ) group.name = name
+        if ( representation != null ) group.name = representation.name
     }
 
     /**

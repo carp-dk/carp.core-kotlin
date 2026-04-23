@@ -13,6 +13,7 @@ import dk.cachet.carp.deployments.application.DeploymentService
 import dk.cachet.carp.deployments.application.StudyDeploymentStatus
 import dk.cachet.carp.studies.application.users.AssignedParticipantRoles
 import dk.cachet.carp.studies.application.users.Participant
+import dk.cachet.carp.studies.application.users.ParticipantGroupRepresentation
 import dk.cachet.carp.studies.application.users.ParticipantGroupStatus
 import dk.cachet.carp.studies.domain.users.ParticipantRepository
 import dk.cachet.carp.studies.domain.users.Recruitment
@@ -168,8 +169,10 @@ class RecruitmentServiceHost(
 
     /**
      * Create a new participant [group] of previously added participants for the study with the given [studyId],
-     * and an optional [name] representing this group, but do not yet send out invitations.
+     * and a [representation] representing this group, but do not yet send out invitations.
      * This is used to create a group of participants which can be deployed at a later time.
+     *
+     * [ParticipantGroupRepresentation.Default] is used when no [representation] is passed.
      *
      * As long as no final study protocol is locked in for the study, a participant group can't be created
      * since participant roles to which participants need to be assigned are unknown.
@@ -183,14 +186,14 @@ class RecruitmentServiceHost(
         groupId: UUID,
         group: Set<AssignedParticipantRoles>,
         studyId: UUID,
-        name: String?
+        representation: ParticipantGroupRepresentation
     ): ParticipantGroupStatus
     {
         val recruitment = getRecruitmentOrThrow( studyId )
         require( participantRepository.getRecruitmentWithParticipantGroup( groupId ) == null )
             { "Participant group with ID \"$groupId\" already exists." }
 
-        val participantGroup = recruitment.addParticipantGroup( group, name, groupId )
+        val participantGroup = recruitment.addParticipantGroup( group, representation, groupId )
         participantRepository.updateRecruitment( recruitment )
 
         return recruitment.getParticipantGroupStatus( participantGroup.id ) {
@@ -201,9 +204,11 @@ class RecruitmentServiceHost(
     /**
      * Update the participant group for the specified [groupId].
      *
-     * Participant assignments can't be changed after the group has been invited; the group name can always be updated.
-     * If [group] is provided, role assignments are updated; unchanged otherwise.
-     * If [name] is provided, the group name is updated; unchanged otherwise.
+     * Participant assignments can't be changed after the group has been invited; the group representation can always
+     * be updated.
+     *
+     * @param group If set, role assignments are updated; unchanged otherwise.
+     * @param representation If set, group representation is updated; unchanged otherwise.
      *
      * @throws IllegalArgumentException when:
      *  - the participant group with [groupId] does not exist
@@ -214,14 +219,14 @@ class RecruitmentServiceHost(
     override suspend fun updateParticipantGroup(
         groupId: UUID,
         group: Set<AssignedParticipantRoles>?,
-        name: String?
+        representation: ParticipantGroupRepresentation?
     ): ParticipantGroupStatus
     {
         val (recruitment, participantGroup) = getRecruitmentWithGroupOrThrow( groupId )
 
-        if ( group != null || name != null )
+        if ( group != null || representation != null )
         {
-            recruitment.updateParticipantGroup( groupId, group, name )
+            recruitment.updateParticipantGroup( groupId, group, representation )
             participantRepository.updateRecruitment( recruitment )
         }
 
