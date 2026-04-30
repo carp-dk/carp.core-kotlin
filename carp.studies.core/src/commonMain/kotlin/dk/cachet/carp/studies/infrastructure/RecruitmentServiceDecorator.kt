@@ -36,16 +36,15 @@ class RecruitmentServiceDecorator(
     @Deprecated(
         "Use CreateParticipantGroup and InviteParticipantGroup instead",
         ReplaceWith(
-            "inviteParticipantGroup( createParticipantGroup( UUID.randomUUID(), group, studyId, name ).id )",
+            "inviteParticipantGroup( createParticipantGroup( UUID.randomUUID(), group, studyId ).id )",
             "dk.cachet.carp.common.application.UUID"
         )
     )
     @Suppress( "DEPRECATION" )
     override suspend fun inviteNewParticipantGroup(
         studyId: UUID,
-        group: Set<AssignedParticipantRoles>,
-        name: String?
-    ) = invoke( RecruitmentServiceRequest.InviteNewParticipantGroup( studyId, group, name ) )
+        group: Set<AssignedParticipantRoles>
+    ) = invoke( RecruitmentServiceRequest.InviteNewParticipantGroup( studyId, group ) )
 
     override suspend fun createParticipantGroup(
         groupId: UUID,
@@ -82,7 +81,7 @@ object RecruitmentServiceInvoker : ApplicationServiceInvoker<RecruitmentService,
             is RecruitmentServiceRequest.GetParticipant -> service.getParticipant( studyId, participantId )
             is RecruitmentServiceRequest.GetParticipants -> service.getParticipants( studyId )
             is RecruitmentServiceRequest.InviteNewParticipantGroup ->
-                service.inviteNewParticipantGroup( studyId, group, name )
+                service.inviteNewParticipantGroup( studyId, group )
             is RecruitmentServiceRequest.CreateParticipantGroup ->
                 service.createParticipantGroup(groupId, group, studyId, name )
             is RecruitmentServiceRequest.UpdateParticipantGroup ->

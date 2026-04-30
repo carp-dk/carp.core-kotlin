@@ -62,10 +62,10 @@ interface RecruitmentService : ApplicationService<RecruitmentService, Recruitmen
 
     /**
      * Create a new participant [group] of previously added participants and instantly send out invitations
-     * to participate in the study with the given [studyId] and an optional [name] representing this group.
+     * to participate in the study with the given [studyId].
      *
-     * In case a group with the same participants and [name] has already been deployed and is still
-     * running (not stopped), the latest status for this group is simply returned.
+     * In case a group with the same participants has already been deployed and is still running (not stopped),
+     * the latest status for this group is simply returned.
      *
      * @throws IllegalArgumentException when:
      *  - a study with [studyId] does not exist
@@ -77,16 +77,12 @@ interface RecruitmentService : ApplicationService<RecruitmentService, Recruitmen
     @Deprecated(
         "Use createParticipantGroup and inviteParticipantGroup instead",
         ReplaceWith(
-            "inviteParticipantGroup( createParticipantGroup( UUID.randomUUID(), group, studyId, name ).id )",
+            "inviteParticipantGroup( createParticipantGroup( UUID.randomUUID(), group, studyId ).id )",
             "dk.cachet.carp.common.application.UUID"
         ),
         level = DeprecationLevel.WARNING
     )
-    suspend fun inviteNewParticipantGroup(
-        studyId: UUID,
-        group: Set<AssignedParticipantRoles>,
-        name: String? = null
-    ): ParticipantGroupStatus
+    suspend fun inviteNewParticipantGroup( studyId: UUID, group: Set<AssignedParticipantRoles> ): ParticipantGroupStatus
 
     /**
      * Create a new participant [group] of previously added participants for the study with the given [studyId],
