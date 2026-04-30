@@ -7,7 +7,7 @@
             "studyId": "00000000-0000-0000-0000-000000000001",
             "group": [
                 {
-                    "participantId": "cda4f8f0-7426-4504-875b-713102ec4b5e",
+                    "participantId": "c0afd2b2-3866-4bb3-91a2-9398ab534e7c",
                     "assignedRoles": {
                         "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
                     }
@@ -21,7 +21,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "0acbddd2-4cf0-420a-b415-9b79f8c5dc44",
+                    "ownerId": "9cbc4ec0-7835-42b5-81ea-fa600436089a",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -37,7 +37,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "0acbddd2-4cf0-420a-b415-9b79f8c5dc44",
+                    "ownerId": "9cbc4ec0-7835-42b5-81ea-fa600436089a",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -45,10 +45,10 @@
                         "name": "Test"
                     },
                     "protocolSnapshot": {
-                        "id": "e34dc238-b7ca-47da-86f9-9a015d7259d2",
-                        "createdOn": "2025-10-16T17:11:09.178986Z",
+                        "id": "68be2095-df9f-4436-ba77-d7f1c464a74d",
+                        "createdOn": "2026-04-30T14:29:43.749909Z",
                         "version": 0,
-                        "ownerId": "9fe7c8e4-d790-4947-88ef-5ee8479e757e",
+                        "ownerId": "9aeb46ff-3a1a-44db-be62-104a63eff648",
                         "name": "Test protocol",
                         "primaryDevices": [
                             {

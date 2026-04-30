@@ -113,10 +113,10 @@ class RecruitmentServiceHost(
 
     /**
      * Create a new participant [group] of previously added participants and instantly send out invitations
-     * to participate in the study with the given [studyId] and an optional [name] representing this group.
+     * to participate in the study with the given [studyId].
      *
-     * In case a group with the same participants and [name] has already been deployed and is still
-     * running (not stopped), the latest status for this group is simply returned.
+     * In case a group with the same participants has already been deployed and is still running (not stopped),
+     * the latest status for this group is simply returned.
      *
      * @throws IllegalArgumentException when:
      *  - a study with [studyId] does not exist
@@ -128,24 +128,23 @@ class RecruitmentServiceHost(
     @Deprecated(
         "Use createParticipantGroup and inviteParticipantGroup instead",
         replaceWith = ReplaceWith(
-            "inviteParticipantGroup( createParticipantGroup( UUID.randomUUID(), group, studyId, name ).id )",
+            "inviteParticipantGroup( createParticipantGroup( UUID.randomUUID(), group, studyId ).id )",
             "dk.cachet.carp.common.application.UUID"
         )
     )
     override suspend fun inviteNewParticipantGroup(
         studyId: UUID,
-        group: Set<AssignedParticipantRoles>,
-        name: String?
+        group: Set<AssignedParticipantRoles>
     ): ParticipantGroupStatus
     {
         val recruitment = getRecruitmentOrThrow( studyId )
         val (protocol, invitations) = recruitment.createInvitations( group )
 
-        // In case the same participants with the same roles have been invited with the same group name before,
+        // In case the same participants with the same roles have been invited before,
         // and that deployment is still running, return the existing group.
         val deployedStatus = recruitment.participantGroups.entries
             .firstOrNull { (_, existingGroup) ->
-                existingGroup.roleAssignments == group && existingGroup.name == name
+                existingGroup.roleAssignments == group
             }
             ?.let { deploymentService.getStudyDeploymentStatus( it.key ) }
         if ( deployedStatus != null && deployedStatus !is StudyDeploymentStatus.Stopped )
@@ -154,7 +153,7 @@ class RecruitmentServiceHost(
         }
 
         // Create participant group and mark as deployed.
-        val participantGroup = recruitment.addParticipantGroup( group, name, uuidFactory.randomUUID() )
+        val participantGroup = recruitment.addParticipantGroup( group, id = uuidFactory.randomUUID() )
         participantGroup.markAsDeployed()
         participantRepository.updateRecruitment( recruitment )
 

@@ -394,16 +394,14 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
     RecruitmentService::inviteNewParticipantGroup to example(
         request = RecruitmentServiceRequest.InviteNewParticipantGroup(
             studyId,
-            setOf( AssignedParticipantRoles( participantId, participantAssignedRoles ) ),
-            deploymentName
+            setOf( AssignedParticipantRoles( participantId, participantAssignedRoles ) )
         ),
         response = ParticipantGroupStatus.Invited(
             deploymentId,
             participants,
             roleAssignment,
             participantGroupInvitedOn,
-            invitedDeploymentStatus,
-            deploymentName
+            invitedDeploymentStatus
         )
     ),
     RecruitmentService::createParticipantGroup to example(

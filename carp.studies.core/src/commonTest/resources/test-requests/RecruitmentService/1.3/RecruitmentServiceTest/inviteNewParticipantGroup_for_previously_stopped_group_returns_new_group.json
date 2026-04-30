@@ -14,7 +14,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "cd232d57-cd94-48fc-8e6f-80843eccef8f",
+                    "ownerId": "c4bad8a4-4d81-460e-b047-30036d8d48cd",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -30,7 +30,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "cd232d57-cd94-48fc-8e6f-80843eccef8f",
+                    "ownerId": "c4bad8a4-4d81-460e-b047-30036d8d48cd",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -38,10 +38,10 @@
                         "name": "Test"
                     },
                     "protocolSnapshot": {
-                        "id": "4e7cf29a-5e1c-4fc5-b203-b17b70f8b767",
-                        "createdOn": "2025-10-16T17:11:09.217206Z",
+                        "id": "f3b033fd-5a99-453d-a01d-824a9baab814",
+                        "createdOn": "2026-04-30T14:29:43.816685Z",
                         "version": 0,
-                        "ownerId": "578c9ac6-b621-4ea8-aa00-0f0542a79aea",
+                        "ownerId": "82bdd74d-c1dc-4276-8b23-0572ce83f57b",
                         "name": "Test protocol",
                         "primaryDevices": [
                             {
