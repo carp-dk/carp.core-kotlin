@@ -15,7 +15,7 @@ class ParticipantGroupStatusTest
 {
     private val now = Clock.System.now()
     private val deploymentId = UUID.randomUUID()
-    private val participantGroupName = "Test group"
+    private val participantGroupRepresentation = ParticipantGroupRepresentation( "Test group" )
     private val deviceStatusList = emptyList<DeviceDeploymentStatus>()
     private val participants: Set<Participant> = emptySet()
     private val roleAssignments: Set<AssignedParticipantRoles> = emptySet()
@@ -31,7 +31,7 @@ class ParticipantGroupStatusTest
             participants,
             roleAssignments,
             deployingDevices,
-            participantGroupName
+            participantGroupRepresentation
         )
         assertTrue( status is ParticipantGroupStatus.Invited )
     }
@@ -46,7 +46,7 @@ class ParticipantGroupStatusTest
             participants,
             roleAssignments,
             redeployingDevices,
-            participantGroupName
+            participantGroupRepresentation
         )
         assertTrue( status is ParticipantGroupStatus.Running )
     }

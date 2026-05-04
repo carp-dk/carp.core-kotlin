@@ -14,7 +14,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "0bb1339d-feb2-44b0-9e06-b4b7635bcfec",
+                    "ownerId": "27686ff1-63cf-430b-bf3b-13fc7e50a7cf",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -30,7 +30,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "0bb1339d-feb2-44b0-9e06-b4b7635bcfec",
+                    "ownerId": "27686ff1-63cf-430b-bf3b-13fc7e50a7cf",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -38,10 +38,10 @@
                         "name": "Test"
                     },
                     "protocolSnapshot": {
-                        "id": "1295cc0e-a011-4920-a2a6-2c9afe63bdb1",
-                        "createdOn": "2025-12-18T18:52:48.688103900Z",
+                        "id": "efce64a2-acf4-44f6-bbc2-deb5e53902e0",
+                        "createdOn": "2026-04-23T19:15:02.513729Z",
                         "version": 0,
-                        "ownerId": "ce91aa3a-8611-41ed-97e5-d61d8f3921c9",
+                        "ownerId": "72bcb7a9-e842-460b-b16a-fad9ddbd486c",
                         "name": "Test protocol",
                         "primaryDevices": [
                             {
@@ -86,7 +86,7 @@
         "request": {
             "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.CreateParticipantGroup",
             "apiVersion": "1.3",
-            "groupId": "aabbbf59-b803-4471-9bfc-8e6bc68d89ff",
+            "groupId": "431c77b2-b357-43b3-9a11-80591c16c010",
             "group": [
                 {
                     "participantId": "00000000-0000-0000-0000-000000000002",
@@ -104,7 +104,7 @@
         "publishedEvents": [],
         "response": {
             "__type": "dk.cachet.carp.studies.application.users.ParticipantGroupStatus.Staged",
-            "id": "aabbbf59-b803-4471-9bfc-8e6bc68d89ff",
+            "id": "431c77b2-b357-43b3-9a11-80591c16c010",
             "participants": [
                 {
                     "accountIdentity": {
@@ -122,7 +122,9 @@
                     }
                 }
             ],
-            "name": "Test group"
+            "representation": {
+                "name": "Test group"
+            }
         }
     },
     {
@@ -130,13 +132,13 @@
         "request": {
             "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.InviteParticipantGroup",
             "apiVersion": "1.3",
-            "groupId": "aabbbf59-b803-4471-9bfc-8e6bc68d89ff"
+            "groupId": "431c77b2-b357-43b3-9a11-80591c16c010"
         },
         "precedingEvents": [],
         "publishedEvents": [],
         "response": {
             "__type": "dk.cachet.carp.studies.application.users.ParticipantGroupStatus.Invited",
-            "id": "aabbbf59-b803-4471-9bfc-8e6bc68d89ff",
+            "id": "431c77b2-b357-43b3-9a11-80591c16c010",
             "participants": [
                 {
                     "accountIdentity": {
@@ -158,7 +160,7 @@
             "studyDeploymentStatus": {
                 "__type": "dk.cachet.carp.deployments.application.StudyDeploymentStatus.Invited",
                 "createdOn": "1970-01-01T00:00:00Z",
-                "studyDeploymentId": "aabbbf59-b803-4471-9bfc-8e6bc68d89ff",
+                "studyDeploymentId": "431c77b2-b357-43b3-9a11-80591c16c010",
                 "deviceStatusList": [
                     {
                         "__type": "dk.cachet.carp.deployments.application.DeviceDeploymentStatus.Unregistered",
@@ -189,7 +191,9 @@
                 ],
                 "startedOn": null
             },
-            "name": "Test group"
+            "representation": {
+                "name": "Test group"
+            }
         }
     }
 ]

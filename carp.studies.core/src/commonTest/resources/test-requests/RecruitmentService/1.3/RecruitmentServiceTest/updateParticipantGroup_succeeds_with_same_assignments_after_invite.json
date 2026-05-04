@@ -14,7 +14,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "cd13755c-b733-430f-b2f1-092edb94df0d",
+                    "ownerId": "8101ad3b-37a8-4cc6-87d0-8f22e4f18ad9",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -30,7 +30,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "cd13755c-b733-430f-b2f1-092edb94df0d",
+                    "ownerId": "8101ad3b-37a8-4cc6-87d0-8f22e4f18ad9",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -38,10 +38,10 @@
                         "name": "Test"
                     },
                     "protocolSnapshot": {
-                        "id": "462a91d3-d0ab-417a-9eb0-1569f692b623",
-                        "createdOn": "2026-04-15T11:59:17.775067Z",
+                        "id": "f8905746-9bd8-4bb0-ac69-8aba12ea5c5f",
+                        "createdOn": "2026-04-23T19:15:02.454392Z",
                         "version": 0,
-                        "ownerId": "8b14c627-dd74-4b09-8c32-e86103878501",
+                        "ownerId": "b3ebae77-7c6c-4984-81db-d9e9b2d33585",
                         "name": "Test protocol",
                         "primaryDevices": [
                             {
@@ -86,7 +86,7 @@
         "request": {
             "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.CreateParticipantGroup",
             "apiVersion": "1.3",
-            "groupId": "f2f75a7e-9aef-47c3-b860-5768dbe20dea",
+            "groupId": "13371ec3-855c-4329-9f3e-d068ab217176",
             "group": [
                 {
                     "participantId": "00000000-0000-0000-0000-000000000002",
@@ -104,7 +104,7 @@
         "publishedEvents": [],
         "response": {
             "__type": "dk.cachet.carp.studies.application.users.ParticipantGroupStatus.Staged",
-            "id": "f2f75a7e-9aef-47c3-b860-5768dbe20dea",
+            "id": "13371ec3-855c-4329-9f3e-d068ab217176",
             "participants": [
                 {
                     "accountIdentity": {
@@ -122,7 +122,9 @@
                     }
                 }
             ],
-            "name": "Group name"
+            "representation": {
+                "name": "Group name"
+            }
         }
     },
     {
@@ -130,13 +132,13 @@
         "request": {
             "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.InviteParticipantGroup",
             "apiVersion": "1.3",
-            "groupId": "f2f75a7e-9aef-47c3-b860-5768dbe20dea"
+            "groupId": "13371ec3-855c-4329-9f3e-d068ab217176"
         },
         "precedingEvents": [],
         "publishedEvents": [],
         "response": {
             "__type": "dk.cachet.carp.studies.application.users.ParticipantGroupStatus.Invited",
-            "id": "f2f75a7e-9aef-47c3-b860-5768dbe20dea",
+            "id": "13371ec3-855c-4329-9f3e-d068ab217176",
             "participants": [
                 {
                     "accountIdentity": {
@@ -158,7 +160,7 @@
             "studyDeploymentStatus": {
                 "__type": "dk.cachet.carp.deployments.application.StudyDeploymentStatus.Invited",
                 "createdOn": "1970-01-01T00:00:00Z",
-                "studyDeploymentId": "f2f75a7e-9aef-47c3-b860-5768dbe20dea",
+                "studyDeploymentId": "13371ec3-855c-4329-9f3e-d068ab217176",
                 "deviceStatusList": [
                     {
                         "__type": "dk.cachet.carp.deployments.application.DeviceDeploymentStatus.Unregistered",
@@ -189,7 +191,9 @@
                 ],
                 "startedOn": null
             },
-            "name": "Group name"
+            "representation": {
+                "name": "Group name"
+            }
         }
     },
     {
@@ -197,7 +201,7 @@
         "request": {
             "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.UpdateParticipantGroup",
             "apiVersion": "1.3",
-            "groupId": "f2f75a7e-9aef-47c3-b860-5768dbe20dea",
+            "groupId": "13371ec3-855c-4329-9f3e-d068ab217176",
             "group": [
                 {
                     "participantId": "00000000-0000-0000-0000-000000000002",
@@ -211,7 +215,7 @@
         "publishedEvents": [],
         "response": {
             "__type": "dk.cachet.carp.studies.application.users.ParticipantGroupStatus.Invited",
-            "id": "f2f75a7e-9aef-47c3-b860-5768dbe20dea",
+            "id": "13371ec3-855c-4329-9f3e-d068ab217176",
             "participants": [
                 {
                     "accountIdentity": {
@@ -233,7 +237,7 @@
             "studyDeploymentStatus": {
                 "__type": "dk.cachet.carp.deployments.application.StudyDeploymentStatus.Invited",
                 "createdOn": "1970-01-01T00:00:00Z",
-                "studyDeploymentId": "f2f75a7e-9aef-47c3-b860-5768dbe20dea",
+                "studyDeploymentId": "13371ec3-855c-4329-9f3e-d068ab217176",
                 "deviceStatusList": [
                     {
                         "__type": "dk.cachet.carp.deployments.application.DeviceDeploymentStatus.Unregistered",
@@ -264,7 +268,9 @@
                 ],
                 "startedOn": null
             },
-            "name": "Group name"
+            "representation": {
+                "name": "Group name"
+            }
         }
     }
 ]

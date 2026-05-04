@@ -14,7 +14,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "e8bceac5-cf32-4d20-b7ad-dc6b4f8249f8",
+                    "ownerId": "e30f91d4-b71a-4990-a674-aea85d0162a7",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -30,7 +30,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "e8bceac5-cf32-4d20-b7ad-dc6b4f8249f8",
+                    "ownerId": "e30f91d4-b71a-4990-a674-aea85d0162a7",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -38,10 +38,10 @@
                         "name": "Test"
                     },
                     "protocolSnapshot": {
-                        "id": "541c546d-0c6a-4a9c-bc0f-a76780530c50",
-                        "createdOn": "2026-04-30T17:27:25.444161Z",
+                        "id": "057efcb5-5efd-4adc-991c-f9315408b5a0",
+                        "createdOn": "2026-05-04T15:42:38.984943Z",
                         "version": 0,
-                        "ownerId": "c99e300d-37f5-4dc0-ac58-7f209885b987",
+                        "ownerId": "a9c05d54-7f0c-4b8b-b2cd-6f125683065f",
                         "name": "Test protocol",
                         "primaryDevices": [
                             {
@@ -86,7 +86,7 @@
         "request": {
             "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.CreateParticipantGroup",
             "apiVersion": "1.3",
-            "groupId": "c196f978-7c1f-4696-94cc-d0c4220c71d5",
+            "groupId": "bb60296a-0cdc-4ba7-a483-1db68334d155",
             "group": [
                 {
                     "participantId": "00000000-0000-0000-0000-000000000002",
@@ -104,7 +104,7 @@
         "publishedEvents": [],
         "response": {
             "__type": "dk.cachet.carp.studies.application.users.ParticipantGroupStatus.Staged",
-            "id": "c196f978-7c1f-4696-94cc-d0c4220c71d5",
+            "id": "bb60296a-0cdc-4ba7-a483-1db68334d155",
             "participants": [
                 {
                     "accountIdentity": {
@@ -122,7 +122,9 @@
                     }
                 }
             ],
-            "name": "Initial name"
+            "representation": {
+                "name": "Initial name"
+            }
         }
     },
     {
@@ -148,7 +150,7 @@
         "request": {
             "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.UpdateParticipantGroup",
             "apiVersion": "1.3",
-            "groupId": "c196f978-7c1f-4696-94cc-d0c4220c71d5",
+            "groupId": "bb60296a-0cdc-4ba7-a483-1db68334d155",
             "group": [
                 {
                     "participantId": "00000000-0000-0000-0000-000000000003",
@@ -165,7 +167,7 @@
         "publishedEvents": [],
         "response": {
             "__type": "dk.cachet.carp.studies.application.users.ParticipantGroupStatus.Staged",
-            "id": "c196f978-7c1f-4696-94cc-d0c4220c71d5",
+            "id": "bb60296a-0cdc-4ba7-a483-1db68334d155",
             "participants": [
                 {
                     "accountIdentity": {
@@ -183,7 +185,9 @@
                     }
                 }
             ],
-            "name": "Updated name"
+            "representation": {
+                "name": "Updated name"
+            }
         }
     },
     {
@@ -191,7 +195,7 @@
         "request": {
             "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.UpdateParticipantGroup",
             "apiVersion": "1.3",
-            "groupId": "c196f978-7c1f-4696-94cc-d0c4220c71d5",
+            "groupId": "bb60296a-0cdc-4ba7-a483-1db68334d155",
             "representation": {
                 "name": null
             }
@@ -200,7 +204,7 @@
         "publishedEvents": [],
         "response": {
             "__type": "dk.cachet.carp.studies.application.users.ParticipantGroupStatus.Staged",
-            "id": "c196f978-7c1f-4696-94cc-d0c4220c71d5",
+            "id": "bb60296a-0cdc-4ba7-a483-1db68334d155",
             "participants": [
                 {
                     "accountIdentity": {
@@ -217,7 +221,10 @@
                         "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
                     }
                 }
-            ]
+            ],
+            "representation": {
+                "name": null
+            }
         }
     }
 ]

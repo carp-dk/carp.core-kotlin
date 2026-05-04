@@ -130,7 +130,8 @@ describe( "carp-studies-core", () => {
             const participants = KtSet.fromJsSet( new Set( participantsSet ) )
             const roleAssignmentsSet = new Set( [ new AssignedParticipantRoles( participantsSet[0].id, AssignedTo.All ) ] )
             const roleAssignments = KtSet.fromJsSet( roleAssignmentsSet )
-            const group = new ParticipantGroupStatus.Invited( deploymentId, participants, roleAssignments, now, deploymentStatus, "Test group" )
+            const groupRepresentation = new ParticipantGroupRepresentation( "Test group" )
+            const group = new ParticipantGroupStatus.Invited( deploymentId, participants, roleAssignments, now, deploymentStatus, groupRepresentation )
 
             const serializer = getSerializer( ParticipantGroupStatus )
             const serialized = JSON.encodeToString( serializer, group )

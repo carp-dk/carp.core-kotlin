@@ -71,7 +71,7 @@ private val major1Minor2To3Migration =
             }
 
             // Remove newly added fields from `ParticipantGroupStatus`.
-            json.remove( "name" )
+            json.remove( "representation" )
             json.remove( "assignedParticipantRoles" )
         }
 

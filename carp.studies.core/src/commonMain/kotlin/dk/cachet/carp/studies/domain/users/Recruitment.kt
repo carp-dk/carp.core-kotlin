@@ -200,7 +200,7 @@ class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: I
 
         validateRoleAssignments( status.studyProtocol, participants )
 
-        val group = StagedParticipantGroup( id, representation.name )
+        val group = StagedParticipantGroup( id, representation )
         group.addParticipants( participants )
 
         _participantGroups[ group.id ] = group
@@ -242,7 +242,7 @@ class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: I
             group.replaceParticipants( participants )
         }
 
-        if ( representation != null ) group.name = representation.name
+        if ( representation != null ) group.representation = representation
     }
 
     /**
@@ -272,7 +272,7 @@ class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: I
                 id = group.id,
                 participants = getParticipantsFor( group ),
                 assignedParticipantRoles = group.roleAssignments.toSet(),
-                name = group.name
+                representation = group.representation
             )
         }
 
@@ -290,7 +290,7 @@ class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: I
                 getParticipantsFor( group ),
                 group.roleAssignments.toSet(),
                 deploymentStatus,
-                group.name
+                group.representation
             )
         }
 

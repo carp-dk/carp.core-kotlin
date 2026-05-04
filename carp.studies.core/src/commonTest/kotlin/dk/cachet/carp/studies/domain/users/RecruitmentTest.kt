@@ -118,7 +118,7 @@ class RecruitmentTest
             participant.id,
             recruitment.participantGroups[ group.id ]?.participantIds?.singleOrNull()
         )
-        assertEquals( groupRepresentation.name, group.name )
+        assertEquals( groupRepresentation, group.representation )
     }
 
     @Test
@@ -162,7 +162,7 @@ class RecruitmentTest
         val updatedGroupRepresentation = ParticipantGroupRepresentation( "Updated name" )
         recruitment.updateParticipantGroup( group.id, updatedAssignments, updatedGroupRepresentation )
 
-        assertEquals( updatedGroupRepresentation.name, group.name )
+        assertEquals( updatedGroupRepresentation, group.representation )
         assertEquals( updatedAssignments, group.roleAssignments )
     }
 
@@ -180,12 +180,11 @@ class RecruitmentTest
         val updatedGroupRepresentation = ParticipantGroupRepresentation( "Renamed after deploy" )
         recruitment.updateParticipantGroup( group.id, representation = updatedGroupRepresentation )
 
-        assertEquals( updatedGroupRepresentation.name, group.name )
-        assertEquals( updatedGroupRepresentation, ParticipantGroupRepresentation( group.name ) )
+        assertEquals( updatedGroupRepresentation, group.representation )
         val removedGroupRepresentation = ParticipantGroupRepresentation( null )
         recruitment.updateParticipantGroup( group.id, representation = removedGroupRepresentation )
 
-        assertEquals( removedGroupRepresentation, ParticipantGroupRepresentation( group.name ) )
+        assertEquals( removedGroupRepresentation, group.representation )
     }
 
     @Test
@@ -280,7 +279,7 @@ class RecruitmentTest
             group.roleAssignments,
             deploymentStatus.createdOn,
             deploymentStatus,
-            group.name
+            group.representation
         )
         assertEquals( expected, groupStatus )
     }
@@ -301,7 +300,7 @@ class RecruitmentTest
             group.id,
             setOf( participant ),
             group.roleAssignments,
-            group.name
+            group.representation
         )
         assertEquals( expected, status )
     }
@@ -337,7 +336,7 @@ class RecruitmentTest
                 stagedGroup.id,
                 setOf( participant2 ),
                 stagedGroup.roleAssignments,
-                stagedGroup.name
+                stagedGroup.representation
             ),
             ParticipantGroupStatus.Invited(
                 deployedGroup.id,
@@ -345,7 +344,7 @@ class RecruitmentTest
                 deployedGroup.roleAssignments,
                 deploymentStatus.createdOn,
                 deploymentStatus,
-                deployedGroup.name
+                deployedGroup.representation
             )
         )
         assertEquals( expectedStatuses, statuses.toSet() )
