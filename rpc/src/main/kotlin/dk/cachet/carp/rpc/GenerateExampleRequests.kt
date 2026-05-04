@@ -415,7 +415,7 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
             deploymentId,
             participants,
             setOf( AssignedParticipantRoles( participantId, participantAssignedRoles ) ),
-            deploymentName
+            ParticipantGroupRepresentation( deploymentName )
         )
     ),
     RecruitmentService::updateParticipantGroup to example(
@@ -428,7 +428,7 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
             deploymentId,
             updatedParticipants,
             updatedRoleAssignment,
-            updatedDeploymentName
+            ParticipantGroupRepresentation( updatedDeploymentName )
         )
     ),
     RecruitmentService::inviteParticipantGroup to example(
@@ -439,7 +439,7 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
             roleAssignment,
             participantGroupInvitedOn,
             invitedDeploymentStatus,
-            deploymentName
+            ParticipantGroupRepresentation( deploymentName )
         )
     ),
     RecruitmentService::getParticipantGroupStatusList to example(
@@ -452,7 +452,7 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
                 participantGroupInvitedOn,
                 runningDeploymentStatus,
                 runningDeploymentStatus.startedOn,
-                deploymentName
+                ParticipantGroupRepresentation( deploymentName )
             )
         )
     ),
@@ -466,7 +466,7 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
             stoppedDeploymentStatus,
             stoppedDeploymentStatus.startedOn,
             stoppedDeploymentStatus.stoppedOn,
-            deploymentName
+            ParticipantGroupRepresentation( deploymentName )
         )
     ),
 

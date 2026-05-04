@@ -14,7 +14,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "c4bad8a4-4d81-460e-b047-30036d8d48cd",
+                    "ownerId": "51f032e4-c537-499b-a314-6e8382533d2e",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -30,7 +30,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "c4bad8a4-4d81-460e-b047-30036d8d48cd",
+                    "ownerId": "51f032e4-c537-499b-a314-6e8382533d2e",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -38,10 +38,10 @@
                         "name": "Test"
                     },
                     "protocolSnapshot": {
-                        "id": "f3b033fd-5a99-453d-a01d-824a9baab814",
-                        "createdOn": "2026-04-30T14:29:43.816685Z",
+                        "id": "16d1c4cc-d9d3-4d8a-88e9-363106e7791b",
+                        "createdOn": "2026-05-04T10:48:02.290481Z",
                         "version": 0,
-                        "ownerId": "82bdd74d-c1dc-4276-8b23-0572ce83f57b",
+                        "ownerId": "cf847c0a-2c6a-436d-a90c-2b4f3de8602a",
                         "name": "Test protocol",
                         "primaryDevices": [
                             {
@@ -152,6 +152,9 @@
                     }
                 ],
                 "startedOn": null
+            },
+            "representation": {
+                "name": null
             }
         }
     },
@@ -222,7 +225,10 @@
                 "stoppedOn": "1970-01-01T00:00:00Z"
             },
             "startedOn": null,
-            "stoppedOn": "1970-01-01T00:00:00Z"
+            "stoppedOn": "1970-01-01T00:00:00Z",
+            "representation": {
+                "name": null
+            }
         }
     },
     {
@@ -296,6 +302,9 @@
                     }
                 ],
                 "startedOn": null
+            },
+            "representation": {
+                "name": null
             }
         }
     }

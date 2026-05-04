@@ -14,7 +14,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "58e9f2a7-426a-4f6a-be54-9187416b8986",
+                    "ownerId": "448df0b1-c303-460b-a24c-38ad9ff444ba",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -30,7 +30,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "58e9f2a7-426a-4f6a-be54-9187416b8986",
+                    "ownerId": "448df0b1-c303-460b-a24c-38ad9ff444ba",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -38,10 +38,10 @@
                         "name": "Test"
                     },
                     "protocolSnapshot": {
-                        "id": "c1dd2825-307f-4f07-b701-33a74e8b0894",
-                        "createdOn": "2026-04-30T14:29:43.680418Z",
+                        "id": "ec893aff-6d16-465c-a1ed-eedc6e9862c3",
+                        "createdOn": "2026-05-04T10:48:02.140259Z",
                         "version": 0,
-                        "ownerId": "c7beaca8-2dbc-4bb3-9e10-f5f509e310ff",
+                        "ownerId": "04b1f665-cf8f-4db9-90f8-d3b58a545b5d",
                         "name": "Test protocol",
                         "primaryDevices": [
                             {
@@ -152,6 +152,9 @@
                     }
                 ],
                 "startedOn": null
+            },
+            "representation": {
+                "name": null
             }
         }
     },
@@ -219,6 +222,9 @@
                         }
                     ],
                     "startedOn": null
+                },
+                "representation": {
+                    "name": null
                 }
             }
         ]

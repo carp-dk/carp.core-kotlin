@@ -238,7 +238,7 @@ interface RecruitmentServiceTest
 
         assertTrue( groupStatus is ParticipantGroupStatus.Staged )
         assertEquals( participant, groupStatus.participants.single() )
-        assertEquals( groupRepresentation.name, groupStatus.name )
+        assertEquals( groupRepresentation, groupStatus.representation )
     }
 
     @Test
@@ -310,7 +310,7 @@ interface RecruitmentServiceTest
 
         val participantGroups = recruitmentService.getParticipantGroupStatusList( studyId )
         assertNotEquals( participantGroups[ 0 ].id, participantGroups[ 1 ].id )
-        assertEquals( participantGroups[ 0 ].name, participantGroups[ 1 ].name )
+        assertEquals( participantGroups[ 0 ].representation, participantGroups[ 1 ].representation )
     }
 
     @Test
@@ -347,11 +347,11 @@ interface RecruitmentServiceTest
             id = groupId,
             participants = setOf( updatedParticipant ),
             assignedParticipantRoles = updatedAssignments,
-            name = updatedGroupRepresentation.name
+            representation = updatedGroupRepresentation
         )
         assertEquals( expectedStatus, updatedStatus )
         assertTrue( clearedRepresentationStatus is ParticipantGroupStatus.Staged )
-        assertEquals( null, clearedRepresentationStatus.name )
+        assertEquals( ParticipantGroupRepresentation( null ), clearedRepresentationStatus.representation )
     }
 
     @Test
@@ -374,7 +374,7 @@ interface RecruitmentServiceTest
         val updatedStatus = recruitmentService.updateParticipantGroup( groupId, updatedAssignments )
 
         assertTrue( updatedStatus is ParticipantGroupStatus.Staged )
-        assertEquals( groupName, updatedStatus.name )
+        assertEquals( ParticipantGroupRepresentation( groupName ), updatedStatus.representation )
         assertEquals( setOf( participant ), updatedStatus.participants )
         assertEquals( updatedAssignments, updatedStatus.assignedParticipantRoles )
     }
@@ -394,9 +394,9 @@ interface RecruitmentServiceTest
             recruitmentService.updateParticipantGroup( groupStatus.id, representation = ParticipantGroupRepresentation( null ) )
 
         assertTrue( updatedStatus is ParticipantGroupStatus.Invited )
-        assertEquals( updatedGroupRepresentation.name, updatedStatus.name )
+        assertEquals( updatedGroupRepresentation, updatedStatus.representation )
         assertTrue( clearedRepresentationStatus is ParticipantGroupStatus.Invited )
-        assertEquals( null, clearedRepresentationStatus.name )
+        assertEquals( ParticipantGroupRepresentation( null ), clearedRepresentationStatus.representation )
     }
 
     @Test
@@ -471,7 +471,7 @@ interface RecruitmentServiceTest
 
         assertTrue( updatedStatus is ParticipantGroupStatus.Invited )
         assertEquals( assignments, updatedStatus.assignedParticipantRoles )
-        assertEquals( groupName, updatedStatus.name )
+        assertEquals( ParticipantGroupRepresentation( groupName ), updatedStatus.representation )
     }
 
     @Test
@@ -486,7 +486,7 @@ interface RecruitmentServiceTest
         val updatedStatus = recruitmentService.updateParticipantGroup( groupStatus.id )
 
         assertTrue( updatedStatus is ParticipantGroupStatus.Staged )
-        assertEquals( groupName, updatedStatus.name )
+        assertEquals( ParticipantGroupRepresentation( groupName ), updatedStatus.representation )
         assertEquals( setOf( participant ), updatedStatus.participants )
         assertEquals( assignments, updatedStatus.assignedParticipantRoles )
     }

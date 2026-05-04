@@ -14,14 +14,6 @@
   ],
   "$defs": {
     "ApiVersion": { "const": "1.3" },
-    "ParticipantGroupRepresentation": {
-      "type": "object",
-      "properties": {
-        "name": { "type": [ "string", "null" ] }
-      },
-      "required": [ "name" ],
-      "additionalProperties": false
-    },
     "AddParticipantByEmailAddress": {
       "$anchor": "AddParticipantByEmailAddress",
       "type": "object",
@@ -117,7 +109,7 @@
           "items": { "$ref": "../users/AssignedParticipantRoles.json" }
         },
         "studyId": { "type": "string", "format": "uuid" },
-        "representation": { "$ref": "#/$defs/ParticipantGroupRepresentation" }
+        "representation": { "$ref": "../users/ParticipantGroupRepresentation.json" }
       },
       "required": [ "__type", "apiVersion", "groupId", "group", "studyId" ],
       "additionalProperties": false,
@@ -139,7 +131,7 @@
         },
         "representation": {
           "anyOf": [
-            { "$ref": "#/$defs/ParticipantGroupRepresentation" },
+            { "$ref": "../users/ParticipantGroupRepresentation.json" },
             { "type": "null" }
           ]
         }

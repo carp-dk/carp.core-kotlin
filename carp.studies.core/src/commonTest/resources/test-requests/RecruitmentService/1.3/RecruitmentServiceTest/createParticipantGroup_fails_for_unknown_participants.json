@@ -4,16 +4,16 @@
         "request": {
             "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.CreateParticipantGroup",
             "apiVersion": "1.3",
-            "studyId": "00000000-0000-0000-0000-000000000001",
-            "groupId": "e7f202d4-dd7a-4e11-bf39-08c01c90746f",
+            "groupId": "ee379523-7cba-4253-b8e2-b54503ebc370",
             "group": [
                 {
-                    "participantId": "e5642231-ea5b-4a64-991a-4a1614150e80",
+                    "participantId": "0057c67a-c5c0-45a8-b526-cf287abb2fac",
                     "assignedRoles": {
                         "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
                     }
                 }
-            ]
+            ],
+            "studyId": "00000000-0000-0000-0000-000000000001"
         },
         "precedingEvents": [
             {
@@ -22,7 +22,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "9c4f073e-16a3-4193-a942-f32278896bfc",
+                    "ownerId": "6d921a29-786f-421b-92e2-d66b1a4c3646",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -38,7 +38,7 @@
                 "apiVersion": "1.1",
                 "study": {
                     "studyId": "00000000-0000-0000-0000-000000000001",
-                    "ownerId": "9c4f073e-16a3-4193-a942-f32278896bfc",
+                    "ownerId": "6d921a29-786f-421b-92e2-d66b1a4c3646",
                     "name": "Test",
                     "createdOn": "1970-01-01T00:00:00Z",
                     "description": null,
@@ -46,10 +46,10 @@
                         "name": "Test"
                     },
                     "protocolSnapshot": {
-                        "id": "ac6477bb-7d0f-4901-9a0a-9ef113fadc36",
-                        "createdOn": "2025-11-01T13:13:07.864034Z",
+                        "id": "a2f0ccbe-96e0-4789-b073-5d59cb9aa265",
+                        "createdOn": "2026-04-23T19:15:02.397862Z",
                         "version": 0,
-                        "ownerId": "00f13222-6476-463d-bc82-195d162e77c0",
+                        "ownerId": "1961da31-0af6-41ba-ad30-c02fe7f5ff51",
                         "name": "Test protocol",
                         "primaryDevices": [
                             {

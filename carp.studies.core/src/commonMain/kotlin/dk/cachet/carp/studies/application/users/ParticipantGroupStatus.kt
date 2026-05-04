@@ -26,9 +26,9 @@ sealed class ParticipantGroupStatus
     abstract val id: UUID
 
     /**
-     * An optional name to represent the group of participants.
+     * Optional metadata representing the group of participants.
      */
-    abstract val name: String?
+    abstract val representation: ParticipantGroupRepresentation
 
     /**
      * The participants that are part of this group.
@@ -49,7 +49,8 @@ sealed class ParticipantGroupStatus
         override val id: UUID,
         override val participants: Set<Participant>,
         override val assignedParticipantRoles: Set<AssignedParticipantRoles>,
-        override val name: String? = null
+        @Required
+        override val representation: ParticipantGroupRepresentation = ParticipantGroupRepresentation.Default
     ) : ParticipantGroupStatus()
 
 
@@ -68,7 +69,7 @@ sealed class ParticipantGroupStatus
                 participants: Set<Participant>,
                 roleAssignment: Set<AssignedParticipantRoles>,
                 deploymentStatus: StudyDeploymentStatus,
-                name: String?
+                representation: ParticipantGroupRepresentation
             ): InDeployment
             {
                 val id = deploymentStatus.studyDeploymentId
@@ -82,11 +83,19 @@ sealed class ParticipantGroupStatus
                         // If deployment was ready at one point (`startedOn`), consider the study 'Running'.
                         if ( startedOn == null )
                         {
-                            Invited( id, participants, roleAssignment, createdOn, deploymentStatus, name )
+                            Invited( id, participants, roleAssignment, createdOn, deploymentStatus, representation )
                         }
                         else
                         {
-                            Running( id, participants, roleAssignment, createdOn, deploymentStatus, startedOn, name )
+                            Running(
+                                id,
+                                participants,
+                                roleAssignment,
+                                createdOn,
+                                deploymentStatus,
+                                startedOn,
+                                representation
+                            )
                         }
                     is StudyDeploymentStatus.Running ->
                         Running(
@@ -96,7 +105,7 @@ sealed class ParticipantGroupStatus
                             createdOn,
                             deploymentStatus,
                             checkNotNull( startedOn ),
-                            name
+                            representation
                         )
                     is StudyDeploymentStatus.Stopped ->
                         Stopped(
@@ -107,7 +116,7 @@ sealed class ParticipantGroupStatus
                             deploymentStatus,
                             startedOn,
                             deploymentStatus.stoppedOn,
-                            name
+                            representation
                         )
                 }
             }
@@ -136,7 +145,8 @@ sealed class ParticipantGroupStatus
         override val assignedParticipantRoles: Set<AssignedParticipantRoles>,
         override val invitedOn: Instant,
         override val studyDeploymentStatus: StudyDeploymentStatus,
-        override val name: String? = null
+        @Required
+        override val representation: ParticipantGroupRepresentation = ParticipantGroupRepresentation.Default
     ) : InDeployment()
 
     /**
@@ -154,7 +164,8 @@ sealed class ParticipantGroupStatus
          * The time when the study deployment started running, i.e., when all devices were deployed for the first time.
          */
         val startedOn: Instant,
-        override val name: String? = null
+        @Required
+        override val representation: ParticipantGroupRepresentation = ParticipantGroupRepresentation.Default
     ) : InDeployment()
 
     /**
@@ -177,6 +188,7 @@ sealed class ParticipantGroupStatus
          * The time when the study deployment was stopped.
          */
         val stoppedOn: Instant,
-        override val name: String? = null
+        @Required
+        override val representation: ParticipantGroupRepresentation = ParticipantGroupRepresentation.Default
     ) : InDeployment()
 }

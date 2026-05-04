@@ -2,6 +2,7 @@ package dk.cachet.carp.studies.domain.users
 
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.studies.application.users.AssignedParticipantRoles
+import dk.cachet.carp.studies.application.users.ParticipantGroupRepresentation
 import dk.cachet.carp.studies.application.users.participantIds
 import kotlinx.serialization.*
 
@@ -17,9 +18,9 @@ data class StagedParticipantGroup(
      */
     val id: UUID = UUID.randomUUID(),
     /**
-     * An optional name to represent the group of participants.
+     * Optional metadata representing the group of participants.
      */
-    var name: String? = null,
+    var representation: ParticipantGroupRepresentation = ParticipantGroupRepresentation.Default,
 )
 {
     private val _roleAssignments: MutableSet<AssignedParticipantRoles> = mutableSetOf()
