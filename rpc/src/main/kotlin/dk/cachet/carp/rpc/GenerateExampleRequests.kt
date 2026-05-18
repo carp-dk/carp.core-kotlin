@@ -380,17 +380,22 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
             Participant( UsernameAccountIdentity( "John Doe" ), UUID( "d7436912-ac9f-4f9b-a29e-376af8a0fbb4" ) )
         )
     ),
-    RecruitmentService::inviteNewParticipantGroup to example(
-        request = RecruitmentServiceRequest.InviteNewParticipantGroup(
-            studyId,
-            setOf( AssignedParticipantRoles( participantId, participantAssignedRoles ) )
-        ),
-        response = ParticipantGroupStatus.Invited(
-            deploymentId,
-            participants,
-            roleAssignment,
-            participantGroupInvitedOn,
-            invitedDeploymentStatus
+    @Suppress( "DEPRECATION" )
+    Pair(
+        RecruitmentService::inviteNewParticipantGroup,
+        example(
+            request =
+                RecruitmentServiceRequest.InviteNewParticipantGroup(
+                    studyId,
+                    setOf( AssignedParticipantRoles( participantId, participantAssignedRoles ) )
+                ),
+            response = ParticipantGroupStatus.Invited(
+                deploymentId,
+                participants,
+                roleAssignment,
+                participantGroupInvitedOn,
+                invitedDeploymentStatus
+            )
         )
     ),
     RecruitmentService::createParticipantGroup to example(
