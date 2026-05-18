@@ -12,7 +12,6 @@ import dk.cachet.carp.common.infrastructure.test.StubTaskConfiguration
 import dk.cachet.carp.common.infrastructure.test.StubTriggerConfiguration
 import dk.cachet.carp.common.infrastructure.test.createTestJSON
 import dk.cachet.carp.deployments.application.PrimaryDeviceDeployment
-import kotlinx.serialization.*
 import kotlin.test.*
 
 

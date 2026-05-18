@@ -7,7 +7,6 @@ import dk.cachet.carp.common.infrastructure.test.StubDataPoint
 import dk.cachet.carp.common.infrastructure.test.makeUnknown
 import dk.cachet.carp.data.application.Measurement
 import dk.cachet.carp.data.application.MeasurementSerializer
-import kotlinx.serialization.encodeToString
 import kotlin.test.*
 
 

@@ -3,7 +3,6 @@ package dk.cachet.carp.deployments.infrastructure
 import dk.cachet.carp.common.application.ApplicationData
 import dk.cachet.carp.common.infrastructure.serialization.JSON
 import dk.cachet.carp.deployments.application.users.StudyInvitation
-import kotlinx.serialization.*
 import kotlin.test.*
 
 

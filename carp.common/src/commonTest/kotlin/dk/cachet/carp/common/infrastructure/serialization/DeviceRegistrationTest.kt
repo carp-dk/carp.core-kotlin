@@ -4,7 +4,6 @@ import dk.cachet.carp.common.application.ApplicationData
 import dk.cachet.carp.common.application.devices.DefaultDeviceRegistration
 import dk.cachet.carp.common.application.devices.DeviceRegistration
 import dk.cachet.carp.common.infrastructure.test.makeUnknown
-import kotlinx.serialization.*
 import kotlin.test.*
 
 

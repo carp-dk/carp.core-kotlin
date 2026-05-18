@@ -3,7 +3,6 @@ package dk.cachet.carp.protocols.infrastructure
 import dk.cachet.carp.common.infrastructure.serialization.JSON
 import dk.cachet.carp.protocols.application.ProtocolVersion
 import kotlinx.datetime.Clock
-import kotlinx.serialization.*
 import kotlin.test.*
 
 
