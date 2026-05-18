@@ -7,7 +7,6 @@ import dk.cachet.carp.common.application.users.ExpectedParticipantData
 import dk.cachet.carp.common.application.users.ParticipantAttribute
 import dk.cachet.carp.common.application.users.ParticipantRole
 import dk.cachet.carp.common.infrastructure.test.createTestJSON
-import kotlinx.serialization.*
 import kotlin.test.*
 
 

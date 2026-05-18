@@ -4,7 +4,6 @@ import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.application.users.AssignedTo
 import dk.cachet.carp.common.infrastructure.serialization.JSON
 import dk.cachet.carp.studies.application.users.AssignedParticipantRoles
-import kotlinx.serialization.*
 import kotlin.test.*
 
 

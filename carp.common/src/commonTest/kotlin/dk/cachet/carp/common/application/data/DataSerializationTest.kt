@@ -7,8 +7,6 @@ import dk.cachet.carp.common.infrastructure.test.StubDataTypes
 import dk.cachet.carp.common.infrastructure.test.createTestJSON
 import dk.cachet.carp.common.infrastructure.test.makeUnknown
 import kotlinx.serialization.PolymorphicSerializer
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import kotlin.test.*
 
 
