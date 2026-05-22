@@ -3,7 +3,6 @@ declare module "@cachet/kotlin-kotlin-stdlib"
     namespace $_$
     {
         type Long = bigint
-        function toLong( number: number ): Long
 
         class Pair<K, V>
         {
@@ -64,8 +63,6 @@ declare module "@cachet/kotlin-kotlin-stdlib"
             ih_1: Duration
         }
         function Companion_getInstance_20(): DurationCompanion
-        function _Duration___get_inWholeMilliseconds__impl__msfiry(duration: Duration): Long
-        function _Duration___get_inWholeMicroseconds__impl__8oe8vv(duration: Duration): Long
     }
 
     namespace kotlin

@@ -40,11 +40,10 @@ describe( "kotlin", () => {
     } )
 
     describe( "Long", () => {
-        it( "toLong and back toNumber equals", () => {
+        it( "toLong returns bigint", () => {
             const answer = toLong( 42 )
-            const answerAsNumber: Number = answer.toNumber()
 
-            expect( answerAsNumber ).equals( 42 )
+            expect( answer ).equals( BigInt( 42 ) )
         } )
     } )
 
@@ -136,17 +135,15 @@ describe( "kotlin", () => {
     describe( "Duration", () => {
         it( "parseIsoString succeeds", () => {
             const oneSeconds = Duration.parseIsoString( "PT1S" )
-            expect( oneSeconds.inWholeMilliseconds ).equals( 1000 )
+            expect( typeof oneSeconds ).equals( "bigint" )
         } )
 
         it( "ZERO and INFINITE succeeds", () => {
             const zero = Duration.ZERO
-            expect( zero.inWholeMilliseconds ).equals( 0 )
-            expect( zero.inWholeMicroseconds ).equals( 0 )
+            expect( zero ).equals( 0n )
 
             const infinite = Duration.INFINITE
-            expect( infinite.inWholeMilliseconds ).equals( -1 )
-            expect( infinite.inWholeMicroseconds ).equals( -1 )
+            expect( typeof infinite ).equals( "bigint" )
         } )
     } )
 } )

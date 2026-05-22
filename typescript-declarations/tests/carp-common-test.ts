@@ -97,7 +97,7 @@ describe( "carp-common", () => {
     describe( "IntervalSamplingConfiguration", () => {
         it( "can construct", () => {
             const config = new IntervalSamplingConfiguration( Duration.parseIsoString( "PT1S" ) )
-            expect( config.interval.inWholeMilliseconds ).equals( 1000 )
+            expect( typeof config.interval ).equals( "bigint" )
         } )
     } )
 } )

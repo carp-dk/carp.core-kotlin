@@ -6,11 +6,8 @@ import extend from "@cachet/kotlin-kotlin-stdlib"
 export namespace kotlinExport
 {
     export type Nullable<T> = T | null | undefined
-    export interface Long
-    {
-        toNumber(): number
-    }
-    export const toLong = (number: number): Long => BigInt( number ) as any as Long
+    export type Long = bigint
+    export const toLong = (number: number): Long => BigInt( number )
     export class Pair<K, V>
     {
         constructor( first: K, second: V ) {
@@ -53,17 +50,13 @@ export namespace kotlinExport.collections
 }
 export namespace kotlinExport.time
 {
-    export interface Duration
-    {
-        get inWholeMilliseconds(): number
-        get inWholeMicroseconds(): number
-    }
+    export type Duration = bigint
     export namespace Duration
     {
         export const Companion: any = extend.$_$.Companion_getInstance_20()
-        export const parseIsoString = (isoDuration: string): Duration => Companion.kh( isoDuration ) as Duration
-        export const ZERO: Duration = Companion.hh_1 as Duration
-        export const INFINITE: Duration = Companion.ih_1 as Duration
+        export const parseIsoString: (isoDuration: string) => Duration = Companion.kh
+        export const ZERO: Duration = Companion.hh_1
+        export const INFINITE: Duration = Companion.ih_1
     }
 }
 
@@ -96,24 +89,6 @@ declare module "@cachet/kotlin-kotlin-stdlib"
 
 
 // Implement base interfaces in internal types.
-(BigInt.prototype as any).toNumber = function(): number { return Number( this.valueOf() ); };
-const infiniteDuration = kotlinExport.time.Duration.INFINITE
-Object.defineProperty( BigInt.prototype, "inWholeMilliseconds", {
-    get: function inWholeMilliseconds()
-    {
-        if ( this.valueOf() === infiniteDuration ) return -1
-
-        return Number( extend.$_$._Duration___get_inWholeMilliseconds__impl__msfiry( this.valueOf() ) );
-    }
-} );
-Object.defineProperty( BigInt.prototype, "inWholeMicroseconds", {
-    get: function inWholeMicroseconds()
-    {
-        if ( this.valueOf() === infiniteDuration ) return -1
-
-        return Number( extend.$_$._Duration___get_inWholeMicroseconds__impl__8oe8vv( this.valueOf() ) );
-    }
-} );
 extend.$_$.EmptyList.prototype.contains = function<T>( value: T ): boolean { return false; }
 extend.$_$.EmptyList.prototype.size = function<T>(): number { return 0; }
 extend.$_$.EmptyList.prototype.toArray = function<T>(): T[] { return []; }
