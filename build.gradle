@@ -98,6 +98,8 @@ configure( subprojects - devOpsModules ) {
             binaries.executable() // Export JS/TypeScript files.
             compilerOptions {
                 freeCompilerArgs.add('-Xes-long-as-bigint')
+                // Allow Kotlin Long in @JsExport declarations; Long is emitted as JavaScript BigInt.
+                freeCompilerArgs.add('-XXLanguage:+JsAllowLongInExportedDeclarations')
             }
             browser()
             generateTypeScriptDefinitions()

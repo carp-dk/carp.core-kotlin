@@ -6,7 +6,13 @@ import extend from "@cachet/kotlin-kotlin-stdlib"
 export namespace kotlinExport
 {
     export type Nullable<T> = T | null | undefined
+    /**
+     * @deprecated Use bigint directly.
+     */
     export type Long = bigint
+    /**
+     * @deprecated Use BigInt(number) directly.
+     */
     export const toLong = (number: number): Long => BigInt( number )
     export class Pair<K, V>
     {
