@@ -10,13 +10,13 @@ export namespace kotlinExport
     {
         toNumber(): number
     }
-    export const toLong: (number: number) => Long = extend.$_$.toLong
+    export const toLong = (number: number): Long => BigInt( number ) as any as Long
     export class Pair<K, V>
     {
         constructor( first: K, second: V ) {
             let kotlinPair = new extend.$_$.Pair( first, second );
-            kotlinPair.first = kotlinPair.me_1;
-            kotlinPair.second = kotlinPair.ne_1;
+            kotlinPair.first = kotlinPair.od_1;
+            kotlinPair.second = kotlinPair.pd_1;
             return kotlinPair;
         }
         get first(): K { return this.first; }
@@ -61,9 +61,9 @@ export namespace kotlinExport.time
     export namespace Duration
     {
         export const Companion: any = extend.$_$.Companion_getInstance_20()
-        export const parseIsoString: (isoDuration: string) => Duration = Companion.ii
-        export const ZERO: Duration = Companion.fi_1
-        export const INFINITE: Duration = Companion.gi_1
+        export const parseIsoString = (isoDuration: string): Duration => Companion.kh( isoDuration ) as Duration
+        export const ZERO: Duration = Companion.hh_1 as Duration
+        export const INFINITE: Duration = Companion.ih_1 as Duration
     }
 }
 
@@ -73,12 +73,6 @@ declare module "@cachet/kotlin-kotlin-stdlib"
 {
     namespace $_$
     {
-        abstract class Long implements kotlinExport.Long
-        {
-            toNumber(): number
-            inWholeMilliseconds(): number
-            inWholeMicroseconds(): number
-        }
         interface Pair<K, V> extends kotlinExport.Pair<K, V>
         {
             first: K
@@ -102,35 +96,40 @@ declare module "@cachet/kotlin-kotlin-stdlib"
 
 
 // Implement base interfaces in internal types.
-extend.$_$.Long.prototype.toNumber = function(): number { return this.h1(); };
-Object.defineProperty( extend.$_$.Long.prototype, "inWholeMilliseconds", {
+(BigInt.prototype as any).toNumber = function(): number { return Number( this.valueOf() ); };
+const infiniteDuration = kotlinExport.time.Duration.INFINITE
+Object.defineProperty( BigInt.prototype, "inWholeMilliseconds", {
     get: function inWholeMilliseconds()
     {
-        return extend.$_$._Duration___get_inWholeMilliseconds__impl__msfiry(this).toNumber();
+        if ( this.valueOf() === infiniteDuration ) return -1
+
+        return Number( extend.$_$._Duration___get_inWholeMilliseconds__impl__msfiry( this.valueOf() ) );
     }
 } );
-Object.defineProperty( extend.$_$.Long.prototype, "inWholeMicroseconds", {
+Object.defineProperty( BigInt.prototype, "inWholeMicroseconds", {
     get: function inWholeMicroseconds()
     {
-        return extend.$_$._Duration___get_inWholeMicroseconds__impl__8oe8vv(this).toNumber();
+        if ( this.valueOf() === infiniteDuration ) return -1
+
+        return Number( extend.$_$._Duration___get_inWholeMicroseconds__impl__8oe8vv( this.valueOf() ) );
     }
 } );
 extend.$_$.EmptyList.prototype.contains = function<T>( value: T ): boolean { return false; }
 extend.$_$.EmptyList.prototype.size = function<T>(): number { return 0; }
 extend.$_$.EmptyList.prototype.toArray = function<T>(): T[] { return []; }
-extend.$_$.AbstractMutableList.prototype.contains = function<T>( value: T ): boolean { return this.j1( value ); }
-extend.$_$.AbstractMutableList.prototype.size = function<T>(): number { return this.m(); }
+extend.$_$.AbstractMutableList.prototype.contains = function<T>( value: T ): boolean { return this.g2( value ); }
+extend.$_$.AbstractMutableList.prototype.size = function<T>(): number { return this.o(); }
 extend.$_$.EmptySet.prototype.contains = function<T>( value: T ): boolean { return false; }
 extend.$_$.EmptySet.prototype.size = function<T>(): number { return 0; }
 extend.$_$.EmptySet.prototype.toArray = function<T>(): T[] { return []; }
-extend.$_$.HashSet.prototype.contains = function<T>( value: T ): boolean { return this.j1( value ); }
-extend.$_$.HashSet.prototype.size = function<T>(): number { return this.m(); }
-extend.$_$.HashMap.prototype.get = function<K, V>( key: K ): V { return this.g2( key ); }
+extend.$_$.HashSet.prototype.contains = function<T>( value: T ): boolean { return this.g2( value ); }
+extend.$_$.HashSet.prototype.size = function<T>(): number { return this.o(); }
+extend.$_$.HashMap.prototype.get = function<K, V>( key: K ): V { return this.d2( key ); }
 Object.defineProperty( extend.$_$.HashMap.prototype, "keys", {
-    get: function keys() { return this.h2(); }
+    get: function keys() { return this.z1(); }
 } );
 Object.defineProperty( extend.$_$.HashMap.prototype, "values", {
-    get: function values() { return this.i2(); }
+    get: function values() { return this.a2(); }
 } );
 
 

@@ -2,11 +2,7 @@ declare module "@cachet/kotlin-kotlin-stdlib"
 {
     namespace $_$
     {
-        interface Long
-        {
-            // toNumber
-            h1(): number
-        }
+        type Long = bigint
         function toLong( number: number ): Long
 
         class Pair<K, V>
@@ -14,19 +10,19 @@ declare module "@cachet/kotlin-kotlin-stdlib"
             constructor( first: K, second: V )
 
             // first
-            me_1: K
+            od_1: K
 
             // second
-            ne_1: V
+            pd_1: V
         }
 
         interface Collection<T>
         {
             // contains
-            j1( value: T ): boolean
+            g2( value: T ): boolean
 
             // size
-            m(): number
+            o(): number
 
             toArray(): Array<T>
         }
@@ -44,28 +40,28 @@ declare module "@cachet/kotlin-kotlin-stdlib"
         interface Map<K, V>
         {
             // get
-            g2( key: K ): V
+            d2( key: K ): V
 
             // keys
-            h2(): Set<K>
+            z1(): Set<K>
 
             // values
-            i2(): Collection<V>
+            a2(): Collection<V>
         }
         interface HashMap<K, V> extends Map<K, V> {}
         function mapOf_0<K, V>( pairs: Pair<K, V>[] ): Map<K, V>
 
-        interface Duration extends Long {}
+        type Duration = Long
         interface DurationCompanion
         {
             // parseIsoString
-            ii(): Duration
+            kh( isoDuration: string ): Duration
 
             // ZERO
-            fi_1: Duration
+            hh_1: Duration
 
             // INFINITE
-            gi_1: Duration
+            ih_1: Duration
         }
         function Companion_getInstance_20(): DurationCompanion
         function _Duration___get_inWholeMilliseconds__impl__msfiry(duration: Duration): Long

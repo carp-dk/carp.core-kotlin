@@ -48,7 +48,7 @@ import kotlin.time.Duration.Companion.seconds
  */
 fun generateExampleRequests( serviceInfo: ApplicationServiceInfo ): List<ExampleRequest>
 {
-    val requestMethods = serviceInfo.serviceKlass.methods
+    val requestMethods = serviceInfo.serviceKlass.methods.filter { it.kotlinFunction != null }
     val exampleRequests = exampleRequests.filter { it.key.javaMethod?.declaringClass == serviceInfo.serviceKlass }
 
     val json = Json( createDefaultJSON() ) { prettyPrint = true }

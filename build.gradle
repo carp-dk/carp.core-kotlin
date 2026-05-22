@@ -15,7 +15,7 @@ buildscript {
 
         versions = [
             // Kotlin multiplatform versions.
-            kotlin:'2.1.20',
+            kotlin:'2.2.20',
             serialization:'1.8.1',
             coroutines:'1.10.2',
             datetime:'0.6.2',
@@ -96,6 +96,9 @@ configure( subprojects - devOpsModules ) {
         js(IR) {
             moduleName = project.name.replaceAll("\\.", "-") + "-generated"
             binaries.executable() // Export JS/TypeScript files.
+            compilerOptions {
+                freeCompilerArgs.add('-Xes-long-as-bigint')
+            }
             browser()
             generateTypeScriptDefinitions()
         }
