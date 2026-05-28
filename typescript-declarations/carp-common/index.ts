@@ -37,6 +37,17 @@ declare module "@cachet/carp-common-generated"
 
 // Set namespace objects of dependent imported modules, so that they aren't "undefined" at runtime.
 (extend as any).kotlin = kotlinStdLib
+const JSON = extend.dk.cachet.carp.common.infrastructure.serialization.JSON as any
+JSON.encodeToString =
+    function( serializer: any, value: any ): string
+    {
+        return this.e1l( serializer, value );
+    };
+JSON.decodeFromString =
+    function( serializer: any, string: string ): any
+    {
+        return this.f1l( serializer, string );
+    };
 
 
 // Re-export augmented types.

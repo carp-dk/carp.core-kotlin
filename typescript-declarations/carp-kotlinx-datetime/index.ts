@@ -11,7 +11,7 @@ export namespace kotlinx.datetime
     }
     export namespace Clock
     {
-        export const System: Clock = extend.$_$.System_instance
+        export const System: Clock = extend.$_$.b as unknown as Clock
     }
     export interface Instant
     {
@@ -20,22 +20,12 @@ export namespace kotlinx.datetime
 }
 
 
-// Augment internal types to implement facade.
-declare module "@cachet/Kotlin-DateTime-library-kotlinx-datetime"
-{
-    namespace $_$
-    {
-        interface System extends kotlinx.datetime.Clock {}
-        abstract class System implements kotlinx.datetime.Clock {}
-        interface Instant_0 extends kotlinx.datetime.Instant {}
-        abstract class Instant_0 implements kotlinx.datetime.Instant {}
-    }
-}
-
-
 // Implement base interfaces in internal types.
-extend.$_$.System.prototype.now = function(): kotlinx.datetime.Instant { return this.f15(); };
-extend.$_$.Instant_0.prototype.toEpochMilliseconds = function(): number { return Number( this.j1l() ); };
+const SystemPrototype = Object.getPrototypeOf( extend.$_$.b )
+SystemPrototype.now = function(): kotlinx.datetime.Instant { return this.q14(); };
+
+const InstantPrototype = Object.getPrototypeOf( extend.$_$.b.q14() )
+InstantPrototype.toEpochMilliseconds = function(): number { return Number( this.t1k() ); };
 
 
 // Export facade.

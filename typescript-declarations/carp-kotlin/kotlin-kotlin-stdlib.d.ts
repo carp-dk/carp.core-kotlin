@@ -4,69 +4,62 @@ declare module "@cachet/kotlin-kotlin-stdlib"
     {
         type Long = bigint
 
-        class Pair<K, V>
-        {
-            constructor( first: K, second: V )
-
-            // first
-            od_1: K
-
-            // second
-            pd_1: V
-        }
-
         interface Collection<T>
         {
             // contains
-            g2( value: T ): boolean
+            r1( value: T ): boolean
 
             // size
-            o(): number
+            c1(): number
 
             toArray(): Array<T>
         }
 
         interface List<T> extends Collection<T> {}
-        interface EmptyList<T> extends List<T> {}
-        interface AbstractMutableList<T> extends List<T> {}
-        function listOf_0<T>( elements: T[] ): List<T>
+        function j6<T>( elements: T[] ): List<T>
+        function p5<T>(): List<T>
 
         interface Set<T> extends Collection<T> {}
-        interface EmptySet<T> extends Set<T> {}
-        interface HashSet<T> extends Set<T> {}
-        function setOf_0<T>( elements: T[] ): Set<T>
+        function u6<T>( elements: T[] ): Set<T>
+        function r5<T>(): Set<T>
 
         interface Map<K, V>
         {
             // get
-            d2( key: K ): V
+            s2( key: K ): V
 
             // keys
-            z1(): Set<K>
+            g5(): Set<K>
 
             // values
-            a2(): Collection<V>
+            h5(): Collection<V>
         }
-        interface HashMap<K, V> extends Map<K, V> {}
-        function mapOf_0<K, V>( pairs: Pair<K, V>[] ): Map<K, V>
+        function l6<K, V>( pairs: kotlin.Pair<K, V>[] ): Map<K, V>
 
         type Duration = Long
         interface DurationCompanion
         {
             // parseIsoString
-            kh( isoDuration: string ): Duration
+            ng( isoDuration: string ): Duration
 
             // ZERO
-            hh_1: Duration
+            gg_1: Duration
 
             // INFINITE
-            ih_1: Duration
+            hg_1: Duration
         }
-        function Companion_getInstance_20(): DurationCompanion
+        function t3(): DurationCompanion
     }
 
     namespace kotlin
     {
+        class Pair<K, V>
+        {
+            constructor( first: K, second: V )
+            first: K
+            second: V
+        }
+
         namespace collections
         {
             const KtList: any

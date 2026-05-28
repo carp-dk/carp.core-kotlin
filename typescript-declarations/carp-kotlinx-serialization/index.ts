@@ -7,7 +7,13 @@ import extendJson from "@cachet/kotlinx-serialization-kotlinx-serialization-json
 // Facade with better method names and type conversions for internal types.
 export namespace kotlinx.serialization
 {
-    export function getSerializer( type: any ) { return type.Companion.c1o() }
+    export function getSerializer( type: any )
+    {
+        const serializer = type.Companion && type.Companion.kv
+            ? type.Companion.kv( [] )
+            : type.$metadata$.associatedObjects[ 0 ]()
+        return serializer.kv ? serializer.kv( [] ) : serializer
+    }
 }
 export namespace kotlinx.serialization.json
 {
@@ -18,7 +24,7 @@ export namespace kotlinx.serialization.json
     }
     export namespace Json
     {
-        export const Default: Json = extendJson.$_$.Default_getInstance()
+        export const Default: Json = extendJson.$_$.a() as unknown as Json
     }
 }
 export namespace kotlinx.serialization.builtins
@@ -28,29 +34,16 @@ export namespace kotlinx.serialization.builtins
     export const SetSerializer: (serializer: any) => any = extendCore.$_$.SetSerializer
 }
 
-
-// Augment internal types to implement facade.
-declare module "@cachet/kotlinx-serialization-kotlinx-serialization-json"
-{
-    namespace $_$
-    {
-        interface Json extends kotlinx.serialization.json.Json {}
-        abstract class Json implements kotlinx.serialization.json.Json {}
-    }
-}
-
-
 // Implement base interfaces in internal types.
-extendJson.$_$.Json.prototype.encodeToString =
-    function( serializer: any, value: any ): string
-    {
-        return this.u1l( serializer, value );
-    };
-extendJson.$_$.Json.prototype.decodeFromString =
-    function( serializer: any, string: string ): any
-    {
-        return this.v1l( serializer, string );
-    };
+const JsonPrototype = Object.getPrototypeOf( kotlinx.serialization.json.Json.Default ) as any
+JsonPrototype.encodeToString = function( serializer: any, value: any ): string
+{
+    return this.e1l( serializer, value );
+};
+JsonPrototype.decodeFromString = function( serializer: any, string: string ): any
+{
+    return this.f1l( serializer, string );
+};
 
 
 // Export facade.
