@@ -22,10 +22,10 @@ export namespace kotlinx.datetime
 
 // Implement base interfaces in internal types.
 const SystemPrototype = Object.getPrototypeOf( extend.$_$.b )
-SystemPrototype.now = function(): kotlinx.datetime.Instant { return this.q14(); };
+SystemPrototype.now = function(): kotlinx.datetime.Instant { return this.n14(); };
 
-const InstantPrototype = Object.getPrototypeOf( extend.$_$.b.q14() )
-InstantPrototype.toEpochMilliseconds = function(): number { return Number( this.t1k() ); };
+const InstantPrototype = Object.getPrototypeOf( extend.$_$.b.n14() )
+InstantPrototype.toEpochMilliseconds = function(): number { return Number( this.q1k() ); };
 
 
 // Export facade.

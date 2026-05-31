@@ -66,9 +66,9 @@ export namespace kotlinExport.time
     export type Duration = bigint
     export namespace Duration
     {
-        export const Companion: any = extend.$_$.t3()
-        export const parseIsoString: (isoDuration: string) => Duration = Companion.ng
-        export const ZERO: Duration = Companion.gg_1
+        export const Companion: any = extend.$_$.l()
+        export const parseIsoString: (isoDuration: string) => Duration = Companion.kg
+        export const ZERO: Duration = Companion.dg_1
         export const INFINITE: Duration = Companion.hg_1
     }
 }

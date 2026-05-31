@@ -1,4 +1,7 @@
-@file:Suppress( "NON_EXPORTABLE_TYPE" )
+@file:Suppress(
+    "EXPOSED_NOT_EXPORTED_SUPER_INTERFACE_WARNING",
+    "NON_EXPORTABLE_TYPE"
+)
 
 package dk.cachet.carp.data.application
 

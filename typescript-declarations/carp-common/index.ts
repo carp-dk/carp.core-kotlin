@@ -41,12 +41,12 @@ const JSON = extend.dk.cachet.carp.common.infrastructure.serialization.JSON as a
 JSON.encodeToString =
     function( serializer: any, value: any ): string
     {
-        return this.e1l( serializer, value );
+        return this.b1l( serializer, value );
     };
 JSON.decodeFromString =
     function( serializer: any, string: string ): any
     {
-        return this.f1l( serializer, string );
+        return this.c1l( serializer, string );
     };
 
 
