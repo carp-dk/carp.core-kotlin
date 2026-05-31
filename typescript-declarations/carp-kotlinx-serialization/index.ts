@@ -9,10 +9,10 @@ export namespace kotlinx.serialization
 {
     export function getSerializer( type: any )
     {
-        const serializer = type.Companion && type.Companion.hv
-            ? type.Companion.hv( [] )
+        const serializer = type.Companion && type.Companion.hw
+            ? type.Companion.hw( [] )
             : type.$metadata$.associatedObjects[ 0 ]()
-        return serializer.hv ? serializer.hv( [] ) : serializer
+        return serializer.hw ? serializer.hw( [] ) : serializer
     }
 }
 export namespace kotlinx.serialization.json
@@ -38,11 +38,11 @@ export namespace kotlinx.serialization.builtins
 const JsonPrototype = Object.getPrototypeOf( kotlinx.serialization.json.Json.Default ) as any
 JsonPrototype.encodeToString = function( serializer: any, value: any ): string
 {
-    return this.b1l( serializer, value );
+    return this.x1l( serializer, value );
 };
 JsonPrototype.decodeFromString = function( serializer: any, string: string ): any
 {
-    return this.c1l( serializer, string );
+    return this.y1l( serializer, string );
 };
 
 

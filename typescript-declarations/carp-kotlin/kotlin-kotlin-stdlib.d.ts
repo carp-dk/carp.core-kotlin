@@ -24,10 +24,10 @@ declare module "@cachet/kotlin-kotlin-stdlib"
         interface DurationCompanion
         {
             // parseIsoString
-            kg( isoDuration: string ): Duration
+            lg( isoDuration: string ): Duration
 
             // ZERO
-            dg_1: Duration
+            eg_1: Duration
 
             // INFINITE
             hg_1: Duration
