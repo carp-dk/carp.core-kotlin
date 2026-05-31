@@ -1,7 +1,7 @@
 package dk.cachet.carp.common.domain
 
 import dk.cachet.carp.common.application.UUID
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 
 /**

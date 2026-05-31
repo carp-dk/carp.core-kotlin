@@ -9,8 +9,8 @@ import dk.cachet.carp.common.infrastructure.test.StubDataPoint
 import dk.cachet.carp.data.application.DataStreamPoint
 import dk.cachet.carp.data.application.DataStreamPointSerializer
 import dk.cachet.carp.data.application.SyncPoint
-import kotlinx.datetime.Clock
 import kotlin.test.*
+import kotlin.time.Clock
 
 
 /**

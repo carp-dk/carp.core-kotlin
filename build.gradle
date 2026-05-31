@@ -18,7 +18,7 @@ buildscript {
             kotlin:'2.3.21',
             serialization:'1.11.0',
             coroutines:'1.11.0',
-            datetime:'0.6.2',
+            datetime:'0.8.0',
 
             // JVM versions.
             jvmTarget:'1.8',

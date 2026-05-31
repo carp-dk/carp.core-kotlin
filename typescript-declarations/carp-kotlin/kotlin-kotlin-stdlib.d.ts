@@ -24,15 +24,28 @@ declare module "@cachet/kotlin-kotlin-stdlib"
         interface DurationCompanion
         {
             // parseIsoString
-            lg( isoDuration: string ): Duration
+            pg( isoDuration: string ): Duration
 
             // ZERO
-            eg_1: Duration
+            ig_1: Duration
 
             // INFINITE
-            hg_1: Duration
+            jg_1: Duration
         }
-        function l(): DurationCompanion
+        function m(): DurationCompanion
+
+        interface System
+        {
+            // now
+            hg(): Instant
+        }
+        const l: System
+
+        interface Instant
+        {
+            // toEpochMilliseconds
+            eh(): Long
+        }
     }
 
     namespace kotlin

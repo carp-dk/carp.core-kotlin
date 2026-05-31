@@ -64,14 +64,34 @@ export namespace kotlinExport.collections
 export namespace kotlinExport.time
 {
     export type Duration = bigint
+    export interface Clock
+    {
+        now(): Instant
+    }
+    export namespace Clock
+    {
+        export const System: Clock = extend.$_$.l as unknown as Clock
+    }
+    export interface Instant
+    {
+        toEpochMilliseconds(): number
+    }
     export namespace Duration
     {
-        export const Companion: any = extend.$_$.l()
-        export const parseIsoString: (isoDuration: string) => Duration = Companion.lg
-        export const ZERO: Duration = Companion.eg_1
-        export const INFINITE: Duration = Companion.hg_1
+        export const Companion: any = extend.$_$.m()
+        export const parseIsoString: (isoDuration: string) => Duration = Companion.pg
+        export const ZERO: Duration = Companion.ig_1
+        export const INFINITE: Duration = Companion.jg_1
     }
 }
+
+
+// Implement facade time interfaces with Kotlin's native exported time types.
+const SystemPrototype = Object.getPrototypeOf( kotlinExport.time.Clock.System )
+SystemPrototype.now = function(): kotlinExport.time.Instant { return this.hg(); };
+
+const InstantPrototype = Object.getPrototypeOf( kotlinExport.time.Clock.System.now() )
+InstantPrototype.toEpochMilliseconds = function(): number { return Number( this.eh() ); };
 
 
 // Implement facade collection interfaces with Kotlin's native exported collection views.

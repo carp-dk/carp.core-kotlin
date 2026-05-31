@@ -3,9 +3,9 @@
     "UNUSED_VARIABLE" // The variable names show up in generated JS sources which is useful to look up mangled names.
 )
 
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlin.js.JsExport
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 
 /**

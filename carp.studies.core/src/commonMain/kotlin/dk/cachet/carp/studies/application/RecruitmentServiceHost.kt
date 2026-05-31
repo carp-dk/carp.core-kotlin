@@ -18,7 +18,7 @@ import dk.cachet.carp.studies.application.users.ParticipantGroupStatus
 import dk.cachet.carp.studies.domain.users.ParticipantRepository
 import dk.cachet.carp.studies.domain.users.Recruitment
 import dk.cachet.carp.studies.domain.users.StagedParticipantGroup
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 
 
 class RecruitmentServiceHost(

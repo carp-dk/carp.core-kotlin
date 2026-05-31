@@ -95,7 +95,7 @@ verify-implementation:
       - 'kotlin.sequences.Sequence'
       - 'kotlinx.serialization.KSerializer'
       - 'kotlinx.serialization.modules.SerializersModuleCollector'
-      - 'kotlinx.datetime.Clock'
+      - 'kotlin.time.Clock'
   Immutable:
     active: true
     excludes: *verify-implementation-excludes
@@ -105,7 +105,7 @@ verify-implementation:
       'dk.cachet.carp.common.application.data.input.CustomInput',
       'dk.cachet.carp.common.application.sampling.BatteryAwareSamplingConfiguration.TConfig',
       'kotlin.time.Duration',
-      'kotlinx.datetime.Instant',
+      'kotlin.time.Instant',
       'kotlinx.serialization.json.Json'
     ]
 

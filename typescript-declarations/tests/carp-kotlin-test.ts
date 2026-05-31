@@ -2,6 +2,7 @@ import VerifyModule from './VerifyModule.js'
 
 import { expect } from 'chai'
 import kotlin from '@cachet/carp-kotlin'
+import stdlib from '@cachet/kotlin-kotlin-stdlib'
 import toLong = kotlin.toLong
 import Pair = kotlin.Pair
 import Duration = kotlin.time.Duration
@@ -15,6 +16,7 @@ describe( "kotlin", () => {
         const list = listOf( [ 42 ] )
         const set = setOf( [ 42 ] )
         const map = mapOf( [ new Pair( 42, "answer" ) ] )
+        const system = stdlib.$_$.l
         const instances: any[] = [
             toLong( 42 ),
             new Pair( 42, "answer" ),
@@ -27,6 +29,8 @@ describe( "kotlin", () => {
             [ "HashSet", set ],
             [ "Map", map ],
             [ "HashMap", map ],
+            [ "System", system ],
+            [ "Instant", system.hg() ],
             [ "DurationCompanion", Duration.Companion ],
             [ "Duration", Duration.ZERO ]
         ]

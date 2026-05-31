@@ -21,8 +21,8 @@ import dk.cachet.carp.protocols.domain.configuration.EmptyProtocolTaskConfigurat
 import dk.cachet.carp.protocols.domain.configuration.ProtocolParticipantConfiguration
 import dk.cachet.carp.protocols.domain.configuration.StudyProtocolComposition
 import dk.cachet.carp.protocols.domain.deployment.*
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 
 /**

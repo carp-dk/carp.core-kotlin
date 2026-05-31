@@ -5,10 +5,10 @@ declare module "@cachet/kotlinx-serialization-kotlinx-serialization-json"
         interface Json
         {
             // encodeToString
-            x1l( serializer: any, instance: any ): string
+            t15( serializer: any, instance: any ): string
 
             // decodeFromString
-            y1l( serializer: any, string: string ): string
+            u15( serializer: any, string: string ): string
         }
         function Default_getInstance(): Json
     }
