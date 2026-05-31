@@ -31,9 +31,9 @@ buildscript {
 
             // DevOps versions.
             detektPlugin:'1.23.8',
-            detektVerifyImplementation:'1.2.6',
+            detektVerifyImplementation:'1.2.8',
             nexusPublishPlugin:'2.0.0',
-            apacheCommons:'2.19.0'
+            apacheCommons:'2.22.0'
         ]
 
         commonModule = subprojects.find { it.name == 'carp.common' }
