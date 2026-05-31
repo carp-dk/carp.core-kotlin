@@ -29,20 +29,36 @@ export namespace kotlinExport.collections
         size(): number
         toArray(): Array<T>
     }
-    export interface List<T> extends Collection<T> {}
-    export interface Set<T> extends Collection<T> {}
-    export interface Map<K, V>
+    export interface KtList<T>
+    {
+        readonly __doNotUseOrImplementIt: any
+        asJsReadonlyArrayView(): Array<T>
+    }
+    export interface KtSet<T>
+    {
+        readonly __doNotUseOrImplementIt: any
+        asJsReadonlySetView(): globalThis.Set<T>
+    }
+    export interface KtMap<K, V>
+    {
+        readonly __doNotUseOrImplementIt: any
+        asJsReadonlyMapView(): globalThis.Map<K, V>
+    }
+    export interface List<T> extends KtList<T>, Collection<T> {}
+    export interface Set<T> extends KtSet<T>, Collection<T> {}
+    export interface Map<K, V> extends KtMap<K, V>
     {
         get( key: K ): V
         keys: Set<K>
         values: Collection<V>
     }
-    export const listOf: <T>(array: T[]) => List<T> = extend.$_$.j6
-    export const setOf: <T>(array: T[]) => Set<T> = extend.$_$.u6
+    export const listOf: <T>(array: T[]) => List<T> = KtList.fromJsArray as any
+    export const setOf =
+        function<T>(array: T[]): Set<T> { return KtSet.fromJsSet( new globalThis.Set( array ) ) as Set<T> }
     export const mapOf =
         function<K, V>( pairs: kotlinExport.Pair<K, V>[] ): Map<K, V>
         {
-            return extend.$_$.l6( pairs as any )
+            return KtMap.fromJsMap( new globalThis.Map( pairs.map( (pair) => [ pair.first, pair.second ] ) ) ) as Map<K, V>
         }
 }
 export namespace kotlinExport.time
@@ -58,46 +74,39 @@ export namespace kotlinExport.time
 }
 
 
-// Augment internal types to implement facade.
-declare module "@cachet/kotlin-kotlin-stdlib"
+// Implement facade collection interfaces with Kotlin's native exported collection views.
+function patchCollectionPrototype(
+    prototype: any,
+    getView: ( collection: any ) => { has?: Function, includes?: Function, length?: number, size?: number }
+)
 {
-    namespace $_$
+    prototype.contains = function<T>( value: T ): boolean
     {
-        interface Collection<T> extends kotlinExport.collections.Collection<T> {}
-        interface List<T> extends kotlinExport.collections.List<T> {}
-        interface Set<T> extends kotlinExport.collections.Set<T> {}
-        interface Map<K, V> extends kotlinExport.collections.Map<K, V> {}
+        const view = getView( this )
+        return view.includes?.( value ) ?? view.has?.( value )
+    }
+    prototype.size = function(): number
+    {
+        const view = getView( this )
+        return view.size ?? view.length ?? 0
     }
 }
 
+const ListPrototype = Object.getPrototypeOf( kotlinExport.collections.KtList.fromJsArray( [] ) )
+patchCollectionPrototype( ListPrototype, ( list ) => list.asJsReadonlyArrayView() )
+ListPrototype.toArray = function<T>(): T[] { return Array.from( this.asJsReadonlyArrayView() ) }
 
-// Implement base interfaces in internal types.
-function patchCollectionPrototype( prototype: any )
-{
-    prototype.contains = function<T>( value: T ): boolean { return this.r1( value ); }
-    prototype.size = function<T>(): number { return this.c1(); }
-}
+const SetPrototype = Object.getPrototypeOf( kotlinExport.collections.KtSet.fromJsSet( new globalThis.Set() ) )
+patchCollectionPrototype( SetPrototype, ( set ) => set.asJsReadonlySetView() )
+SetPrototype.toArray = function<T>(): T[] { return Array.from( this.asJsReadonlySetView() ) }
 
-patchCollectionPrototype( (extend.$_$ as any).e4.prototype )
-patchCollectionPrototype( (extend.$_$ as any).h4.prototype )
-
-const EmptyListPrototype = Object.getPrototypeOf( extend.$_$.p5() )
-EmptyListPrototype.contains = function<T>( value: T ): boolean { return this.r1( value ); }
-EmptyListPrototype.size = function<T>(): number { return this.c1(); }
-EmptyListPrototype.toArray = function<T>(): T[] { return []; }
-
-const EmptySetPrototype = Object.getPrototypeOf( extend.$_$.r5() )
-EmptySetPrototype.contains = function<T>( value: T ): boolean { return this.r1( value ); }
-EmptySetPrototype.size = function<T>(): number { return this.c1(); }
-EmptySetPrototype.toArray = function<T>(): T[] { return []; }
-
-const HashMapPrototype = (extend.$_$ as any).g4.prototype
-HashMapPrototype.get = function<K, V>( key: K ): V { return this.s2( key ); }
-Object.defineProperty( HashMapPrototype, "keys", {
-    get: function keys() { return this.g5(); }
+const MapPrototype = Object.getPrototypeOf( kotlinExport.collections.KtMap.fromJsMap( new globalThis.Map() ) )
+MapPrototype.get = function<K, V>( key: K ): V { return this.asJsReadonlyMapView().get( key ) }
+Object.defineProperty( MapPrototype, "keys", {
+    get: function keys() { return kotlinExport.collections.setOf( Array.from( this.asJsReadonlyMapView().keys() ) ) }
 } );
-Object.defineProperty( HashMapPrototype, "values", {
-    get: function values() { return this.h5(); }
+Object.defineProperty( MapPrototype, "values", {
+    get: function values() { return kotlinExport.collections.listOf( Array.from( this.asJsReadonlyMapView().values() ) ) }
 } );
 
 

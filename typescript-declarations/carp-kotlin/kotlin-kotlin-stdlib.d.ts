@@ -6,35 +6,19 @@ declare module "@cachet/kotlin-kotlin-stdlib"
 
         interface Collection<T>
         {
-            // contains
-            r1( value: T ): boolean
-
-            // size
-            c1(): number
-
+            contains( value: T ): boolean
+            size(): number
             toArray(): Array<T>
         }
 
         interface List<T> extends Collection<T> {}
-        function j6<T>( elements: T[] ): List<T>
-        function p5<T>(): List<T>
-
         interface Set<T> extends Collection<T> {}
-        function u6<T>( elements: T[] ): Set<T>
-        function r5<T>(): Set<T>
-
         interface Map<K, V>
         {
-            // get
-            s2( key: K ): V
-
-            // keys
-            g5(): Set<K>
-
-            // values
-            h5(): Collection<V>
+            get( key: K ): V
+            keys: Set<K>
+            values: Collection<V>
         }
-        function l6<K, V>( pairs: kotlin.Pair<K, V>[] ): Map<K, V>
 
         type Duration = Long
         interface DurationCompanion
@@ -62,9 +46,12 @@ declare module "@cachet/kotlin-kotlin-stdlib"
 
         namespace collections
         {
-            const KtList: any
-            const KtSet: any
-            const KtMap: any
+            type KtList<T> = { readonly __doNotUseOrImplementIt: any, asJsReadonlyArrayView(): Array<T> }
+            type KtSet<T> = { readonly __doNotUseOrImplementIt: any, asJsReadonlySetView(): globalThis.Set<T> }
+            type KtMap<K, V> = { readonly __doNotUseOrImplementIt: any, asJsReadonlyMapView(): globalThis.Map<K, V> }
+            const KtList: { fromJsArray<T>( array: T[] ): KtList<T> }
+            const KtSet: { fromJsSet<T>( set: globalThis.Set<T> ): KtSet<T> }
+            const KtMap: { fromJsMap<K, V>( map: globalThis.Map<K, V> ): KtMap<K, V> }
         }
     }
 }
