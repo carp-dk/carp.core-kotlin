@@ -93,7 +93,7 @@ configure( subprojects - devOpsModules ) {
                 useJUnitPlatform()
             }
         }
-        js(IR) {
+        js {
             moduleName = project.name.replaceAll("\\.", "-") + "-generated"
             binaries.executable() // Export JS/TypeScript files.
             browser()
