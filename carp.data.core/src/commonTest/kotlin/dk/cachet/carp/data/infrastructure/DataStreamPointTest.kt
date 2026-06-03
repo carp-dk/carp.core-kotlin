@@ -7,7 +7,6 @@ import dk.cachet.carp.common.infrastructure.serialization.createDefaultJSON
 import dk.cachet.carp.common.infrastructure.test.STUBS_SERIAL_MODULE
 import dk.cachet.carp.common.infrastructure.test.StubDataPoint
 import dk.cachet.carp.data.application.DataStreamPoint
-import dk.cachet.carp.data.application.DataStreamPointSerializer
 import dk.cachet.carp.data.application.SyncPoint
 import kotlinx.datetime.Clock
 import kotlin.test.*
@@ -33,10 +32,10 @@ class DataStreamPointTest
     fun can_serialize_and_deserialize_DataStreamPoint()
     {
         val dataStreamPoint: DataStreamPoint<StubDataPoint> = testDataStreamPoint
-        val serialized = json.encodeToString( DataStreamPointSerializer, dataStreamPoint )
+        val serialized = json.encodeToString( dataStreamPoint )
         @Suppress( "UNCHECKED_CAST" )
         val parsed: DataStreamPoint<StubDataPoint> =
-            json.decodeFromString( DataStreamPointSerializer, serialized ) as DataStreamPoint<StubDataPoint>
+            json.decodeFromString( serialized ) as DataStreamPoint<StubDataPoint>
 
         assertEquals( dataStreamPoint, parsed )
     }
@@ -45,8 +44,8 @@ class DataStreamPointTest
     fun can_serialize_and_deserialize_DataStreamPoint_polymorphic()
     {
         val dataStreamPoint: DataStreamPoint<Data> = testDataStreamPoint
-        val serialized = json.encodeToString( DataStreamPointSerializer, dataStreamPoint )
-        val parsed: DataStreamPoint<Data> = json.decodeFromString( DataStreamPointSerializer, serialized )
+        val serialized = json.encodeToString( dataStreamPoint )
+        val parsed: DataStreamPoint<Data> = json.decodeFromString( serialized )
 
         assertEquals( dataStreamPoint, parsed )
     }

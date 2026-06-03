@@ -9,7 +9,7 @@ import kotlin.time.Duration
 
 /**
  * Refers to types/methods in the kotlin standard library to ensure they aren't removed from compiled sources
- * as part of the JS IR backend's compiler optimizations.
+ * as part of the JS backend's compiler optimizations.
  * The exported JS sources for this class can also be used to look up mangled method names.
  */
 @JsExport
