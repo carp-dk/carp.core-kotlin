@@ -37,8 +37,9 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlin.reflect.KFunction
 import kotlin.reflect.KSuspendFunction3
+import kotlin.reflect.full.declaredFunctions
 import kotlin.reflect.jvm.javaMethod
-import kotlin.reflect.jvm.kotlinFunction
+import kotlin.reflect.jvm.jvmErasure
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.seconds
 
@@ -48,7 +49,7 @@ import kotlin.time.Duration.Companion.seconds
  */
 fun generateExampleRequests( serviceInfo: ApplicationServiceInfo ): List<ExampleRequest>
 {
-    val requestMethods = serviceInfo.serviceKlass.methods
+    val requestMethods = serviceInfo.serviceKlass.kotlin.declaredFunctions
     val exampleRequests = exampleRequests.filter { it.key.javaMethod?.declaringClass == serviceInfo.serviceKlass }
 
     val json = Json( createDefaultJSON() ) { prettyPrint = true }
@@ -56,12 +57,11 @@ fun generateExampleRequests( serviceInfo: ApplicationServiceInfo ): List<Example
     return requestMethods.map { request ->
         // Retrieve example and verify whether it is valid.
         val requestName = serviceInfo.serviceName + "." + request.name
-        val kotlinRequest = checkNotNull( request.kotlinFunction )
-        val example = checkNotNull( exampleRequests[ kotlinRequest ] )
+        val example = checkNotNull( exampleRequests[ request ] )
             { "No example request and response instances provided for $requestName." }
-        check( example.request.matchesServiceRequest( kotlinRequest ) )
+        check( example.request.matchesServiceRequest( request ) )
             { "Incorrect request instance provided for $requestName." }
-        check( request.returnType.isInstance( example.response ) )
+        check( request.returnType.jvmErasure.isInstance( example.response ) )
             { "Incorrect response instance provided for $requestName." }
 
         // Create example JSON.
@@ -70,9 +70,9 @@ fun generateExampleRequests( serviceInfo: ApplicationServiceInfo ): List<Example
         val responseJson = json.encodeToString( checkNotNull( exampleJson[ "response" ] ) )
 
         ExampleRequest(
-            request,
+            checkNotNull( request.javaMethod ),
             ExampleRequest.JsonExample( example.request::class.java, requestObjectJson ),
-            ExampleRequest.JsonExample( request.returnType, responseJson )
+            ExampleRequest.JsonExample( request.returnType.javaClass, responseJson )
         )
     }
 }
