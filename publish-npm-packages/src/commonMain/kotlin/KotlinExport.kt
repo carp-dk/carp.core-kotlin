@@ -57,5 +57,6 @@ class KotlinExport
         val infinite = Duration.INFINITE
         val inWholeMilliseconds = duration.inWholeMilliseconds
         val inWholeMicroseconds = duration.inWholeMicroseconds
+        val toString = duration.toString()
     }
 }

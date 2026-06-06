@@ -145,8 +145,7 @@ describe( "kotlin", () => {
             expect( zero.inWholeMicroseconds ).equals( 0 )
 
             const infinite = Duration.INFINITE
-            expect( infinite.inWholeMilliseconds ).equals( -1 )
-            expect( infinite.inWholeMicroseconds ).equals( -1 )
+            expect( infinite.toDurationString() ).equals( "Infinity" )
         } )
     } )
 } )

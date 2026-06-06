@@ -68,8 +68,9 @@ declare module "@cachet/kotlin-kotlin-stdlib"
             gi_1: Duration
         }
         function Companion_getInstance_20(): DurationCompanion
-        function _Duration___get_inWholeMilliseconds__impl__msfiry(duration: Duration): Long
-        function _Duration___get_inWholeMicroseconds__impl__8oe8vv(duration: Duration): Long
+        function _Duration___get_inWholeMilliseconds__impl__msfiry( duration: Duration ): Long
+        function _Duration___get_inWholeMicroseconds__impl__8oe8vv( duration: Duration ): Long
+        function Duration__toString_impl_8d916b( duration: Duration ): string
     }
 
     namespace kotlin
