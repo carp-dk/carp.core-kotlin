@@ -57,6 +57,7 @@ export namespace kotlinExport.time
     {
         get inWholeMilliseconds(): number
         get inWholeMicroseconds(): number
+        toDurationString(): string
     }
     export namespace Duration
     {
@@ -78,6 +79,7 @@ declare module "@cachet/kotlin-kotlin-stdlib"
             toNumber(): number
             inWholeMilliseconds(): number
             inWholeMicroseconds(): number
+            toDurationString(): string
         }
         interface Pair<K, V> extends kotlinExport.Pair<K, V>
         {
@@ -103,16 +105,17 @@ declare module "@cachet/kotlin-kotlin-stdlib"
 
 // Implement base interfaces in internal types.
 extend.$_$.Long.prototype.toNumber = function(): number { return this.h1(); };
+extend.$_$.Long.prototype.toDurationString = function(): string { return extend.$_$.Duration__toString_impl_8d916b( this ); }
 Object.defineProperty( extend.$_$.Long.prototype, "inWholeMilliseconds", {
     get: function inWholeMilliseconds()
     {
-        return extend.$_$._Duration___get_inWholeMilliseconds__impl__msfiry(this).toNumber();
+        return extend.$_$._Duration___get_inWholeMilliseconds__impl__msfiry( this ).toNumber();
     }
 } );
 Object.defineProperty( extend.$_$.Long.prototype, "inWholeMicroseconds", {
     get: function inWholeMicroseconds()
     {
-        return extend.$_$._Duration___get_inWholeMicroseconds__impl__8oe8vv(this).toNumber();
+        return extend.$_$._Duration___get_inWholeMicroseconds__impl__8oe8vv( this ).toNumber();
     }
 } );
 extend.$_$.EmptyList.prototype.contains = function<T>( value: T ): boolean { return false; }
