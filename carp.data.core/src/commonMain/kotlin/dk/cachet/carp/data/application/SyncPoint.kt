@@ -1,5 +1,3 @@
-@file:Suppress( "NON_EXPORTABLE_TYPE" )
-
 package dk.cachet.carp.data.application
 
 import kotlinx.datetime.Instant
@@ -16,6 +14,7 @@ import kotlin.js.JsExport
  */
 @Serializable
 @JsExport
+@Suppress( "NON_EXPORTABLE_TYPE" )
 data class SyncPoint(
     /**
      * The UTC time as measured on the primary device when it determined the synchronization point.
@@ -53,4 +52,5 @@ data class SyncPoint(
  *
  * This requires a platform-specific implementation in order not to lose any precision; big decimal needs to be used.
  */
+@JsExport
 expect fun SyncPoint.applyToTimestamp( timestamp: Long ): Long

@@ -12,6 +12,7 @@ external fun Big( number: Number ): dynamic
 
 
 @Suppress( "UNUSED_VARIABLE" )
+@JsExport
 actual fun SyncPoint.applyToTimestamp( timestamp: Long ): Long
 {
     val bigClock = Big( relativeClockSpeed )

@@ -12,5 +12,4 @@ private const val NANOS_PER_MICRO = 1_000
  * Get the elapsed microseconds since the start of the UTC day 1970-01-01 at this [Instant]'s moment in time.
  */
 @JsExport
-@Suppress( "NON_EXPORTABLE_TYPE" )
 fun Instant.toEpochMicroseconds(): Long = epochSeconds * MICROS_PER_SECOND + nanosecondsOfSecond / NANOS_PER_MICRO

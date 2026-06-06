@@ -8,10 +8,6 @@ import carpCommon from "@cachet/carp-common"
 declare module "@cachet/carp-data-core-generated"
 {
     // Declare missing types for which no imports were generated.
-    namespace kotlin
-    {
-        type Long = kotlinStdLib.Long
-    }
     namespace kotlin.reflect
     {
         // When used as a type parameter for a type exported through `forced-exports`, normally compiled as `any`,

@@ -15,14 +15,6 @@ import kotlin.time.Duration
 @JsExport
 class KotlinExport
 {
-    private val int = 42
-    val toLong = int.toLong() // Needs to be loaded from field to be exported.
-
-    fun long( long: Long )
-    {
-        val toNumber = long.toInt()
-    }
-
     fun collection( collection: Collection<Any> )
     {
         val contains = collection.contains( 42 )

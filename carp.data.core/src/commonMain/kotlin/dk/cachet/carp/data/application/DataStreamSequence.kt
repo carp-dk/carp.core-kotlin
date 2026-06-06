@@ -1,5 +1,3 @@
-@file:Suppress( "NON_EXPORTABLE_TYPE" )
-
 package dk.cachet.carp.data.application
 
 import dk.cachet.carp.common.application.data.Data
@@ -15,6 +13,7 @@ import kotlin.js.JsName
  * which all share the same [triggerIds] and [syncPoint].
  */
 @JsExport
+@Suppress( "NON_EXPORTABLE_TYPE" )
 sealed interface DataStreamSequence<TData : Data> : Sequence<DataStreamPoint<TData>>
 {
     val dataStream: DataStreamId
