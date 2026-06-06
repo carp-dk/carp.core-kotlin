@@ -1,5 +1,3 @@
-@file:Suppress( "NON_EXPORTABLE_TYPE" )
-
 package dk.cachet.carp.common.application.devices
 
 import dk.cachet.carp.common.application.ApplicationData
@@ -16,6 +14,7 @@ import kotlin.js.JsExport
  */
 @Serializable
 @JsExport
+@Suppress( "NON_EXPORTABLE_TYPE" )
 data class MACAddressDeviceRegistration(
     val macAddress: MACAddress,
     override val deviceDisplayName: String? = null,

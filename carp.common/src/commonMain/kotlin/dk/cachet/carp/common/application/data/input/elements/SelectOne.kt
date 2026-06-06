@@ -1,5 +1,3 @@
-@file:Suppress( "NON_EXPORTABLE_TYPE" )
-
 package dk.cachet.carp.common.application.data.input.elements
 
 import kotlinx.serialization.*
@@ -21,5 +19,6 @@ data class SelectOne( override val prompt: String, val options: Set<String> ) : 
 
     override fun isValid( input: String ): Boolean = input in options
 
+    @JsExport.Ignore
     override fun getDataClass(): KClass<String> = String::class
 }

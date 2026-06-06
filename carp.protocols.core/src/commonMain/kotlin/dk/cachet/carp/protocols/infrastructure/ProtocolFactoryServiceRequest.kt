@@ -15,7 +15,6 @@ import kotlin.js.JsExport
  */
 @Serializable
 @JsExport
-@Suppress( "NON_EXPORTABLE_TYPE" )
 sealed class ProtocolFactoryServiceRequest<out TReturn> : ApplicationServiceRequest<ProtocolFactoryService, TReturn>()
 {
     @Required
@@ -32,6 +31,7 @@ sealed class ProtocolFactoryServiceRequest<out TReturn> : ApplicationServiceRequ
         val description: String?
     ) : ProtocolFactoryServiceRequest<StudyProtocolSnapshot>()
     {
+        @Suppress( "NON_EXPORTABLE_TYPE" )
         override fun getResponseSerializer() = serializer<StudyProtocolSnapshot>()
     }
 }

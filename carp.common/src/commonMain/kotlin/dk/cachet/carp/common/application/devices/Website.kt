@@ -1,5 +1,3 @@
-@file:Suppress( "NON_EXPORTABLE_TYPE" )
-
 package dk.cachet.carp.common.application.devices
 
 import dk.cachet.carp.common.application.ApplicationData
@@ -37,6 +35,7 @@ data class Website(
 
     override fun createDeviceRegistrationBuilder(): WebsiteDeviceRegistrationBuilder =
         WebsiteDeviceRegistrationBuilder()
+    @JsExport.Ignore
     override fun getRegistrationClass(): KClass<WebsiteDeviceRegistration> = WebsiteDeviceRegistration::class
     override fun isValidRegistration( registration: WebsiteDeviceRegistration ): Trilean = Trilean.TRUE
 }
@@ -47,6 +46,7 @@ data class Website(
  */
 @Serializable
 @JsExport
+@Suppress( "NON_EXPORTABLE_TYPE" )
 data class WebsiteDeviceRegistration(
     val url: String,
     /**

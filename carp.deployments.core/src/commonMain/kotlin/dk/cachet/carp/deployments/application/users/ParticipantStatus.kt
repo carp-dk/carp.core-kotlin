@@ -14,6 +14,5 @@ import kotlin.js.JsExport
 data class ParticipantStatus(
     val participantId: UUID,
     val assignedParticipantRoles: AssignedTo,
-    @Suppress( "NON_EXPORTABLE_TYPE" )
     val assignedPrimaryDeviceRoleNames: Set<String>
 )

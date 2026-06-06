@@ -1,4 +1,4 @@
-@file:Suppress( "NON_EXPORTABLE_TYPE", "UnnecessaryAbstractClass" )
+@file:Suppress( "UnnecessaryAbstractClass" )
 
 package dk.cachet.carp.common.application.devices
 
@@ -40,6 +40,7 @@ abstract class DeviceRegistration
     abstract val deviceDisplayName: String?
 
     @Required
+    @Suppress( "NON_EXPORTABLE_TYPE" )
     abstract val registrationCreatedOn: Instant
 
     /**

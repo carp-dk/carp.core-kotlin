@@ -1,5 +1,3 @@
-@file:Suppress( "NON_EXPORTABLE_TYPE" )
-
 package dk.cachet.carp.protocols.application
 
 import dk.cachet.carp.common.application.ApplicationData
@@ -25,6 +23,7 @@ import kotlin.js.JsExport
  */
 @Serializable
 @JsExport
+@Suppress( "NON_EXPORTABLE_TYPE" )
 data class StudyProtocolSnapshot(
     override val id: UUID,
     override val createdOn: Instant,

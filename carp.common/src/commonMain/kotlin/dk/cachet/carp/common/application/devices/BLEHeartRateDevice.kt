@@ -17,7 +17,6 @@ import kotlin.reflect.KClass
  */
 @Serializable
 @JsExport
-@Suppress( "NON_EXPORTABLE_TYPE" )
 data class BLEHeartRateDevice(
     override val roleName: String,
     override val isOptional: Boolean = false
@@ -50,6 +49,7 @@ data class BLEHeartRateDevice(
 
     override fun createDeviceRegistrationBuilder(): MACAddressDeviceRegistrationBuilder =
         MACAddressDeviceRegistrationBuilder()
+    @JsExport.Ignore
     override fun getRegistrationClass(): KClass<MACAddressDeviceRegistration> = MACAddressDeviceRegistration::class
     override fun isValidRegistration( registration: MACAddressDeviceRegistration ): Trilean = Trilean.TRUE
 }

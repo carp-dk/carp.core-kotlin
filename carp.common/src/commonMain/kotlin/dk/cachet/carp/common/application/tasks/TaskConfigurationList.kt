@@ -12,7 +12,6 @@ import kotlin.js.JsName
  *
  * Extend from this class as an object and assign members as follows: `val SOME_TASK = add { SomeTaskBuilder() }`.
  */
-@Suppress( "NON_EXPORTABLE_TYPE" )
 @JsExport
 open class TaskConfigurationList private constructor(
     private val list: MutableList<SupportedTaskConfiguration<*, *, *>>
@@ -25,7 +24,13 @@ open class TaskConfigurationList private constructor(
      * All containing measures and/or outputs start running in the background once triggered.
      * The task runs for a specified duration, or until stopped, or until all measures and/or outputs have completed.
      */
-    @Suppress("PropertyName", "VariableNaming" ) // This is only extended by object classes, making it a constant.
+    @Suppress(
+        // This is only extended by object classes, making it a constant.
+        "PropertyName",
+        "VariableNaming",
+
+        "NON_EXPORTABLE_TYPE"
+    )
     val BACKGROUND = add { BackgroundTaskBuilder() }
 
 

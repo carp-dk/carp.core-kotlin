@@ -14,6 +14,5 @@ import kotlin.js.JsExport
 data class ActiveParticipationInvitation(
     val participation: Participation,
     val invitation: StudyInvitation,
-    @Suppress( "NON_EXPORTABLE_TYPE" )
     val assignedDevices: Set<AssignedPrimaryDevice>
 )
