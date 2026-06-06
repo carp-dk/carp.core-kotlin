@@ -16,7 +16,6 @@ import kotlin.reflect.KClass
  */
 @Serializable
 @JsExport
-@Suppress( "NON_EXPORTABLE_TYPE" )
 data class CustomProtocolDevice( override val roleName: String, override val isOptional: Boolean = false ) :
     PrimaryDeviceConfiguration<DefaultDeviceRegistration, DefaultDeviceRegistrationBuilder>()
 {
@@ -32,6 +31,7 @@ data class CustomProtocolDevice( override val roleName: String, override val isO
 
     override fun createDeviceRegistrationBuilder(): DefaultDeviceRegistrationBuilder =
         DefaultDeviceRegistrationBuilder()
+    @JsExport.Ignore
     override fun getRegistrationClass(): KClass<DefaultDeviceRegistration> = DefaultDeviceRegistration::class
     override fun isValidRegistration( registration: DefaultDeviceRegistration ) = Trilean.TRUE
 }

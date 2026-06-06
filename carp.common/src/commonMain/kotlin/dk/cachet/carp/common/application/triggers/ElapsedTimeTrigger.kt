@@ -27,7 +27,6 @@ data class ElapsedTimeTrigger private constructor(
     override val requiresPrimaryDevice: Boolean = true
 
     @JsName( "create" )
-    @Suppress( "NON_EXPORTABLE_TYPE" )
     constructor( sourceDevice: AnyPrimaryDeviceConfiguration, elapsedTime: Duration ) :
         this( sourceDevice.roleName, elapsedTime )
 }

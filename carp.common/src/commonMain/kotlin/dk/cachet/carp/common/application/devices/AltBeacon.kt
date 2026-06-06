@@ -1,5 +1,3 @@
-@file:Suppress( "NON_EXPORTABLE_TYPE" )
-
 package dk.cachet.carp.common.application.devices
 
 import dk.cachet.carp.common.application.ApplicationData
@@ -46,6 +44,7 @@ data class AltBeacon(
 
     override fun createDeviceRegistrationBuilder(): AltBeaconDeviceRegistrationBuilder =
         AltBeaconDeviceRegistrationBuilder()
+    @JsExport.Ignore
     override fun getRegistrationClass(): KClass<AltBeaconDeviceRegistration> = AltBeaconDeviceRegistration::class
     override fun isValidRegistration( registration: AltBeaconDeviceRegistration ): Trilean = Trilean.TRUE
 }
@@ -58,6 +57,7 @@ data class AltBeacon(
  */
 @Serializable
 @JsExport
+@Suppress( "NON_EXPORTABLE_TYPE" )
 data class AltBeaconDeviceRegistration(
     /**
      * The beacon device manufacturer's company identifier code as maintained by the Bluetooth SIG assigned numbers database.

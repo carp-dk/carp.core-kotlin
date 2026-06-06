@@ -1,5 +1,3 @@
-@file:Suppress( "NON_EXPORTABLE_TYPE" )
-
 package dk.cachet.carp.studies.application
 
 import dk.cachet.carp.common.application.UUID
@@ -15,6 +13,7 @@ import kotlin.js.JsExport
  */
 @Serializable
 @JsExport
+@Suppress( "NON_EXPORTABLE_TYPE" )
 data class StudyDetails(
     val studyId: UUID,
     /**

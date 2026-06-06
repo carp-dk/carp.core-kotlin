@@ -1,5 +1,3 @@
-@file:Suppress( "NON_EXPORTABLE_TYPE" )
-
 package dk.cachet.carp.common.application.devices
 
 import dk.cachet.carp.common.application.Immutable
@@ -91,6 +89,7 @@ abstract class DeviceConfiguration<
     /**
      * Return the class information of the [DeviceRegistration] class used to register devices for this [DeviceConfiguration].
      */
+    @JsExport.Ignore
     abstract fun getRegistrationClass(): KClass<TRegistration>
 
     /**
@@ -125,6 +124,7 @@ typealias DeviceType = KClass<out AnyDeviceConfiguration>
  */
 @DeviceConfigurationBuilderDsl
 @JsExport
+@Suppress( "NON_EXPORTABLE_TYPE" )
 abstract class DeviceConfigurationBuilder<TSamplingConfigurationMapBuilder : SamplingConfigurationMapBuilder>
 {
     private var samplingConfigurationBuilder: TSamplingConfigurationMapBuilder.() -> Unit = { }

@@ -17,7 +17,6 @@ data class PPG(
      * and the amount of measured reflected light (value).
      * The unit of the received data by the photodetector is determined by the sensor manufacturer.
      */
-    @Suppress( "NON_EXPORTABLE_TYPE" )
     val lightSources: Map<String, Double>,
     override val sensorSpecificData: Data? = null
 ) : SensorData

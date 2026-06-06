@@ -1,5 +1,3 @@
-@file:Suppress( "NON_EXPORTABLE_TYPE" )
-
 package dk.cachet.carp.common.application.users
 
 import dk.cachet.carp.common.application.UUID
@@ -53,6 +51,7 @@ sealed class ParticipantAttribute
      *
      * @throws UnsupportedOperationException when no input element is registered for this attribute.
      */
+    @Suppress( "NON_EXPORTABLE_TYPE" )
     fun getInputElement( registeredInputDataTypes: InputDataTypeList ): AnyInputElement =
         when ( this )
         {

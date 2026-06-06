@@ -1,5 +1,3 @@
-@file:Suppress( "NON_EXPORTABLE_TYPE" )
-
 package dk.cachet.carp.common.application.devices
 
 import dk.cachet.carp.common.application.Trilean
@@ -111,6 +109,7 @@ data class Smartphone(
     /**
      * ALl tasks commonly available on smartphones.
      */
+    @Suppress( "NON_EXPORTABLE_TYPE" )
     object Tasks : TaskConfigurationList()
     {
         /**
@@ -125,6 +124,7 @@ data class Smartphone(
 
     override fun createDeviceRegistrationBuilder(): SmartphoneDeviceRegistrationBuilder =
         SmartphoneDeviceRegistrationBuilder()
+    @JsExport.Ignore
     override fun getRegistrationClass(): KClass<SmartphoneDeviceRegistration> = SmartphoneDeviceRegistration::class
     override fun isValidRegistration( registration: SmartphoneDeviceRegistration ) = Trilean.TRUE
 }
