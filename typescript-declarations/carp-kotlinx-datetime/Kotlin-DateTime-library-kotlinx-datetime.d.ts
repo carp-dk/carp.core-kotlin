@@ -12,7 +12,7 @@ declare module "@cachet/Kotlin-DateTime-library-kotlinx-datetime"
         interface Instant_0
         {
             // toEpochMilliseconds
-            h1m(): number
+            h1m(): any // Long
         }
     }
 }
