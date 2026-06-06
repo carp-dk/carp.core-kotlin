@@ -3,6 +3,7 @@ import VerifyModule from './VerifyModule.js'
 import { expect } from 'chai'
 import kotlin from '@cachet/carp-kotlin'
 import toLong = kotlin.toLong
+import Long = kotlin.Long
 import Pair = kotlin.Pair
 import Duration = kotlin.time.Duration
 import listOf = kotlin.collections.listOf
@@ -45,6 +46,15 @@ describe( "kotlin", () => {
             const answerAsNumber: Number = answer.toNumber()
 
             expect( answerAsNumber ).equals( 42 )
+        } )
+
+        it( "can assign between bigint and Long for backwards compatibility", () => {
+            const big = 42n
+            const bigAsLong: Long = big
+            const longAsBig: bigint = bigAsLong
+            
+            expect( bigAsLong ).equals( big )
+            expect( longAsBig ).equals( big )
         } )
     } )
 
@@ -136,13 +146,13 @@ describe( "kotlin", () => {
     describe( "Duration", () => {
         it( "parseIsoString succeeds", () => {
             const oneSeconds = Duration.parseIsoString( "PT1S" )
-            expect( oneSeconds.inWholeMilliseconds ).equals( 1000 )
+            expect( oneSeconds.inWholeMilliseconds ).equals( 1000n )
         } )
 
         it( "ZERO and INFINITE succeeds", () => {
             const zero = Duration.ZERO
-            expect( zero.inWholeMilliseconds ).equals( 0 )
-            expect( zero.inWholeMicroseconds ).equals( 0 )
+            expect( zero.inWholeMilliseconds ).equals( 0n )
+            expect( zero.inWholeMicroseconds ).equals( 0n )
 
             const infinite = Duration.INFINITE
             expect( infinite.toDurationString() ).equals( "Infinity" )

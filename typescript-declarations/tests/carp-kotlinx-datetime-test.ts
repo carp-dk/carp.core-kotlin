@@ -3,8 +3,6 @@ import VerifyModule from './VerifyModule.js'
 import { expect } from 'chai'
 import kotlinx from '@cachet/carp-kotlinx-datetime'
 import Clock = kotlinx.datetime.Clock
-import kotlin from '@cachet/carp-kotlin'
-import toLong = kotlin.toLong
 
 
 describe( "kotlinx-datetime", () => {
@@ -33,8 +31,7 @@ describe( "kotlinx-datetime", () => {
         it( "toEpochMilliseconds succeeds", () => {
             const now = Clock.System.now()
 
-            const zero = toLong( 0 )
-            expect( now.toEpochMilliseconds() > zero ).true
+            expect( now.toEpochMilliseconds() > 0 ).true
         } )
     } )
 } )

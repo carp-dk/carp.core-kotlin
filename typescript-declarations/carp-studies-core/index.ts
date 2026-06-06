@@ -9,10 +9,6 @@ import carpDeployments from "@cachet/carp-deployments-core"
 declare module "@cachet/carp-studies-core-generated"
 {
     // Declare missing types for which no imports were generated.
-    namespace kotlin
-    {
-        type Long = kotlinStdLib.Long
-    }
     namespace kotlin.reflect
     {
         // When used as a type parameter for a type exported through `forced-exports`, normally compiled as `any`,
