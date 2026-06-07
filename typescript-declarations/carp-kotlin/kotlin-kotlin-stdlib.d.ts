@@ -15,38 +15,19 @@ declare module "@cachet/kotlin-kotlin-stdlib"
 
         interface Collection<T>
         {
-            // contains
-            e1( value: T ): boolean
-
-            // size
-            o(): number
-
             toArray(): Array<T>
         }
 
-        interface List<T> extends Collection<T> {}
+        interface List<T> extends Collection<T>, kotlin.collections.KtList<T> {}
         interface EmptyList<T> extends List<T> {}
         interface AbstractMutableList<T> extends List<T> {}
-        function listOf_0<T>( elements: T[] ): List<T>
 
-        interface Set<T> extends Collection<T> {}
+        interface Set<T> extends Collection<T>, kotlin.collections.KtSet<T> {}
         interface EmptySet<T> extends Set<T> {}
         interface HashSet<T> extends Set<T> {}
-        function setOf_0<T>( elements: T[] ): Set<T>
 
-        interface Map<K, V>
-        {
-            // get
-            d2( key: K ): V
-
-            // keys
-            z1(): Set<K>
-
-            // values
-            a2(): Collection<V>
-        }
+        interface Map<K, V> extends kotlin.collections.KtMap<K, V> {}
         interface HashMap<K, V> extends Map<K, V> {}
-        function mapOf_0<K, V>( pairs: Pair<K, V>[] ): Map<K, V>
 
         type Duration = bigint
         interface DurationCompanion
@@ -70,9 +51,30 @@ declare module "@cachet/kotlin-kotlin-stdlib"
     {
         namespace collections
         {
-            const KtList: any
-            const KtSet: any
-            const KtMap: any
+            namespace KtList
+            {
+                function fromJsArray<T>( elements: T[] ): KtList<T>
+            }
+            interface KtList<T>
+            {
+                asJsReadonlyArrayView(): readonly T[]
+            }
+            namespace KtSet
+            {
+                function fromJsSet<T>( elements: Set<T> ): KtSet<T>
+            }
+            interface KtSet<T>
+            {
+                asJsReadonlySetView (): Readonly<Set<T>>
+            }
+            namespace KtMap
+            {
+                function fromJsMap<K, V>( entries: ReadonlyMap<K, V> ): KtMap<K, V>
+            }
+            interface KtMap<K, V>
+            {
+                asJsReadonlyMapView(): ReadonlyMap<K, V>
+            }
         }
     }
 }

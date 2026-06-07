@@ -6,6 +6,9 @@ import toLong = kotlin.toLong
 import Long = kotlin.Long
 import Pair = kotlin.Pair
 import Duration = kotlin.time.Duration
+import KtList = kotlin.collections.KtList
+import KtSet = kotlin.collections.KtSet
+import KtMap = kotlin.collections.KtMap
 import listOf = kotlin.collections.listOf
 import setOf = kotlin.collections.setOf
 import mapOf = kotlin.collections.mapOf
@@ -20,12 +23,15 @@ describe( "kotlin", () => {
             toLong( 42 ),
             new Pair( 42, "answer" ),
             [ "Collection", list ],
+            [ "KtList", KtList.fromJsArray( [ 42 ] ) ],
             [ "List", list ],
             [ "EmptyList", listOf<number>( [] ) ],
             [ "AbstractMutableList", list ],
+            [ "KtSet", KtSet.fromJsSet( new Set( [ 42 ] ) ) ],
             [ "Set", set ],
             [ "EmptySet", setOf<number>( [] ) ],
             [ "HashSet", set ],
+            [ "KtMap", KtMap.fromJsMap( new Map( [ [ 42, "answer" ] ] ) ) ],
             [ "Map", map ],
             [ "HashMap", map ],
             [ "DurationCompanion", Duration.Companion ],
@@ -97,6 +103,45 @@ describe( "kotlin", () => {
         } )
     } )
 
+    describe( "KtList", () => {
+        it( "fromJsArray and back to array succeeds", () => {
+            const numbers = [ 1, 2, 3 ]
+            const numbersList = KtList.fromJsArray( numbers )
+
+            const numbersArray = numbersList.asJsReadonlyArrayView()
+            expect( numbersArray[ 0 ] ).equals( 1 )
+
+            // The view is a proxy on which Chai's deep equals fails without applying the spread operator.
+            expect( [...numbersArray] ).deep.equals( numbers )
+        } )
+
+        it( "toArray provides a mutable copy of the original collection", () => {
+            const numbers = [ 1, 2, 3 ]
+            const numbersList = KtList.fromJsArray( numbers )
+
+            const newArray = numbersList.toArray()
+            newArray[ 0 ] = 42
+            
+            expect( numbers[ 0 ] ).equals( 1 )
+            expect( newArray[ 0 ] ).equals( 42 )
+        } )
+
+        it( "includes succeeds", () => {
+            const kotlinList = KtList.fromJsArray( [ 0, 42, 50 ] )
+            const includesAnswer = kotlinList.asJsReadonlyArrayView()
+
+            expect( includesAnswer.includes( 42 ) ).is.true
+            expect( includesAnswer.includes( 100 ) ).is.false
+        } )
+
+        it( "length succeeds", () => {
+            const kotlinList = KtList.fromJsArray( [ 1, 2, 3 ] )
+            const three = kotlinList.asJsReadonlyArrayView()
+
+            expect( three.length ).equals( 3 )
+        } )
+    } )
+
     describe( "Set", () => {
         it( "setOf and conversion back to array succeeds", () => {
             const answers = [ 42 ]
@@ -140,6 +185,15 @@ describe( "kotlin", () => {
 
             expect( answersMap.keys.toArray() ).deep.equals( [ "answer" ] )
             expect( answersMap.values.toArray() ).deep.equals( [ 42 ] )
+        } )
+    } )
+
+    describe( "KtMap", () => {
+        it( "fromJsMap and back to map succeeds", () => {
+            const answers = new Map( [ [ "answer", 42 ] ] )
+            const answersMap = KtMap.fromJsMap( answers )
+
+            expect( answersMap.asJsReadonlyMapView().get( "answer" ) ).equals( 42 )
         } )
     } )
 

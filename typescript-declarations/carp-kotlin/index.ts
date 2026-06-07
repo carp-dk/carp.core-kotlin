@@ -7,13 +7,16 @@ export namespace kotlinExport
 {
     export type Nullable<T> = T | null | undefined
     /**
-     * @deprecated Use bigint directly.
+     * @deprecated Use bigint instead.
      */
     export type Long = bigint
     /**
-     * @deprecated Use BigInt( number ) or bigint literal.
+     * @deprecated Use {@link BigInt} constructor or bigint literal instead.
      */
     export const toLong = (number: number): Long => BigInt( number )
+    /**
+     * @deprecated Use {@link KtMap} and initialize using JS arrays instead.
+     */
     export class Pair<K, V>
     {
         constructor( first: K, second: V ) {
@@ -22,8 +25,8 @@ export namespace kotlinExport
             kotlinPair.second = kotlinPair.pd_1;
             return kotlinPair;
         }
-        get first(): K { return this.first; }
-        get second(): V { return this.second; }
+        declare readonly first: K
+        declare readonly second: V
     }
 }
 declare global
@@ -31,6 +34,9 @@ declare global
     // Backwards compatibility for codebases which still use Long.
     interface BigInt
     {
+        /**
+         * @deprecated Keep as {@link bigint} to prevent losing precision, or use {@link Number} constructor instead.
+         */
         toNumber(): number
     }
 }
@@ -44,23 +50,39 @@ export namespace kotlinExport.collections
     {
         contains( value: T ): boolean
         size(): number
+
+        /**
+         * Copies all elements of this collection to a new array.
+         */
         toArray(): Array<T>
     }
-    export interface List<T> extends Collection<T> {}
-    export interface Set<T> extends Collection<T> {}
-    export interface Map<K, V>
+    /**
+     * @deprecated Use {@link KtList} instead.
+     */
+    export type List<T> = extend.kotlin.collections.KtList<T>
+    /**
+     * @deprecated Use {@link KtSet} instead.
+     */
+    export type Set<T> = extend.kotlin.collections.KtSet<T>
+    /**
+     * @deprecated Use {@link KtMap} instead.
+     */
+    export type Map<K, V> = extend.kotlin.collections.KtMap<K, V>
+    /**
+     * @deprecated Use {@link KtList.fromJsArray} instead.
+     */
+    export function listOf<T>( array: T[] ) { return KtList.fromJsArray( array ); }
+    /**
+     * @deprecated Use {@link KtSet.fromJsSet} instead.
+     */
+    export function setOf<T>( array: T[] ) { return KtSet.fromJsSet( new Set( array ) ) }
+    /**
+     * @deprecated Use {@link KtMap.fromJsMap} instead.
+     */
+    export function mapOf<K, V>( pairs: kotlinExport.Pair<K, V>[] )
     {
-        get( key: K ): V
-        keys: Set<K>
-        values: Collection<V>
+        return KtMap.fromJsMap( new Map( pairs.map( pair => [ pair.first, pair.second ] ) ) )
     }
-    export const listOf: <T>(array: T[]) => List<T> = extend.$_$.listOf_0
-    export const setOf: <T>(array: T[]) => Set<T> = extend.$_$.setOf_0
-    export const mapOf =
-        function<K, V>( pairs: kotlinExport.Pair<K, V>[] ): Map<K, V>
-        {
-            return extend.$_$.mapOf_0( pairs as any )
-        }
 }
 export namespace kotlinExport.time
 {
@@ -91,17 +113,26 @@ declare module "@cachet/kotlin-kotlin-stdlib"
             second: V
         }
         interface Collection<T> extends kotlinExport.collections.Collection<T> {}
-        abstract class EmptyList<T> implements kotlinExport.collections.List<T> {}
-        abstract class AbstractMutableList<T> implements kotlinExport.collections.List<T> {}
-        interface Set<T> extends kotlinExport.collections.Set<T> {}
-        abstract class EmptySet<T> implements kotlinExport.collections.Set<T> {}
-        abstract class HashSet<T> implements kotlinExport.collections.Set<T> {}
-        interface Map<K, V> extends kotlinExport.collections.Map<K, V> {}
-        abstract class HashMap<K, V> implements kotlinExport.collections.Map<K, V>
+        abstract class EmptyList<T> implements kotlin.collections.KtList<T> {}
+        abstract class AbstractMutableList<T> implements kotlin.collections.KtList<T> {}
+        interface Set<T> extends kotlin.collections.KtSet<T> {}
+        abstract class EmptySet<T> implements kotlin.collections.KtSet<T> {}
+        abstract class HashSet<T> implements kotlin.collections.KtSet<T> {}
+        interface Map<K, V> extends kotlin.collections.KtMap<K, V> {}
+        abstract class HashMap<K, V> implements kotlin.collections.KtMap<K, V> {}
+    }
+    namespace kotlin
+    {
+        namespace collections
         {
-            get( key: K ): V
-            keys: kotlinExport.collections.Set<K>
-            values: kotlinExport.collections.Collection<V>
+            interface KtList<T> extends kotlinExport.collections.Collection<T> {}
+            interface KtSet<T> extends kotlinExport.collections.Collection<T> {}
+            interface KtMap<K, V>
+            {
+                get( key: K ): V
+                keys: KtSet<K>
+                values: kotlinExport.collections.Collection<V>
+            }
         }
     }
 }
@@ -125,19 +156,19 @@ Object.defineProperty( BigInt.prototype, "inWholeMicroseconds", {
 extend.$_$.EmptyList.prototype.contains = function<T>( value: T ): boolean { return false; }
 extend.$_$.EmptyList.prototype.size = function<T>(): number { return 0; }
 extend.$_$.EmptyList.prototype.toArray = function<T>(): T[] { return []; }
-extend.$_$.AbstractMutableList.prototype.contains = function<T>( value: T ): boolean { return this.e1( value ); }
-extend.$_$.AbstractMutableList.prototype.size = function<T>(): number { return this.o(); }
+extend.$_$.AbstractMutableList.prototype.contains = function<T>( value: T ): boolean { return this.asJsReadonlyArrayView().includes( value ); }
+extend.$_$.AbstractMutableList.prototype.size = function<T>(): number { return this.asJsReadonlyArrayView().length; }
 extend.$_$.EmptySet.prototype.contains = function<T>( value: T ): boolean { return false; }
 extend.$_$.EmptySet.prototype.size = function<T>(): number { return 0; }
 extend.$_$.EmptySet.prototype.toArray = function<T>(): T[] { return []; }
-extend.$_$.HashSet.prototype.contains = function<T>( value: T ): boolean { return this.e1( value ); }
-extend.$_$.HashSet.prototype.size = function<T>(): number { return this.o(); }
-extend.$_$.HashMap.prototype.get = function<K, V>( key: K ): V { return this.d2( key ); }
+extend.$_$.HashSet.prototype.contains = function<T>( value: T ): boolean { return this.asJsReadonlySetView().has( value ); }
+extend.$_$.HashSet.prototype.size = function<T>(): number { return this.asJsReadonlySetView().size; }
+extend.$_$.HashMap.prototype.get = function<K, V>( key: K ): V { return this.asJsReadonlyMapView().get( key ); }
 Object.defineProperty( extend.$_$.HashMap.prototype, "keys", {
-    get: function keys() { return this.z1(); }
+    get: function keys() { return extend.kotlin.collections.KtSet.fromJsSet( new Set( this.asJsReadonlyMapView().keys() ) ); }
 } );
 Object.defineProperty( extend.$_$.HashMap.prototype, "values", {
-    get: function values() { return this.a2(); }
+    get: function values() { return extend.kotlin.collections.KtList.fromJsArray( [ ...this.asJsReadonlyMapView().values() ] ); }
 } );
 
 

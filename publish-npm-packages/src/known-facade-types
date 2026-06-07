@@ -1,8 +1,4 @@
 kotlin.Pair
-kotlin.collections.Collection
-kotlin.collections.List
-kotlin.collections.Set
-kotlin.collections.Map
 kotlin.time.Duration
 kotlinx.datetime.Clock
 kotlinx.datetime.Instant
