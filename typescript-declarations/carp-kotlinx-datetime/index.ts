@@ -34,8 +34,8 @@ declare module "@cachet/Kotlin-DateTime-library-kotlinx-datetime"
 
 
 // Implement base interfaces in internal types.
-extend.$_$.System.prototype.now = function(): kotlinx.datetime.Instant { return this.n14(); };
-extend.$_$.Instant_0.prototype.toEpochMilliseconds = function(): bigint { return this.q1k(); };
+extend.$_$.System.prototype.now = function(): kotlinx.datetime.Instant { return this.q15(); };
+extend.$_$.Instant_0.prototype.toEpochMilliseconds = function(): bigint { return this.q1l(); };
 
 
 // Export facade.

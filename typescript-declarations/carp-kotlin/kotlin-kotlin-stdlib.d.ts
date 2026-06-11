@@ -33,13 +33,13 @@ declare module "@cachet/kotlin-kotlin-stdlib"
         interface DurationCompanion
         {
             // parseIsoString
-            kg( isoDuration: string ): Duration
+            pg( isoDuration: string ): Duration
 
             // ZERO
-            dg_1: Duration
+            ig_1: Duration
 
             // INFINITE
-            eg_1: Duration
+            jg_1: Duration
         }
         function Companion_getInstance_17(): DurationCompanion
         function _Duration___get_inWholeMilliseconds__impl__msfiry( duration: Duration ): bigint

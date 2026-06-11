@@ -4,7 +4,7 @@ apply {
 
 kotlin {
     js {
-        moduleName = project.name.replaceAll("\\.", "-") + "-generated"
+        outputModuleName = project.name.replaceAll("\\.", "-") + "-generated"
         binaries.executable() // Export JS/TypeScript files.
         compilerOptions {
             // Technically, since bigint is enabled, the target is at least "es2020", but this is not supported:

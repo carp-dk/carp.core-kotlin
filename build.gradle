@@ -15,14 +15,14 @@ buildscript {
 
         versions = [
             // Kotlin multiplatform versions.
-            kotlin:'2.3.21',
-            serialization:'1.8.1',
-            coroutines:'1.10.2',
+            kotlin:'2.4.0',
+            serialization:'1.11.0',
+            coroutines:'1.11.0',
             datetime:'0.6.2',
 
             // JVM versions.
             jvmTarget:'1.8',
-            dokkaPlugin:'2.0.0',
+            dokkaPlugin:'2.2.0',
             reflections:'0.10.2',
 
             // JS versions.
@@ -33,7 +33,7 @@ buildscript {
             detektPlugin:'1.23.8',
             detektVerifyImplementation:'1.2.6',
             nexusPublishPlugin:'2.0.0',
-            apacheCommons:'2.19.0'
+            apacheCommons:'2.22.0'
         ]
 
         commonModule = subprojects.find { it.name == 'carp.common' }
@@ -94,7 +94,7 @@ configure( subprojects - devOpsModules ) {
             }
         }
         js {
-            moduleName = project.name.replaceAll("\\.", "-") + "-generated"
+            outputModuleName = project.name.replaceAll("\\.", "-") + "-generated"
             binaries.executable() // Export JS/TypeScript files.
             compilerOptions {
                 // Technically, since bigint is enabled, the target is at least "es2020", but this is not supported:
@@ -165,10 +165,6 @@ configure( subprojects - devOpsModules ) {
     apply plugin: 'maven-publish'
     apply plugin: 'signing'
     apply plugin: 'org.jetbrains.dokka'
-    tasks.withType(org.jetbrains.dokka.gradle.tasks.DokkaGenerateTask).configureEach {
-        // HACK: Dokka 2.0.0 exposes this debug file by default (https://github.com/Kotlin/dokka/issues/3958)
-        dokkaConfigurationJsonFile.convention(null)
-    }
     task javadocJar(type: Jar) {
         group JavaBasePlugin.DOCUMENTATION_GROUP
         description 'Create javadoc jar using Dokka'

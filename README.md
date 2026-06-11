@@ -368,7 +368,7 @@ if ( status is StudyStatus.RegisteringDevices )
 
 In case you want to contribute, please follow our [contribution guidelines](https://github.com/cph-cachet/carp.core-kotlin/blob/develop/CONTRIBUTING.md).
 
-We recommend using IntelliJ IDEA 2025 (community edition is fine), as this is the development environment we use and is therefore fully tested.
+We recommend using IntelliJ IDEA 2026 (community edition is fine), as this is the development environment we use and is therefore fully tested.
 
 - Open the project folder in IntelliJ IDEA.
 - Make sure Google Chrome is installed; JS unit tests are run on headless Chrome.
