@@ -15,6 +15,7 @@ import kotlin.js.JsExport
  */
 @Serializable( DataStreamBatchSerializer::class )
 @JsExport
+@Suppress( "EXPOSED_NOT_EXPORTED_SUPER_INTERFACE_WARNING" )
 interface DataStreamBatch : Sequence<DataStreamPoint<*>>
 {
     val sequences: Sequence<DataStreamSequence<*>>
