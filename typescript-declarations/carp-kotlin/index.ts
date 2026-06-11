@@ -93,9 +93,9 @@ export namespace kotlinExport.time
     export namespace Duration
     {
         export const Companion: any = extend.$_$.Companion_getInstance_17()
-        export const parseIsoString: (isoDuration: string) => Duration = Companion.kg
-        export const ZERO: Duration = Companion.dg_1
-        export const INFINITE: Duration = Companion.eg_1
+        export const parseIsoString: (isoDuration: string) => Duration = Companion.pg
+        export const ZERO: Duration = Companion.ig_1
+        export const INFINITE: Duration = Companion.jg_1
     }
 }
 

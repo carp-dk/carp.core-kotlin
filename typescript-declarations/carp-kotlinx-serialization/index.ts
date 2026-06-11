@@ -16,7 +16,7 @@ export namespace kotlinx.serialization
             ? type.Companion
             : associatedObjects.find( (o) => o.name.startsWith( "Companion" ) )?.()
         const serializer = companion !== undefined
-            ? companion.j1n()
+            ? companion.m1o()
             : associatedObjects.find( (o) => o.name.startsWith( "$serializer" ) )?.()
         return serializer
     }
@@ -56,12 +56,12 @@ declare module "@cachet/kotlinx-serialization-kotlinx-serialization-json"
 extendJson.$_$.Json.prototype.encodeToString =
     function( serializer: any, value: any ): string
     {
-        return this.b1l( serializer, value );
+        return this.b1m( serializer, value );
     };
 extendJson.$_$.Json.prototype.decodeFromString =
     function( serializer: any, string: string ): any
     {
-        return this.c1l( serializer, string );
+        return this.c1m( serializer, string );
     };
 
 
