@@ -21,8 +21,6 @@ export namespace kotlinExport
     {
         constructor( first: K, second: V ) {
             let kotlinPair = new extend.$_$.Pair( first, second );
-            kotlinPair.first = kotlinPair.od_1;
-            kotlinPair.second = kotlinPair.pd_1;
             return kotlinPair;
         }
         declare readonly first: K
@@ -94,10 +92,10 @@ export namespace kotlinExport.time
     }
     export namespace Duration
     {
-        export const Companion: any = extend.$_$.Companion_getInstance_20()
-        export const parseIsoString: (isoDuration: string) => Duration = Companion.kh
-        export const ZERO: Duration = Companion.hh_1
-        export const INFINITE: Duration = Companion.ih_1
+        export const Companion: any = extend.$_$.Companion_getInstance_17()
+        export const parseIsoString: (isoDuration: string) => Duration = Companion.ng
+        export const ZERO: Duration = Companion.gg_1
+        export const INFINITE: Duration = Companion.hg_1
     }
 }
 
