@@ -5,7 +5,9 @@
 )
 
 import kotlin.js.JsExport
+import kotlin.time.Clock
 import kotlin.time.Duration
+import kotlin.time.Instant
 
 /**
  * Refers to types/methods in the kotlin standard library to ensure they aren't removed from compiled sources
@@ -31,5 +33,16 @@ class KotlinExport
         val inWholeMilliseconds = duration.inWholeMilliseconds
         val inWholeMicroseconds = duration.inWholeMicroseconds
         val toString = duration.toString()
+    }
+
+    fun clock( clock: Clock )
+    {
+        val system: Clock = Clock.System
+        val now = clock.now()
+    }
+
+    fun instant( instant: Instant )
+    {
+        val toEpochMilliseconds = instant.toEpochMilliseconds()
     }
 }

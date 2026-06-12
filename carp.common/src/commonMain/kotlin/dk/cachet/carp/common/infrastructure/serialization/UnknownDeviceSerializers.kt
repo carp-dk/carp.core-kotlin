@@ -11,10 +11,10 @@ import dk.cachet.carp.common.application.devices.DeviceRegistrationBuilder
 import dk.cachet.carp.common.application.devices.PrimaryDeviceConfiguration
 import dk.cachet.carp.common.application.sampling.DataTypeSamplingSchemeMap
 import dk.cachet.carp.common.application.sampling.SamplingConfiguration
-import kotlinx.datetime.Instant
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 import kotlin.reflect.KClass
+import kotlin.time.Instant
 
 
 /**

@@ -20,8 +20,8 @@ import dk.cachet.carp.deployments.application.users.ParticipantStatus
 import dk.cachet.carp.deployments.domain.users.getAssignedDeviceRoleNames
 import dk.cachet.carp.protocols.application.StudyProtocolSnapshot
 import dk.cachet.carp.protocols.domain.StudyProtocol
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 
 /**

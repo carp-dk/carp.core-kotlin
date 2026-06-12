@@ -1,8 +1,8 @@
 package dk.cachet.carp.data.application
 
 import dk.cachet.carp.common.application.toEpochMicroseconds
-import kotlinx.datetime.Clock
 import kotlin.test.*
+import kotlin.time.Clock
 
 
 /**

@@ -5,6 +5,7 @@ import kotlin from '@cachet/carp-kotlin'
 import toLong = kotlin.toLong
 import Long = kotlin.Long
 import Pair = kotlin.Pair
+import Clock = kotlin.time.Clock
 import Duration = kotlin.time.Duration
 import KtList = kotlin.collections.KtList
 import KtSet = kotlin.collections.KtSet
@@ -22,6 +23,8 @@ describe( "kotlin", () => {
         const instances: any[] = [
             toLong( 42 ),
             new Pair( 42, "answer" ),
+            Clock.System,
+            Clock.System.now(),
             [ "Collection", list ],
             [ "KtList", KtList.fromJsArray( [ 42 ] ) ],
             [ "List", list ],
@@ -61,6 +64,21 @@ describe( "kotlin", () => {
             
             expect( bigAsLong ).equals( big )
             expect( longAsBig ).equals( big )
+        } )
+    } )
+
+    describe( "Clock", () => {
+        it( "now succeeds", () => {
+            const now = Clock.System.now()
+            expect( now ).not.undefined
+        } )
+    } )
+
+    describe( "Instant", () => {
+        it( "toEpochMilliseconds succeeds", () => {
+            const now = Clock.System.now()
+
+            expect( now.toEpochMilliseconds() > 0 ).true
         } )
     } )
 

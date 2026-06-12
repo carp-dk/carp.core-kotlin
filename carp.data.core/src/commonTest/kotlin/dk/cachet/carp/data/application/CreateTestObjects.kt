@@ -6,7 +6,7 @@ import dk.cachet.carp.common.application.toEpochMicroseconds
 import dk.cachet.carp.common.infrastructure.test.StubDataPoint
 import dk.cachet.carp.data.infrastructure.dataStreamId
 import dk.cachet.carp.data.infrastructure.measurement
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 
 
 val stubDeploymentId = UUID.randomUUID()

@@ -6,8 +6,8 @@ import dk.cachet.carp.common.infrastructure.test.StubDataPoint
 import dk.cachet.carp.common.infrastructure.test.StubDataTimeSpan
 import dk.cachet.carp.data.infrastructure.dataStreamId
 import dk.cachet.carp.data.infrastructure.measurement
-import kotlinx.datetime.Clock
 import kotlin.test.*
+import kotlin.time.Clock
 
 
 /**

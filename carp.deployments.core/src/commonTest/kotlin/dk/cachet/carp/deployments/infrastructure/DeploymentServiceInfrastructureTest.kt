@@ -7,7 +7,7 @@ import dk.cachet.carp.common.test.infrastructure.ApplicationServiceRequestsTest
 import dk.cachet.carp.deployments.application.DeploymentService
 import dk.cachet.carp.deployments.application.DeploymentServiceHostTest
 import dk.cachet.carp.protocols.infrastructure.test.createEmptyProtocol
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 
 
 class DeploymentServiceRequestsTest : ApplicationServiceRequestsTest<DeploymentService, DeploymentServiceRequest<*>>(

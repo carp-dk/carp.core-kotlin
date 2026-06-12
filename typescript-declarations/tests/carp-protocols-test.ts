@@ -3,8 +3,8 @@ import { expect } from 'chai'
 import kxs from '@cachet/carp-kotlinx-serialization'
 import getSerializer = kxs.serialization.getSerializer
 
-import kxdt from '@cachet/carp-kotlinx-datetime'
-import Clock = kxdt.datetime.Clock
+import kotlin from '@cachet/carp-kotlin'
+import Clock = kotlin.time.Clock
 
 import carp from '@cachet/carp-protocols-core'
 import dk = carp.dk

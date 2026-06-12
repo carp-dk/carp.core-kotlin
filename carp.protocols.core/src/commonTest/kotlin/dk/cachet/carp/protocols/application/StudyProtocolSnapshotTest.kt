@@ -18,8 +18,8 @@ import dk.cachet.carp.common.infrastructure.test.StubTriggerConfiguration
 import dk.cachet.carp.protocols.domain.StudyProtocol
 import dk.cachet.carp.protocols.infrastructure.test.createComplexProtocol
 import dk.cachet.carp.protocols.infrastructure.test.createEmptyProtocol
-import kotlinx.datetime.Clock
 import kotlin.test.*
+import kotlin.time.Clock
 
 
 /**

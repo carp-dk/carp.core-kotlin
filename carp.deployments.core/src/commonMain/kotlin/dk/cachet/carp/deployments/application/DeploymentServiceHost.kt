@@ -11,8 +11,8 @@ import dk.cachet.carp.deployments.domain.DeploymentRepository
 import dk.cachet.carp.deployments.domain.RegistrableDevice
 import dk.cachet.carp.deployments.domain.StudyDeployment
 import dk.cachet.carp.protocols.application.StudyProtocolSnapshot
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 
 /**

@@ -18,8 +18,8 @@ import dk.cachet.carp.studies.application.users.Participant
 import dk.cachet.carp.studies.application.users.ParticipantGroupRepresentation
 import dk.cachet.carp.studies.application.users.ParticipantGroupStatus
 import dk.cachet.carp.studies.application.users.participantIds
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 
 /**

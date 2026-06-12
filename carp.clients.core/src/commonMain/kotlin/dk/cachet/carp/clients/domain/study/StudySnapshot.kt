@@ -5,8 +5,8 @@ import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.domain.Snapshot
 import dk.cachet.carp.deployments.application.PrimaryDeviceDeployment
 import dk.cachet.carp.deployments.application.StudyDeploymentStatus
-import kotlinx.datetime.Instant
 import kotlinx.serialization.*
+import kotlin.time.Instant
 
 
 @Serializable
