@@ -1,10 +1,10 @@
 package dk.cachet.carp.protocols.application
 
 import dk.cachet.carp.protocols.domain.StudyProtocol
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlinx.serialization.*
 import kotlin.js.JsExport
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 
 /**

@@ -4,8 +4,8 @@ import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.deployments.application.DeviceDeploymentStatus
 import dk.cachet.carp.deployments.application.StudyDeploymentStatus
 import dk.cachet.carp.deployments.application.users.ParticipantStatus
-import kotlinx.datetime.Clock
 import kotlin.test.*
+import kotlin.time.Clock
 
 
 /**

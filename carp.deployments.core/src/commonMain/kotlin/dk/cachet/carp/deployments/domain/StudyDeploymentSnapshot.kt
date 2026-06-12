@@ -5,8 +5,8 @@ import dk.cachet.carp.common.application.devices.DeviceRegistration
 import dk.cachet.carp.common.domain.Snapshot
 import dk.cachet.carp.deployments.application.users.ParticipantStatus
 import dk.cachet.carp.protocols.application.StudyProtocolSnapshot
-import kotlinx.datetime.Instant
 import kotlinx.serialization.*
+import kotlin.time.Instant
 
 
 /**

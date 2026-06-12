@@ -1,8 +1,8 @@
 package dk.cachet.carp.data.application
 
-import kotlinx.datetime.Instant
 import kotlinx.serialization.*
 import kotlin.js.JsExport
+import kotlin.time.Instant
 
 
 /**

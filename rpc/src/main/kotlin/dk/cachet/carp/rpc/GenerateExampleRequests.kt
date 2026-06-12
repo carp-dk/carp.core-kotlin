@@ -32,7 +32,6 @@ import dk.cachet.carp.studies.application.*
 import dk.cachet.carp.studies.application.users.*
 import dk.cachet.carp.studies.infrastructure.*
 import kotlinx.coroutines.runBlocking
-import kotlinx.datetime.Instant
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlin.reflect.KFunction
@@ -42,6 +41,7 @@ import kotlin.reflect.jvm.javaMethod
 import kotlin.reflect.jvm.jvmErasure
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Instant
 
 
 /**

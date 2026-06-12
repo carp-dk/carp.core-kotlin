@@ -6,9 +6,9 @@ import dk.cachet.carp.common.application.ApplicationData
 import dk.cachet.carp.common.application.Immutable
 import dk.cachet.carp.common.application.ImplementAsDataClass
 import dk.cachet.carp.common.infrastructure.serialization.NotSerializable
-import kotlinx.datetime.Instant
 import kotlinx.serialization.*
 import kotlin.js.JsExport
+import kotlin.time.Instant
 
 
 /**

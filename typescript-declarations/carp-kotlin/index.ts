@@ -84,6 +84,14 @@ export namespace kotlinExport.collections
 }
 export namespace kotlinExport.time
 {
+    export interface Clock
+    {
+        now(): Instant
+    }
+    export namespace Clock
+    {
+        export const System: Clock = extend.$_$.System_instance
+    }
     export interface Duration
     {
         get inWholeMilliseconds(): bigint
@@ -93,9 +101,13 @@ export namespace kotlinExport.time
     export namespace Duration
     {
         export const Companion: any = extend.$_$.Companion_getInstance_17()
-        export const parseIsoString: (isoDuration: string) => Duration = Companion.pg
-        export const ZERO: Duration = Companion.ig_1
-        export const INFINITE: Duration = Companion.jg_1
+        export const parseIsoString: (isoDuration: string) => Duration = Companion.tg
+        export const ZERO: Duration = Companion.mg_1
+        export const INFINITE: Duration = Companion.ng_1
+    }
+    export interface Instant
+    {
+        toEpochMilliseconds(): bigint
     }
 }
 
@@ -118,6 +130,10 @@ declare module "@cachet/kotlin-kotlin-stdlib"
         abstract class HashSet<T> implements kotlin.collections.KtSet<T> {}
         interface Map<K, V> extends kotlin.collections.KtMap<K, V> {}
         abstract class HashMap<K, V> implements kotlin.collections.KtMap<K, V> {}
+        interface System extends kotlinExport.time.Clock {}
+        abstract class System implements kotlinExport.time.Clock {}
+        interface Instant extends kotlinExport.time.Instant {}
+        abstract class Instant implements kotlinExport.time.Instant {}
     }
     namespace kotlin
     {
@@ -139,6 +155,8 @@ declare module "@cachet/kotlin-kotlin-stdlib"
 // Implement base interfaces in internal types.
 (BigInt.prototype as any).toNumber = function(): number { return Number( this ); };
 (BigInt.prototype as any).toDurationString = function(): string { return extend.$_$.Duration__toString_impl_8d916b( this ) };
+extend.$_$.System.prototype.now = function(): kotlinExport.time.Instant { return this.lg(); };
+extend.$_$.Instant.prototype.toEpochMilliseconds = function(): bigint { return this.ih(); };
 Object.defineProperty( BigInt.prototype, "inWholeMilliseconds", {
     get: function inWholeMilliseconds()
     {

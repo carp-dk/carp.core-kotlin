@@ -10,9 +10,9 @@ import dk.cachet.carp.deployments.application.PrimaryDeviceDeployment
 import dk.cachet.carp.deployments.application.StudyDeploymentStatus
 import dk.cachet.carp.deployments.application.users.ParticipantInvitation
 import dk.cachet.carp.protocols.application.StudyProtocolSnapshot
-import kotlinx.datetime.Instant
 import kotlinx.serialization.*
 import kotlin.js.JsExport
+import kotlin.time.Instant
 
 
 /**

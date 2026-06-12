@@ -8,7 +8,7 @@ import dk.cachet.carp.deployments.application.users.StudyInvitation
 import dk.cachet.carp.protocols.application.StudyProtocolSnapshot
 import dk.cachet.carp.studies.domain.Study
 import dk.cachet.carp.studies.domain.StudyRepository
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 
 
 /**

@@ -1,8 +1,8 @@
 package dk.cachet.carp.common.application
 
-import kotlinx.datetime.Instant
 import kotlin.test.*
 import kotlin.time.Duration.Companion.microseconds
+import kotlin.time.Instant
 
 
 class InstantExtensionsTest

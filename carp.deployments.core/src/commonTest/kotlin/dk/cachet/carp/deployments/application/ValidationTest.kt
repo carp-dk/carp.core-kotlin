@@ -13,9 +13,9 @@ import dk.cachet.carp.deployments.application.users.StudyInvitation
 import dk.cachet.carp.protocols.infrastructure.test.createEmptyProtocol
 import dk.cachet.carp.protocols.infrastructure.test.createSinglePrimaryDeviceProtocol
 import dk.cachet.carp.protocols.infrastructure.test.createSinglePrimaryWithConnectedDeviceProtocol
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlin.test.*
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 
 /**

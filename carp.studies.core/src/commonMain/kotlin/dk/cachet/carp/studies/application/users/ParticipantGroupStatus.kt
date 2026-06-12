@@ -6,9 +6,9 @@ import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.deployments.application.StudyDeploymentStatus
 import dk.cachet.carp.deployments.domain.StudyDeployment
 import dk.cachet.carp.deployments.domain.users.ParticipantGroup
-import kotlinx.datetime.Instant
 import kotlinx.serialization.*
 import kotlin.js.JsExport
+import kotlin.time.Instant
 
 
 /**

@@ -5,7 +5,7 @@ import dk.cachet.carp.common.application.users.ExpectedParticipantData
 import dk.cachet.carp.common.application.users.ParticipantAttribute
 import dk.cachet.carp.protocols.domain.StudyProtocol
 import dk.cachet.carp.protocols.domain.StudyProtocolRepository
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 
 
 /**

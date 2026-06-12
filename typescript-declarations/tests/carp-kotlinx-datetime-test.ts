@@ -1,37 +1,18 @@
-import VerifyModule from './VerifyModule.js'
-
 import { expect } from 'chai'
+import kotlin from '@cachet/carp-kotlin'
 import kotlinx from '@cachet/carp-kotlinx-datetime'
 import Clock = kotlinx.datetime.Clock
 
 
-describe( "kotlinx-datetime", () => {
-    it( "verify module declarations", async () => {
-        const instances: any[] = [
-            Clock.System,
-            Clock.System.now()
-        ]
-
-        const moduleVerifier = new VerifyModule(
-            '@cachet/Kotlin-DateTime-library-kotlinx-datetime',
-            './carp-kotlinx-datetime/Kotlin-DateTime-library-kotlinx-datetime.d.ts',
-            instances
-        )
-        await moduleVerifier.verify()
+describe( "kotlinx-datetime compatibility facade", () => {
+    it( "forwards Clock.System to kotlin.time", () => {
+        expect( Clock.System ).equals( kotlin.time.Clock.System )
     } )
 
-    describe( "Clock", () => {
-        it( "now succeeds", () => {
-            const now = Clock.System.now()
-            expect( now ).not.undefined
-        } )
-    } )
+    it( "forwards Instant from Clock.System.now", () => {
+        const instant: kotlinx.datetime.Instant = Clock.System.now()
+        const stdlibInstant: kotlin.time.Instant = instant
 
-    describe( "Instant", () => {
-        it( "toEpochMilliseconds succeeds", () => {
-            const now = Clock.System.now()
-
-            expect( now.toEpochMilliseconds() > 0 ).true
-        } )
+        expect( stdlibInstant.toEpochMilliseconds() > 0 ).true
     } )
 } )

@@ -1,6 +1,6 @@
 kotlin.Pair
+kotlin.time.Clock
 kotlin.time.Duration
-kotlinx.datetime.Clock
-kotlinx.datetime.Instant
+kotlin.time.Instant
 kotlinx.serialization.json.Json
 dk.cachet.carp.common.application.users.AccountIdentity

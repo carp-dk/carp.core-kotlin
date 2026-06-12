@@ -1,6 +1,5 @@
 import extend from "@cachet/carp-common-generated"
 import kotlinStdLib from "@cachet/carp-kotlin"
-import kotlinDateTime from "@cachet/carp-kotlinx-datetime"
 import kotlinSerialization from "@cachet/carp-kotlinx-serialization"
 
 
@@ -16,6 +15,7 @@ declare module "@cachet/carp-common-generated"
     namespace kotlin.time
     {
         type Duration = kotlinStdLib.time.Duration
+        type Instant = kotlinStdLib.time.Instant
     }
     namespace kotlin.collections
     {
@@ -23,10 +23,6 @@ declare module "@cachet/carp-common-generated"
         type List<T> = kotlinStdLib.collections.List<T>
         type Set<T> = kotlinStdLib.collections.Set<T>
         type Map<K, V> = kotlinStdLib.collections.Map<K, V>
-    }
-    namespace kotlinx.datetime
-    {
-        type Instant = kotlinDateTime.datetime.Instant
     }
     namespace kotlinx.serialization.json
     {

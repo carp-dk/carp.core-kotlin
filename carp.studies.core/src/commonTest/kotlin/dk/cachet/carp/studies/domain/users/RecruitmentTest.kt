@@ -12,8 +12,8 @@ import dk.cachet.carp.studies.application.users.AssignedParticipantRoles
 import dk.cachet.carp.studies.application.users.ParticipantGroupRepresentation
 import dk.cachet.carp.studies.application.users.ParticipantGroupStatus
 import kotlinx.coroutines.test.runTest
-import kotlinx.datetime.Clock
 import kotlin.test.*
+import kotlin.time.Clock
 
 
 /**

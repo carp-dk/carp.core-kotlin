@@ -4,10 +4,10 @@ import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.application.toEpochMicroseconds
 import dk.cachet.carp.common.infrastructure.test.StubDataPoint
 import dk.cachet.carp.data.infrastructure.measurement
-import kotlinx.datetime.Clock
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.time.Clock
 
 
 /**

@@ -7,8 +7,8 @@ import dk.cachet.carp.common.application.services.IntegrationEvent
 import dk.cachet.carp.common.application.users.ExpectedParticipantData
 import dk.cachet.carp.common.application.users.ParticipantAttribute
 import dk.cachet.carp.protocols.domain.StudyProtocol
-import kotlinx.datetime.Clock
 import kotlinx.serialization.*
+import kotlin.time.Clock
 
 
 /**

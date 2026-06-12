@@ -13,9 +13,9 @@ import dk.cachet.carp.common.application.users.ExpectedParticipantData
 import dk.cachet.carp.common.application.users.ParticipantRole
 import dk.cachet.carp.common.domain.Snapshot
 import dk.cachet.carp.protocols.domain.StudyProtocol
-import kotlinx.datetime.Instant
 import kotlinx.serialization.*
 import kotlin.js.JsExport
+import kotlin.time.Instant
 
 
 /**
