@@ -1,4 +1,4 @@
-group 'rpc'
+group = 'rpc'
 
 apply {
     plugin("kotlin")

@@ -166,8 +166,8 @@ configure( subprojects - devOpsModules ) {
     apply plugin: 'signing'
     apply plugin: 'org.jetbrains.dokka'
     task javadocJar(type: Jar) {
-        group JavaBasePlugin.DOCUMENTATION_GROUP
-        description 'Create javadoc jar using Dokka'
+        group = JavaBasePlugin.DOCUMENTATION_GROUP
+        description = 'Create javadoc jar using Dokka'
         archiveClassifier = "javadoc"
         from dokkaGeneratePublicationHtml
     }
@@ -204,8 +204,8 @@ configure( subprojects - devOpsModules ) {
         }
         repositories {
             maven {
-                name "local"
-                url "$buildDir/repository"
+                name = "local"
+                url = uri("$buildDir/repository")
             }
         }
     }
