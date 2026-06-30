@@ -3,6 +3,7 @@ package dk.cachet.carp.studies.domain.users
 import dk.cachet.carp.common.application.EmailAddress
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.application.users.AccountIdentity
+import dk.cachet.carp.common.application.users.AssignedTo
 import dk.cachet.carp.common.application.users.EmailAccountIdentity
 import dk.cachet.carp.common.application.users.UsernameAccountIdentity
 import dk.cachet.carp.common.domain.AggregateRoot
@@ -14,22 +15,37 @@ import dk.cachet.carp.deployments.application.users.StudyInvitation
 import dk.cachet.carp.protocols.application.StudyProtocolSnapshot
 import dk.cachet.carp.studies.application.users.AssignedParticipantRoles
 import dk.cachet.carp.studies.application.users.Participant
+import dk.cachet.carp.studies.application.users.ParticipantGroupRepresentation
 import dk.cachet.carp.studies.application.users.ParticipantGroupStatus
 import dk.cachet.carp.studies.application.users.participantIds
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 
 /**
  * Represents a set of [participants] recruited for a study identified by [studyId].
  */
+@Suppress( "TooManyFunctions" )
 class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: Instant = Clock.System.now() ) :
     AggregateRoot<Recruitment, RecruitmentSnapshot, Recruitment.Event>( id, createdOn )
 {
     sealed class Event : DomainEvent
     {
         data class ParticipantAdded( val participant: Participant ) : Event()
-        data class ParticipantGroupAdded( val participantIds: Set<UUID> ) : Event()
+        data class ParticipantGroupAdded(
+            val participants: Set<AssignedParticipantRoles>,
+            val representation: ParticipantGroupRepresentation = ParticipantGroupRepresentation.Default
+        ) : Event()
+
+        /**
+         * Indicates the participant group with [groupId] was updated.
+         * A `null` value means no change; otherwise, the value is set.
+         */
+        data class ParticipantGroupUpdated(
+            val groupId: UUID,
+            val participants: Set<AssignedParticipantRoles>? = null,
+            val representation: ParticipantGroupRepresentation? = null
+        ) : Event()
     }
 
 
@@ -174,44 +190,182 @@ class Recruitment( val studyId: UUID, id: UUID = UUID.randomUUID(), createdOn: I
     private val _participantGroups: MutableMap<UUID, StagedParticipantGroup> = mutableMapOf()
 
     /**
-     * Create and add the participants identified by [participantIds] as a participant group.
+     * Create and add the [participants] with assigned roles to a participant group, and give it a [representation].
      *
-     * @throws IllegalArgumentException when one or more of the participants aren't in this recruitment.
+     * [ParticipantGroupRepresentation.Default] is used when no [representation] is passed.
+     *
+     * @throws IllegalArgumentException when:
+     *  - one or more of the participants aren't in this recruitment.
+     *  - any of the participant roles specified in [participants] are not part of the configured study protocol.
      * @throws IllegalStateException when the study is not yet ready for deployment.
      */
-    fun addParticipantGroup( participantIds: Set<UUID>, id: UUID = UUID.randomUUID() ): StagedParticipantGroup
+    fun addParticipantGroup(
+        participants: Set<AssignedParticipantRoles>,
+        representation: ParticipantGroupRepresentation = ParticipantGroupRepresentation.Default,
+        id: UUID = UUID.randomUUID()
+    ): StagedParticipantGroup
     {
-        require( participants.map { it.id }.containsAll( participantIds ) )
-            { "One of the participants for which to create a participant group isn't part of this recruitment." }
-        check( getStatus() is RecruitmentStatus.ReadyForDeployment ) { "The study is not yet ready for deployment." }
+        val status = getStatus()
+        check( status is RecruitmentStatus.ReadyForDeployment ) { "The study is not yet ready for deployment." }
 
-        val group = StagedParticipantGroup( id )
-        group.addParticipants( participantIds )
+        validateRoleAssignments( status.studyProtocol, participants )
+
+        val group = StagedParticipantGroup( id, representation )
+        group.addParticipants( participants )
 
         _participantGroups[ group.id ] = group
-        event( Event.ParticipantGroupAdded( participantIds ) )
+        event( Event.ParticipantGroupAdded( participants, representation ) )
 
         return group
     }
 
     /**
-     * Get the [ParticipantGroupStatus] of the study deployment identified by [studyDeploymentStatus].
+     * Update the [participants] and/or [representation] of an existing participant group with the specified [groupId].
      *
-     * @throws IllegalArgumentException when the study deployment identified by [studyDeploymentStatus] is not part of this recruitment.
+     * @throws IllegalArgumentException when:
+     *  - the participant group with [groupId] does not exist.
+     *  - one or more of the participants aren't in this recruitment.
+     *  - any of the participant roles specified in [participants] are not part of the configured study protocol.
+     * @throws IllegalStateException when:
+     *  - the recruitment is not ready for deployment
+     *  - the group has already been deployed and [participants] changes assignments
      */
-    fun getParticipantGroupStatus( studyDeploymentStatus: StudyDeploymentStatus ): ParticipantGroupStatus
+    fun updateParticipantGroup(
+        groupId: UUID,
+        participants: Set<AssignedParticipantRoles>? = null,
+        representation: ParticipantGroupRepresentation? = null
+    )
     {
-        val deploymentId = studyDeploymentStatus.studyDeploymentId
-        val group: StagedParticipantGroup = requireNotNull( _participantGroups[ deploymentId ] )
-            { "A study deployment with ID \"$deploymentId\" is not part of this recruitment." }
+        val group = requireNotNull( _participantGroups[ groupId ] )
+            { "Participant group with ID \"$groupId\" does not exist." }
 
-        val participants = group.participantIds.map { id -> _participants.first { it.id == id } }
-        return ParticipantGroupStatus.InDeployment.fromDeploymentStatus( participants.toSet(), studyDeploymentStatus )
+        val newRoleAssignments = participants != null && group.roleAssignments != participants
+        val newRepresentation = representation != null && group.representation != representation
+        if ( newRoleAssignments )
+        {
+            check( !group.isDeployed )
+                { "Participant group has already been deployed; participant assignments can no longer be changed." }
+
+            val status = getStatus()
+            check( status is RecruitmentStatus.ReadyForDeployment ) { "The study is not yet ready for deployment." }
+
+            validateRoleAssignments( status.studyProtocol, participants )
+            group.replaceParticipants( participants )
+        }
+
+        if ( newRepresentation ) group.representation = representation
+        if ( newRoleAssignments || newRepresentation )
+            event(
+                Event.ParticipantGroupUpdated(
+                    groupId,
+                    participants.takeIf { newRoleAssignments },
+                    representation.takeIf { newRepresentation }
+                )
+            )
     }
+
+    /**
+     * Get the [ParticipantGroupStatus] for participant groups with [groupIds] in this recruitment.
+     * For deployed participant groups, the matching [StudyDeploymentStatus] is retrieved using
+     * [getDeploymentStatusList].
+     *
+     * @throws IllegalArgumentException when:
+     * - [groupIds] contains an id which is not part of this recruitment
+     * - [getDeploymentStatusList] doesn't return a matching [StudyDeploymentStatus] for each of the requested IDs
+     */
+    suspend fun getParticipantGroupStatusList(
+        groupIds: Set<UUID>,
+        getDeploymentStatusList: suspend (Set<UUID>) -> List<StudyDeploymentStatus>
+    ): List<ParticipantGroupStatus>
+    {
+        require( participantGroups.keys.containsAll( groupIds ) )
+            { "One of the group IDs a status is requested for isn't part of this recruitment." }
+
+        val (deployedGroups, stagedGroups) = groupIds
+            .map { participantGroups.getValue( it ) }
+            .partition { it.isDeployed }
+
+        // Get participant group status for staged groups.
+        val stagedGroupStatuses = stagedGroups.map { group ->
+            ParticipantGroupStatus.Staged(
+                id = group.id,
+                participants = getParticipantsFor( group ),
+                assignedParticipantRoles = group.roleAssignments.toSet(),
+                representation = group.representation
+            )
+        }
+
+        // Get deployment status for deployed participant groups.
+        val deployedGroupIds = deployedGroups.map { it.id }.toSet()
+        val deploymentStatuses =
+            if ( deployedGroupIds.isEmpty() ) emptyMap()
+            else getDeploymentStatusList( deployedGroupIds ).associateBy { it.studyDeploymentId }
+
+        // Get participant group status for deployed groups.
+        val deployedGroupStatuses = deployedGroups.map { group ->
+            val deploymentStatus = requireNotNull( deploymentStatuses[ group.id ] )
+                { "No study deployment status returned for the requested ID: \"${group.id}\"." }
+            ParticipantGroupStatus.InDeployment.fromDeploymentStatus(
+                getParticipantsFor( group ),
+                group.roleAssignments.toSet(),
+                deploymentStatus,
+                group.representation
+            )
+        }
+
+        return stagedGroupStatuses + deployedGroupStatuses
+    }
+
+    /**
+     * Get the [ParticipantGroupStatus] for the participant group with [groupId] in this recruitment.
+     * If the participant group is deployed, the matching [StudyDeploymentStatus] is retrieved using
+     * [getDeploymentStatus].
+     *
+     * @throws IllegalArgumentException when:
+     * - [groupId] is not part of this recruitment
+     * - [getDeploymentStatus] returns a [StudyDeploymentStatus] which doesn't match the requested ID
+     */
+    suspend fun getParticipantGroupStatus(
+        groupId: UUID,
+        getDeploymentStatus: suspend (UUID) -> StudyDeploymentStatus
+    ): ParticipantGroupStatus =
+        getParticipantGroupStatusList( setOf( groupId ) )
+            { deploymentIds -> listOf( getDeploymentStatus( deploymentIds.single() ) ) }.single()
+
+    /**
+     * Get the participants for the participant [group].
+     */
+    private fun getParticipantsFor( group: StagedParticipantGroup ): Set<Participant> =
+        group.participantIds.map { id -> _participants.first { it.id == id } }.toSet()
 
     /**
      * Get an immutable snapshot of the current state of this [Recruitment] using the specified snapshot [version].
      */
     override fun getSnapshot( version: Int ): RecruitmentSnapshot =
         RecruitmentSnapshot.fromParticipantRecruitment( this, version )
+
+    /**
+     * Validate that all participants exist in this recruitment and that all assigned roles are part of the protocol.
+     *
+     * @throws IllegalArgumentException when:
+     *  - one or more of the participants aren't in this recruitment.
+     *  - any of the participant roles specified in [participants] are not part of the configured study protocol.
+     */
+    private fun validateRoleAssignments( protocol: StudyProtocolSnapshot, participants: Set<AssignedParticipantRoles> )
+    {
+        require( this.participants.map { it.id }.containsAll( participants.participantIds() ) )
+            { "One of the participants for which to create a participant group isn't part of this recruitment." }
+
+        val assignedParticipantRoles = participants
+            .map { it.assignedRoles }
+            .filterIsInstance<AssignedTo.Roles>()
+            .flatMap { it.roleNames }
+            .toSet()
+        val availableRoles = protocol.participantRoles.map { it.role }.toSet()
+
+        assignedParticipantRoles.forEach { assigned ->
+            require( assigned in availableRoles )
+                { "The assigned participant role \"$assigned\" is not part of the study protocol." }
+        }
+    }
 }

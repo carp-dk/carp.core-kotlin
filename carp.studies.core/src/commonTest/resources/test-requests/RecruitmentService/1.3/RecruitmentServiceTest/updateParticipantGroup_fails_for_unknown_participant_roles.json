@@ -1,0 +1,149 @@
+[
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.AddParticipantByEmailAddress",
+            "apiVersion": "1.3",
+            "studyId": "00000000-0000-0000-0000-000000000001",
+            "email": "test@test.com"
+        },
+        "precedingEvents": [
+            {
+                "__type": "dk.cachet.carp.studies.application.StudyService.Event.StudyCreated",
+                "aggregateId": "00000000-0000-0000-0000-000000000001",
+                "apiVersion": "1.1",
+                "study": {
+                    "studyId": "00000000-0000-0000-0000-000000000001",
+                    "ownerId": "72067189-f627-4206-8353-a9503391a8dd",
+                    "name": "Test",
+                    "createdOn": "1970-01-01T00:00:00Z",
+                    "description": null,
+                    "invitation": {
+                        "name": "Test"
+                    },
+                    "protocolSnapshot": null
+                }
+            },
+            {
+                "__type": "dk.cachet.carp.studies.application.StudyService.Event.StudyGoneLive",
+                "aggregateId": "00000000-0000-0000-0000-000000000001",
+                "apiVersion": "1.1",
+                "study": {
+                    "studyId": "00000000-0000-0000-0000-000000000001",
+                    "ownerId": "72067189-f627-4206-8353-a9503391a8dd",
+                    "name": "Test",
+                    "createdOn": "1970-01-01T00:00:00Z",
+                    "description": null,
+                    "invitation": {
+                        "name": "Test"
+                    },
+                    "protocolSnapshot": {
+                        "id": "c00de189-f78f-438b-a6c7-afe556566040",
+                        "createdOn": "2026-05-04T10:48:02.207765Z",
+                        "version": 0,
+                        "ownerId": "6d3ca552-5b05-4088-9266-8b37d23ff0cc",
+                        "name": "Test protocol",
+                        "primaryDevices": [
+                            {
+                                "__type": "dk.cachet.carp.common.application.devices.Smartphone",
+                                "isPrimaryDevice": true,
+                                "roleName": "User's phone"
+                            }
+                        ],
+                        "participantRoles": [
+                            {
+                                "role": "Test role",
+                                "isOptional": false
+                            },
+                            {
+                                "role": "Test role 2",
+                                "isOptional": false
+                            }
+                        ],
+                        "expectedParticipantData": [
+                            {
+                                "attribute": {
+                                    "__type": "dk.cachet.carp.common.application.users.ParticipantAttribute.DefaultParticipantAttribute",
+                                    "inputDataType": "dk.cachet.carp.input.sex"
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        ],
+        "publishedEvents": [],
+        "response": {
+            "accountIdentity": {
+                "__type": "dk.cachet.carp.common.application.users.EmailAccountIdentity",
+                "emailAddress": "test@test.com"
+            },
+            "id": "00000000-0000-0000-0000-000000000002"
+        }
+    },
+    {
+        "outcome": "Succeeded",
+        "request": {
+            "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.CreateParticipantGroup",
+            "apiVersion": "1.3",
+            "groupId": "b770ef26-d61c-4496-9a26-81fd2dbff2a1",
+            "group": [
+                {
+                    "participantId": "00000000-0000-0000-0000-000000000002",
+                    "assignedRoles": {
+                        "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                    }
+                }
+            ],
+            "studyId": "00000000-0000-0000-0000-000000000001"
+        },
+        "precedingEvents": [],
+        "publishedEvents": [],
+        "response": {
+            "__type": "dk.cachet.carp.studies.application.users.ParticipantGroupStatus.Staged",
+            "id": "b770ef26-d61c-4496-9a26-81fd2dbff2a1",
+            "participants": [
+                {
+                    "accountIdentity": {
+                        "__type": "dk.cachet.carp.common.application.users.EmailAccountIdentity",
+                        "emailAddress": "test@test.com"
+                    },
+                    "id": "00000000-0000-0000-0000-000000000002"
+                }
+            ],
+            "assignedParticipantRoles": [
+                {
+                    "participantId": "00000000-0000-0000-0000-000000000002",
+                    "assignedRoles": {
+                        "__type": "dk.cachet.carp.common.application.users.AssignedTo.All"
+                    }
+                }
+            ],
+            "representation": {
+                "name": null
+            }
+        }
+    },
+    {
+        "outcome": "Failed",
+        "request": {
+            "__type": "dk.cachet.carp.studies.infrastructure.RecruitmentServiceRequest.UpdateParticipantGroup",
+            "apiVersion": "1.3",
+            "groupId": "b770ef26-d61c-4496-9a26-81fd2dbff2a1",
+            "group": [
+                {
+                    "participantId": "00000000-0000-0000-0000-000000000002",
+                    "assignedRoles": {
+                        "__type": "dk.cachet.carp.common.application.users.AssignedTo.Roles",
+                        "roleNames": [
+                            "Missing role"
+                        ]
+                    }
+                }
+            ]
+        },
+        "precedingEvents": [],
+        "publishedEvents": [],
+        "exceptionType": "IllegalArgumentException"
+    }
+]

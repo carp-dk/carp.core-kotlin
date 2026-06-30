@@ -1,8 +1,8 @@
 package dk.cachet.carp.deployments.infrastructure
 
+import dk.cachet.carp.common.application.ApplicationData
 import dk.cachet.carp.common.infrastructure.serialization.JSON
 import dk.cachet.carp.deployments.application.users.StudyInvitation
-import kotlinx.serialization.*
 import kotlin.test.*
 
 
@@ -14,7 +14,7 @@ class StudyInvitationTest
     @Test
     fun can_serialize_and_deserialize_study_invitation_using_JSON()
     {
-        val applicationData = """{"extraData":"42"}"""
+        val applicationData = ApplicationData( """{"extraData":"42"}""" )
         val invitation = StudyInvitation( "Test", "Description", applicationData )
 
         val serialized = JSON.encodeToString( invitation )

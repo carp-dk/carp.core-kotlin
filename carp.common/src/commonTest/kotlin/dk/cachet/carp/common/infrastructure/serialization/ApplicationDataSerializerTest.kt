@@ -1,5 +1,6 @@
 package dk.cachet.carp.common.infrastructure.serialization
 
+import dk.cachet.carp.common.application.ApplicationData
 import kotlinx.serialization.*
 import kotlin.test.*
 
@@ -12,8 +13,7 @@ class ApplicationDataSerializerTest
     @Serializable
     data class ContainsApplicationData(
         val normalData: String,
-        @Serializable( ApplicationDataSerializer::class )
-        val applicationData: String?
+        val applicationData: ApplicationData?
     )
 
     private val json = createDefaultJSON()
@@ -22,7 +22,7 @@ class ApplicationDataSerializerTest
     @Test
     fun can_serialize_and_deserialize_non_json_application_data()
     {
-        val toSerialize = ContainsApplicationData( "normal", "some application data" )
+        val toSerialize = ContainsApplicationData( "normal", ApplicationData( "some application data" ) )
 
         val serialized = json.encodeToString( toSerialize )
         val parsed: ContainsApplicationData = json.decodeFromString( serialized )
@@ -43,7 +43,7 @@ class ApplicationDataSerializerTest
             }
             """
         )
-        val toSerialize = ContainsApplicationData( "normal", applicationData.toString() )
+        val toSerialize = ContainsApplicationData( "normal", ApplicationData( applicationData.toString() ) )
 
         val serialized = json.encodeToString( toSerialize )
         val parsed: ContainsApplicationData = json.decodeFromString( serialized )
@@ -63,7 +63,7 @@ class ApplicationDataSerializerTest
     @Test
     fun json_serializer_serializes_as_json_element()
     {
-        val toSerialize = ContainsApplicationData( "normal", """{"json":"data"}""" )
+        val toSerialize = ContainsApplicationData( "normal", ApplicationData( """{"json":"data"}""" ) )
 
         val serialized = json.encodeToString( toSerialize )
 
@@ -75,7 +75,7 @@ class ApplicationDataSerializerTest
     fun can_serialize_malformed_json()
     {
         val malformedJson = """{"json object":"or not?"""
-        val toSerialize = ContainsApplicationData( "normal", malformedJson )
+        val toSerialize = ContainsApplicationData( "normal", ApplicationData( malformedJson ) )
 
         val serialized = json.encodeToString( toSerialize )
 

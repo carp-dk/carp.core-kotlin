@@ -1,8 +1,11 @@
 package dk.cachet.carp.common.application.devices
 
+import dk.cachet.carp.common.application.ApplicationData
 import dk.cachet.carp.common.infrastructure.serialization.NotSerializable
 import kotlinx.serialization.*
 import kotlin.js.JsExport
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 
 /**
@@ -12,10 +15,13 @@ import kotlin.js.JsExport
  */
 @Serializable
 @JsExport
+@Suppress( "NON_EXPORTABLE_TYPE" )
 data class BLESerialNumberDeviceRegistration(
     val serialNumber: String,
+    override val deviceDisplayName: String? = null,
+    override val additionalSpecifications: ApplicationData? = null,
     @Required
-    override val deviceDisplayName: String? = null
+    override val registrationCreatedOn: Instant = Clock.System.now()
 ) : DeviceRegistration()
 {
     init
@@ -41,5 +47,5 @@ class BLESerialNumberDeviceRegistrationBuilder : DeviceRegistrationBuilder<BLESe
     var serialNumber: String = ""
 
     override fun build(): BLESerialNumberDeviceRegistration =
-        BLESerialNumberDeviceRegistration( serialNumber, deviceDisplayName )
+        BLESerialNumberDeviceRegistration( serialNumber, deviceDisplayName, additionalSpecifications )
 }

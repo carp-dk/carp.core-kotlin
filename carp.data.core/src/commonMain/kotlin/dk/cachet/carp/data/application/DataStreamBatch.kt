@@ -15,6 +15,7 @@ import kotlin.js.JsExport
  */
 @Serializable( DataStreamBatchSerializer::class )
 @JsExport
+@Suppress( "EXPOSED_NOT_EXPORTED_SUPER_INTERFACE_WARNING" )
 interface DataStreamBatch : Sequence<DataStreamPoint<*>>
 {
     val sequences: Sequence<DataStreamSequence<*>>
@@ -102,11 +103,11 @@ class MutableDataStreamBatch : DataStreamBatch
                 // This might seem like premature optimization, but currently it is the only concrete class.
                 // We expect many sequences for one data type to be common, e.g., RR intervals have many sync points.
                 batch.sequenceMap
-                    .mapValues { it.value.last() }
-                    .all { (dataStream, lastSequence) ->
+                    .mapValues { it.value.first() }
+                    .all { (dataStream, firstNewSequence) ->
                         val lastStoredSequence = sequenceMap[ dataStream ]?.last()
                         if ( lastStoredSequence == null ) true
-                        else lastStoredSequence.range.last < lastSequence.range.first
+                        else lastStoredSequence.range.last < firstNewSequence.range.first
                     }
             else ->
                 batch.sequences.all { sequence ->

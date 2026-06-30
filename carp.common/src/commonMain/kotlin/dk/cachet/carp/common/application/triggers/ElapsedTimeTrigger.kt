@@ -14,7 +14,7 @@ import kotlin.time.Duration
  * The start of a study deployment is determined by the first successful deployment of all participating devices.
  * This trigger needs to be evaluated on a primary device since it is time bound and therefore requires a task scheduler.
  */
-@Suppress( "DataClassPrivateConstructor" )
+@Suppress( "DataClassPrivateConstructor", "NON_EXPORTABLE_TYPE" )
 @Serializable
 @JsExport
 data class ElapsedTimeTrigger private constructor(
@@ -27,7 +27,6 @@ data class ElapsedTimeTrigger private constructor(
     override val requiresPrimaryDevice: Boolean = true
 
     @JsName( "create" )
-    @Suppress( "NON_EXPORTABLE_TYPE" )
     constructor( sourceDevice: AnyPrimaryDeviceConfiguration, elapsedTime: Duration ) :
         this( sourceDevice.roleName, elapsedTime )
 }

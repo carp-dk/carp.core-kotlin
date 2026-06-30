@@ -1,9 +1,8 @@
 package dk.cachet.carp.studies.domain.users
 
 import dk.cachet.carp.common.application.UUID
-import dk.cachet.carp.deployments.application.StudyDeploymentStatus
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import dk.cachet.carp.common.application.users.AssignedTo
+import dk.cachet.carp.studies.application.users.AssignedParticipantRoles
 import kotlin.test.*
 
 
@@ -16,35 +15,37 @@ class StagedParticipantGroupTest
     fun addParticipants_succeeds()
     {
         val group = StagedParticipantGroup()
-        val participantId = UUID.randomUUID()
-        group.addParticipants( setOf( participantId ) )
+        val roleAssignment = AssignedParticipantRoles( participantId = UUID.randomUUID(), AssignedTo.All )
+        group.addParticipants( setOf( roleAssignment ) )
 
-        assertEquals( participantId, group.participantIds.singleOrNull() )
+        assertEquals( roleAssignment.participantId, group.participantIds.singleOrNull() )
+        assertEquals( roleAssignment, group.roleAssignments.singleOrNull() )
     }
 
     @Test
     fun addParticipants_fails_when_already_deployed()
     {
         val group = StagedParticipantGroup()
-        val participantId = UUID.randomUUID()
-        group.addParticipants( setOf( participantId ) )
+        val roleAssignment = AssignedParticipantRoles( participantId = UUID.randomUUID(), AssignedTo.All )
+        group.addParticipants( setOf( roleAssignment ) )
         group.markAsDeployed()
 
-        val newParticipantId = UUID.randomUUID()
-        assertFailsWith<IllegalStateException> { group.addParticipants( setOf( newParticipantId ) ) }
+        val newRoleAssignment = AssignedParticipantRoles( participantId = UUID.randomUUID(), AssignedTo.All )
+        assertFailsWith<IllegalStateException> { group.addParticipants( setOf( newRoleAssignment ) ) }
     }
 
     @Test
     fun markAsDeployed_succeeds()
     {
         val group = StagedParticipantGroup()
-        val participantId = UUID.randomUUID()
-        group.addParticipants( setOf( participantId ) )
+        val roleAssignment = AssignedParticipantRoles( participantId = UUID.randomUUID(), AssignedTo.All )
+        group.addParticipants( setOf( roleAssignment ) )
         assertFalse( group.isDeployed )
 
         group.markAsDeployed()
 
         assertTrue( group.isDeployed )
+        assertEquals( roleAssignment, group.roleAssignments.singleOrNull() )
     }
 
     @Test

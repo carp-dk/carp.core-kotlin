@@ -2,6 +2,7 @@
 
 package dk.cachet.carp.deployments.application
 
+import dk.cachet.carp.common.application.ApplicationData
 import dk.cachet.carp.common.application.data.DataType
 import dk.cachet.carp.common.application.devices.AnyDeviceConfiguration
 import dk.cachet.carp.common.application.devices.AnyPrimaryDeviceConfiguration
@@ -13,11 +14,9 @@ import dk.cachet.carp.common.application.triggers.TaskControl
 import dk.cachet.carp.common.application.triggers.TriggerConfiguration
 import dk.cachet.carp.common.application.users.ExpectedParticipantData
 import dk.cachet.carp.common.application.users.hasNoConflicts
-import dk.cachet.carp.common.infrastructure.serialization.ApplicationDataSerializer
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlinx.serialization.*
 import kotlin.js.JsExport
+import kotlin.time.Instant
 
 
 /**
@@ -64,8 +63,7 @@ data class PrimaryDeviceDeployment(
      * This can be used by infrastructures or concrete applications which require exchanging additional data
      * between the protocols and clients subsystems, outside of scope or not yet supported by CARP core.
      */
-    @Serializable( ApplicationDataSerializer::class )
-    val applicationData: String? = null
+    val applicationData: ApplicationData? = null
 )
 {
     init { expectedParticipantData.hasNoConflicts( exceptionOnConflict = true ) }
@@ -98,14 +96,7 @@ data class PrimaryDeviceDeployment(
      * The time when this device deployment was last updated.
      * This corresponds to the most recent device registration as part of this device deployment.
      */
-    val lastUpdatedOn: Instant =
-        // TODO: Remove this workaround once JS serialization bug is fixed:
-        //  https://github.com/Kotlin/kotlinx.serialization/issues/716
-        @Suppress( "SENSELESS_COMPARISON" )
-        if ( connectedDeviceRegistrations == null || registration == null ) Clock.System.now()
-        else connectedDeviceRegistrations.values.plus( registration )
-            .maxOf { it.registrationCreatedOn }
-
+    val lastUpdatedOn: Instant = (connectedDeviceRegistrations.values + registration).maxOf { it.registrationCreatedOn }
 
     /**
      * Get info on the primary device and each of the devices this device needs to connect to relevant at study runtime.

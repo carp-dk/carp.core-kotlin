@@ -6,8 +6,8 @@ import dk.cachet.carp.common.infrastructure.test.StubDataPoint
 import dk.cachet.carp.common.infrastructure.test.StubDataTimeSpan
 import dk.cachet.carp.data.infrastructure.dataStreamId
 import dk.cachet.carp.data.infrastructure.measurement
-import kotlinx.datetime.Clock
 import kotlin.test.*
+import kotlin.time.Clock
 
 
 /**
@@ -191,6 +191,7 @@ class MutableDataStreamBatchTest
         val appendBatch = MutableDataStreamBatch().apply {
             appendSequence( createStubSequence( 0, stubDataTimeSpan ) )
             appendSequence( createStubSequence( 0, stubDataPoint ) ) // Overlaps.
+            appendSequence( createStubSequence( 2, stubDataPoint ) )
         }
 
         assertFailsWith<IllegalArgumentException> { batch.appendBatch( appendBatch ) }

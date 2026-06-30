@@ -7,6 +7,7 @@ import dk.cachet.carp.common.infrastructure.services.Command
 import dk.cachet.carp.data.application.DataStreamBatch
 import dk.cachet.carp.data.application.DataStreamId
 import dk.cachet.carp.data.application.DataStreamService
+import dk.cachet.carp.data.application.DataStreamStatus
 import dk.cachet.carp.data.application.DataStreamsConfiguration
 
 
@@ -32,6 +33,9 @@ class DataStreamServiceDecorator(
         toSequenceIdInclusive: Long?
     ) = invoke( DataStreamServiceRequest.GetDataStream( dataStream, fromSequenceId, toSequenceIdInclusive ) )
 
+    override suspend fun getDataStreamsStatus( studyDeploymentId: UUID ): List<DataStreamStatus> =
+        invoke( DataStreamServiceRequest.GetDataStreamsStatus( studyDeploymentId ) )
+
     override suspend fun closeDataStreams( studyDeploymentIds: Set<UUID> ) =
         invoke( DataStreamServiceRequest.CloseDataStreams( studyDeploymentIds ) )
 
@@ -49,6 +53,7 @@ object DataStreamServiceInvoker : ApplicationServiceInvoker<DataStreamService, D
             is DataStreamServiceRequest.AppendToDataStreams -> service.appendToDataStreams( studyDeploymentId, batch )
             is DataStreamServiceRequest.GetDataStream ->
                 service.getDataStream( dataStream, fromSequenceId, toSequenceIdInclusive )
+            is DataStreamServiceRequest.GetDataStreamsStatus -> service.getDataStreamsStatus( studyDeploymentId )
             is DataStreamServiceRequest.CloseDataStreams -> service.closeDataStreams( studyDeploymentIds )
             is DataStreamServiceRequest.RemoveDataStreams -> service.removeDataStreams( studyDeploymentIds )
         }

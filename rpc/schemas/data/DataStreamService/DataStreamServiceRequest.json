@@ -1,11 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2019-09/schema",
   "oneOf": [
-    { "$ref": "#/$defs/OpenDataStreams" },
-    { "$ref": "#/$defs/AppendToDataStreams" },
-    { "$ref": "#/$defs/GetDataStream" },
-    { "$ref": "#/$defs/CloseDataStreams" },
-    { "$ref": "#/$defs/RemoveDataStreams" }
+    { "$ref": "#OpenDataStreams" },
+    { "$ref": "#AppendToDataStreams" },
+    { "$ref": "#GetDataStream" },
+    { "$ref": "#GetDataStreamsStatus" },
+    { "$ref": "#CloseDataStreams" },
+    { "$ref": "#RemoveDataStreams" }
   ],
   "$defs": {
     "ApiVersion": { "const": "1.1" },
@@ -57,6 +58,22 @@
         "$ref": "../DataStreamBatch.json"
       }
     },
+    "GetDataStreamsStatus": {
+      "$anchor": "GetDataStreamsStatus",
+      "type": "object",
+  	  "properties": {
+        "__type": { "const": "dk.cachet.carp.data.infrastructure.DataStreamServiceRequest.GetDataStreamsStatus" },
+        "apiVersion": { "$ref": "#/$defs/ApiVersion" },
+        "studyDeploymentId": { "type": "string", "format": "uuid" }
+      },
+      "required": [ "__type", "apiVersion", "studyDeploymentId" ],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "GetDataStreamsStatus-Response",
+        "type": "array",
+        "items": { "$ref": "../DataStreamStatus.json" }
+      }
+    },
     "CloseDataStreams": {
       "$anchor": "CloseDataStreams",
       "type": "object",
@@ -76,6 +93,7 @@
       }
     },
     "RemoveDataStreams": {
+      "$anchor": "RemoveDataStreams",
       "type": "object",
   	  "properties": {
         "__type": { "const": "dk.cachet.carp.data.infrastructure.DataStreamServiceRequest.RemoveDataStreams" },

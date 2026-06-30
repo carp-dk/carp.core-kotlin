@@ -8,7 +8,7 @@ import Json = kotlinx.serialization.json.Json
 describe( "kotlinx-serialization", () => {
     it( "verify module declarations", async () => {
         const instances: any[] = [
-            [ "JsonImpl", Json.Default ]
+            [ "Json", Json.Default ]
         ]
 
         const moduleVerifier = new VerifyModule(

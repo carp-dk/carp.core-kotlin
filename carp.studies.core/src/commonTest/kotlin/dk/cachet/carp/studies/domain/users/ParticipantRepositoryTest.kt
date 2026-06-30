@@ -1,6 +1,7 @@
 package dk.cachet.carp.studies.domain.users
 
 import dk.cachet.carp.common.application.UUID
+import dk.cachet.carp.studies.domain.createComplexRecruitment
 import kotlinx.coroutines.test.runTest
 import kotlin.test.*
 
@@ -40,6 +41,26 @@ interface ParticipantRepositoryTest
 
         val unknownId = UUID.randomUUID()
         assertNull( repo.getRecruitment( unknownId ) )
+    }
+
+    @Test
+    fun getRecruitmentWithParticipantGroup_returns_matching_recruitment() = runTest {
+        val repo = createRepository()
+        val recruitment = createComplexRecruitment()
+        repo.addRecruitment( recruitment )
+        val groupId = recruitment.participantGroups.keys.first()
+
+        val retrieved = repo.getRecruitmentWithParticipantGroup( groupId )
+
+        assertEquals( recruitment.getSnapshot(), retrieved?.getSnapshot() )
+    }
+
+    @Test
+    fun getRecruitmentWithParticipantGroup_returns_null_when_not_found() = runTest {
+        val repo = createRepository()
+
+        val unknownId = UUID.randomUUID()
+        assertNull( repo.getRecruitmentWithParticipantGroup( unknownId ) )
     }
 
     @Test

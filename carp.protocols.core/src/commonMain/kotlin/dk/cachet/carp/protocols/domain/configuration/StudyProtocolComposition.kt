@@ -4,7 +4,7 @@ import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.domain.AggregateRoot
 import dk.cachet.carp.protocols.application.StudyProtocolSnapshot
 import dk.cachet.carp.protocols.domain.StudyProtocol
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 
 /**

@@ -1,13 +1,15 @@
 import { expect } from 'chai'
 
 import kotlin from '@cachet/carp-kotlin'
-import setOf = kotlin.collections.setOf
 import Duration = kotlin.time.Duration
 
 import kotlinx from '@cachet/carp-kotlinx-serialization'
 import getSerializer = kotlinx.serialization.getSerializer
 
 import carp from '@cachet/carp-common'
+
+import KtSet = carp.kotlin.collections.KtSet
+
 import dk = carp.dk
 import Trilean = dk.cachet.carp.common.application.Trilean
 import toTrilean = dk.cachet.carp.common.application.toTrilean
@@ -79,9 +81,10 @@ describe( "carp-common", () => {
 
     describe( "ExpectedParticipantData", () => {
         it( "can serialize and deserialize", () => {
+            const roles = new Set( [ "Roles are added" ] );
             const expectedData = new ExpectedParticipantData(
                 new ParticipantAttribute.DefaultParticipantAttribute( new NamespacedId( "namespace", "type" ) ),
-                new AssignedTo.Roles( setOf( [ "Roles are added" ] ) )
+                new AssignedTo.Roles( KtSet.fromJsSet( roles ) )
             )
 
             const serializer = getSerializer( ExpectedParticipantData )
@@ -94,7 +97,7 @@ describe( "carp-common", () => {
     describe( "IntervalSamplingConfiguration", () => {
         it( "can construct", () => {
             const config = new IntervalSamplingConfiguration( Duration.parseIsoString( "PT1S" ) )
-            expect( config.interval.inWholeMilliseconds ).equals( 1000 )
+            expect( config.interval.inWholeMilliseconds ).equals( 1000n )
         } )
     } )
 } )

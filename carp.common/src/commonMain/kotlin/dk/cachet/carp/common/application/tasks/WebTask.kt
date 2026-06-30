@@ -1,5 +1,3 @@
-@file:Suppress( "NON_EXPORTABLE_TYPE" )
-
 package dk.cachet.carp.common.application.tasks
 
 import dk.cachet.carp.common.application.UUID

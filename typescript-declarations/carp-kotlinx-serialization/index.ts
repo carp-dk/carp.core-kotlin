@@ -7,7 +7,19 @@ import extendJson from "@cachet/kotlinx-serialization-kotlinx-serialization-json
 // Facade with better method names and type conversions for internal types.
 export namespace kotlinx.serialization
 {
-    export function getSerializer( type: any ) { return type.Companion.m16() }
+    export function getSerializer( type: any )
+    {
+        type AssociatedObject = { name: string; (): any; };
+        const associatedObjects = Object.values( type.$metadata$.associatedObjects ) as Array<AssociatedObject>
+
+        const companion = type.Companion !== undefined
+            ? type.Companion
+            : associatedObjects.find( (o) => o.name.startsWith( "Companion" ) )?.()
+        const serializer = companion !== undefined
+            ? companion.i18()
+            : associatedObjects.find( (o) => o.name.startsWith( "$serializer" ) )?.()
+        return serializer
+    }
 }
 export namespace kotlinx.serialization.json
 {
@@ -34,22 +46,22 @@ declare module "@cachet/kotlinx-serialization-kotlinx-serialization-json"
 {
     namespace $_$
     {
-        interface JsonImpl extends kotlinx.serialization.json.Json {}
-        abstract class JsonImpl implements kotlinx.serialization.json.Json {}
+        interface Json extends kotlinx.serialization.json.Json {}
+        abstract class Json implements kotlinx.serialization.json.Json {}
     }
 }
 
 
 // Implement base interfaces in internal types.
-extendJson.$_$.JsonImpl.prototype.encodeToString =
+extendJson.$_$.Json.prototype.encodeToString =
     function( serializer: any, value: any ): string
     {
-        return this.i14( serializer, value );
+        return this.x15( serializer, value );
     };
-extendJson.$_$.JsonImpl.prototype.decodeFromString =
+extendJson.$_$.Json.prototype.decodeFromString =
     function( serializer: any, string: string ): any
     {
-        return this.j14( serializer, string );
+        return this.y15( serializer, string );
     };
 
 

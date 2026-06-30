@@ -4,8 +4,8 @@ import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.deployments.application.DeviceDeploymentStatus
 import dk.cachet.carp.deployments.application.StudyDeploymentStatus
 import dk.cachet.carp.deployments.application.users.ParticipantStatus
-import kotlinx.datetime.Clock
 import kotlin.test.*
+import kotlin.time.Clock
 
 
 /**
@@ -15,8 +15,10 @@ class ParticipantGroupStatusTest
 {
     private val now = Clock.System.now()
     private val deploymentId = UUID.randomUUID()
+    private val participantGroupRepresentation = ParticipantGroupRepresentation( "Test group" )
     private val deviceStatusList = emptyList<DeviceDeploymentStatus>()
     private val participants: Set<Participant> = emptySet()
+    private val roleAssignments: Set<AssignedParticipantRoles> = emptySet()
     private val participantStatusList: List<ParticipantStatus> = emptyList()
 
 
@@ -25,7 +27,12 @@ class ParticipantGroupStatusTest
     {
         val deployingDevices = StudyDeploymentStatus.DeployingDevices( now, deploymentId, deviceStatusList, participantStatusList, null )
 
-        val status = ParticipantGroupStatus.InDeployment.fromDeploymentStatus( participants, deployingDevices )
+        val status = ParticipantGroupStatus.InDeployment.fromDeploymentStatus(
+            participants,
+            roleAssignments,
+            deployingDevices,
+            participantGroupRepresentation
+        )
         assertTrue( status is ParticipantGroupStatus.Invited )
     }
 
@@ -35,7 +42,12 @@ class ParticipantGroupStatusTest
         val startedOn = Clock.System.now()
         val redeployingDevices = StudyDeploymentStatus.DeployingDevices( now, deploymentId, deviceStatusList, participantStatusList, startedOn )
 
-        val status = ParticipantGroupStatus.InDeployment.fromDeploymentStatus( participants, redeployingDevices )
+        val status = ParticipantGroupStatus.InDeployment.fromDeploymentStatus(
+            participants,
+            roleAssignments,
+            redeployingDevices,
+            participantGroupRepresentation
+        )
         assertTrue( status is ParticipantGroupStatus.Running )
     }
 }

@@ -1,5 +1,6 @@
 package dk.cachet.carp.deployments.application
 
+import dk.cachet.carp.common.application.ApplicationData
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.application.data.input.CarpInputDataTypes
 import dk.cachet.carp.common.application.data.input.Sex
@@ -17,6 +18,7 @@ import dk.cachet.carp.deployments.application.users.StudyInvitation
 import dk.cachet.carp.deployments.domain.createParticipantInvitation
 import dk.cachet.carp.deployments.domain.users.AccountService
 import dk.cachet.carp.protocols.infrastructure.test.createSinglePrimaryDeviceProtocol
+import dk.cachet.carp.protocols.infrastructure.test.createTwoDevicesAndRolesProtocol
 import kotlinx.coroutines.test.runTest
 import kotlin.test.*
 
@@ -56,7 +58,7 @@ interface ParticipationServiceTest
         val (participationService, deploymentService, accountService) = createSUT()
         val protocol = createSinglePrimaryDeviceProtocol()
         val identity = AccountIdentity.fromEmailAddress( "test@test.com" )
-        val invitation = StudyInvitation( "Test study", "description", "Custom data" )
+        val invitation = StudyInvitation( "Test study", "description", ApplicationData( "Custom data" ) )
         val participantInvitation = ParticipantInvitation(
             participantId = UUID.randomUUID(),
             AssignedTo.All,
@@ -74,6 +76,42 @@ interface ParticipationServiceTest
         assertEquals( invitation, retrievedInvitation.invitation )
         val expectedAssignedDevice = AssignedPrimaryDevice( protocol.primaryDevices.single() )
         assertEquals( setOf( expectedAssignedDevice ), retrievedInvitation.assignedDevices )
+    }
+
+    @Test
+    fun getActiveParticipationInvitations_returns_invitations_specific_to_account() = runTest {
+        val (participationService, deploymentService, accountService) = createSUT()
+        val (protocol, device1, device2, role1, role2) = createTwoDevicesAndRolesProtocol()
+        val invitation = StudyInvitation( "Test study", "description" )
+        val identity1 = AccountIdentity.fromEmailAddress( "role1@test.com" )
+        val identity2 = AccountIdentity.fromEmailAddress( "role2@test.com" )
+        val participantId1 = UUID.randomUUID()
+        val participantId2 = UUID.randomUUID()
+        val participantInvitation1 =
+            ParticipantInvitation( participantId1, AssignedTo.Roles( setOf( role1 ) ), identity1, invitation )
+        val participantInvitation2 =
+            ParticipantInvitation( participantId2, AssignedTo.Roles( setOf( role2 ) ), identity2, invitation )
+        deploymentService.createStudyDeployment(
+            UUID.randomUUID(),
+            protocol.getSnapshot(),
+            listOf( participantInvitation1, participantInvitation2 )
+        )
+
+        val account1 = accountService.findAccount( identity1 )
+        assertNotNull( account1 )
+        val retrievedInvitation1 = participationService.getActiveParticipationInvitations( account1.id ).singleOrNull()
+        assertNotNull( retrievedInvitation1 )
+        assertEquals( participantId1, retrievedInvitation1.participation.participantId )
+        val assignedDevice1 = retrievedInvitation1.assignedDevices.singleOrNull()?.device?.roleName
+        assertEquals( device1.roleName, assignedDevice1 )
+
+        val account2 = accountService.findAccount( identity2 )
+        assertNotNull( account2 )
+        val retrievedInvitation2 = participationService.getActiveParticipationInvitations( account2.id ).singleOrNull()
+        assertNotNull( retrievedInvitation2 )
+        assertEquals( participantId2, retrievedInvitation2.participation.participantId )
+        val assignedDevice2 = retrievedInvitation2.assignedDevices.singleOrNull()?.device?.roleName
+        assertEquals( device2.roleName, assignedDevice2 )
     }
 
     @Test

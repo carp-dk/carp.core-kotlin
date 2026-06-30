@@ -58,6 +58,17 @@ class ApiJsonObjectMigrationBuilder(
     }
 
     /**
+     * Retrieve the object identified by [fieldName] in this object, and if present, run the specified [migration].
+     */
+    fun updateOptionalObject( fieldName: String, migration: ApiJsonObjectMigrationBuilder.() -> Unit )
+    {
+        val o = json[ fieldName ] as? JsonObject ?: return
+        val newJson: JsonObject = ApiJsonObjectMigrationBuilder( o, minimumMinorVersion, targetMinorVersion )
+            .apply( migration ).build()
+        json[ fieldName ] = newJson
+    }
+
+    /**
      * Retrieve the array identified by [fieldName] in this object, and run the specified [migration].
      */
     fun updateArray( fieldName: String, migration: ApiJsonArrayMigrationBuilder.() -> Unit )

@@ -15,7 +15,6 @@ import dk.cachet.carp.deployments.domain.StudyDeploymentSnapshot
 import dk.cachet.carp.deployments.domain.studyDeploymentFor
 import dk.cachet.carp.protocols.application.StudyProtocolSnapshot
 import dk.cachet.carp.protocols.infrastructure.test.createEmptyProtocol
-import kotlinx.serialization.*
 import kotlin.test.*
 
 
@@ -61,7 +60,6 @@ class StudyDeploymentTest
         }
     }
 
-    @ExperimentalSerializationApi
     @Test
     fun create_deployment_fromSnapshot_with_custom_extending_types_succeeds()
     {
@@ -79,5 +77,26 @@ class StudyDeploymentTest
 
         val snapshot: StudyDeploymentSnapshot = JSON.decodeFromString( serialized )
         StudyDeployment.fromSnapshot( snapshot )
+    }
+
+    @Test
+    fun getStatus_is_same_after_restoring_snapshot()
+    {
+        val protocol = createEmptyProtocol()
+        val primary = StubPrimaryDeviceConfiguration()
+        protocol.addPrimaryDevice( primary )
+        val deployment = studyDeploymentFor( protocol )
+        deployment.registerDevice( primary, primary.createRegistration() )
+        val deviceDeployment = deployment.getDeviceDeploymentFor( primary )
+        deployment.deviceDeployed( primary, deviceDeployment.lastUpdatedOn )
+        deployment.stop()
+
+        val statusBeforeSnapshot = deployment.getStatus()
+        val serialized: String = JSON.encodeToString( deployment.getSnapshot() )
+        val snapshot: StudyDeploymentSnapshot = JSON.decodeFromString( serialized )
+        val restoredDeployment = StudyDeployment.fromSnapshot( snapshot )
+        val statusAfterSnapshot = restoredDeployment.getStatus()
+
+        assertEquals( statusBeforeSnapshot, statusAfterSnapshot )
     }
 }

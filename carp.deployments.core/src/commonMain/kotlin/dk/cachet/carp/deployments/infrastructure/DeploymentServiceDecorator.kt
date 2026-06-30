@@ -8,7 +8,7 @@ import dk.cachet.carp.common.infrastructure.services.Command
 import dk.cachet.carp.deployments.application.DeploymentService
 import dk.cachet.carp.deployments.application.users.ParticipantInvitation
 import dk.cachet.carp.protocols.application.StudyProtocolSnapshot
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 
 class DeploymentServiceDecorator(

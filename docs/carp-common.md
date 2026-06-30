@@ -1,4 +1,4 @@
-# carp.common [![Maven Central](https://maven-badges.herokuapp.com/maven-central/dk.cachet.carp.common/carp.common/badge.svg)](https://mvnrepository.com/artifact/dk.cachet.carp.common) [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/dk.cachet.carp.common/carp.common?server=https%3A%2F%2Foss.sonatype.org)](https://oss.sonatype.org/content/repositories/snapshots/dk/cachet/carp/common/)
+# carp.common [![Maven Central](https://img.shields.io/maven-central/v/dk.cachet.carp.common/carp.common)](https://central.sonatype.com/artifact/dk.cachet.carp.common/carp.common) [![Snapshot](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fdk%2Fcachet%2Fcarp%2Fcommon%2Fcarp.common%2Fmaven-metadata.xml)](https://central.sonatype.com/repository/maven-snapshots/dk/cachet/carp/common/carp.common/maven-metadata.xml)
 
 Implements helper classes and base types relied upon by all subsystems.
 Primarily, this contains the built-in types used to [define study protocols](carp-protocols.md#domain-objects)

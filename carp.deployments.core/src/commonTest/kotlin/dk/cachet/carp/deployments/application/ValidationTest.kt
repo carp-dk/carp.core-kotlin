@@ -1,5 +1,6 @@
 package dk.cachet.carp.deployments.application
 
+import dk.cachet.carp.common.application.ApplicationData
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.application.devices.DefaultDeviceRegistration
 import dk.cachet.carp.common.application.devices.DeviceRegistration
@@ -13,6 +14,8 @@ import dk.cachet.carp.protocols.infrastructure.test.createEmptyProtocol
 import dk.cachet.carp.protocols.infrastructure.test.createSinglePrimaryDeviceProtocol
 import dk.cachet.carp.protocols.infrastructure.test.createSinglePrimaryWithConnectedDeviceProtocol
 import kotlin.test.*
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 
 /**
@@ -158,6 +161,8 @@ class ValidationTest
             {
                 override val deviceId: String = "Invalid"
                 override val deviceDisplayName: String? = null
+                override val registrationCreatedOn: Instant = Clock.System.now()
+                override val additionalSpecifications: ApplicationData? = null
             }
         val preregistrations = mapOf( connectedRoleName to invalidRegistration )
 

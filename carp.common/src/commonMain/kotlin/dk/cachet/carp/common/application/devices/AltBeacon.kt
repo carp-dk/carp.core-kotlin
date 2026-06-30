@@ -1,7 +1,6 @@
-@file:Suppress( "NON_EXPORTABLE_TYPE" )
-
 package dk.cachet.carp.common.application.devices
 
+import dk.cachet.carp.common.application.ApplicationData
 import dk.cachet.carp.common.application.Trilean
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.application.data.CarpDataTypes
@@ -14,6 +13,8 @@ import dk.cachet.carp.common.infrastructure.serialization.NotSerializable
 import kotlinx.serialization.*
 import kotlin.js.JsExport
 import kotlin.reflect.KClass
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 
 /**
@@ -43,6 +44,7 @@ data class AltBeacon(
 
     override fun createDeviceRegistrationBuilder(): AltBeaconDeviceRegistrationBuilder =
         AltBeaconDeviceRegistrationBuilder()
+    @JsExport.Ignore
     override fun getRegistrationClass(): KClass<AltBeaconDeviceRegistration> = AltBeaconDeviceRegistration::class
     override fun isValidRegistration( registration: AltBeaconDeviceRegistration ): Trilean = Trilean.TRUE
 }
@@ -55,6 +57,7 @@ data class AltBeacon(
  */
 @Serializable
 @JsExport
+@Suppress( "NON_EXPORTABLE_TYPE" )
 data class AltBeaconDeviceRegistration(
     /**
      * The beacon device manufacturer's company identifier code as maintained by the Bluetooth SIG assigned numbers database.
@@ -77,8 +80,10 @@ data class AltBeaconDeviceRegistration(
      * This value is constrained from -127 to 0.
      */
     val referenceRssi: Short,
+    override val deviceDisplayName: String? = null, // TODO: We could map known manufacturerId's to display names.
+    override val additionalSpecifications: ApplicationData? = null,
     @Required
-    override val deviceDisplayName: String? = null // TODO: We could map known manufacturerId's to display names.
+    override val registrationCreatedOn: Instant = Clock.System.now()
 ) : DeviceRegistration()
 {
     companion object
@@ -134,6 +139,7 @@ class AltBeaconDeviceRegistrationBuilder : DeviceRegistrationBuilder<AltBeaconDe
         majorId,
         minorId,
         referenceRssi,
-        deviceDisplayName
+        deviceDisplayName,
+        additionalSpecifications
     )
 }

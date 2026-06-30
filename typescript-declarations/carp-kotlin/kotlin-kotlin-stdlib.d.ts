@@ -2,73 +2,92 @@ declare module "@cachet/kotlin-kotlin-stdlib"
 {
     namespace $_$
     {
-        interface Long
-        {
-            // toNumber
-            da(): number
-        }
-        function toLong_0( number: number ): Long
-
         class Pair<K, V>
         {
             constructor( first: K, second: V )
 
             // first
-            md_1: K
+            first: K
 
             // second
-            nd_1: V
+            second: V
         }
 
         interface Collection<T>
         {
-            // contains
-            p( value: T ): boolean
-
-            // size
-            n(): number
-
             toArray(): Array<T>
         }
 
-        interface List<T> extends Collection<T> {}
+        interface List<T> extends Collection<T>, kotlin.collections.KtList<T> {}
         interface EmptyList<T> extends List<T> {}
         interface AbstractMutableList<T> extends List<T> {}
-        function listOf_0<T>( elements: T[] ): List<T>
 
-        interface Set<T> extends Collection<T> {}
+        interface Set<T> extends Collection<T>, kotlin.collections.KtSet<T> {}
         interface EmptySet<T> extends Set<T> {}
         interface HashSet<T> extends Set<T> {}
-        function setOf_0<T>( elements: T[] ): Set<T>
 
-        interface Map<K, V>
-        {
-            // get
-            x2( key: K ): V
-
-            // keys
-            l2(): Set<K>
-
-            // values
-            m2(): Collection<V>
-        }
+        interface Map<K, V> extends kotlin.collections.KtMap<K, V> {}
         interface HashMap<K, V> extends Map<K, V> {}
-        function mapOf_0<K, V>( pairs: Pair<K, V>[] ): Map<K, V>
 
-        interface Duration extends Long {}
+        type Duration = bigint
         interface DurationCompanion
         {
             // parseIsoString
-            zf(): Duration
+            tg( isoDuration: string ): Duration
 
             // ZERO
-            wf_1: Duration
+            mg_1: Duration
 
             // INFINITE
-            xf_1: Duration
+            ng_1: Duration
         }
-        function Companion_getInstance_13(): DurationCompanion
-        function _Duration___get_inWholeMilliseconds__impl__msfiry(duration: Duration): Long
-        function _Duration___get_inWholeMicroseconds__impl__8oe8vv(duration: Duration): Long
+        function Companion_getInstance_17(): DurationCompanion
+        function _Duration___get_inWholeMilliseconds__impl__msfiry( duration: Duration ): bigint
+        function _Duration___get_inWholeMicroseconds__impl__8oe8vv( duration: Duration ): bigint
+        function Duration__toString_impl_8d916b( duration: Duration ): string
+
+        interface System
+        {
+            // now
+            lg(): Instant
+        }
+        const System_instance: System
+
+        interface Instant
+        {
+            // toEpochMilliseconds
+            ih(): bigint
+        }
+    }
+
+    namespace kotlin
+    {
+        namespace collections
+        {
+            namespace KtList
+            {
+                function fromJsArray<T>( elements: T[] ): KtList<T>
+            }
+            interface KtList<T>
+            {
+                asJsReadonlyArrayView(): readonly T[]
+            }
+            namespace KtSet
+            {
+                function fromJsSet<T>( elements: Set<T> ): KtSet<T>
+            }
+            interface KtSet<T>
+            {
+                asJsReadonlySetView (): Readonly<Set<T>>
+            }
+            namespace KtMap
+            {
+                function fromJsMap<K, V>( entries: ReadonlyMap<K, V> ): KtMap<K, V>
+            }
+            interface KtMap<K, V>
+            {
+                asJsReadonlyMapView(): ReadonlyMap<K, V>
+            }
+        }
     }
 }

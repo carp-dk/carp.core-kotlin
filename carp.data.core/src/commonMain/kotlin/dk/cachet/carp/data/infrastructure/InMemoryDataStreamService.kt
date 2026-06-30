@@ -7,6 +7,7 @@ import dk.cachet.carp.common.domain.ExtractUniqueKeyMap
 import dk.cachet.carp.data.application.DataStreamBatch
 import dk.cachet.carp.data.application.DataStreamId
 import dk.cachet.carp.data.application.DataStreamService
+import dk.cachet.carp.data.application.DataStreamStatus
 import dk.cachet.carp.data.application.DataStreamsConfiguration
 import dk.cachet.carp.data.application.MutableDataStreamBatch
 import dk.cachet.carp.data.application.MutableDataStreamSequence
@@ -27,6 +28,7 @@ class InMemoryDataStreamService : DataStreamService
         }
     private val stoppedStudyDeploymentIds: MutableSet<UUID> = mutableSetOf()
     private val dataStreams: MutableDataStreamBatch = MutableDataStreamBatch()
+    private val lastSequenceIdByDataStream: MutableMap<DataStreamId, Long?> = mutableMapOf()
 
 
     /**
@@ -37,6 +39,9 @@ class InMemoryDataStreamService : DataStreamService
     override suspend fun openDataStreams( configuration: DataStreamsConfiguration )
     {
         configuredDataStreams.tryAddIfKeyIsNew( configuration )
+        configuration.expectedDataStreamIds.forEach { dataStreamId ->
+            lastSequenceIdByDataStream[ dataStreamId ] = null
+        }
     }
 
     /**
@@ -63,6 +68,13 @@ class InMemoryDataStreamService : DataStreamService
             { "Data streams for this study deployment have been closed." }
 
         dataStreams.appendBatch( batch )
+
+        // Update last sequence ID for all streams with new data.
+        batch.sequences
+            .groupBy { it.dataStream }
+            .forEach { (dataStreamId, dataStreamSequences) ->
+                lastSequenceIdByDataStream[ dataStreamId ] = dataStreamSequences.last().range.last
+            }
     }
 
     /**
@@ -112,6 +124,23 @@ class InMemoryDataStreamService : DataStreamService
     }
 
     /**
+     * Retrieve status for each configured data stream in [studyDeploymentId].
+     *
+     * @throws IllegalArgumentException when no data streams were ever opened for [studyDeploymentId].
+     */
+    override suspend fun getDataStreamsStatus( studyDeploymentId: UUID ): List<DataStreamStatus>
+    {
+        val configuration: DataStreamsConfiguration? = configuredDataStreams[ studyDeploymentId ]
+        requireNotNull( configuration ) { "No data streams configured for this study deployment." }
+
+        val isOpen = studyDeploymentId !in stoppedStudyDeploymentIds
+        return configuration.expectedDataStreamIds.map { dataStream ->
+            val lastSequenceId: Long? = lastSequenceIdByDataStream[ dataStream ]
+            DataStreamStatus( dataStream, lastSequenceId, isOpen )
+        }
+    }
+
+    /**
      * Stop accepting incoming data for all data streams for each of the [studyDeploymentIds].
      *
      * @throws IllegalArgumentException when no data streams were ever opened for any of the [studyDeploymentIds].
@@ -134,9 +163,15 @@ class InMemoryDataStreamService : DataStreamService
     {
         stoppedStudyDeploymentIds.removeAll( studyDeploymentIds )
 
-        return studyDeploymentIds.mapNotNull { toRemove ->
+        val removedStudyDeploymentIds = studyDeploymentIds.mapNotNull { toRemove ->
             if ( configuredDataStreams.removeKey( toRemove ) ) toRemove
             else null
         }.toSet()
+
+        lastSequenceIdByDataStream.keys.removeAll { dataStreamId ->
+            dataStreamId.studyDeploymentId in removedStudyDeploymentIds
+        }
+
+        return removedStudyDeploymentIds
     }
 }

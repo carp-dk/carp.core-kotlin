@@ -9,6 +9,7 @@ import dk.cachet.carp.common.infrastructure.services.ApplicationServiceRequest
 import dk.cachet.carp.studies.application.RecruitmentService
 import dk.cachet.carp.studies.application.users.AssignedParticipantRoles
 import dk.cachet.carp.studies.application.users.Participant
+import dk.cachet.carp.studies.application.users.ParticipantGroupRepresentation
 import dk.cachet.carp.studies.application.users.ParticipantGroupStatus
 import kotlinx.serialization.*
 import kotlin.js.JsExport
@@ -65,8 +66,40 @@ sealed class RecruitmentServiceRequest<out TReturn> : ApplicationServiceRequest<
     }
 
     @Serializable
-    data class InviteNewParticipantGroup( val studyId: UUID, val group: Set<AssignedParticipantRoles> ) :
-        RecruitmentServiceRequest<ParticipantGroupStatus>()
+    @Deprecated( "Use CreateParticipantGroup and InviteParticipantGroup instead." )
+    data class InviteNewParticipantGroup(
+        val studyId: UUID,
+        val group: Set<AssignedParticipantRoles>
+    ) : RecruitmentServiceRequest<ParticipantGroupStatus>()
+    {
+        override fun getResponseSerializer() = serializer<ParticipantGroupStatus>()
+    }
+
+    @Serializable
+    data class CreateParticipantGroup(
+        val groupId: UUID,
+        val group: Set<AssignedParticipantRoles>,
+        val studyId: UUID,
+        val representation: ParticipantGroupRepresentation = ParticipantGroupRepresentation.Default
+    ) : RecruitmentServiceRequest<ParticipantGroupStatus>()
+    {
+        override fun getResponseSerializer() = serializer<ParticipantGroupStatus>()
+    }
+
+    @Serializable
+    data class UpdateParticipantGroup(
+        val groupId: UUID,
+        val group: Set<AssignedParticipantRoles>? = null,
+        val representation: ParticipantGroupRepresentation? = null
+    ) : RecruitmentServiceRequest<ParticipantGroupStatus>()
+    {
+        override fun getResponseSerializer() = serializer<ParticipantGroupStatus>()
+    }
+
+    @Serializable
+    data class InviteParticipantGroup(
+        val groupId: UUID
+    ) : RecruitmentServiceRequest<ParticipantGroupStatus>()
     {
         override fun getResponseSerializer() = serializer<ParticipantGroupStatus>()
     }

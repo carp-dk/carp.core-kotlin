@@ -11,7 +11,6 @@ import kotlin.reflect.KClass
 /**
  * Holds custom input data as requested by a researcher.
  */
-@Serializable( CustomInputSerializer::class )
 @SerialName( CUSTOM_INPUT_TYPE_NAME )
 @Suppress( "Immutable" ) // TODO: `assumeImmutable` configuration in detekt.yml is not working.
 @JsExport

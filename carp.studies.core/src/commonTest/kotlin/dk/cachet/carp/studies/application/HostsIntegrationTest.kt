@@ -96,7 +96,12 @@ class HostsIntegrationTest
 
         // Call succeeding means recruitment is ready for deployment.
         val assignRoles = setOf( AssignedParticipantRoles( participant.id, AssignedTo.All ) )
-        recruitmentService.inviteNewParticipantGroup( study.studyId, assignRoles )
+        val group = recruitmentService.createParticipantGroup(
+            groupId = UUID.randomUUID(),
+            group = assignRoles,
+            study.studyId
+        )
+        recruitmentService.inviteParticipantGroup( group.id )
 
         assertEquals( study.studyId, studyGoneLive?.study?.studyId )
     }
@@ -108,8 +113,12 @@ class HostsIntegrationTest
         // Add participant and deploy participant group.
         val participant = recruitmentService.addParticipant( studyId, EmailAddress( "test@test.com" ) )
         val assignRoles = AssignedParticipantRoles( participant.id, AssignedTo.All )
-        val group = recruitmentService.inviteNewParticipantGroup( studyId, setOf( assignRoles ) )
-        val deploymentId = group.id
+        val group = recruitmentService.createParticipantGroup(
+            groupId = UUID.randomUUID(),
+            group = setOf( assignRoles ),
+            studyId
+        )
+        recruitmentService.inviteParticipantGroup( group.id )
 
         var studyRemovedEvent: StudyService.Event.StudyRemoved? = null
         eventBus.registerHandler( StudyService::class, StudyService.Event.StudyRemoved::class, this ) { studyRemovedEvent = it }
@@ -120,13 +129,13 @@ class HostsIntegrationTest
         studyService.remove( studyId )
 
         assertEquals( studyId, studyRemovedEvent?.studyId )
-        assertEquals( deploymentId, deploymentRemovedEvent?.studyDeploymentId )
+        assertEquals( group.id, deploymentRemovedEvent?.studyDeploymentId )
 
          // Data related to study no longer exists.
         assertFailsWith<IllegalArgumentException> { recruitmentService.getParticipantGroupStatusList( studyId ) }
         assertFailsWith<IllegalArgumentException> { recruitmentService.getParticipants( studyId ) }
-        assertFailsWith<IllegalArgumentException> { deploymentService.getStudyDeploymentStatus( deploymentId ) }
-        assertFailsWith<IllegalArgumentException> { participationService.getParticipantData( deploymentId ) }
+        assertFailsWith<IllegalArgumentException> { deploymentService.getStudyDeploymentStatus( group.id ) }
+        assertFailsWith<IllegalArgumentException> { participationService.getParticipantData( group.id ) }
     }
 
     @Test

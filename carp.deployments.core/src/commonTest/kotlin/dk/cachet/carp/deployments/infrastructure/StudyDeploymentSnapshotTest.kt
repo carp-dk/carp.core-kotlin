@@ -12,7 +12,6 @@ import dk.cachet.carp.deployments.domain.StudyDeploymentSnapshot
 import dk.cachet.carp.deployments.domain.createComplexDeployment
 import dk.cachet.carp.deployments.domain.studyDeploymentFor
 import dk.cachet.carp.protocols.infrastructure.test.createEmptyProtocol
-import kotlinx.serialization.*
 import kotlin.test.*
 
 
@@ -35,7 +34,6 @@ class StudyDeploymentSnapshotTest :
     /**
      * Types not known at compile time should not prevent deserializing a deployment, but should be loaded through a 'Custom' type wrapper.
      */
-    @ExperimentalSerializationApi
     @Test
     fun unknown_types_are_wrapped_when_deserializing()
     {
@@ -49,7 +47,6 @@ class StudyDeploymentSnapshotTest :
     /**
      * Types which were wrapped in a 'Custom' type wrapper upon deserialization should be serialized to their original form (returning the original type, not the wrapper).
      */
-    @ExperimentalSerializationApi
     @Test
     fun serializing_unknown_types_removes_the_wrapper()
     {
@@ -63,7 +60,6 @@ class StudyDeploymentSnapshotTest :
     /**
      * Create a serialized deployment (snapshot) of a study protocol with exactly one primary device which is registered using an unknown device registration.
      */
-    @ExperimentalSerializationApi
     private fun serializeDeploymentSnapshotIncludingUnknownRegistration(): String
     {
         val protocol = createEmptyProtocol()

@@ -6,9 +6,9 @@ import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.deployments.application.StudyDeploymentStatus
 import dk.cachet.carp.deployments.domain.StudyDeployment
 import dk.cachet.carp.deployments.domain.users.ParticipantGroup
-import kotlinx.datetime.Instant
 import kotlinx.serialization.*
 import kotlin.js.JsExport
+import kotlin.time.Instant
 
 
 /**
@@ -26,9 +26,19 @@ sealed class ParticipantGroupStatus
     abstract val id: UUID
 
     /**
+     * Optional metadata representing the group of participants.
+     */
+    abstract val representation: ParticipantGroupRepresentation
+
+    /**
      * The participants that are part of this group.
      */
     abstract val participants: Set<Participant>
+
+    /**
+     * The participant role assignments in this group.
+     */
+    abstract val assignedParticipantRoles: Set<AssignedParticipantRoles>
 
 
     /**
@@ -37,7 +47,10 @@ sealed class ParticipantGroupStatus
     @Serializable
     data class Staged(
         override val id: UUID,
-        override val participants: Set<Participant>
+        override val participants: Set<Participant>,
+        override val assignedParticipantRoles: Set<AssignedParticipantRoles>,
+        @Required
+        override val representation: ParticipantGroupRepresentation = ParticipantGroupRepresentation.Default
     ) : ParticipantGroupStatus()
 
 
@@ -54,7 +67,9 @@ sealed class ParticipantGroupStatus
              */
             fun fromDeploymentStatus(
                 participants: Set<Participant>,
-                deploymentStatus: StudyDeploymentStatus
+                roleAssignment: Set<AssignedParticipantRoles>,
+                deploymentStatus: StudyDeploymentStatus,
+                representation: ParticipantGroupRepresentation
             ): InDeployment
             {
                 val id = deploymentStatus.studyDeploymentId
@@ -66,12 +81,43 @@ sealed class ParticipantGroupStatus
                     is StudyDeploymentStatus.Invited,
                     is StudyDeploymentStatus.DeployingDevices ->
                         // If deployment was ready at one point (`startedOn`), consider the study 'Running'.
-                        if ( startedOn == null ) Invited( id, participants, createdOn, deploymentStatus )
-                        else Running( id, participants, createdOn, deploymentStatus, startedOn )
+                        if ( startedOn == null )
+                        {
+                            Invited( id, participants, roleAssignment, createdOn, deploymentStatus, representation )
+                        }
+                        else
+                        {
+                            Running(
+                                id,
+                                participants,
+                                roleAssignment,
+                                createdOn,
+                                deploymentStatus,
+                                startedOn,
+                                representation
+                            )
+                        }
                     is StudyDeploymentStatus.Running ->
-                        Running( id, participants, createdOn, deploymentStatus, checkNotNull( startedOn ) )
+                        Running(
+                            id,
+                            participants,
+                            roleAssignment,
+                            createdOn,
+                            deploymentStatus,
+                            checkNotNull( startedOn ),
+                            representation
+                        )
                     is StudyDeploymentStatus.Stopped ->
-                        Stopped( id, participants, createdOn, deploymentStatus, startedOn, deploymentStatus.stoppedOn )
+                        Stopped(
+                            id,
+                            participants,
+                            roleAssignment,
+                            createdOn,
+                            deploymentStatus,
+                            startedOn,
+                            deploymentStatus.stoppedOn,
+                            representation
+                        )
                 }
             }
         }
@@ -96,8 +142,11 @@ sealed class ParticipantGroupStatus
     data class Invited(
         override val id: UUID,
         override val participants: Set<Participant>,
+        override val assignedParticipantRoles: Set<AssignedParticipantRoles>,
         override val invitedOn: Instant,
-        override val studyDeploymentStatus: StudyDeploymentStatus
+        override val studyDeploymentStatus: StudyDeploymentStatus,
+        @Required
+        override val representation: ParticipantGroupRepresentation = ParticipantGroupRepresentation.Default
     ) : InDeployment()
 
     /**
@@ -108,12 +157,15 @@ sealed class ParticipantGroupStatus
     data class Running(
         override val id: UUID,
         override val participants: Set<Participant>,
+        override val assignedParticipantRoles: Set<AssignedParticipantRoles>,
         override val invitedOn: Instant,
         override val studyDeploymentStatus: StudyDeploymentStatus,
         /**
          * The time when the study deployment started running, i.e., when all devices were deployed for the first time.
          */
-        val startedOn: Instant
+        val startedOn: Instant,
+        @Required
+        override val representation: ParticipantGroupRepresentation = ParticipantGroupRepresentation.Default
     ) : InDeployment()
 
     /**
@@ -124,6 +176,7 @@ sealed class ParticipantGroupStatus
     data class Stopped(
         override val id: UUID,
         override val participants: Set<Participant>,
+        override val assignedParticipantRoles: Set<AssignedParticipantRoles>,
         override val invitedOn: Instant,
         override val studyDeploymentStatus: StudyDeploymentStatus,
         /**
@@ -134,6 +187,8 @@ sealed class ParticipantGroupStatus
         /**
          * The time when the study deployment was stopped.
          */
-        val stoppedOn: Instant
+        val stoppedOn: Instant,
+        @Required
+        override val representation: ParticipantGroupRepresentation = ParticipantGroupRepresentation.Default
     ) : InDeployment()
 }

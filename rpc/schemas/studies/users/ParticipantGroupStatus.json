@@ -1,10 +1,10 @@
 {
   "$schema": "https://json-schema.org/draft/2019-09/schema",
   "oneOf": [
-    { "$ref": "#/$defs/Staged" },
-    { "$ref": "#/$defs/Invited" },
-    { "$ref": "#/$defs/Running" },
-    { "$ref": "#/$defs/Stopped" }
+    { "$ref": "#Staged" },
+    { "$ref": "#Invited" },
+    { "$ref": "#Running" },
+    { "$ref": "#Stopped" }
   ],
   "$defs": {
     "ParticipantGroupStatus": {
@@ -12,14 +12,20 @@
       "properties": {
         "__type": true,
         "id": { "type": "string", "format": "uuid" },
+        "representation": { "$ref": "../users/ParticipantGroupRepresentation.json" },
         "participants": {
           "type": "array",
           "items": { "$ref": "../users/Participant.json" }
+        },
+        "assignedParticipantRoles": {
+          "type": "array",
+          "items": { "$ref": "../users/AssignedParticipantRoles.json" }
         }
       },
-      "required": [ "__type", "id", "participants" ]
+      "required": [ "__type", "id", "representation", "participants", "assignedParticipantRoles" ]
     },
     "InDeployment": {
+      "$anchor": "InDeployment",
       "allOf": [ { "$ref": "#/$defs/ParticipantGroupStatus" } ],
       "properties": {
         "invitedOn": { "type": "string", "format": "date-time" },
@@ -44,7 +50,7 @@
       "unevaluatedProperties": false
     },
     "Running": {
-      "$anchor": "DeployingDevices",
+      "$anchor": "Running",
       "allOf": [ { "$ref": "#/$defs/InDeployment" } ],
       "properties": {
         "__type": { "const": "dk.cachet.carp.studies.application.users.ParticipantGroupStatus.Running" },
@@ -54,7 +60,7 @@
       "unevaluatedProperties": false
     },
     "Stopped": {
-      "$anchor": "Running",
+      "$anchor": "Stopped",
       "allOf": [ { "$ref": "#/$defs/InDeployment" } ],
       "properties": {
         "__type": { "const": "dk.cachet.carp.studies.application.users.ParticipantGroupStatus.Stopped" },

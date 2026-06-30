@@ -23,7 +23,7 @@ interface InputElement<TData : Any>
     /**
      * Return the class information of the expected input data ([TData]).
      */
-    @Suppress( "NON_EXPORTABLE_TYPE" )
+    @JsExport.Ignore
     fun getDataClass(): KClass<TData>
 }
 

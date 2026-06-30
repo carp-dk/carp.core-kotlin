@@ -24,7 +24,6 @@ data class ParticipantInvitation(
     /**
      * The identity used to authenticate and invite the participant.
      */
-    @Suppress( "NON_EXPORTABLE_TYPE" )
     val identity: AccountIdentity,
     /**
      * A description of the study which is shared with the participant.

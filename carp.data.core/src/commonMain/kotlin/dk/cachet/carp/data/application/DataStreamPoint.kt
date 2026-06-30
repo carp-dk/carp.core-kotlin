@@ -1,5 +1,3 @@
-@file:Suppress( "NON_EXPORTABLE_TYPE" )
-
 package dk.cachet.carp.data.application
 
 import dk.cachet.carp.common.application.UUID
@@ -56,12 +54,3 @@ data class DataStreamPoint<out TData : Data>(
         )
     }
 }
-
-
-/**
- * A serializer for [DataStreamPoint] to allow polymorphic serialization on the JS LEGACY backend.
- *
- * TODO: Verify whether this is still needed once we upgrade to the IR backend.
- */
-object DataStreamPointSerializer : KSerializer<DataStreamPoint<Data>>
-    by DataStreamPoint.serializer( PolymorphicSerializer( Data::class ) )

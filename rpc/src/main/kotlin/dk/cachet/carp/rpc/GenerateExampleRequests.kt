@@ -32,17 +32,16 @@ import dk.cachet.carp.studies.application.*
 import dk.cachet.carp.studies.application.users.*
 import dk.cachet.carp.studies.infrastructure.*
 import kotlinx.coroutines.runBlocking
-import kotlinx.datetime.Instant
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlin.reflect.KFunction
 import kotlin.reflect.KSuspendFunction3
-import kotlin.reflect.jvm.javaField
+import kotlin.reflect.full.declaredFunctions
 import kotlin.reflect.jvm.javaMethod
-import kotlin.reflect.jvm.kotlinFunction
+import kotlin.reflect.jvm.jvmErasure
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Instant
 
 
 /**
@@ -50,7 +49,7 @@ import kotlin.time.Duration.Companion.seconds
  */
 fun generateExampleRequests( serviceInfo: ApplicationServiceInfo ): List<ExampleRequest>
 {
-    val requestMethods = serviceInfo.serviceKlass.methods
+    val requestMethods = serviceInfo.serviceKlass.kotlin.declaredFunctions
     val exampleRequests = exampleRequests.filter { it.key.javaMethod?.declaringClass == serviceInfo.serviceKlass }
 
     val json = Json( createDefaultJSON() ) { prettyPrint = true }
@@ -58,12 +57,11 @@ fun generateExampleRequests( serviceInfo: ApplicationServiceInfo ): List<Example
     return requestMethods.map { request ->
         // Retrieve example and verify whether it is valid.
         val requestName = serviceInfo.serviceName + "." + request.name
-        val kotlinRequest = checkNotNull( request.kotlinFunction )
-        val example = checkNotNull( exampleRequests[ kotlinRequest ] )
+        val example = checkNotNull( exampleRequests[ request ] )
             { "No example request and response instances provided for $requestName." }
-        check( example.request.matchesServiceRequest( kotlinRequest ) )
+        check( example.request.matchesServiceRequest( request ) )
             { "Incorrect request instance provided for $requestName." }
-        check( request.returnType.isInstance( example.response ) )
+        check( request.returnType.jvmErasure.isInstance( example.response ) )
             { "Incorrect response instance provided for $requestName." }
 
         // Create example JSON.
@@ -72,22 +70,12 @@ fun generateExampleRequests( serviceInfo: ApplicationServiceInfo ): List<Example
         val responseJson = json.encodeToString( checkNotNull( exampleJson[ "response" ] ) )
 
         ExampleRequest(
-            request,
+            checkNotNull( request.javaMethod ),
             ExampleRequest.JsonExample( example.request::class.java, requestObjectJson ),
-            ExampleRequest.JsonExample( request.returnType, responseJson )
+            ExampleRequest.JsonExample( request.returnType.javaClass, responseJson )
         )
     }
 }
-
-private fun <T : DeviceRegistration> T.setRegistrationCreatedOn( createdOn: Instant ): T
-{
-    val backingField = DeviceRegistration::registrationCreatedOn.javaField!!
-    backingField.isAccessible = true
-    backingField.set( this, createdOn )
-
-    return this
-}
-
 
 // Example protocol with a single smartphone.
 private val ownerId = UUID( "491f03fc-964b-4783-86a6-a528bbfe4e94" )
@@ -125,7 +113,7 @@ private val phoneProtocol = StudyProtocol(
     addConnectedDevice( bikeBeacon, phone )
     addTaskControl( startOfStudyTrigger.start( measurePhoneMovement, phone ) )
     addTaskControl( startOfStudyTrigger.start( measureBikeProximity, bikeBeacon ) )
-    applicationData = "{\"uiTheme\": \"black\"}"
+    applicationData = ApplicationData( "{\"uiTheme\": \"black\"}" )
 }.getSnapshot()
 private val startOfStudyTriggerId = phoneProtocol.triggers.entries.first { it.value == startOfStudyTrigger }.key
 private val expectedParticipantData = setOf(
@@ -155,17 +143,23 @@ private val studyLiveStatus = StudyStatus.Live( studyId, studyName, studyCreated
 
 // Deployment data matching the example protocol.
 private val deploymentId = UUID( "c9cc5317-48da-45f2-958e-58bc07f34681" )
+private val deploymentName = "Boaty McBoatface"
+private val updatedDeploymentName = "Plowy McPlowface"
 private val deploymentIds = setOf( deploymentId, UUID( "d4a9bba4-860e-4c58-a356-8a91605dc1ee" ) )
 private val deploymentCreatedOn = Instant.fromEpochSeconds( 1642504000 )
 private val participantId = UUID( "32880e82-01c9-40cf-a6ed-17ff3348f251" )
 private val participantAccount = EmailAccountIdentity( "boaty@mcboatface.com" )
 private val participantAccountId = UUID( "ca60cb7f-de18-44b6-baf9-3c8e6a73005a" )
+private val updatedParticipantId = UUID( "b1d89f6c-07e5-4f24-9b86-7bcbe5535c39" )
+private val updatedParticipantAccount = EmailAccountIdentity( "plowy@mcplowface.com" )
 private val studyInvitation = StudyInvitation(
     studyName,
     "Participate in this study, which keeps track of how much you walk and bike!",
-    "{\"trialGroup\", \"A\"}"
+    ApplicationData( "{\"trialGroup\", \"A\"}" )
 )
 private val participantAssignedRoles = AssignedTo.Roles( setOf( participantRole.role ) )
+private val roleAssignment = setOf( AssignedParticipantRoles( participantId, participantAssignedRoles ) )
+private val updatedRoleAssignment = setOf( AssignedParticipantRoles( updatedParticipantId, participantAssignedRoles ) )
 private val participantInvitation = ParticipantInvitation(
     participantId,
     participantAssignedRoles,
@@ -187,11 +181,12 @@ private val bikeBeaconPreregistration = bikeBeacon.createRegistration {
     organizationId = UUID( "4e990957-0838-414c-bf25-2d391e2990b5" )
     majorId = 42
     minorId = 42
-}.setRegistrationCreatedOn( deploymentCreatedOn )
+    additionalSpecifications = ApplicationData( """{"Model": "AnyBeacon B42"}""" )
+}.copy( registrationCreatedOn = deploymentCreatedOn )
 private val phoneRegistration = phone.createRegistration {
     deviceId = UUID( "fc7b41b0-e9e2-4b5d-8c3d-5119b556a3f0" ).toString()
-}.setRegistrationCreatedOn( Instant.fromEpochSeconds( 1642514110 ) )
-private val bikeBeaconStatus = DeviceDeploymentStatus.Registered( bikeBeacon, false, emptySet(), emptySet() )
+}.copy( registrationCreatedOn = Instant.fromEpochSeconds( 1642514110 ) )
+private val bikeBeaconStatus = DeviceDeploymentStatus.Registered( bikeBeacon, phoneRegistration, false, emptySet(), emptySet() )
 private val participantStatusList = listOf(
     ParticipantStatus( participantId, participantAssignedRoles, setOf( phone.roleName ) )
 )
@@ -209,7 +204,7 @@ private val runningDeploymentStatus = StudyDeploymentStatus.Running(
     deploymentCreatedOn,
     deploymentId,
     listOf(
-        DeviceDeploymentStatus.Deployed( phone ),
+        DeviceDeploymentStatus.Deployed( phone, phoneRegistration ),
         bikeBeaconStatus
     ),
     participantStatusList,
@@ -219,7 +214,7 @@ private val stoppedDeploymentStatus = StudyDeploymentStatus.Stopped(
     deploymentCreatedOn,
     deploymentId,
     listOf(
-        DeviceDeploymentStatus.Deployed( phone ),
+        DeviceDeploymentStatus.Deployed( phone, phoneRegistration ),
         bikeBeaconStatus
     ),
     participantStatusList,
@@ -227,6 +222,7 @@ private val stoppedDeploymentStatus = StudyDeploymentStatus.Stopped(
     Instant.fromEpochSeconds( 1642506000 )
 )
 private val participants = setOf( Participant( participantAccount, participantId ) )
+private val updatedParticipants = setOf( Participant( updatedParticipantAccount, updatedParticipantId ) )
 private val participantGroupInvitedOn = Instant.fromEpochSeconds( 1642514010 )
 private val phoneDeviceDeployment = PrimaryDeviceDeployment(
     phone,
@@ -264,6 +260,10 @@ private val phoneDataStreamBatch = MutableDataStreamBatch().apply {
     appendSequence( geoDataSequence )
     appendSequence( stepsDataSequence )
 }
+private val dataStreamSequenceIds = listOf(
+    DataStreamStatus( phoneGeoDataStream, geoDataSequence.range.last, true ),
+    DataStreamStatus( phoneStepsDataStream, stepsDataSequence.range.last, true )
+)
 
 
 private fun <TService : ApplicationService<TService, *>, TResponse> example(
@@ -380,20 +380,88 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
             Participant( UsernameAccountIdentity( "John Doe" ), UUID( "d7436912-ac9f-4f9b-a29e-376af8a0fbb4" ) )
         )
     ),
-    RecruitmentService::inviteNewParticipantGroup to example(
-        request = RecruitmentServiceRequest.InviteNewParticipantGroup(
+    @Suppress( "DEPRECATION" )
+    Pair(
+        RecruitmentService::inviteNewParticipantGroup,
+        example(
+            request =
+                RecruitmentServiceRequest.InviteNewParticipantGroup(
+                    studyId,
+                    setOf( AssignedParticipantRoles( participantId, participantAssignedRoles ) )
+                ),
+            response = ParticipantGroupStatus.Invited(
+                deploymentId,
+                participants,
+                roleAssignment,
+                participantGroupInvitedOn,
+                invitedDeploymentStatus
+            )
+        )
+    ),
+    RecruitmentService::createParticipantGroup to example(
+        request = RecruitmentServiceRequest.CreateParticipantGroup(
+            deploymentId,
+            setOf( AssignedParticipantRoles( participantId, participantAssignedRoles ) ),
             studyId,
-            setOf( AssignedParticipantRoles( participantId, participantAssignedRoles ) )
+            ParticipantGroupRepresentation( deploymentName )
         ),
-        response = ParticipantGroupStatus.Invited( deploymentId, participants, participantGroupInvitedOn, invitedDeploymentStatus )
+        response = ParticipantGroupStatus.Staged(
+            deploymentId,
+            participants,
+            setOf( AssignedParticipantRoles( participantId, participantAssignedRoles ) ),
+            ParticipantGroupRepresentation( deploymentName )
+        )
+    ),
+    RecruitmentService::updateParticipantGroup to example(
+        request = RecruitmentServiceRequest.UpdateParticipantGroup(
+            deploymentId,
+            group = updatedRoleAssignment,
+            representation = ParticipantGroupRepresentation( updatedDeploymentName )
+        ),
+        response = ParticipantGroupStatus.Staged(
+            deploymentId,
+            updatedParticipants,
+            updatedRoleAssignment,
+            ParticipantGroupRepresentation( updatedDeploymentName )
+        )
+    ),
+    RecruitmentService::inviteParticipantGroup to example(
+        request = RecruitmentServiceRequest.InviteParticipantGroup( deploymentId ),
+        response = ParticipantGroupStatus.Invited(
+            deploymentId,
+            participants,
+            roleAssignment,
+            participantGroupInvitedOn,
+            invitedDeploymentStatus,
+            ParticipantGroupRepresentation( deploymentName )
+        )
     ),
     RecruitmentService::getParticipantGroupStatusList to example(
         request = RecruitmentServiceRequest.GetParticipantGroupStatusList( studyId ),
-        response = listOf( ParticipantGroupStatus.Running( deploymentId, participants, participantGroupInvitedOn, runningDeploymentStatus, runningDeploymentStatus.startedOn ) )
+        response = listOf(
+            ParticipantGroupStatus.Running(
+                deploymentId,
+                participants,
+                roleAssignment,
+                participantGroupInvitedOn,
+                runningDeploymentStatus,
+                runningDeploymentStatus.startedOn,
+                ParticipantGroupRepresentation( deploymentName )
+            )
+        )
     ),
     RecruitmentService::stopParticipantGroup to example(
         request = RecruitmentServiceRequest.StopParticipantGroup( studyId, deploymentId ),
-        response = ParticipantGroupStatus.Stopped( deploymentId, participants, participantGroupInvitedOn, stoppedDeploymentStatus, stoppedDeploymentStatus.startedOn, stoppedDeploymentStatus.stoppedOn )
+        response = ParticipantGroupStatus.Stopped(
+            deploymentId,
+            participants,
+            roleAssignment,
+            participantGroupInvitedOn,
+            stoppedDeploymentStatus,
+            stoppedDeploymentStatus.startedOn,
+            stoppedDeploymentStatus.stoppedOn,
+            ParticipantGroupRepresentation( deploymentName )
+        )
     ),
 
     // DeploymentService
@@ -424,7 +492,7 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
             deploymentCreatedOn,
             deploymentId,
             listOf(
-                DeviceDeploymentStatus.Registered( phone, true, emptySet(), emptySet() ),
+                DeviceDeploymentStatus.Registered( phone, phoneRegistration, true, emptySet(), emptySet() ),
                 bikeBeaconStatus
             ),
             participantStatusList,
@@ -482,6 +550,10 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
     DataStreamService::getDataStream to example(
         request = DataStreamServiceRequest.GetDataStream( phoneGeoDataStream, 0, 100 ),
         response = MutableDataStreamBatch().apply { appendSequence( geoDataSequence ) }
+    ),
+    DataStreamService::getDataStreamsStatus to example(
+        request = DataStreamServiceRequest.GetDataStreamsStatus( deploymentId ),
+        response = dataStreamSequenceIds
     ),
     DataStreamService::closeDataStreams to example(
         request = DataStreamServiceRequest.CloseDataStreams( deploymentIds )

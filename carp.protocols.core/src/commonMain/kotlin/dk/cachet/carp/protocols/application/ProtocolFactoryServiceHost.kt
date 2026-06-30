@@ -7,7 +7,7 @@ import dk.cachet.carp.common.application.devices.CustomProtocolDevice
 import dk.cachet.carp.common.application.tasks.CustomProtocolTask
 import dk.cachet.carp.protocols.domain.StudyProtocol
 import dk.cachet.carp.protocols.domain.start
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 
 
 /**

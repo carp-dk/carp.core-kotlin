@@ -21,8 +21,5 @@ sealed class AssignedTo
      * Assign this to the specified [roleNames] in the study protocol.
      */
     @Serializable
-    data class Roles(
-        @Suppress( "NON_EXPORTABLE_TYPE" )
-        val roleNames: Set<String>
-    ) : AssignedTo()
+    data class Roles( val roleNames: Set<String> ) : AssignedTo()
 }

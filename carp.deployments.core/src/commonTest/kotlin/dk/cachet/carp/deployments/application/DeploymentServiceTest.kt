@@ -94,12 +94,32 @@ interface DeploymentServiceTest
     }
 
     @Test
-    fun getStudyDeploymentStatus_succeeds() = runTest {
+    fun getStudyDeploymentStatus_transitions_succeed_and_match_status_of_last_operation() = runTest {
         val (service, _) = createSUT()
-        val studyDeploymentId = addTestDeployment( service, "Test device" )
+        val studyDeploymentId = addTestDeployment( service, "Primary" )
 
-        // Actual testing of the status responses should already be covered adequately in StudyDeployment tests.
-        service.getStudyDeploymentStatus( studyDeploymentId )
+        var status = service.getStudyDeploymentStatus( studyDeploymentId )
+        val primary = status.getRemainingDevicesToRegister().first { it.roleName == "Primary" }
+        val connected = status.getRemainingDevicesToRegister().first { it.roleName == "Connected" }
+        assertTrue( status is StudyDeploymentStatus.Invited )
+
+        val registeringStatus =
+            service.registerDevice( studyDeploymentId, primary.roleName, primary.createRegistration() )
+        status = service.getStudyDeploymentStatus( studyDeploymentId )
+        assertEquals( registeringStatus, status )
+        assertTrue( status is StudyDeploymentStatus.DeployingDevices )
+
+        service.registerDevice( studyDeploymentId, connected.roleName, connected.createRegistration() )
+        val deployment = service.getDeviceDeploymentFor( studyDeploymentId, primary.roleName )
+        val deployedStatus = service.deviceDeployed( studyDeploymentId, primary.roleName, deployment.lastUpdatedOn )
+        status = service.getStudyDeploymentStatus( studyDeploymentId )
+        assertEquals( deployedStatus, status )
+        assertTrue( status is StudyDeploymentStatus.Running )
+
+        val stoppedStatus = service.stop( studyDeploymentId )
+        status = service.getStudyDeploymentStatus( studyDeploymentId )
+        assertEquals( stoppedStatus, status )
+        assertTrue( status is StudyDeploymentStatus.Stopped )
     }
 
     @Test
@@ -112,19 +132,42 @@ interface DeploymentServiceTest
     @Test
     fun getStudyDeploymentStatusList_succeeds() = runTest {
         val (service, _) = createSUT()
-        val deviceRoleName = "Primary"
-        val (protocol, _, _) = createSinglePrimaryWithConnectedDeviceProtocol( deviceRoleName )
+        val (protocol, primary, connected) = createSinglePrimaryWithConnectedDeviceProtocol()
         val protocolSnapshot = protocol.getSnapshot()
 
-        val invitation1 = createParticipantInvitation( AccountIdentity.fromUsername( "User 1" ) )
+        // Invited
         val deploymentId1 = UUID.randomUUID()
+        val invitation1 = createParticipantInvitation( AccountIdentity.fromUsername( "User 1" ) )
         service.createStudyDeployment( deploymentId1, protocolSnapshot, listOf( invitation1 ) )
-        val invitation2 = createParticipantInvitation( AccountIdentity.fromUsername( "User 2" ) )
-        val deploymentId2 = UUID.randomUUID()
-        service.createStudyDeployment( deploymentId2, protocolSnapshot, listOf( invitation2 ) )
 
-        // Actual testing of the status responses should already be covered adequately in StudyDeployment tests.
-        service.getStudyDeploymentStatusList( setOf( deploymentId1, deploymentId2 ) )
+        // Deploying devices
+        val deploymentId2 = UUID.randomUUID()
+        val invitation2 = createParticipantInvitation( AccountIdentity.fromUsername( "User 2" ) )
+        service.createStudyDeployment( deploymentId2, protocolSnapshot, listOf( invitation2 ) )
+        service.registerDevice( deploymentId2, primary.roleName, primary.createRegistration() )
+
+        // Running
+        val deploymentId3 = UUID.randomUUID()
+        val invitation3 = createParticipantInvitation( AccountIdentity.fromUsername( "User 3" ) )
+        service.createStudyDeployment( deploymentId3, protocolSnapshot, listOf( invitation3 ) )
+        service.registerDevice( deploymentId3, primary.roleName, primary.createRegistration() )
+        service.registerDevice( deploymentId3, connected.roleName, connected.createRegistration() )
+        val primaryDeployment = service.getDeviceDeploymentFor( deploymentId3, primary.roleName )
+        service.deviceDeployed( deploymentId3, primary.roleName, primaryDeployment.lastUpdatedOn )
+
+        // Stopped
+        val deploymentId4 = UUID.randomUUID()
+        val invitation4 = createParticipantInvitation(AccountIdentity.fromUsername( "User 4" ) )
+        service.createStudyDeployment( deploymentId4, protocolSnapshot, listOf( invitation4 ) )
+        service.stop( deploymentId4 )
+
+        val allDeployments = setOf( deploymentId1, deploymentId2, deploymentId3, deploymentId4 )
+        val statusList = service.getStudyDeploymentStatusList( allDeployments )
+        assertEquals( 4, statusList.size )
+        assertEquals( deploymentId1, statusList.single { it is StudyDeploymentStatus.Invited }.studyDeploymentId )
+        assertEquals( deploymentId2, statusList.single { it is StudyDeploymentStatus.DeployingDevices }.studyDeploymentId )
+        assertEquals( deploymentId3, statusList.single { it is StudyDeploymentStatus.Running }.studyDeploymentId )
+        assertEquals( deploymentId4, statusList.single { it is StudyDeploymentStatus.Stopped }.studyDeploymentId )
     }
 
     @Test
@@ -168,14 +211,19 @@ interface DeploymentServiceTest
     @Test
     fun unregisterDevice_succeeds() = runTest {
         val (service, _) = createSUT()
-        val deviceRolename = "Test device"
-        val studyDeploymentId = addTestDeployment( service, deviceRolename )
+        val primaryRolename = "Test device"
+        val connectedRolename = "Connected"
+        val studyDeploymentId = addTestDeployment( service, primaryRolename, connectedRolename )
         var status = service.getStudyDeploymentStatus( studyDeploymentId )
-        val device = status.getRemainingDevicesToRegister().first { it.roleName == deviceRolename }
-        service.registerDevice( studyDeploymentId, deviceRolename, device.createRegistration { } )
+        val primaryDevice = status.getRemainingDevicesToRegister().first { it.roleName == primaryRolename }
+        service.registerDevice( studyDeploymentId, primaryRolename, primaryDevice.createRegistration() )
+        val connectedDevice = status.getRemainingDevicesToRegister().first { it.roleName == connectedRolename }
+        service.registerDevice( studyDeploymentId, connectedRolename, connectedDevice.createRegistration() )
 
-        status = service.unregisterDevice( studyDeploymentId, deviceRolename )
-        assertTrue( device in status.getRemainingDevicesToRegister() )
+        status = service.unregisterDevice( studyDeploymentId, primaryRolename )
+        val toRegister = status.getRemainingDevicesToRegister()
+        assertEquals( 1, toRegister.size )
+        assertTrue( primaryDevice in status.getRemainingDevicesToRegister() )
     }
 
     @Test
@@ -198,6 +246,27 @@ interface DeploymentServiceTest
         service.registerDevice( deploymentId, device.roleName, secondRegistration )
         val secondDeployment = service.getDeviceDeploymentFor( deploymentId, device.roleName )
         assertEquals( secondRegistration, secondDeployment.registration )
+    }
+
+    @Test
+    fun deviceDeployed_succeeds() = runTest {
+        val (service, _) = createSUT()
+        val studyDeploymentId = addTestDeployment( service, "Primary", "Connected" )
+        var status = service.getStudyDeploymentStatus( studyDeploymentId )
+        val primary = status.getRemainingDevicesToRegister().first { it.roleName == "Primary" }
+        val connected = status.getRemainingDevicesToRegister().first { it.roleName == "Connected" }
+        service.registerDevice( studyDeploymentId, primary.roleName, primary.createRegistration() )
+        service.registerDevice( studyDeploymentId, connected.roleName, connected.createRegistration() )
+
+        val deployment = service.getDeviceDeploymentFor( studyDeploymentId, primary.roleName )
+        status = service.deviceDeployed( studyDeploymentId, primary.roleName, deployment.lastUpdatedOn )
+
+        val runningStatus = status as? StudyDeploymentStatus.Running
+        assertNotNull( runningStatus )
+        val primaryDeviceStatus = runningStatus.deviceStatusList.single { it.device == primary }
+        assertTrue( primaryDeviceStatus is DeviceDeploymentStatus.Deployed )
+        val connectedDeviceStatus = runningStatus.deviceStatusList.single { it.device == connected }
+        assertTrue( connectedDeviceStatus is DeviceDeploymentStatus.Registered )
     }
 
     @Test

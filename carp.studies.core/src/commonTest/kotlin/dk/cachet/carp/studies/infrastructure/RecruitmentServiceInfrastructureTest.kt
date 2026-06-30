@@ -7,6 +7,7 @@ import dk.cachet.carp.common.test.infrastructure.ApplicationServiceDecoratorTest
 import dk.cachet.carp.common.test.infrastructure.ApplicationServiceRequestsTest
 import dk.cachet.carp.studies.application.RecruitmentService
 import dk.cachet.carp.studies.application.RecruitmentServiceHostTest
+import dk.cachet.carp.studies.application.users.ParticipantGroupRepresentation
 
 
 class RecruitmentServiceRequestsTest : ApplicationServiceRequestsTest<RecruitmentService, RecruitmentServiceRequest<*>>(
@@ -24,7 +25,20 @@ class RecruitmentServiceRequestsTest : ApplicationServiceRequestsTest<Recruitmen
             RecruitmentServiceRequest.AddParticipantByUsername( studyId, Username( "test" ) ),
             RecruitmentServiceRequest.GetParticipant( studyId, UUID.randomUUID() ),
             RecruitmentServiceRequest.GetParticipants( studyId ),
+            @Suppress( "DEPRECATION" )
             RecruitmentServiceRequest.InviteNewParticipantGroup( studyId, setOf() ),
+            RecruitmentServiceRequest.CreateParticipantGroup(
+                UUID.randomUUID(),
+                setOf(),
+                studyId,
+                ParticipantGroupRepresentation( "test group" )
+            ),
+            RecruitmentServiceRequest.UpdateParticipantGroup(
+                UUID.randomUUID(),
+                setOf(),
+                ParticipantGroupRepresentation( "updated group" )
+            ),
+            RecruitmentServiceRequest.InviteParticipantGroup( UUID.randomUUID() ),
             RecruitmentServiceRequest.GetParticipantGroupStatusList( studyId ),
             RecruitmentServiceRequest.StopParticipantGroup( studyId, UUID.randomUUID() )
         )

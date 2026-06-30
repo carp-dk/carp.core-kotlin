@@ -8,8 +8,8 @@ import dk.cachet.carp.common.application.services.ApplicationService
 import dk.cachet.carp.common.application.services.IntegrationEvent
 import dk.cachet.carp.deployments.application.users.ParticipantInvitation
 import dk.cachet.carp.protocols.application.StudyProtocolSnapshot
-import kotlinx.datetime.Instant
 import kotlinx.serialization.*
+import kotlin.time.Instant
 
 
 /**
@@ -18,7 +18,7 @@ import kotlinx.serialization.*
  */
 interface DeploymentService : ApplicationService<DeploymentService, DeploymentService.Event>
 {
-    companion object { val API_VERSION = ApiVersion( 1, 1 ) }
+    companion object { val API_VERSION = ApiVersion( 1, 3 ) }
 
     @Serializable
     sealed class Event( override val aggregateId: String? ) : IntegrationEvent<DeploymentService>

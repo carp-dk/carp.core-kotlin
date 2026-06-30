@@ -3,9 +3,10 @@ package dk.cachet.carp.data.application
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.application.data.Data
 import dk.cachet.carp.common.application.toEpochMicroseconds
+import dk.cachet.carp.common.infrastructure.test.StubDataPoint
 import dk.cachet.carp.data.infrastructure.dataStreamId
 import dk.cachet.carp.data.infrastructure.measurement
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 
 
 val stubDeploymentId = UUID.randomUUID()
@@ -13,6 +14,7 @@ val now = Clock.System.now()
 val stubSyncPoint = SyncPoint( now, now.toEpochMicroseconds() )
 val stubTriggerIds = listOf( 1 )
 const val stubSequenceDeviceRoleName = "Device"
+val stubDataPointStream = dataStreamId<StubDataPoint>( stubDeploymentId, stubSequenceDeviceRoleName )
 
 /**
  * Create a [DataStreamSequence], always using the same data stream identifiers, except for the data type defined by [T].

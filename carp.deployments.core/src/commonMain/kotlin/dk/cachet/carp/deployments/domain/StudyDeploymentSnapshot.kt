@@ -5,8 +5,8 @@ import dk.cachet.carp.common.application.devices.DeviceRegistration
 import dk.cachet.carp.common.domain.Snapshot
 import dk.cachet.carp.deployments.application.users.ParticipantStatus
 import dk.cachet.carp.protocols.application.StudyProtocolSnapshot
-import kotlinx.datetime.Instant
 import kotlinx.serialization.*
+import kotlin.time.Instant
 
 
 /**
@@ -24,7 +24,7 @@ data class StudyDeploymentSnapshot(
     val deployedDevices: Set<String> = emptySet(),
     val invalidatedDeployedDevices: Set<String> = emptySet(),
     val startedOn: Instant?,
-    val isStopped: Boolean
+    val stoppedOn: Instant?
 ) : Snapshot<StudyDeployment>
 {
     companion object
@@ -45,7 +45,7 @@ data class StudyDeploymentSnapshot(
                 studyDeployment.deployedDevices.map { it.roleName }.toSet(),
                 studyDeployment.invalidatedDeployedDevices.map { it.roleName }.toSet(),
                 studyDeployment.startedOn,
-                studyDeployment.isStopped
+                studyDeployment.stoppedOn
             )
         }
     }

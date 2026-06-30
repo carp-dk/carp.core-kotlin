@@ -16,8 +16,8 @@ import dk.cachet.carp.deployments.application.users.StudyInvitation
 import dk.cachet.carp.deployments.domain.StudyDeployment
 import dk.cachet.carp.protocols.domain.StudyProtocol
 import kotlinx.coroutines.test.runTest
-import kotlinx.datetime.Clock
 import kotlin.test.*
+import kotlin.time.Clock
 
 
 /**
@@ -311,6 +311,7 @@ class StudyTest
                 listOf(
                     DeviceDeploymentStatus.Registered(
                         smartphone,
+                        primaryDeviceDeployment.registration,
                         true,
                         emptySet(),
                         connectedDevices.map { it.roleName }.toSet()

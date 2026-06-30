@@ -13,7 +13,6 @@ import dk.cachet.carp.common.application.sampling.SamplingConfiguration
 import dk.cachet.carp.common.infrastructure.test.*
 import dk.cachet.carp.test.serialization.ConcreteTypesSerializationTest
 import kotlinx.serialization.PolymorphicSerializer
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -70,7 +69,7 @@ class SerializationTest : ConcreteTypesSerializationTest(
     }
 
     @Test
-    fun can_serialize_generic_CustomInput()
+    fun can_serialize_polymorphic_CustomInput()
     {
         val data: Data = CustomInput( 42 )
         val dataSerializer = PolymorphicSerializer( Data::class )

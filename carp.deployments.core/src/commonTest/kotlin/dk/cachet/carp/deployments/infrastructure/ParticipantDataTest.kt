@@ -8,7 +8,6 @@ import dk.cachet.carp.common.application.data.input.Sex
 import dk.cachet.carp.common.infrastructure.serialization.JSON
 import dk.cachet.carp.common.infrastructure.test.createTestJSON
 import dk.cachet.carp.deployments.application.users.ParticipantData
-import kotlinx.serialization.*
 import kotlin.test.*
 
 

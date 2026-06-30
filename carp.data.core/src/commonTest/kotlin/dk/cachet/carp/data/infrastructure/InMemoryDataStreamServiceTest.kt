@@ -16,10 +16,8 @@ import dk.cachet.carp.data.application.MutableDataStreamBatch
 import dk.cachet.carp.data.application.MutableDataStreamSequence
 import dk.cachet.carp.data.application.SyncPoint
 import kotlinx.coroutines.test.runTest
-import kotlinx.datetime.Clock
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import kotlin.test.*
+import kotlin.time.Clock
 
 
 /**

@@ -21,6 +21,9 @@ class ApiJsonObjectMigrationBuilderTest
     @Serializable
     class MigrateInner( val c: Int )
 
+    @Serializable
+    class MigrateOptional( val optionalInner: MigrateInner? = null ) : ToMigrate
+
     private val toMigrateSerializer = PolymorphicSerializer( ToMigrate::class )
 
     private val json = createDefaultJSON(
@@ -28,6 +31,7 @@ class ApiJsonObjectMigrationBuilderTest
             polymorphic( ToMigrate::class )
             {
                 subclass( Migrate::class )
+                subclass( MigrateOptional::class )
             }
         }
     )
@@ -82,6 +86,53 @@ class ApiJsonObjectMigrationBuilderTest
 
         val inner = assertNotNull( migrated[ Migrate::inner.name ]?.jsonObject )
         assertEquals( toSet, inner[ MigrateInner::c.name ] )
+    }
+
+    @Test
+    fun updateObject_fails_if_object_not_present()
+    {
+        val toMigrate = MigrateOptional( optionalInner = null )
+        val toMigrateJson = json.encodeToJsonElement( toMigrateSerializer, toMigrate ).jsonObject
+
+        migrate( toMigrateJson ) {
+            assertFailsWith<IllegalArgumentException>
+            {
+                updateObject( MigrateOptional::optionalInner.name ) { }
+            }
+        }
+    }
+
+    @Test
+    fun updateOptionalObject_if_object_present_succeeds()
+    {
+        val toMigrate = MigrateOptional( optionalInner = MigrateInner( 0 ) )
+        val toMigrateJson = json.encodeToJsonElement( toMigrateSerializer, toMigrate ).jsonObject
+
+        val toSet = JsonPrimitive( 42 )
+        val migrated = migrate( toMigrateJson ) {
+            updateOptionalObject( MigrateOptional::optionalInner.name ) {
+                json[ MigrateInner::c.name ] = toSet
+            }
+        }
+
+        val inner = assertNotNull( migrated[ MigrateOptional::optionalInner.name ]?.jsonObject )
+        assertEquals( toSet, inner[ MigrateInner::c.name ] )
+    }
+
+    @Test
+    fun updateOptionalObject_if_object_not_present_does_nothing()
+    {
+        val toMigrate = MigrateOptional( optionalInner = null )
+        val toMigrateJson = json.encodeToJsonElement( toMigrateSerializer, toMigrate ).jsonObject
+
+        val toSet = JsonPrimitive( 42 )
+        val migrated = migrate( toMigrateJson ) {
+            updateOptionalObject( MigrateOptional::optionalInner.name ) {
+                json[ MigrateInner::c.name ] = toSet
+            }
+        }
+
+        assertEquals( toMigrateJson.toString(), migrated.toString() )
     }
 
     @Test

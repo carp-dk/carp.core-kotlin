@@ -1,5 +1,6 @@
 package dk.cachet.carp.common.application.tasks
 
+import dk.cachet.carp.common.application.data.Data
 import dk.cachet.carp.common.application.devices.DeviceConfiguration
 import kotlin.js.JsExport
 import kotlin.js.JsName
@@ -13,8 +14,8 @@ import kotlin.js.JsName
  */
 @JsExport
 open class TaskConfigurationList private constructor(
-    private val list: MutableList<SupportedTaskConfiguration<*, *>>
-) : List<SupportedTaskConfiguration<*, *>> by list
+    private val list: MutableList<SupportedTaskConfiguration<*, *, *>>
+) : List<SupportedTaskConfiguration<*, *, *>> by list
 {
     @JsName( "create" )
     constructor() : this( mutableListOf() )
@@ -23,14 +24,21 @@ open class TaskConfigurationList private constructor(
      * All containing measures and/or outputs start running in the background once triggered.
      * The task runs for a specified duration, or until stopped, or until all measures and/or outputs have completed.
      */
-    @Suppress("PropertyName", "VariableNaming" ) // This is only extended by object classes, making it a constant.
+    @Suppress(
+        // This is only extended by object classes, making it a constant.
+        "PropertyName",
+        "VariableNaming",
+
+        "NON_EXPORTABLE_TYPE"
+    )
     val BACKGROUND = add { BackgroundTaskBuilder() }
 
 
     protected fun <
-        TConfiguration : TaskConfiguration<*>,
+        TConfiguration : TaskConfiguration<TData>,
+        TData : Data,
         TBuilder : TaskConfigurationBuilder<TConfiguration>
-    > add( builder: () -> TBuilder ): SupportedTaskConfiguration<TConfiguration, TBuilder> =
+    > add( builder: () -> TBuilder ): SupportedTaskConfiguration<TConfiguration, TData, TBuilder> =
         SupportedTaskConfiguration( builder ).also { list.add( it ) }
 }
 
@@ -40,7 +48,8 @@ open class TaskConfigurationList private constructor(
  */
 @JsExport
 class SupportedTaskConfiguration<
-    TConfiguration : TaskConfiguration<*>,
+    TConfiguration : TaskConfiguration<TData>,
+    TData : Data,
     TBuilder : TaskConfigurationBuilder<TConfiguration>
 >( private val createBuilder: () -> TBuilder )
 {

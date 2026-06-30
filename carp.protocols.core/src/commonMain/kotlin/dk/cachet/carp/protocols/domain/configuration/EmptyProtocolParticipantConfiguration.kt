@@ -1,6 +1,5 @@
 package dk.cachet.carp.protocols.domain.configuration
 
-import dk.cachet.carp.common.application.users.AssignedTo
 import dk.cachet.carp.common.application.users.ExpectedParticipantData
 import dk.cachet.carp.common.application.users.ParticipantRole
 import dk.cachet.carp.common.application.users.hasNoConflicts

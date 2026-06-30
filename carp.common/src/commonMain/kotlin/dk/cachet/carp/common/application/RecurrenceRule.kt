@@ -119,10 +119,10 @@ data class RecurrenceRule(
         /**
          * Bounds the recurrence rule in an inclusive manner to the associated start date of this rule plus [elapsedTime].
          */
+        @Suppress( "NON_EXPORTABLE_TYPE" )
         @Serializable
         data class Until(
             @Serializable( DurationSerializer::class )
-            @Suppress( "NON_EXPORTABLE_TYPE" )
             val elapsedTime: Duration
         ) : End()
         {

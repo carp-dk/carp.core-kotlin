@@ -1,4 +1,4 @@
-# carp.studies [![Maven Central](https://maven-badges.herokuapp.com/maven-central/dk.cachet.carp.studies/carp.studies.core/badge.svg)](https://mvnrepository.com/artifact/dk.cachet.carp.studies) [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/dk.cachet.carp.studies/carp.studies.core?server=https%3A%2F%2Foss.sonatype.org)](https://oss.sonatype.org/content/repositories/snapshots/dk/cachet/carp/studies/) 
+# carp.studies [![Maven Central](https://img.shields.io/maven-central/v/dk.cachet.carp.studies/carp.studies.core)](https://central.sonatype.com/artifact/dk.cachet.carp.studies/carp.studies.core) [![Snapshot](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fdk%2Fcachet%2Fcarp%2Fstudies%2Fcarp.studies.core%2Fmaven-metadata.xml)](https://central.sonatype.com/repository/maven-snapshots/dk/cachet/carp/studies/carp.studies.core/maven-metadata.xml) 
 
 Supports management of research studies, including the recruitment of participants and assigning metadata (e.g., contact information).
 This subsystem maps pseudonymized data (managed by the 'deployments' subsystem) to actual participants.
@@ -17,7 +17,7 @@ which reflects the underlying state machine:
 
 ![Participant group state machine](https://i.imgur.com/VIv3HKk.png)
 
-Note: `createParticipantGroup` and `inviteParticipantGroup` are envisioned new endpoints currently not yet available.
+Note: The legacy `inviteNewParticipantGroup` is still available to create and invite in one step, but planned to be removed in the future.
 
 Once a participant group is `InDeployment`, the state of the underlying `studyDeploymentStatus` determines the concrete `ParticipantGroupStatus`.
 Calling `RecruitmentService.stopParticipantGroup()` will stop the underlying deployment, but the deployment can also be stopped by participants in the study.
@@ -55,6 +55,9 @@ Allows setting recruitment goals, adding participants to studies, and creating d
 | `addParticipant` | Add a participant identified by a specified email address or username to a study. | manage study: `studyId` | |
 | `getParticipant` | Returns the participant with a specified ID for a study. | manage study: `studyId` | |
 | `getParticipants` | Get all participants for a study. | manage study: `studyId` | |
-| `inviteNewParticipantGroup` | Create and instantly invite a group of previously added participants to a study. | manage study: `studyId` | |
-| `getParticipantGroupStatusList` | Get the status of all deployed participant groups in a study. | manage study: `studyId` | |
+| `inviteNewParticipantGroup` | (Deprecated) Create and instantly invite a group of previously added participants to a study. | manage study: `studyId` | |
+| `createParticipantGroup` | Prepare a group of previously added participants for deployment without inviting them yet. | manage study: `studyId` | |
+| `updateParticipantGroup` | Update a prepared participant group. | manage study: `studyId` | |
+| `inviteParticipantGroup` | Invite a previously prepared participant group to start participating in the study. | manage study: `studyId` | |
+| `getParticipantGroupStatusList` | Get the status of all participant groups in a study. | manage study: `studyId` | |
 | `stopParticipantGroup` | Stop the study deployment in a study of a participant group. No further changes to this deployment will be allowed and no more data will be collected. | manage study: `studyId` | |

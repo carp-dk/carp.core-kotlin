@@ -1,6 +1,6 @@
 package dk.cachet.carp.deployments.application.users
 
-import dk.cachet.carp.common.infrastructure.serialization.ApplicationDataSerializer
+import dk.cachet.carp.common.application.ApplicationData
 import kotlinx.serialization.*
 import kotlin.js.JsExport
 
@@ -25,6 +25,5 @@ data class StudyInvitation(
      * This can be used by infrastructures or concrete applications which require exchanging additional data
      * between the studies and clients subsystems, outside of scope or not yet supported by CARP core.
      */
-    @Serializable( ApplicationDataSerializer::class )
-    val applicationData: String? = null
+    val applicationData: ApplicationData? = null
 )

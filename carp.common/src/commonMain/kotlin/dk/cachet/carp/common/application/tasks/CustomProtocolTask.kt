@@ -26,6 +26,5 @@ data class CustomProtocolTask(
     /**
      * This list is empty, since measures are defined in [studyProtocol] in a different format.
      */
-    @Suppress( "NON_EXPORTABLE_TYPE" )
     override val measures: List<Measure> = emptyList()
 }

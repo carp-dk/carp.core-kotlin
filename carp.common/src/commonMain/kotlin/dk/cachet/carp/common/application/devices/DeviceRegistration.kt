@@ -1,14 +1,14 @@
-@file:Suppress( "NON_EXPORTABLE_TYPE" )
+@file:Suppress( "UnnecessaryAbstractClass" )
 
 package dk.cachet.carp.common.application.devices
 
+import dk.cachet.carp.common.application.ApplicationData
 import dk.cachet.carp.common.application.Immutable
 import dk.cachet.carp.common.application.ImplementAsDataClass
 import dk.cachet.carp.common.infrastructure.serialization.NotSerializable
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlinx.serialization.*
 import kotlin.js.JsExport
+import kotlin.time.Instant
 
 
 /**
@@ -37,11 +37,17 @@ abstract class DeviceRegistration
      * An optional concise textual representation for display purposes describing the key specifications of the device.
      * E.g., device manufacturer, name, and operating system version.
      */
-    @Required
     abstract val deviceDisplayName: String?
 
     @Required
-    val registrationCreatedOn: Instant = Clock.System.now()
+    @Suppress( "NON_EXPORTABLE_TYPE" )
+    abstract val registrationCreatedOn: Instant
+
+    /**
+     * Additional device specifications which may be relevant to the researcher when interpreting collected data.
+     * E.g., brand/model name, operating system version, or any other relevant information.
+     */
+    abstract val additionalSpecifications: ApplicationData?
 }
 
 
@@ -64,6 +70,12 @@ abstract class DeviceRegistrationBuilder<T : DeviceRegistration>
      * In case this is not set, the builder may derive a default name based on the other registration properties.
      */
     var deviceDisplayName: String? = null
+
+    /**
+     * Additional device specifications which may be relevant to the researcher when interpreting collected data.
+     * E.g., brand/model name, operating system version, or any other relevant information.
+     */
+    var additionalSpecifications: ApplicationData? = null
 
     /**
      * Build the immutable [DeviceRegistration] using the current configuration of this [DeviceRegistrationBuilder].

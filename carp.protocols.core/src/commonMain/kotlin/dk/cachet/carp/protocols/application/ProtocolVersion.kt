@@ -1,10 +1,10 @@
 package dk.cachet.carp.protocols.application
 
 import dk.cachet.carp.protocols.domain.StudyProtocol
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlinx.serialization.*
 import kotlin.js.JsExport
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 
 /**
@@ -12,11 +12,11 @@ import kotlin.js.JsExport
  *
  * @param date The date when this version of the protocol was created.
  */
+@Suppress( "NON_EXPORTABLE_TYPE" )
 @Serializable
 @JsExport
 data class ProtocolVersion(
     val tag: String,
     @Required
-    @Suppress( "NON_EXPORTABLE_TYPE" )
     val date: Instant = Clock.System.now()
 )

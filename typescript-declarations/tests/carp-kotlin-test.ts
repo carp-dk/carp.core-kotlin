@@ -3,8 +3,13 @@ import VerifyModule from './VerifyModule.js'
 import { expect } from 'chai'
 import kotlin from '@cachet/carp-kotlin'
 import toLong = kotlin.toLong
+import Long = kotlin.Long
 import Pair = kotlin.Pair
+import Clock = kotlin.time.Clock
 import Duration = kotlin.time.Duration
+import KtList = kotlin.collections.KtList
+import KtSet = kotlin.collections.KtSet
+import KtMap = kotlin.collections.KtMap
 import listOf = kotlin.collections.listOf
 import setOf = kotlin.collections.setOf
 import mapOf = kotlin.collections.mapOf
@@ -18,13 +23,18 @@ describe( "kotlin", () => {
         const instances: any[] = [
             toLong( 42 ),
             new Pair( 42, "answer" ),
+            Clock.System,
+            Clock.System.now(),
             [ "Collection", list ],
+            [ "KtList", KtList.fromJsArray( [ 42 ] ) ],
             [ "List", list ],
             [ "EmptyList", listOf<number>( [] ) ],
             [ "AbstractMutableList", list ],
+            [ "KtSet", KtSet.fromJsSet( new Set( [ 42 ] ) ) ],
             [ "Set", set ],
             [ "EmptySet", setOf<number>( [] ) ],
             [ "HashSet", set ],
+            [ "KtMap", KtMap.fromJsMap( new Map( [ [ 42, "answer" ] ] ) ) ],
             [ "Map", map ],
             [ "HashMap", map ],
             [ "DurationCompanion", Duration.Companion ],
@@ -45,6 +55,30 @@ describe( "kotlin", () => {
             const answerAsNumber: Number = answer.toNumber()
 
             expect( answerAsNumber ).equals( 42 )
+        } )
+
+        it( "can assign between bigint and Long for backwards compatibility", () => {
+            const big = 42n
+            const bigAsLong: Long = big
+            const longAsBig: bigint = bigAsLong
+            
+            expect( bigAsLong ).equals( big )
+            expect( longAsBig ).equals( big )
+        } )
+    } )
+
+    describe( "Clock", () => {
+        it( "now succeeds", () => {
+            const now = Clock.System.now()
+            expect( now ).not.undefined
+        } )
+    } )
+
+    describe( "Instant", () => {
+        it( "toEpochMilliseconds succeeds", () => {
+            const now = Clock.System.now()
+
+            expect( now.toEpochMilliseconds() > 0 ).true
         } )
     } )
 
@@ -84,6 +118,45 @@ describe( "kotlin", () => {
             expect( emptyList.toArray() ).deep.equals( [] )
             expect( emptyList.contains( 42 ) ).is.false
             expect( emptyList.size() ).equals( 0 )
+        } )
+    } )
+
+    describe( "KtList", () => {
+        it( "fromJsArray and back to array succeeds", () => {
+            const numbers = [ 1, 2, 3 ]
+            const numbersList = KtList.fromJsArray( numbers )
+
+            const numbersArray = numbersList.asJsReadonlyArrayView()
+            expect( numbersArray[ 0 ] ).equals( 1 )
+
+            // The view is a proxy on which Chai's deep equals fails without applying the spread operator.
+            expect( [...numbersArray] ).deep.equals( numbers )
+        } )
+
+        it( "toArray provides a mutable copy of the original collection", () => {
+            const numbers = [ 1, 2, 3 ]
+            const numbersList = KtList.fromJsArray( numbers )
+
+            const newArray = numbersList.toArray()
+            newArray[ 0 ] = 42
+            
+            expect( numbers[ 0 ] ).equals( 1 )
+            expect( newArray[ 0 ] ).equals( 42 )
+        } )
+
+        it( "includes succeeds", () => {
+            const kotlinList = KtList.fromJsArray( [ 0, 42, 50 ] )
+            const includesAnswer = kotlinList.asJsReadonlyArrayView()
+
+            expect( includesAnswer.includes( 42 ) ).is.true
+            expect( includesAnswer.includes( 100 ) ).is.false
+        } )
+
+        it( "length succeeds", () => {
+            const kotlinList = KtList.fromJsArray( [ 1, 2, 3 ] )
+            const three = kotlinList.asJsReadonlyArrayView()
+
+            expect( three.length ).equals( 3 )
         } )
     } )
 
@@ -133,20 +206,28 @@ describe( "kotlin", () => {
         } )
     } )
 
+    describe( "KtMap", () => {
+        it( "fromJsMap and back to map succeeds", () => {
+            const answers = new Map( [ [ "answer", 42 ] ] )
+            const answersMap = KtMap.fromJsMap( answers )
+
+            expect( answersMap.asJsReadonlyMapView().get( "answer" ) ).equals( 42 )
+        } )
+    } )
+
     describe( "Duration", () => {
         it( "parseIsoString succeeds", () => {
             const oneSeconds = Duration.parseIsoString( "PT1S" )
-            expect( oneSeconds.inWholeMilliseconds ).equals( 1000 )
+            expect( oneSeconds.inWholeMilliseconds ).equals( 1000n )
         } )
 
         it( "ZERO and INFINITE succeeds", () => {
             const zero = Duration.ZERO
-            expect( zero.inWholeMilliseconds ).equals( 0 )
-            expect( zero.inWholeMicroseconds ).equals( 0 )
+            expect( zero.inWholeMilliseconds ).equals( 0n )
+            expect( zero.inWholeMicroseconds ).equals( 0n )
 
             const infinite = Duration.INFINITE
-            expect( infinite.inWholeMilliseconds ).equals( -1 )
-            expect( infinite.inWholeMicroseconds ).equals( -1 )
+            expect( infinite.toDurationString() ).equals( "Infinity" )
         } )
     } )
 } )

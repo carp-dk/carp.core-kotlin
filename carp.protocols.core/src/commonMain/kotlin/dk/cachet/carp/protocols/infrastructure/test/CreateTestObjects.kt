@@ -5,7 +5,6 @@ import dk.cachet.carp.common.application.data.input.CarpInputDataTypes
 import dk.cachet.carp.common.application.data.input.InputDataType
 import dk.cachet.carp.common.application.devices.AnyDeviceConfiguration
 import dk.cachet.carp.common.application.devices.AnyPrimaryDeviceConfiguration
-import dk.cachet.carp.common.application.devices.PrimaryDeviceConfiguration
 import dk.cachet.carp.common.application.tasks.Measure
 import dk.cachet.carp.common.application.triggers.TaskControl
 import dk.cachet.carp.common.application.users.AssignedTo
@@ -14,12 +13,7 @@ import dk.cachet.carp.common.application.users.ParticipantAttribute
 import dk.cachet.carp.common.application.users.ParticipantRole
 import dk.cachet.carp.common.infrastructure.serialization.JSON
 import dk.cachet.carp.common.infrastructure.serialization.createDefaultJSON
-import dk.cachet.carp.common.infrastructure.test.STUBS_SERIAL_MODULE
-import dk.cachet.carp.common.infrastructure.test.STUB_DATA_POINT_TYPE
-import dk.cachet.carp.common.infrastructure.test.StubDeviceConfiguration
-import dk.cachet.carp.common.infrastructure.test.StubPrimaryDeviceConfiguration
-import dk.cachet.carp.common.infrastructure.test.StubTaskConfiguration
-import dk.cachet.carp.common.infrastructure.test.StubTriggerConfiguration
+import dk.cachet.carp.common.infrastructure.test.*
 import dk.cachet.carp.protocols.domain.StudyProtocol
 
 
@@ -64,9 +58,42 @@ fun createSinglePrimaryWithConnectedDeviceProtocol(
 }
 
 data class SinglePrimaryWithConnectedTestProtocol(
-    val protocoL: StudyProtocol,
+    val protocol: StudyProtocol,
     val primary: AnyPrimaryDeviceConfiguration,
     val connected: AnyDeviceConfiguration
+)
+
+/**
+ * Creates a study protocol with two primary devices, each assigned to a different participant role.
+ */
+fun createTwoDevicesAndRolesProtocol(): TwoDevicesAndRolesTestProtocol
+{
+    val protocol = createEmptyProtocol()
+    val device1 = StubPrimaryDeviceConfiguration( "Device 1" )
+    val device2 = StubPrimaryDeviceConfiguration( "Device 2" )
+    val role1 = ParticipantRole( "Role 1", isOptional = false )
+    val role2 = ParticipantRole( "Role 2", isOptional = false )
+    val role1Assignment = AssignedTo.Roles( setOf( role1.role ) )
+    val role2Assignment = AssignedTo.Roles( setOf( role2.role ) )
+
+    with ( protocol ) {
+        addPrimaryDevice( device1 )
+        addPrimaryDevice( device2 )
+        addParticipantRole( role1 )
+        addParticipantRole( role2 )
+        changeDeviceAssignment( device1, role1Assignment )
+        changeDeviceAssignment( device2, role2Assignment )
+    }
+
+    return TwoDevicesAndRolesTestProtocol( protocol, device1, device2, role1.role, role2.role )
+}
+
+data class TwoDevicesAndRolesTestProtocol(
+    val protocol: StudyProtocol,
+    val device1: AnyPrimaryDeviceConfiguration,
+    val device2: AnyPrimaryDeviceConfiguration,
+    val role1Name: String,
+    val role2Name: String
 )
 
 /**

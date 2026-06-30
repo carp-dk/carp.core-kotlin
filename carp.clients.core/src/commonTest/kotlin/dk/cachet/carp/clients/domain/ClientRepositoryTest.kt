@@ -7,8 +7,8 @@ import dk.cachet.carp.deployments.application.DeviceDeploymentStatus
 import dk.cachet.carp.deployments.application.PrimaryDeviceDeployment
 import dk.cachet.carp.deployments.application.StudyDeploymentStatus
 import kotlinx.coroutines.test.runTest
-import kotlinx.datetime.Clock
 import kotlin.test.*
+import kotlin.time.Clock
 
 
 interface ClientRepositoryTest
@@ -97,7 +97,7 @@ interface ClientRepositoryTest
                 Clock.System.now(),
                 deploymentId,
                 listOf(
-                    DeviceDeploymentStatus.Registered( primaryDevice, true, emptySet(), emptySet() )
+                    DeviceDeploymentStatus.Registered( primaryDevice, registration, true, emptySet(), emptySet() )
                 ),
                 emptyList(),
                 null

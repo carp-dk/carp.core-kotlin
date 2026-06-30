@@ -1,5 +1,6 @@
 package dk.cachet.carp.deployments.infrastructure
 
+import dk.cachet.carp.common.application.ApplicationData
 import dk.cachet.carp.common.application.data.input.InputDataType
 import dk.cachet.carp.common.application.triggers.TaskControl
 import dk.cachet.carp.common.application.users.ExpectedParticipantData
@@ -11,7 +12,6 @@ import dk.cachet.carp.common.infrastructure.test.StubTaskConfiguration
 import dk.cachet.carp.common.infrastructure.test.StubTriggerConfiguration
 import dk.cachet.carp.common.infrastructure.test.createTestJSON
 import dk.cachet.carp.deployments.application.PrimaryDeviceDeployment
-import kotlinx.serialization.*
 import kotlin.test.*
 
 
@@ -46,7 +46,7 @@ class PrimaryDeviceDeploymentTest
             mapOf( 0 to trigger ),
             setOf( TaskControl( 0, task.name, connected.roleName, TaskControl.Control.Start ) ),
             setOf( expectedData ),
-            "some data"
+            ApplicationData( "some data" )
         )
 
         val json = JSON.encodeToString( deployment )

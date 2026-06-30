@@ -3,30 +3,37 @@ buildscript {
     ext {
         // Version used for submodule artifacts.
         // Snapshot publishing changes (or adds) the suffix after '-' with 'SNAPSHOT' prior to publishing.
-        globalVersion = '1.2.1'
-        clientsVersion = '1.2.1-alpha.1' // The clients subsystem is still expected to change drastically.
+        globalVersion = '1.3.0'
+        clientsVersion = '1.3.0-alpha.1' // The clients subsystem is still expected to change drastically.
+        if (project.hasProperty("snapshot"))
+        {
+            def versionSplit = globalVersion.split('-')
+            def snapshotVersion = "${versionSplit[0]}-SNAPSHOT"
+            globalVersion = snapshotVersion
+            clientsVersion = snapshotVersion
+        }
 
         versions = [
             // Kotlin multiplatform versions.
-            kotlin:'1.9.23',
-            serialization:'1.6.3',
-            coroutines:'1.8.0',
-            datetime:'0.5.0',
+            kotlin:'2.4.0',
+            serialization:'1.11.0',
+            coroutines:'1.11.0',
+            datetime:'0.8.0',
 
             // JVM versions.
             jvmTarget:'1.8',
-            dokkaPlugin:'1.9.20',
+            dokkaPlugin:'2.2.0',
             reflections:'0.10.2',
 
             // JS versions.
-            nodePlugin:'7.0.2',
-            bigJs:'6.2.1',
+            nodePlugin:'7.1.0',
+            bigJs:'7.0.1',
 
             // DevOps versions.
-            detektPlugin:'1.23.5',
-            detektVerifyImplementation:'1.2.5',
-            nexusPublishPlugin:'1.3.0',
-            apacheCommons:'2.15.1'
+            detektPlugin:'1.23.8',
+            detektVerifyImplementation:'1.2.6',
+            nexusPublishPlugin:'2.0.0',
+            apacheCommons:'2.22.0'
         ]
 
         commonModule = subprojects.find { it.name == 'carp.common' }
@@ -86,9 +93,16 @@ configure( subprojects - devOpsModules ) {
                 useJUnitPlatform()
             }
         }
-        js(IR) {
-            moduleName = project.name.replaceAll("\\.", "-") + "-generated"
+        js {
+            outputModuleName = project.name.replaceAll("\\.", "-") + "-generated"
             binaries.executable() // Export JS/TypeScript files.
+            compilerOptions {
+                // Technically, since bigint is enabled, the target is at least "es2020", but this is not supported:
+                // https://youtrack.jetbrains.com/issue/KT-83011/Xes-long-as-bigint-documentation-improvements#focus=Comments-27-13867805.0-0
+                target = "es5"
+                freeCompilerArgs.add('-Xes-long-as-bigint')
+                freeCompilerArgs.add('-XXLanguage:+JsAllowLongInExportedDeclarations')
+            }
             browser()
             generateTypeScriptDefinitions()
         }
@@ -110,6 +124,10 @@ configure( subprojects - devOpsModules ) {
                         it.optIn.add('kotlinx.coroutines.ExperimentalCoroutinesApi')
                     }
                     it.freeCompilerArgs.add('-Xexpect-actual-classes') // https://youtrack.jetbrains.com/issue/KT-61573
+
+                    // Already opt in globally to behavior which will become default in Kotlin 2.2:
+                    // https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-consistent-copy-visibility/
+                    it.freeCompilerArgs.add('-Xconsistent-data-class-copy-visibility')
                 } )
             }
         }
@@ -147,19 +165,11 @@ configure( subprojects - devOpsModules ) {
     apply plugin: 'maven-publish'
     apply plugin: 'signing'
     apply plugin: 'org.jetbrains.dokka'
-    task dokkaJvmJavadoc(type: org.jetbrains.dokka.gradle.DokkaTask) {
-        dokkaSourceSets {
-            register("jvm") {
-                platform.set(org.jetbrains.dokka.Platform.jvm)
-                sourceRoots.from(kotlin.sourceSets.getByName("jvmMain").kotlin.srcDirs)
-            }
-        }
-    }
     task javadocJar(type: Jar) {
-        group JavaBasePlugin.DOCUMENTATION_GROUP
-        description 'Create javadoc jar using Dokka'
+        group = JavaBasePlugin.DOCUMENTATION_GROUP
+        description = 'Create javadoc jar using Dokka'
         archiveClassifier = "javadoc"
-        from dokkaJvmJavadoc
+        from dokkaGeneratePublicationHtml
     }
     publishing {
         publications {
@@ -194,8 +204,8 @@ configure( subprojects - devOpsModules ) {
         }
         repositories {
             maven {
-                name "local"
-                url "$buildDir/repository"
+                name = "local"
+                url = uri("$buildDir/repository")
             }
         }
     }
@@ -217,19 +227,10 @@ version = globalVersion
 nexusPublishing {
     repositories {
         sonatype {
+            nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
             username = publishProperties['repository.username']
             password = publishProperties['repository.password']
-        }
-    }
-}
-task setSnapshotVersion {
-    doFirst {
-        def versionSplit = globalVersion.split('-')
-        def snapshotVersion = "${versionSplit[0]}-SNAPSHOT"
-        version = snapshotVersion
-
-        (rootProject.subprojects - devOpsModules).each { project ->
-            project.version = snapshotVersion
         }
     }
 }

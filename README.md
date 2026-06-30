@@ -1,12 +1,12 @@
 # CARP Core Framework
 
-[![Publish snapshots status](https://github.com/cph-cachet/carp.core-kotlin/workflows/Publish%20snapshots/badge.svg?branch=develop)](https://github.com/cph-cachet/carp.core-kotlin/actions?query=workflow%3A%22Publish+snapshots%22) 
+![Publish snapshots status](https://github.com/cph-cachet/carp.core-kotlin/actions/workflows/publish-snapshots.yml/badge.svg)
 
 CARP Core is a software framework to help developers build research platforms to run studies involving _distributed data collection_.
 It provides modules to define, deploy, and monitor research studies, and to collect data from multiple devices at multiple locations.
 
 It is the result of a collaboration between [iMotions](https://imotions.com/) and the [Copenhagen Center for Health Technology (CACHET)](https://www.cachet.dk/).
-Both use CARP Core to implement their respective research platforms: the [iMotions Mobile Research Platform](https://imotions.com/products/imotions-mobile/) and the [Copenhagen Research Platform (CARP)](https://carp.cachet.dk/).
+Both used CARP Core to implement their respective research platforms: the iMotions Mobile Research Platform (discontinued) and the [Copenhagen Research Platform (CARP)](https://carp.dk/).
 
 Following [domain-driven design](https://en.wikipedia.org/wiki/Domain-driven_design), this project contains all domain models and application services for all CARP subsystems ([depicted below](#architecture)), not having any dependencies on concrete infrastructure.
 As such, this project defines an **open standard for distributed data collection**, [available for Kotlin, the Java runtime, and JavaScript](#usage), which others can build upon to create their own infrastructure. 
@@ -14,7 +14,7 @@ As such, this project defines an **open standard for distributed data collection
 Two key **design goals** differentiate this project from similar projects:
  
  - **Modularity**: Whether you want to set up your own entire infrastructure, customize part of it but integrate with externally hosted CARP webservices, or simply create an app which collects data locally on a smartphone,  you can 'pick and choose' the subsystems you are interested in and how to deploy them.
- Reference implementations [will be made available](https://github.com/cph-cachet/) (and hosted) by CACHET in the future. 
+ A [reference implementation is available](https://github.com/carp-dk), and hosting can be arranged upon request. 
  - **Extensibility**: Where industry standards exist (such as [Open mHealth](https://www.openmhealth.org/)), the goal is to include them in CARP.
  However, we recognize that many study-specific requirements will always require parts of the infrastructure to be modified.
  Rather than having to fork the entire project and set up your own hosting, domain objects in the protocols subsystem [can be extended to describe study-specific requirements](docs/carp-protocols.md#extending-domain-objects).
@@ -62,23 +62,23 @@ Two key **design goals** differentiate this project from similar projects:
 
 - [**Protocols**](docs/carp-protocols.md): Supports management of study protocols—how a study should be run. Essentially, this subsystem has no _technical_ dependencies on any particular sensor technology or application as the containing study protocols merely describe why, when, and what data should be collected.
 
-  [![Maven Central](https://maven-badges.herokuapp.com/maven-central/dk.cachet.carp.protocols/carp.protocols.core/badge.svg)](https://mvnrepository.com/artifact/dk.cachet.carp.protocols) [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/dk.cachet.carp.protocols/carp.protocols.core?server=https%3A%2F%2Foss.sonatype.org)](https://oss.sonatype.org/content/repositories/snapshots/dk/cachet/carp/protocols/)
+  [![Maven Central](https://img.shields.io/maven-central/v/dk.cachet.carp.protocols/carp.protocols.core)](https://central.sonatype.com/artifact/dk.cachet.carp.protocols/carp.protocols.core) [![Snapshot](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fdk%2Fcachet%2Fcarp%2Fprotocols%2Fcarp.protocols.core%2Fmaven-metadata.xml)](https://central.sonatype.com/repository/maven-snapshots/dk/cachet/carp/protocols/carp.protocols.core/maven-metadata.xml)
 
 - [**Studies**](docs/carp-studies.md): Supports management of research studies, including the recruitment of participants and assigning metadata (e.g., contact information). This subsystem maps pseudonymized data (managed by the 'deployments' subsystem) to actual participants.
 
-  [![Maven Central](https://maven-badges.herokuapp.com/maven-central/dk.cachet.carp.studies/carp.studies.core/badge.svg)](https://mvnrepository.com/artifact/dk.cachet.carp.studies) [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/dk.cachet.carp.studies/carp.studies.core?server=https%3A%2F%2Foss.sonatype.org)](https://oss.sonatype.org/content/repositories/snapshots/dk/cachet/carp/studies/)
+  [![Maven Central](https://img.shields.io/maven-central/v/dk.cachet.carp.studies/carp.studies.core)](https://central.sonatype.com/artifact/dk.cachet.carp.studies/carp.studies.core) [![Snapshot](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fdk%2Fcachet%2Fcarp%2Fstudies%2Fcarp.studies.core%2Fmaven-metadata.xml)](https://central.sonatype.com/repository/maven-snapshots/dk/cachet/carp/studies/carp.studies.core/maven-metadata.xml)
 
 - [**Deployments**](docs/carp-deployments.md): Maps the information specified in a study protocol to runtime configurations used by 'client' subsystems to run the protocol on concrete devices (e.g., a smartphone) and allow researchers to monitor their state. To start collecting data, participants need to be invited, devices need to be registered, and consent needs to be given to collect the requested data.
 
-  [![Maven Central](https://maven-badges.herokuapp.com/maven-central/dk.cachet.carp.deployments/carp.deployments.core/badge.svg)](https://mvnrepository.com/artifact/dk.cachet.carp.deployments) [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/dk.cachet.carp.deployments/carp.deployments.core?server=https%3A%2F%2Foss.sonatype.org)](https://oss.sonatype.org/content/repositories/snapshots/dk/cachet/carp/deployments/)
+  [![Maven Central](https://img.shields.io/maven-central/v/dk.cachet.carp.deployments/carp.deployments.core)](https://central.sonatype.com/artifact/dk.cachet.carp.deployments/carp.deployments.core) [![Snapshot](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fdk%2Fcachet%2Fcarp%2Fdeployments%2Fcarp.deployments.core%2Fmaven-metadata.xml)](https://central.sonatype.com/repository/maven-snapshots/dk/cachet/carp/deployments/carp.deployments.core/maven-metadata.xml)
 
 - [**Clients**](docs/carp-clients.md): The runtime which performs the actual data collection on a device (e.g., desktop computer or smartphone). This subsystem contains reusable components which understand the runtime configuration derived from a study protocol by the 'deployment' subsystem. Integrations with sensors are loaded through a 'device data collector' plug-in system to decouple sensing—not part of core—from sensing logic.
 
-   [![Maven Central](https://maven-badges.herokuapp.com/maven-central/dk.cachet.carp.clients/carp.clients.core/badge.svg?color=orange)](https://mvnrepository.com/artifact/dk.cachet.carp.clients) [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/dk.cachet.carp.clients/carp.clients.core?server=https%3A%2F%2Foss.sonatype.org)](https://oss.sonatype.org/content/repositories/snapshots/dk/cachet/carp/clients/)
+  [![Maven Central](https://img.shields.io/maven-central/v/dk.cachet.carp.clients/carp.clients.core)](https://central.sonatype.com/artifact/dk.cachet.carp.clients/carp.clients.core) [![Snapshot](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fdk%2Fcachet%2Fcarp%2Fclients%2Fcarp.clients.core%2Fmaven-metadata.xml)](https://central.sonatype.com/repository/maven-snapshots/dk/cachet/carp/clients/carp.clients.core/maven-metadata.xml)
 
 - [**Data**](docs/carp-data.md): Contains all pseudonymized data. In combination with the original study protocol, the full provenance of the data (when/why it was collected) is known. In combination with data from the 'studies' subsystem, the data can be linked back to individual participants.
   
-  [![Maven Central](https://maven-badges.herokuapp.com/maven-central/dk.cachet.carp.data/carp.data.core/badge.svg)](https://mvnrepository.com/artifact/dk.cachet.carp.data) [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/dk.cachet.carp.data/carp.data.core?server=https%3A%2F%2Foss.sonatype.org)](https://oss.sonatype.org/content/repositories/snapshots/dk/cachet/carp/data/)
+  [![Maven Central](https://img.shields.io/maven-central/v/dk.cachet.carp.data/carp.data.core)](https://central.sonatype.com/artifact/dk.cachet.carp.data/carp.data.core) [![Snapshot](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fdk%2Fcachet%2Fcarp%2Fdata%2Fcarp.data.core%2Fmaven-metadata.xml)](https://central.sonatype.com/repository/maven-snapshots/dk/cachet/carp/data/carp.data.core/maven-metadata.xml)
 
 - **Resources**: Contains a simple file store for resources (such as images, videos, and text documents) which can be referenced from within study protocols to be used during a study.
 - **Analysis**: An analysis subsystem sits in between the data store and 'studies' subsystem, enabling common data analytics but also offering anonimity-preserving features such as k-anonymity.
@@ -87,13 +87,13 @@ Two key **design goals** differentiate this project from similar projects:
 Primarily, this contains the built-in types used to define study protocols
 which subsequently get passed to the deployments and clients subsystem.
    
-     [![Maven Central](https://maven-badges.herokuapp.com/maven-central/dk.cachet.carp.common/carp.common/badge.svg)](https://mvnrepository.com/artifact/dk.cachet.carp.common) [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/dk.cachet.carp.common/carp.common?server=https%3A%2F%2Foss.sonatype.org)](https://oss.sonatype.org/content/repositories/snapshots/dk/cachet/carp/common/)
+     [![Maven Central](https://img.shields.io/maven-central/v/dk.cachet.carp.common/carp.common)](https://central.sonatype.com/artifact/dk.cachet.carp.common/carp.common) [![Snapshot](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fdk%2Fcachet%2Fcarp%2Fcommon%2Fcarp.common%2Fmaven-metadata.xml)](https://central.sonatype.com/repository/maven-snapshots/dk/cachet/carp/common/carp.common/maven-metadata.xml)
    - **carp.common.test**: Helper classes relied upon by test projects of all _core_ subsystems depending on types defined in _common_. 
      
-     [![Maven Central](https://maven-badges.herokuapp.com/maven-central/dk.cachet.carp.common.test/carp.common.test/badge.svg)](https://mvnrepository.com/artifact/dk.cachet.carp.common.test) [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/dk.cachet.carp.common.test/carp.common.test?server=https%3A%2F%2Foss.sonatype.org)](https://oss.sonatype.org/content/repositories/snapshots/dk/cachet/carp/common/test/)
+     [![Maven Central](https://img.shields.io/maven-central/v/dk.cachet.carp.common.test/carp.common.test)](https://central.sonatype.com/artifact/dk.cachet.carp.common.test/carp.common.test) [![Snapshot](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fdk%2Fcachet%2Fcarp%2Fcommon%2Ftest%2Fcarp.common.test%2Fmaven-metadata.xml)](https://central.sonatype.com/repository/maven-snapshots/dk/cachet/carp/common/test/carp.common.test/maven-metadata.xml)
    - **carp.test**: Helper classes relied upon by test projects of all subsystems. E.g., to disable tests specified in common part of projects for the JavaScript runtime only.
    
-     [![Maven Central](https://maven-badges.herokuapp.com/maven-central/dk.cachet.carp.test/carp.test/badge.svg)](https://mvnrepository.com/artifact/dk.cachet.carp.test) [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/dk.cachet.carp.test/carp.test?server=https%3A%2F%2Foss.sonatype.org)](https://oss.sonatype.org/content/repositories/snapshots/dk/cachet/carp/test/)
+     [![Maven Central](https://img.shields.io/maven-central/v/dk.cachet.carp.test/carp.test)](https://central.sonatype.com/artifact/dk.cachet.carp.test/carp.test) [![Snapshot](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fdk%2Fcachet%2Fcarp%2Ftest%2Fcarp.test%2Fmaven-metadata.xml)](https://central.sonatype.com/repository/maven-snapshots/dk/cachet/carp/test/carp.test/maven-metadata.xml)
      
    - **carp.detekt**: Includes static code analysis extensions for [detekt](https://github.com/arturbosch/detekt), used when building this project to ensure conventions are followed.
 
@@ -176,7 +176,7 @@ As this project progresses, we intend to include [native targets](https://kotlin
 The releases are published to Maven. In case you want to use `SNAPSHOT` versions, use the following repository:
 
 ```groovy
-maven { url "http://oss.sonatype.org/content/repositories/snapshots" }
+maven { url "https://central.sonatype.com/repository/maven-snapshots/" }
 ```
 
 ### Example
@@ -245,8 +245,13 @@ if ( studyStatus.canDeployToParticipants )
     // Create a 'participant group' with a single participant; `AssignedTo.All` assigns the "Patient's phone".
     val participation = AssignedParticipantRoles( participant.id, AssignedTo.All )
     val participantGroup = setOf( participation )
-
-    val groupStatus: ParticipantGroupStatus = recruitmentService.inviteNewParticipantGroup( studyId, participantGroup )
+  
+    val groupId = UUID.randomUUID()
+    var groupStatus: ParticipantGroupStatus =
+        recruitmentService.createParticipantGroup( groupId, participantGroup, studyId )
+    val isStaged = groupStatus is ParticipantGroupStatus.Staged // True.
+  
+    groupStatus = recruitmentService.inviteParticipantGroup( groupId )
     val isInvited = groupStatus is ParticipantGroupStatus.Invited // True.
 }
 ```
@@ -363,9 +368,9 @@ if ( status is StudyStatus.RegisteringDevices )
 
 In case you want to contribute, please follow our [contribution guidelines](https://github.com/cph-cachet/carp.core-kotlin/blob/develop/CONTRIBUTING.md).
 
-We recommend using IntelliJ IDEA 2023, as this is the development environment we use and is therefore fully tested.
+We recommend using IntelliJ IDEA 2026 (community edition is fine), as this is the development environment we use and is therefore fully tested.
 
-- Open the project folder in IntelliJ 2023.
+- Open the project folder in IntelliJ IDEA.
 - Make sure Google Chrome is installed; JS unit tests are run on headless Chrome.
 - In case you want to run TypeScript declaration tests (`verifyTsDeclarations`), install node.
 - To build/test/publish, click "Edit Configurations" to add configurations for [the included Gradle tasks](#gradle-tasks), or run them from the Gradle tool window.

@@ -10,11 +10,8 @@ import kotlin.js.JsName
  * Identifies an account.
  */
 @Polymorphic
-@Serializable
 @JsExport
-// HACK: defined as abstract class so that `JsExport` works: https://youtrack.jetbrains.com/issue/KT-51292
-@Suppress( "UnnecessaryAbstractClass", "UtilityClassWithPublicConstructor" )
-abstract class AccountIdentity
+interface AccountIdentity
 {
     companion object
     {
@@ -35,7 +32,7 @@ abstract class AccountIdentity
  */
 @Serializable
 @JsExport
-data class EmailAccountIdentity( val emailAddress: EmailAddress ) : AccountIdentity()
+data class EmailAccountIdentity( val emailAddress: EmailAddress ) : AccountIdentity
 {
     @JsName( "create" )
     constructor( emailAddress: String ) : this( EmailAddress( emailAddress ) )
@@ -46,7 +43,7 @@ data class EmailAccountIdentity( val emailAddress: EmailAddress ) : AccountIdent
  */
 @Serializable
 @JsExport
-data class UsernameAccountIdentity( val username: Username ) : AccountIdentity()
+data class UsernameAccountIdentity( val username: Username ) : AccountIdentity
 {
     @JsName( "create" )
     constructor( username: String ) : this( Username( username ) )

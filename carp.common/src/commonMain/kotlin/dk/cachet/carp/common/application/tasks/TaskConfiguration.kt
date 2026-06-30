@@ -1,5 +1,3 @@
-@file:Suppress( "NON_EXPORTABLE_TYPE" )
-
 package dk.cachet.carp.common.application.tasks
 
 import dk.cachet.carp.common.application.Immutable
@@ -60,6 +58,7 @@ fun TaskConfiguration<*>.getAllExpectedDataTypes(): Set<DataType> =
  */
 @TaskConfigurationBuilderDsl
 @JsExport
+@Suppress( "NON_EXPORTABLE_TYPE" )
 abstract class TaskConfigurationBuilder<TConfiguration : TaskConfiguration<*>>
 {
     /**

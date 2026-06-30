@@ -8,9 +8,9 @@ import dk.cachet.carp.common.infrastructure.services.ApplicationServiceRequest
 import dk.cachet.carp.protocols.application.ProtocolService
 import dk.cachet.carp.protocols.application.ProtocolVersion
 import dk.cachet.carp.protocols.application.StudyProtocolSnapshot
-import kotlinx.datetime.Clock
 import kotlinx.serialization.*
 import kotlin.js.JsExport
+import kotlin.time.Clock
 
 
 /**

@@ -9,6 +9,7 @@ import dk.cachet.carp.common.infrastructure.services.Command
 import dk.cachet.carp.studies.application.RecruitmentService
 import dk.cachet.carp.studies.application.users.AssignedParticipantRoles
 import dk.cachet.carp.studies.application.users.Participant
+import dk.cachet.carp.studies.application.users.ParticipantGroupRepresentation
 
 
 class RecruitmentServiceDecorator(
@@ -33,10 +34,34 @@ class RecruitmentServiceDecorator(
     override suspend fun getParticipants( studyId: UUID ) =
         invoke( RecruitmentServiceRequest.GetParticipants( studyId ) )
 
+    @Deprecated(
+        "Use CreateParticipantGroup and InviteParticipantGroup instead",
+        ReplaceWith(
+            "inviteParticipantGroup( createParticipantGroup( UUID.randomUUID(), group, studyId ).id )",
+            "dk.cachet.carp.common.application.UUID"
+        )
+    )
+    @Suppress( "DEPRECATION" )
     override suspend fun inviteNewParticipantGroup(
         studyId: UUID,
         group: Set<AssignedParticipantRoles>
     ) = invoke( RecruitmentServiceRequest.InviteNewParticipantGroup( studyId, group ) )
+
+    override suspend fun createParticipantGroup(
+        groupId: UUID,
+        group: Set<AssignedParticipantRoles>,
+        studyId: UUID,
+        representation: ParticipantGroupRepresentation
+    ) = invoke( RecruitmentServiceRequest.CreateParticipantGroup( groupId, group, studyId, representation ) )
+
+    override suspend fun updateParticipantGroup(
+        groupId: UUID,
+        group: Set<AssignedParticipantRoles>?,
+        representation: ParticipantGroupRepresentation?
+    ) = invoke( RecruitmentServiceRequest.UpdateParticipantGroup( groupId, group, representation ) )
+
+    override suspend fun inviteParticipantGroup( groupId: UUID ) =
+        invoke( RecruitmentServiceRequest.InviteParticipantGroup( groupId ) )
 
     override suspend fun getParticipantGroupStatusList( studyId: UUID ) =
         invoke( RecruitmentServiceRequest.GetParticipantGroupStatusList( studyId ) )
@@ -48,6 +73,7 @@ class RecruitmentServiceDecorator(
 
 object RecruitmentServiceInvoker : ApplicationServiceInvoker<RecruitmentService, RecruitmentServiceRequest<*>>
 {
+    @Suppress( "DEPRECATION" )
     override suspend fun RecruitmentServiceRequest<*>.invoke( service: RecruitmentService ): Any =
         when ( this )
         {
@@ -57,6 +83,11 @@ object RecruitmentServiceInvoker : ApplicationServiceInvoker<RecruitmentService,
             is RecruitmentServiceRequest.GetParticipants -> service.getParticipants( studyId )
             is RecruitmentServiceRequest.InviteNewParticipantGroup ->
                 service.inviteNewParticipantGroup( studyId, group )
+            is RecruitmentServiceRequest.CreateParticipantGroup ->
+                service.createParticipantGroup( groupId, group, studyId, representation )
+            is RecruitmentServiceRequest.UpdateParticipantGroup ->
+                service.updateParticipantGroup( groupId, group, representation )
+            is RecruitmentServiceRequest.InviteParticipantGroup -> service.inviteParticipantGroup( groupId )
             is RecruitmentServiceRequest.GetParticipantGroupStatusList ->
                 service.getParticipantGroupStatusList( studyId )
             is RecruitmentServiceRequest.StopParticipantGroup -> service.stopParticipantGroup( studyId, groupId )

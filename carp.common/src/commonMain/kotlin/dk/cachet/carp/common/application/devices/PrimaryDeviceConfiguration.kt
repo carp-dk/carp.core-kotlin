@@ -1,5 +1,3 @@
-@file:Suppress( "NON_EXPORTABLE_TYPE" )
-
 package dk.cachet.carp.common.application.devices
 
 import dk.cachet.carp.common.application.triggers.ElapsedTimeTrigger

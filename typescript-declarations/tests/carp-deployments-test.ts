@@ -2,12 +2,11 @@ import { expect } from 'chai'
 
 import kotlin from '@cachet/carp-kotlin'
 import Nullable = kotlin.Nullable
-import mapOf = kotlin.collections.mapOf
-import Map = kotlin.collections.Map
-import Pair = kotlin.Pair
 
 import carp from '@cachet/carp-deployments-core'
 import dk = carp.dk
+
+import KtMap = carp.kotlin.collections.KtMap
 
 import common = dk.cachet.carp.common
 import NamespacedId = common.application.NamespacedId
@@ -24,8 +23,10 @@ describe( "carp-deployments-core", () => {
     describe( "ParticipationServiceRequest", () => {
         it( "can initialize SetParticipantData", () => {
             const inputByParticipantRole: string | null = null // Shorter alternative to using `Nullable<string>`.
-            const participantData: Map<NamespacedId, Nullable<Data>> = // So, `Map<NamespacedId, Data | null>` would work as well.
-                mapOf( [ new Pair( CarpInputDataTypes.SEX, Sex.Male ) ] )
+            const participantDataMap = new Map<NamespacedId, Nullable<Data>>( [ // So, `Map<NamespacedId, Data | null>` would work as well.
+                [CarpInputDataTypes.SEX, Sex.Male],
+            ] );
+            const participantData = KtMap.fromJsMap( participantDataMap )
             const setParticipantData = new ParticipationServiceRequest.SetParticipantData(
                 UUID.Companion.randomUUID(),
                 participantData,

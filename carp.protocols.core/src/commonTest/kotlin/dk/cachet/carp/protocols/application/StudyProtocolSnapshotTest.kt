@@ -1,5 +1,6 @@
 package dk.cachet.carp.protocols.application
 
+import dk.cachet.carp.common.application.ApplicationData
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.application.data.input.InputDataType
 import dk.cachet.carp.common.application.devices.AnyDeviceConfiguration
@@ -17,8 +18,8 @@ import dk.cachet.carp.common.infrastructure.test.StubTriggerConfiguration
 import dk.cachet.carp.protocols.domain.StudyProtocol
 import dk.cachet.carp.protocols.infrastructure.test.createComplexProtocol
 import dk.cachet.carp.protocols.infrastructure.test.createEmptyProtocol
-import kotlinx.datetime.Clock
 import kotlin.test.*
+import kotlin.time.Clock
 
 
 /**
@@ -130,7 +131,7 @@ class StudyProtocolSnapshotTest
             description,
             primaryDevices.toSet(), connectedDevices.toSet(), connections.toSet(),
             tasks.toSet(), triggers, triggeredTasks.toSet(),
-            participantRoles.toSet(), assignedDevices, expectedParticipantData.toSet(), ""
+            participantRoles.toSet(), assignedDevices, expectedParticipantData.toSet(), ApplicationData( "" )
         )
         val reorganizedSnapshot = StudyProtocolSnapshot(
             protocolId,
@@ -141,7 +142,7 @@ class StudyProtocolSnapshotTest
             description,
             primaryDevices.reversed().toSet(), connectedDevices.reversed().toSet(), connections.reversed().toSet(),
             tasks.reversed().toSet(), triggers, triggeredTasks.reversed().toSet(),
-            participantRoles.reversed().toSet(), assignedDevices, expectedParticipantData.reversed().toSet(), ""
+            participantRoles.reversed().toSet(), assignedDevices, expectedParticipantData.reversed().toSet(), ApplicationData( "" )
         )
 
         assertEquals( snapshot, reorganizedSnapshot )

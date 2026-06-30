@@ -3,9 +3,8 @@ package dk.cachet.carp.studies.infrastructure
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.infrastructure.serialization.JSON
 import dk.cachet.carp.studies.application.StudyStatus
-import kotlinx.datetime.Clock
-import kotlinx.serialization.*
 import kotlin.test.*
+import kotlin.time.Clock
 
 
 /**

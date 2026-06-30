@@ -1,7 +1,6 @@
-@file:Suppress( "NON_EXPORTABLE_TYPE" )
-
 package dk.cachet.carp.protocols.application
 
+import dk.cachet.carp.common.application.ApplicationData
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.application.devices.AnyDeviceConfiguration
 import dk.cachet.carp.common.application.devices.AnyPrimaryDeviceConfiguration
@@ -13,11 +12,10 @@ import dk.cachet.carp.common.application.users.AssignedTo
 import dk.cachet.carp.common.application.users.ExpectedParticipantData
 import dk.cachet.carp.common.application.users.ParticipantRole
 import dk.cachet.carp.common.domain.Snapshot
-import dk.cachet.carp.common.infrastructure.serialization.ApplicationDataSerializer
 import dk.cachet.carp.protocols.domain.StudyProtocol
-import kotlinx.datetime.Instant
 import kotlinx.serialization.*
 import kotlin.js.JsExport
+import kotlin.time.Instant
 
 
 /**
@@ -25,6 +23,7 @@ import kotlin.js.JsExport
  */
 @Serializable
 @JsExport
+@Suppress( "NON_EXPORTABLE_TYPE" )
 data class StudyProtocolSnapshot(
     override val id: UUID,
     override val createdOn: Instant,
@@ -45,8 +44,7 @@ data class StudyProtocolSnapshot(
      */
     val assignedDevices: Map<String, Set<String>> = emptyMap(),
     val expectedParticipantData: Set<ExpectedParticipantData> = emptySet(),
-    @Serializable( ApplicationDataSerializer::class )
-    val applicationData: String? = null
+    val applicationData: ApplicationData? = null
 ) : Snapshot<StudyProtocol>
 {
     @Serializable

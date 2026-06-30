@@ -29,6 +29,14 @@ class InMemoryParticipantRepository : ParticipantRepository
         recruitments[ studyId ]?.let { Recruitment.fromSnapshot( it ) }
 
     /**
+     * Returns the [Recruitment] which contains the participant group with the specified [groupId],
+     * or null when no recruitment containing the specified participant group exists.
+     */
+    override suspend fun getRecruitmentWithParticipantGroup( groupId: UUID ): Recruitment? =
+        recruitments.values.firstOrNull { groupId in it.participantGroups.keys }
+            ?.let { Recruitment.fromSnapshot( it ) }
+
+    /**
      * Update a [Recruitment] which is already stored in this repository.
      *
      * @throws IllegalArgumentException when no previous version of this recruitment is stored in the repository.

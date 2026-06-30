@@ -20,8 +20,8 @@ import dk.cachet.carp.deployments.application.users.ParticipantStatus
 import dk.cachet.carp.deployments.domain.users.getAssignedDeviceRoleNames
 import dk.cachet.carp.protocols.application.StudyProtocolSnapshot
 import dk.cachet.carp.protocols.domain.StudyProtocol
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 
 /**
@@ -121,8 +121,7 @@ class StudyDeployment private constructor(
             }
             deployment._invalidatedDeployedDevices.addAll( invalidatedDevices )
 
-            // In case the deployment has been stopped, stop it.
-            if ( snapshot.isStopped ) deployment.stop()
+            deployment.stoppedOn = snapshot.stoppedOn
 
             // Events introduced by loading the snapshot are not relevant to a consumer wanting to persist changes.
             deployment.consumeEvents()
@@ -264,15 +263,15 @@ class StudyDeployment private constructor(
      */
     private fun getDeviceStatus( device: AnyDeviceConfiguration ): DeviceDeploymentStatus
     {
+        val registration = _registeredDevices[ device ]
         val needsRedeployment = device in invalidatedDeployedDevices
         val isDeployed = device in deployedDevices
-        val isRegistered = device in _registeredDevices
         val canBeDeployed = registrableDevices.first{ it.device == device }.canBeDeployed
 
         val alreadyRegistered = registeredDevices.keys
         val mandatoryDependentDevices = getDependentDevices( device ).filter { !it.isOptional }
         val toRegisterToObtainDeployment = mandatoryDependentDevices
-            .plus( device ) // Device itself needs to be registered.
+            .plus( device ) // The device itself needs to be registered.
             .minus( alreadyRegistered )
         val mandatoryConnectedDevices =
             if ( device.isPrimary() ) protocol.getConnectedDevices( device ).filter { !it.isOptional }
@@ -284,16 +283,23 @@ class StudyDeployment private constructor(
 
         val toObtainDeployment = toRegisterToObtainDeployment.map { it.roleName }.toSet()
         val beforeDeployment = toRegisterBeforeDeployment.map { it.roleName }.toSet()
+
         return when
         {
-            needsRedeployment ->
-                DeviceDeploymentStatus.NeedsRedeployment( device, toObtainDeployment, beforeDeployment )
-            isDeployed ->
-                DeviceDeploymentStatus.Deployed( device )
-            isRegistered ->
-                DeviceDeploymentStatus.Registered( device, canBeDeployed, toObtainDeployment, beforeDeployment )
-            else ->
+            registration == null ->
                 DeviceDeploymentStatus.Unregistered( device, canBeDeployed, toObtainDeployment, beforeDeployment )
+            needsRedeployment ->
+                DeviceDeploymentStatus.NeedsRedeployment( device, registration, toObtainDeployment, beforeDeployment )
+            isDeployed ->
+                DeviceDeploymentStatus.Deployed( device, registration )
+            else ->
+                DeviceDeploymentStatus.Registered(
+                    device,
+                    registration,
+                    canBeDeployed,
+                    toObtainDeployment,
+                    beforeDeployment
+                )
         }
     }
 
@@ -470,7 +476,11 @@ class StudyDeployment private constructor(
      * - the [deviceDeploymentLastUpdatedOn] does not match the expected timestamp. The deployment might be outdated.
      * @throws IllegalStateException when the passed [device] cannot be deployed yet, or the deployment has stopped.
      */
-    fun deviceDeployed( device: AnyPrimaryDeviceConfiguration, deviceDeploymentLastUpdatedOn: Instant )
+    fun deviceDeployed(
+        device: AnyPrimaryDeviceConfiguration,
+        deviceDeploymentLastUpdatedOn: Instant,
+        now: Instant = Clock.System.now()
+    )
     {
         // Verify whether the specified device is part of the protocol of this deployment.
         require( device in protocolSnapshot.primaryDevices )
@@ -501,7 +511,6 @@ class StudyDeployment private constructor(
             .all { it is DeviceDeploymentStatus.Deployed }
         if ( startedOn == null && allRequiredDeviceDeployed )
         {
-            val now = Clock.System.now()
             startedOn = now
             event( Event.Started( now ) )
         }

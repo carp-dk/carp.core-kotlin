@@ -3,8 +3,8 @@ package dk.cachet.carp.common.domain
 import dk.cachet.carp.common.application.Immutable
 import dk.cachet.carp.common.application.ImplementAsDataClass
 import dk.cachet.carp.common.application.UUID
-import kotlinx.datetime.Instant
 import kotlin.js.JsExport
+import kotlin.time.Instant
 
 
 /**

@@ -1,42 +1,26 @@
-/// <reference path="Kotlin-DateTime-library-kotlinx-datetime.d.ts" />
-import extend from "@cachet/Kotlin-DateTime-library-kotlinx-datetime"
+import kotlin from "@cachet/carp-kotlin"
 
 
-// Facade with better method names and type conversions for internal types.
+/**
+ * @deprecated Use `kotlin.time` from `@cachet/carp-kotlin` instead.
+ */
 export namespace kotlinx.datetime
 {
-    export interface Clock
-    {
-        now(): Instant
-    }
+    /**
+     * @deprecated Use `kotlin.time.Clock` from `@cachet/carp-kotlin` instead.
+     */
+    export interface Clock extends kotlin.time.Clock {}
     export namespace Clock
     {
-        export const System: Clock = extend.$_$.System_getInstance()
+        export const System: Clock = kotlin.time.Clock.System
     }
-    export interface Instant
-    {
-        toEpochMilliseconds(): number
-    }
+
+    /**
+     * @deprecated Use `kotlin.time.Instant` from `@cachet/carp-kotlin` instead.
+     */
+    export interface Instant extends kotlin.time.Instant {}
 }
 
 
-// Augment internal types to implement facade.
-declare module "@cachet/Kotlin-DateTime-library-kotlinx-datetime"
-{
-    namespace $_$
-    {
-        interface System extends kotlinx.datetime.Clock {}
-        abstract class System implements kotlinx.datetime.Clock {}
-        interface Instant_0 extends kotlinx.datetime.Instant {}
-        abstract class Instant_0 implements kotlinx.datetime.Instant {}
-    }
-}
-
-
-// Implement base interfaces in internal types.
-extend.$_$.System.prototype.now = function(): kotlinx.datetime.Instant { return this.q13(); };
-extend.$_$.Instant_0.prototype.toEpochMilliseconds = function(): number { return this.d14(); };
-
-
-// Export facade.
+// Export deprecated compatibility facade.
 export default kotlinx

@@ -1,6 +1,5 @@
 import extend from "@cachet/carp-studies-core-generated"
 import kotlinStdLib from "@cachet/carp-kotlin"
-import kotlinDateTime from "@cachet/carp-kotlinx-datetime"
 import kotlinSerialization from "@cachet/carp-kotlinx-serialization"
 import carpCommon from "@cachet/carp-common"
 import carpDeployments from "@cachet/carp-deployments-core"
@@ -9,10 +8,6 @@ import carpDeployments from "@cachet/carp-deployments-core"
 declare module "@cachet/carp-studies-core-generated"
 {
     // Declare missing types for which no imports were generated.
-    namespace kotlin
-    {
-        type Long = kotlinStdLib.Long
-    }
     namespace kotlin.reflect
     {
         // When used as a type parameter for a type exported through `forced-exports`, normally compiled as `any`,
@@ -22,6 +17,7 @@ declare module "@cachet/carp-studies-core-generated"
     namespace kotlin.time
     {
         type Duration = kotlinStdLib.time.Duration
+        type Instant = kotlinStdLib.time.Instant
     }
     namespace kotlin.collections
     {
@@ -29,10 +25,6 @@ declare module "@cachet/carp-studies-core-generated"
         type List<T> = kotlinStdLib.collections.List<T>
         type Set<T> = kotlinStdLib.collections.Set<T>
         type Map<K, V> = kotlinStdLib.collections.Map<K, V>
-    }
-    namespace kotlinx.datetime
-    {
-        type Instant = kotlinDateTime.datetime.Instant
     }
     namespace kotlinx.serialization.json
     {
@@ -42,6 +34,7 @@ declare module "@cachet/carp-studies-core-generated"
 
 
 // Set namespace objects of dependent imported modules, so that they aren't "undefined" at runtime.
+(extend as any).kotlin = kotlinStdLib
 extend.dk.cachet.carp.common = carpCommon.dk.cachet.carp.common as any;
 extend.dk.cachet.carp.deployments = carpDeployments.dk.cachet.carp.deployments as any;
 

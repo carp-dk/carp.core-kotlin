@@ -1,6 +1,9 @@
 package dk.cachet.carp.studies.domain.users
 
 import dk.cachet.carp.common.application.UUID
+import dk.cachet.carp.studies.application.users.AssignedParticipantRoles
+import dk.cachet.carp.studies.application.users.ParticipantGroupRepresentation
+import dk.cachet.carp.studies.application.users.participantIds
 import kotlinx.serialization.*
 
 
@@ -13,12 +16,21 @@ data class StagedParticipantGroup(
     /**
      * The identifier for this participant group, used as deployment ID once the participant group is deployed.
      */
-    val id: UUID = UUID.randomUUID()
+    val id: UUID = UUID.randomUUID(),
+    /**
+     * Optional metadata representing the group of participants.
+     */
+    var representation: ParticipantGroupRepresentation = ParticipantGroupRepresentation.Default,
 )
 {
-    private val _participantIds: MutableSet<UUID> = mutableSetOf()
+    private val _roleAssignments: MutableSet<AssignedParticipantRoles> = mutableSetOf()
+    /**
+     * The roles assigned to participants in this group.
+     */
+    val roleAssignments: Set<AssignedParticipantRoles>
+        get() = _roleAssignments
     val participantIds: Set<UUID>
-        get() = _participantIds
+        get() = _roleAssignments.participantIds()
 
     /**
      * Determines whether this participant group has been deployed.
@@ -26,19 +38,31 @@ data class StagedParticipantGroup(
     var isDeployed: Boolean = false
         private set
 
-
-
     /**
-     * Add participants with [participantIds] to this group.
+     * Add [participants] with assigned roles to this group.
      * This is only allowed when the group hasn't been deployed yet.
      *
      * @throws IllegalStateException when this participant group is already deployed.
      */
-    fun addParticipants( participantIds: Set<UUID> )
+    fun addParticipants( participants: Set<AssignedParticipantRoles> )
     {
-        check( !isDeployed ) { "Can't add participant after a participant group has been deployed." }
+        check( !isDeployed ) { "Can't add participants after a participant group has been deployed." }
 
-        _participantIds.addAll( participantIds )
+        _roleAssignments.addAll( participants )
+    }
+
+    /**
+     * Replace all participants in this group.
+     * This is only allowed when the group hasn't been deployed yet.
+     *
+     * @throws IllegalStateException when this participant group is already deployed.
+     */
+    fun replaceParticipants( participants: Set<AssignedParticipantRoles> )
+    {
+        check( !isDeployed ) { "Can't update participants after a participant group has been deployed." }
+
+        _roleAssignments.clear()
+        _roleAssignments.addAll( participants )
     }
 
     /**

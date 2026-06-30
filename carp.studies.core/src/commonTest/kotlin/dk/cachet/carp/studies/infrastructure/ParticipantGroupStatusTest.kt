@@ -2,12 +2,15 @@ package dk.cachet.carp.studies.infrastructure
 
 import dk.cachet.carp.common.application.UUID
 import dk.cachet.carp.common.application.users.AccountIdentity
+import dk.cachet.carp.common.application.users.AssignedTo
 import dk.cachet.carp.common.infrastructure.serialization.JSON
 import dk.cachet.carp.deployments.application.StudyDeploymentStatus
+import dk.cachet.carp.studies.application.users.AssignedParticipantRoles
 import dk.cachet.carp.studies.application.users.Participant
+import dk.cachet.carp.studies.application.users.ParticipantGroupRepresentation
 import dk.cachet.carp.studies.application.users.ParticipantGroupStatus
-import kotlinx.datetime.Clock
 import kotlin.test.*
+import kotlin.time.Clock
 
 
 /**
@@ -21,7 +24,14 @@ class ParticipantGroupStatusTest
         val studyDeploymentId = UUID.randomUUID()
         val deploymentStatus = StudyDeploymentStatus.Invited( Clock.System.now(), studyDeploymentId, listOf(), emptyList(), null )
         val participants = setOf( Participant( AccountIdentity.fromEmailAddress( "test@test.com" ) ) )
-        val groupStatus = ParticipantGroupStatus.InDeployment.fromDeploymentStatus( participants, deploymentStatus )
+        val roleAssignment = setOf( AssignedParticipantRoles( participants.first().id, AssignedTo.All ) )
+        val representation = ParticipantGroupRepresentation( "Test Group" )
+        val groupStatus = ParticipantGroupStatus.InDeployment.fromDeploymentStatus(
+            participants,
+            roleAssignment,
+            deploymentStatus,
+            representation,
+        )
 
         val serialized: String = JSON.encodeToString( ParticipantGroupStatus.serializer(), groupStatus )
         val parsed: ParticipantGroupStatus = JSON.decodeFromString( ParticipantGroupStatus.serializer(), serialized )

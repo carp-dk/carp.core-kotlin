@@ -1,9 +1,9 @@
 package dk.cachet.carp.common.infrastructure.serialization
 
+import dk.cachet.carp.common.application.ApplicationData
 import dk.cachet.carp.common.application.devices.DefaultDeviceRegistration
 import dk.cachet.carp.common.application.devices.DeviceRegistration
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
+import dk.cachet.carp.common.infrastructure.test.makeUnknown
 import kotlin.test.*
 
 
@@ -15,12 +15,12 @@ class DeviceRegistrationTest
     @Test
     fun can_serialize_and_deserialize_device_registration_using_JSON()
     {
-        val default: DeviceRegistration = DefaultDeviceRegistration()
-
-        val serialized = testJson.encodeToString( DeviceRegistration.serializer(), default )
-        val parsed: DeviceRegistration = testJson.decodeFromString( serialized )
-
-        assertEquals( default, parsed )
+        val toSerialize = getTestCases()
+        toSerialize.forEach {
+            val serialized = testJson.encodeToString( DeviceRegistration.serializer(), it )
+            val parsed: DeviceRegistration = testJson.decodeFromString( serialized )
+            assertEquals( it, parsed )
+        }
     }
 
     /**
@@ -29,10 +29,12 @@ class DeviceRegistrationTest
     @Test
     fun unknown_types_are_wrapped_when_deserializing()
     {
-        val unknownRegistration = serializeUnknownDeviceRegistration()
-        val parsed: DeviceRegistration = testJson.decodeFromString( unknownRegistration )
-
-        assertTrue( parsed is CustomDeviceRegistration )
+        val toSerialize = getTestCases()
+        toSerialize.forEach {
+            val unknownRegistration = serializeUnknownDeviceRegistration( it )
+            val parsed: DeviceRegistration = testJson.decodeFromString( unknownRegistration )
+            assertTrue( parsed is CustomDeviceRegistration )
+        }
     }
 
     /**
@@ -41,18 +43,33 @@ class DeviceRegistrationTest
     @Test
     fun serializing_unknown_types_removes_the_wrapper()
     {
-        val unknownRegistration = serializeUnknownDeviceRegistration()
-        val parsed: DeviceRegistration = testJson.decodeFromString( unknownRegistration )
-
-        val serialized = testJson.encodeToString( parsed )
-        assertEquals( unknownRegistration, serialized )
+        val toSerialize = getTestCases()
+        toSerialize.forEach {
+            val unknownRegistration = serializeUnknownDeviceRegistration( it )
+            val parsed: DeviceRegistration = testJson.decodeFromString( unknownRegistration )
+            val serialized = testJson.encodeToString( parsed )
+            assertEquals( unknownRegistration, serialized )
+        }
     }
 
-    private fun serializeUnknownDeviceRegistration(): String
+    private fun getTestCases() = listOf(
+        // With null values.
+        DefaultDeviceRegistration(),
+
+        // With all nullable fields set.
+        DefaultDeviceRegistration(
+            deviceDisplayName = "Device name",
+            additionalSpecifications = ApplicationData( """{"OS":"Android 42"}""" )
+        )
+    )
+
+    /**
+     * Serialize [registration] as an unknown type using JSON.
+     */
+    private fun serializeUnknownDeviceRegistration( registration: DeviceRegistration ): String
     {
-        val registration = DefaultDeviceRegistration()
         var serialized = testJson.encodeToString( DeviceRegistration.serializer(), registration )
-        serialized = serialized.replace( "dk.cachet.carp.common.application.devices.DefaultDeviceRegistration", "com.unknown.CustomRegistration" )
+        serialized = serialized.makeUnknown( registration )
 
         return serialized
     }

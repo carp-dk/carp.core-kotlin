@@ -61,7 +61,12 @@ class StudiesCodeSamples
             val participation = AssignedParticipantRoles( participant.id, AssignedTo.All )
             val participantGroup = setOf( participation )
 
-            val groupStatus: ParticipantGroupStatus = recruitmentService.inviteNewParticipantGroup( studyId, participantGroup )
+            val groupId = UUID.randomUUID()
+            var groupStatus: ParticipantGroupStatus =
+                recruitmentService.createParticipantGroup( groupId, participantGroup, studyId )
+            val isStaged = groupStatus is ParticipantGroupStatus.Staged // True.
+
+            groupStatus = recruitmentService.inviteParticipantGroup( groupId )
             val isInvited = groupStatus is ParticipantGroupStatus.Invited // True.
         }
     }
