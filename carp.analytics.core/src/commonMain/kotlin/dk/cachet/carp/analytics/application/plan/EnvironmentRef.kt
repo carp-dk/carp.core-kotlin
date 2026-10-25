@@ -49,6 +49,13 @@ data class CondaEnvironmentRef(
     }
 }
 
+/**
+ * Runtime reference to a Pixi environment.
+ *
+ * @property lockFile A `pixi.lock` to install from, so the environment holds exactly
+ *   the locked versions rather than whatever [dependencies] resolve to at setup. A
+ *   relative path is relative to the run's execution root. Null: resolve at setup.
+ */
 @Serializable
 @SerialName("pixi")
 data class PixiEnvironmentRef(
@@ -56,7 +63,8 @@ data class PixiEnvironmentRef(
     val name: String,
     override val dependencies: List<String>,
     val channels: List<String> = listOf("conda-forge"),
-    val pythonVersion: String = "3.12"
+    val pythonVersion: String = "3.12",
+    val lockFile: String? = null
 ) : EnvironmentRef
 {
 

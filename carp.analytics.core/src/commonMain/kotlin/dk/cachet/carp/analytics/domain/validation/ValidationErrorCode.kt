@@ -6,6 +6,7 @@ enum class ValidationErrorCode( val value: String )
     WORKFLOW_STEP_ID_DUPLICATE("workflow-step-id-duplicate"),
     WORKFLOW_MISSING_ENVIRONMENT("workflow-missing-environment"),
     WORKFLOW_UNKNOWN_ENV_KIND("workflow-unknown-env-kind"),
+    WORKFLOW_ENVIRONMENT_NOT_PINNED("workflow-environment-not-pinned"),
     WORKFLOW_DEP_REFERENCE_MISSING("workflow-dep-reference-missing"),
     WORKFLOW_DEP_CYCLE_DETECTED("workflow-dep-cycle-detected"),
     WORKFLOW_UNRESOLVED_STEP_REFERENCE("workflow-unresolved-step-reference"),
