@@ -182,22 +182,15 @@ data class StepInfo(
      *
      * Format: "{index}_{name}" where:
      * - Index is zero-padded to 2 digits (01, 02, 03...)
-     * - Name is lowercased and spaces/dashes replaced with underscores
+     * - Name is lowercased, spaces/dashes replaced with underscores, other special
+     *   characters removed
      *
      * Examples:
      * - "01_import_data"
      * - "02_process_eeg"
      * - "03_extract_features"
      *
-     * @return Human-readable step directory name suitable for filesystem use
+     * @return The same name [WorkspacePathFormatter.formatStepDirName] gives the step
      */
-    fun toDirectoryName(): String
-    {
-        val paddedIndex = ( executionIndex + 1 ).toString().padStart( 2, '0' )
-        val sanitizedName = name
-            .replace( " ", "_" )
-            .replace( "-", "_" )
-            .lowercase()
-        return "${paddedIndex}_$sanitizedName"
-    }
+    fun toDirectoryName(): String = WorkspacePathFormatter.formatStepDirName( executionIndex, name )
 }

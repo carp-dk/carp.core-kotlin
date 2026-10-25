@@ -71,6 +71,15 @@ class ExecutionWorkspaceTest
     }
 
     @Test
+    fun `StepInfo directory name matches the workspace formatter`()
+    {
+        val stepInfo = StepInfo( UUID.randomUUID(), "Plot (WB) params", 2 )
+
+        assertEquals( "03_plot_wb_params", stepInfo.toDirectoryName() )
+        assertEquals( WorkspacePathFormatter.formatStepDirName( 2, "Plot (WB) params" ), stepInfo.toDirectoryName() )
+    }
+
+    @Test
     fun `StepInfo pads index to 2 digits`()
     {
         // Arrange
