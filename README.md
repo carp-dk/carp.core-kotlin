@@ -43,6 +43,10 @@ Two key **design goals** differentiate this project from similar projects:
   - [Data](docs/carp-data.md)
     - [Data streams](docs/carp-data.md#data-streams)
     - [Application services](docs/carp-data.md#application-services)
+  - [Analytics](docs/carp-analytics.md)
+    - [Workflows](docs/carp-analytics.md#workflows)
+    - [Runs and results](docs/carp-analytics.md#runs-and-results)
+    - [Application services](docs/carp-analytics.md#application-services)
 - [Infrastructure helpers](#infrastructure-helpers)
   - [Serialization](#serialization)
   - [Request objects](#request-objects)
@@ -81,7 +85,10 @@ Two key **design goals** differentiate this project from similar projects:
   [![Maven Central](https://img.shields.io/maven-central/v/dk.cachet.carp.data/carp.data.core)](https://central.sonatype.com/artifact/dk.cachet.carp.data/carp.data.core) [![Snapshot](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fdk%2Fcachet%2Fcarp%2Fdata%2Fcarp.data.core%2Fmaven-metadata.xml)](https://central.sonatype.com/repository/maven-snapshots/dk/cachet/carp/data/carp.data.core/maven-metadata.xml)
 
 - **Resources**: Contains a simple file store for resources (such as images, videos, and text documents) which can be referenced from within study protocols to be used during a study.
-- **Analysis**: An analysis subsystem sits in between the data store and 'studies' subsystem, enabling common data analytics but also offering anonimity-preserving features such as k-anonymity.
+- [**Analytics**](docs/carp-analytics.md): Runs analysis workflows over the data collected in a study and keeps the results. In combination with the original study protocol and the collected data, the full provenance of each result (which data, code, and environment produced it) is known. Workflows are planned and executed by [CARP-DSP](https://github.com/carp-dk/carp-dsp), which implements this subsystem's application services.
+
+  [![Maven Central](https://img.shields.io/maven-central/v/dk.cachet.carp.analytics/carp.analytics.core)](https://central.sonatype.com/artifact/dk.cachet.carp.analytics/carp.analytics.core) [![Snapshot](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fdk%2Fcachet%2Fcarp%2Fanalytics%2Fcarp.analytics.core%2Fmaven-metadata.xml)](https://central.sonatype.com/repository/maven-snapshots/dk/cachet/carp/analytics/carp.analytics.core/maven-metadata.xml)
+
 - **Supporting subystems**:
    - [**Common**](docs/carp-common.md): Implements helper classes and base types relied upon by all subsystems.
 Primarily, this contains the built-in types used to define study protocols
