@@ -9,14 +9,25 @@
 package dk.cachet.carp.rpc
 
 import dk.cachet.carp.analytics.application.ExecutionService
+import dk.cachet.carp.analytics.application.SubmitResult
 import dk.cachet.carp.analytics.application.WorkflowService
+import dk.cachet.carp.analytics.application.data.ArtifactRecord
+import dk.cachet.carp.analytics.application.data.ArtifactReference
+import dk.cachet.carp.analytics.application.data.ArtifactScope
 import dk.cachet.carp.analytics.application.execution.ExecutionReport
 import dk.cachet.carp.analytics.application.execution.ExecutionStatus
 import dk.cachet.carp.analytics.application.execution.ExecutorState
 import dk.cachet.carp.analytics.application.execution.StepRunResult
+import dk.cachet.carp.analytics.domain.validation.ValidationErrorCode
+import dk.cachet.carp.analytics.domain.validation.ValidationIssue
+import dk.cachet.carp.analytics.domain.validation.ValidationResult
+import dk.cachet.carp.analytics.domain.validation.ValidationSeverity
+import dk.cachet.carp.analytics.domain.workflow.LockedStep
 import dk.cachet.carp.analytics.domain.workflow.StepMetadata
+import dk.cachet.carp.analytics.domain.workflow.StepsLock
 import dk.cachet.carp.analytics.domain.workflow.Version
 import dk.cachet.carp.analytics.domain.workflow.Workflow
+import dk.cachet.carp.analytics.domain.workflow.WorkflowDefinition
 import dk.cachet.carp.analytics.domain.workflow.WorkflowMetadata
 import dk.cachet.carp.analytics.infrastructure.ExecutionServiceRequest
 import dk.cachet.carp.analytics.infrastructure.WorkflowServiceRequest
@@ -285,9 +296,22 @@ private val exampleWorkflowMetadata = WorkflowMetadata(
     version = Version( 1, 0 )
 )
 private val exampleWorkflow = Workflow( exampleWorkflowMetadata )
+private val exampleWorkflowDefinition = WorkflowDefinition( exampleWorkflow, emptyMap() )
+private const val exampleWorkflowYaml =
+    "name: Sleep Quality Analysis\nversion: 1.0\nsteps:\n  - uses: sensing.sleep.quality@1.0\n"
+private val exampleValidationWarning = ValidationIssue(
+    severity = ValidationSeverity.WARNING,
+    code = ValidationErrorCode.WORKFLOW_ENVIRONMENT_NOT_PINNED,
+    message = "Environment 'python' does not pin its dependency versions."
+)
+private val exampleStepsLock = StepsLock(
+    listOf( LockedStep( "sensing.sleep.quality", "1.0", "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08" ) )
+)
 
 // Examples for ExecutionService.
 private val exampleExecutionId = UUID( "00000000-0000-0000-0000-000000000456" )
+private val exampleStepId = UUID( "00000000-0000-0000-0000-000000000789" )
+private val exampleOutputId = UUID( "00000000-0000-0000-0000-000000000abc" )
 private val exampleExecutionState = ExecutorState(
     executionId = exampleExecutionId,
     workflowId = exampleWorkflowId,
@@ -296,22 +320,37 @@ private val exampleExecutionState = ExecutorState(
     completedAt = null,
     studyId = studyId
 )
+private val exampleArtifact = ArtifactRecord(
+    stepId = exampleStepId,
+    outputId = exampleOutputId,
+    reference = ArtifactReference(
+        uri = "https://carp.example.org/artifacts/00000000-0000-0000-0000-000000000456/sleep-quality.csv",
+        mimeType = "text/csv",
+        sizeBytes = 2048,
+        sha256 = "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
+    ),
+    producedAt = Instant.fromEpochMilliseconds( 1642505145000 ),
+    scope = ArtifactScope.PARTICIPANT,
+    subjectId = deploymentId.toString(),
+    studyDeploymentId = deploymentId
+)
 private val exampleExecutionResult = ExecutionReport(
-    runId = exampleExecutionId,
-    planId = UUID.randomUUID(),
+    executionId = exampleExecutionId,
+    planId = UUID( "00000000-0000-0000-0000-000000000def" ),
     startedAt = Instant.fromEpochMilliseconds( 1642505045000 ),
     finishedAt = Instant.fromEpochMilliseconds( 1642505145000 ),
     status = ExecutionStatus.SUCCEEDED,
     stepResults = listOf(
         StepRunResult(
-            stepMetadata = StepMetadata( id = UUID.randomUUID(), name = "example-step" ),
+            stepMetadata = StepMetadata( id = exampleStepId, name = "sleep-quality" ),
             status = ExecutionStatus.SUCCEEDED,
             startedAt = Instant.fromEpochMilliseconds( 1642505045000 ),
             finishedAt = Instant.fromEpochMilliseconds( 1642505145000 ),
             failure = null,
             outputs = emptyList()
         )
-    )
+    ),
+    artifacts = listOf( exampleArtifact )
 )
 
 
@@ -622,25 +661,41 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
     ),
 
     // WorkflowService
+    WorkflowService::validateWorkflow to example(
+        request = WorkflowServiceRequest.ValidateWorkflow( studyId, exampleWorkflowYaml ),
+        response = ValidationResult( listOf( exampleValidationWarning ) )
+    ),
+    WorkflowService::submitWorkflow to example(
+        request = WorkflowServiceRequest.SubmitWorkflow( studyId, exampleWorkflowYaml ),
+        response = SubmitResult( exampleWorkflowMetadata, ValidationResult( listOf( exampleValidationWarning ) ) )
+    ),
     WorkflowService::createWorkflow to example(
-        request = WorkflowServiceRequest.CreateWorkflow( studyId, exampleWorkflow ),
+        request = WorkflowServiceRequest.CreateWorkflow( studyId, exampleWorkflowDefinition ),
         response = true
     ),
     WorkflowService::updateWorkflow to example(
-        request = WorkflowServiceRequest.UpdateWorkflow( studyId, exampleWorkflowMetadata, exampleWorkflow ),
+        request = WorkflowServiceRequest.UpdateWorkflow( studyId, exampleWorkflowDefinition ),
         response = true
     ),
     WorkflowService::getWorkflow to example(
         request = WorkflowServiceRequest.GetWorkflow( studyId, exampleWorkflowId ),
-        response = exampleWorkflow
-    ),
-    WorkflowService::deleteWorkflow to example(
-        request = WorkflowServiceRequest.DeleteWorkflow( studyId, exampleWorkflowId ),
-        response = true
+        response = exampleWorkflowDefinition
     ),
     WorkflowService::listWorkflows to example(
         request = WorkflowServiceRequest.ListWorkflows( studyId ),
         response = listOf( exampleWorkflowMetadata )
+    ),
+    WorkflowService::listWorkflowVersions to example(
+        request = WorkflowServiceRequest.ListWorkflowVersions( studyId, exampleWorkflowId ),
+        response = listOf( exampleWorkflowMetadata )
+    ),
+    WorkflowService::getStepsLock to example(
+        request = WorkflowServiceRequest.GetStepsLock( studyId, exampleWorkflowId ),
+        response = exampleStepsLock
+    ),
+    WorkflowService::deleteWorkflow to example(
+        request = WorkflowServiceRequest.DeleteWorkflow( studyId, exampleWorkflowId ),
+        response = true
     ),
 
     // ExecutionService
@@ -649,23 +704,33 @@ private val exampleRequests: Map<KFunction<*>, LoggedRequest.Succeeded<*>> = map
         response = exampleExecutionState
     ),
     ExecutionService::executeWorkflowFromDefinition to example(
-        request = ExecutionServiceRequest.ExecuteWorkflowFromDefinition( studyId, exampleWorkflow ),
+        request = ExecutionServiceRequest.ExecuteWorkflowFromDefinition( studyId, exampleWorkflowDefinition ),
         response = exampleExecutionState
     ),
+    ExecutionService::cancelExecution to example(
+        request = ExecutionServiceRequest.CancelExecution( studyId, exampleExecutionId ),
+        response = exampleExecutionState.copy(
+            status = ExecutionStatus.CANCELLED,
+            completedAt = Instant.fromEpochMilliseconds( 1642505100000 )
+        )
+    ),
     ExecutionService::getExecutionState to example(
-        request = ExecutionServiceRequest.GetExecutionState( exampleExecutionId ),
+        request = ExecutionServiceRequest.GetExecutionState( studyId, exampleExecutionId ),
         response = exampleExecutionState
     ),
     ExecutionService::getExecutionResult to example(
-        request = ExecutionServiceRequest.GetExecutionResult( exampleExecutionId ),
+        request = ExecutionServiceRequest.GetExecutionResult( studyId, exampleExecutionId ),
         response = exampleExecutionResult
     ),
     ExecutionService::findExecutions to example(
-        request = ExecutionServiceRequest.FindExecutions( studyId, exampleWorkflowId ),
+        request = ExecutionServiceRequest.FindExecutions( studyId, exampleWorkflowId, limit = 1 ),
         response = listOf( exampleExecutionState )
     ),
-    ExecutionService::getLatestExecutionStatus to example(
-        request = ExecutionServiceRequest.GetLatestExecutionStatus( studyId, exampleWorkflowId ),
-        response = exampleExecutionState
+    ExecutionService::getParticipantResults to example(
+        request = ExecutionServiceRequest.GetParticipantResults(
+            deploymentId,
+            Instant.fromEpochMilliseconds( 1642505000000 )
+        ),
+        response = listOf( exampleArtifact )
     )
 )

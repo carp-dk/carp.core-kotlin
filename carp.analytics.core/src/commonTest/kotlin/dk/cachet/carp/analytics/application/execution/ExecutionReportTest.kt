@@ -22,7 +22,7 @@ class ExecutionReportTest
     fun can_serialize_and_deserialize_ExecutionReport_successful()
     {
         val executionReport = ExecutionReport(
-            runId = UUID.randomUUID(),
+            executionId = UUID.randomUUID(),
             planId = UUID.randomUUID(),
             startedAt = Instant.parse("2026-03-02T09:00:00Z"),
             finishedAt = Instant.parse("2026-03-02T10:30:00Z"),
@@ -77,7 +77,7 @@ class ExecutionReportTest
     fun can_serialize_and_deserialize_ExecutionReport_with_failures()
     {
         val executionReport = ExecutionReport(
-            runId = UUID.randomUUID(),
+            executionId = UUID.randomUUID(),
             planId = UUID.randomUUID(),
             startedAt = Instant.parse("2026-03-02T09:00:00Z"),
             finishedAt = Instant.parse("2026-03-02T09:05:00Z"),
@@ -122,7 +122,7 @@ class ExecutionReportTest
     fun can_serialize_and_deserialize_ExecutionReport_minimal()
     {
         val executionReport = ExecutionReport(
-            runId = UUID.randomUUID(),
+            executionId = UUID.randomUUID(),
             planId = UUID.randomUUID(),
             startedAt = null,
             finishedAt = null,
@@ -140,7 +140,7 @@ class ExecutionReportTest
     fun can_serialize_and_deserialize_ExecutionReport_running()
     {
         val executionReport = ExecutionReport(
-            runId = UUID.randomUUID(),
+            executionId = UUID.randomUUID(),
             planId = UUID.randomUUID(),
             startedAt = Instant.parse("2026-03-02T08:00:00Z"),
             finishedAt = null,
@@ -211,7 +211,7 @@ class ExecutionReportTest
     fun can_serialize_and_deserialize_ExecutionReport_with_mixed_step_statuses()
     {
         val executionReport = ExecutionReport(
-            runId = UUID.randomUUID(),
+            executionId = UUID.randomUUID(),
             planId = UUID.randomUUID(),
             startedAt = Instant.parse("2026-03-02T10:00:00Z"),
             finishedAt = null,
@@ -279,7 +279,7 @@ class ExecutionReportTest
     fun can_serialize_and_deserialize_ExecutionReport_with_no_steps()
     {
         val executionReport = ExecutionReport(
-            runId = UUID.randomUUID(),
+            executionId = UUID.randomUUID(),
             planId = UUID.randomUUID(),
             startedAt = Instant.parse("2026-03-02T10:00:00Z"),
             finishedAt = Instant.parse("2026-03-02T10:00:01Z"),
@@ -319,7 +319,7 @@ class ExecutionReportTest
         }
 
         val executionReport = ExecutionReport(
-            runId = UUID.randomUUID(),
+            executionId = UUID.randomUUID(),
             planId = UUID.randomUUID(),
             startedAt = Instant.parse("2026-03-02T10:00:00Z"),
             finishedAt = null,
@@ -342,7 +342,7 @@ class ExecutionReportTest
         val finishedAt = Instant.parse("2026-03-02T10:20:45.987654321Z")
 
         val executionReport = ExecutionReport(
-            runId = UUID.randomUUID(),
+            executionId = UUID.randomUUID(),
             planId = UUID.randomUUID(),
             startedAt = startedAt,
             finishedAt = finishedAt,
@@ -363,7 +363,7 @@ class ExecutionReportTest
     {
         val specificUuid = UUID.parse("550e8400-e29b-41d4-a716-446655440000")
         val executionReport = ExecutionReport(
-            runId = specificUuid,
+            executionId = specificUuid,
             planId = UUID.randomUUID(),
             startedAt = null,
             finishedAt = null,
@@ -374,7 +374,7 @@ class ExecutionReportTest
         val serialized = json.encodeToString(executionReport)
         val deserialized = json.decodeFromString<ExecutionReport>(serialized)
 
-        assertEquals(specificUuid, deserialized.runId)
+        assertEquals(specificUuid, deserialized.executionId)
         assertEquals(executionReport, deserialized)
     }
 
@@ -383,7 +383,7 @@ class ExecutionReportTest
     {
         ExecutionStatus.entries.forEach { status ->
             val executionReport = ExecutionReport(
-                runId = UUID.randomUUID(),
+                executionId = UUID.randomUUID(),
                 planId = UUID.randomUUID(),
                 startedAt = if (status != ExecutionStatus.PENDING) Instant.parse("2026-03-02T10:00:00Z") else null,
                 finishedAt = if (status in listOf(ExecutionStatus.SUCCEEDED, ExecutionStatus.FAILED, ExecutionStatus.SKIPPED))

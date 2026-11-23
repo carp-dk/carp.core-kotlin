@@ -5,44 +5,93 @@
     "OutputRef": {
       "type": "object",
       "properties": {
-        "outputId": { "type": "string", "format": "uuid" },
-        "source": { "type": "object", "additionalProperties": true },
-        "format": { "type": "object", "additionalProperties": true },
-        "schema": { "type": "object", "additionalProperties": true }
+        "outputId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "source": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "format": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "schema": {
+          "type": "object",
+          "additionalProperties": true
+        }
       },
-      "required": ["outputId", "source", "format", "schema"],
+      "required": [
+        "outputId",
+        "source",
+        "format",
+        "schema"
+      ],
       "additionalProperties": false
     },
     "StepRunDetail": {
       "type": "object",
       "properties": {
         "command": {
-          "type": ["array", "null"],
-          "items": { "type": "string" }
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          }
         },
-        "workingDirectory": { "type": ["string", "null"] },
-        "exitCode": { "type": ["integer", "null"] },
+        "workingDirectory": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "exitCode": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
         "stdout": {
           "oneOf": [
-            { "$ref": "#/$defs/ResourceRef" },
-            { "type": "null" }
+            {
+              "$ref": "#/$defs/ResourceRef"
+            },
+            {
+              "type": "null"
+            }
           ]
         },
         "stderr": {
           "oneOf": [
-            { "$ref": "#/$defs/ResourceRef" },
-            { "type": "null" }
+            {
+              "$ref": "#/$defs/ResourceRef"
+            },
+            {
+              "type": "null"
+            }
           ]
         },
         "log": {
           "oneOf": [
-            { "$ref": "#/$defs/ResourceRef" },
-            { "type": "null" }
+            {
+              "$ref": "#/$defs/ResourceRef"
+            },
+            {
+              "type": "null"
+            }
           ]
         },
         "metrics": {
-          "type": ["object", "null"],
-          "additionalProperties": { "type": "number" }
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": {
+            "type": "number"
+          }
         }
       },
       "additionalProperties": false
@@ -52,24 +101,58 @@
       "properties": {
         "kind": {
           "type": "string",
-          "enum": ["RELATIVE_PATH", "URI"]
+          "enum": [
+            "RELATIVE_PATH",
+            "URI"
+          ]
         },
-        "value": { "type": "string" },
-        "mediaType": { "type": ["string", "null"] },
-        "byteSize": { "type": ["integer", "null"] }
+        "value": {
+          "type": "string"
+        },
+        "mediaType": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "byteSize": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
       },
-      "required": ["kind", "value"],
+      "required": [
+        "kind",
+        "value"
+      ],
       "additionalProperties": false
     },
     "ExecutionOutputRef": {
       "type": "object",
       "properties": {
-        "outputId": { "type": "string", "format": "uuid" },
-        "source": { "type": "object", "additionalProperties": true },
-        "format": { "type": "string" },
-        "schema": { "type": "object", "additionalProperties": true }
+        "outputId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "source": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "format": {
+          "type": "string"
+        },
+        "schema": {
+          "type": "object",
+          "additionalProperties": true
+        }
       },
-      "required": ["outputId", "source", "format", "schema"],
+      "required": [
+        "outputId",
+        "source",
+        "format",
+        "schema"
+      ],
       "additionalProperties": false
     },
     "StepFailure": {
@@ -77,67 +160,142 @@
       "properties": {
         "kind": {
           "type": "string",
-          "enum": ["COMMAND_FAILED", "TIMEOUT", "CANCELLED", "INFRASTRUCTURE", "UNKNOWN"]
+          "enum": [
+            "COMMAND_FAILED",
+            "TIMEOUT",
+            "CANCELLED",
+            "INFRASTRUCTURE",
+            "UNKNOWN"
+          ]
         },
-        "message": { "type": "string" }
+        "message": {
+          "type": "string"
+        }
       },
-      "required": ["kind", "message"],
+      "required": [
+        "kind",
+        "message"
+      ],
       "additionalProperties": false
     },
     "StepRunResult": {
       "type": "object",
       "properties": {
-        "stepMetadata": { "type": "object", "additionalProperties": true },
-        "status": { "$ref": "./ExecutionStatus.json" },
+        "stepMetadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "status": {
+          "$ref": "./ExecutionStatus.json"
+        },
         "startedAt": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "format": "date-time"
         },
         "finishedAt": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "format": "date-time"
         },
         "failure": {
           "oneOf": [
-            { "$ref": "#/$defs/StepFailure" },
-            { "type": "null" }
+            {
+              "$ref": "#/$defs/StepFailure"
+            },
+            {
+              "type": "null"
+            }
           ]
         },
         "outputs": {
-          "type": ["array", "null"],
-          "items": { "$ref": "#/$defs/OutputRef" }
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/$defs/OutputRef"
+          }
         },
         "detail": {
           "oneOf": [
-            { "$ref": "#/$defs/StepRunDetail" },
-            { "type": "null" }
+            {
+              "$ref": "#/$defs/StepRunDetail"
+            },
+            {
+              "type": "null"
+            }
           ]
         }
       },
-      "required": ["stepMetadata", "status", "startedAt", "finishedAt"],
+      "required": [
+        "stepMetadata",
+        "status",
+        "startedAt",
+        "finishedAt"
+      ],
       "additionalProperties": true
     },
     "ExecutionReport": {
       "$anchor": "ExecutionReport",
       "type": "object",
       "properties": {
-        "runId": { "type": "string", "format": "uuid" },
-        "planId": { "type": "string", "format": "uuid" },
-        "status": { "$ref": "./ExecutionStatus.json" },
+        "executionId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "planId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "status": {
+          "$ref": "./ExecutionStatus.json"
+        },
         "startedAt": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "format": "date-time"
         },
         "finishedAt": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "format": "date-time"
         },
         "stepResults": {
           "type": "array",
-          "items": { "$ref": "#/$defs/StepRunResult" }
+          "items": {
+            "$ref": "#/$defs/StepRunResult"
+          }
+        },
+        "issues": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "$ref": "../data/ArtifactRecord.json"
+          }
         }
       },
-      "required": ["runId", "planId", "startedAt", "finishedAt", "status", "stepResults"],
+      "required": [
+        "executionId",
+        "planId",
+        "startedAt",
+        "finishedAt",
+        "status",
+        "stepResults"
+      ],
       "additionalProperties": true
     }
   }

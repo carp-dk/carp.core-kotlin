@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "$id": "WorkflowDefinition.json",
+  "title": "WorkflowDefinition",
+  "type": "object",
+  "properties": {
+    "workflow": {
+      "$ref": "Workflow.json"
+    },
+    "environments": {
+      "description": "Environments by id. Each is a polymorphic EnvironmentDefinition identified by its '__type'.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "__type": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "__type"
+        ]
+      }
+    }
+  },
+  "required": [
+    "workflow"
+  ],
+  "additionalProperties": false
+}

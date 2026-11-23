@@ -1,89 +1,269 @@
 {
   "$schema": "https://json-schema.org/draft/2019-09/schema",
   "oneOf": [
-    {"$ref": "#/$defs/ExecuteWorkflow"},
-    {"$ref": "#/$defs/ExecuteWorkflowFromDefinition"},
-    {"$ref": "#/$defs/GetExecutionState"},
-    {"$ref": "#/$defs/GetExecutionResult"},
-    {"$ref": "#/$defs/FindExecutions"},
-    {"$ref": "#/$defs/GetLatestExecutionStatus"}
+    {
+      "$ref": "#/$defs/ExecuteWorkflow"
+    },
+    {
+      "$ref": "#/$defs/ExecuteWorkflowFromDefinition"
+    },
+    {
+      "$ref": "#/$defs/CancelExecution"
+    },
+    {
+      "$ref": "#/$defs/GetExecutionState"
+    },
+    {
+      "$ref": "#/$defs/GetExecutionResult"
+    },
+    {
+      "$ref": "#/$defs/FindExecutions"
+    },
+    {
+      "$ref": "#/$defs/GetParticipantResults"
+    }
   ],
   "$defs": {
-    "ApiVersion": { "const": "1.0" },
+    "ApiVersion": {
+      "type": "string",
+      "const": "1.0"
+    },
     "ExecuteWorkflow": {
       "$anchor": "ExecuteWorkflow",
       "type": "object",
       "properties": {
-        "__type": { "const": "dk.cachet.carp.analytics.infrastructure.ExecutionServiceRequest.ExecuteWorkflow" },
-        "apiVersion": { "$ref": "#/$defs/ApiVersion" },
-        "workflowId": { "type": "string", "format": "uuid" },
-        "studyId": { "type": "string", "format": "uuid" }
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.ExecutionServiceRequest.ExecuteWorkflow"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "studyId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "workflowId": {
+          "type": "string",
+          "format": "uuid"
+        }
       },
-      "required": [ "__type", "apiVersion", "workflowId", "studyId"],
+      "required": [
+        "__type",
+        "apiVersion",
+        "studyId",
+        "workflowId"
+      ],
       "additionalProperties": false,
       "Response": {
         "$anchor": "ExecuteWorkflow-Response",
         "$ref": "../execution/ExecutorState.json"
       }
     },
-
     "ExecuteWorkflowFromDefinition": {
       "$anchor": "ExecuteWorkflowFromDefinition",
       "type": "object",
       "properties": {
-        "__type": { "const": "dk.cachet.carp.analytics.infrastructure.ExecutionServiceRequest.ExecuteWorkflowFromDefinition" },
-        "apiVersion": { "$ref": "#/$defs/ApiVersion" },
-        "studyId": { "type": "string", "format": "uuid" },
-        "workflow": { "$ref": "../workflow/Workflow.json" }
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.ExecutionServiceRequest.ExecuteWorkflowFromDefinition"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "studyId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "definition": {
+          "$ref": "../workflow/WorkflowDefinition.json"
+        }
       },
-      "required": [ "__type", "apiVersion", "studyId", "workflow"],
+      "required": [
+        "__type",
+        "apiVersion",
+        "studyId",
+        "definition"
+      ],
       "additionalProperties": false,
       "Response": {
         "$anchor": "ExecuteWorkflowFromDefinition-Response",
         "$ref": "../execution/ExecutorState.json"
       }
     },
+    "CancelExecution": {
+      "$anchor": "CancelExecution",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.ExecutionServiceRequest.CancelExecution"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "studyId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "executionId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "__type",
+        "apiVersion",
+        "studyId",
+        "executionId"
+      ],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "CancelExecution-Response",
+        "oneOf": [
+          {
+            "$ref": "../execution/ExecutorState.json"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    },
     "GetExecutionState": {
       "$anchor": "GetExecutionState",
       "type": "object",
       "properties": {
-        "__type": { "const": "dk.cachet.carp.analytics.infrastructure.ExecutionServiceRequest.GetExecutionState" },
-        "apiVersion": { "$ref": "#/$defs/ApiVersion" },
-        "executionId": { "type": "string", "format": "uuid" }
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.ExecutionServiceRequest.GetExecutionState"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "studyId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "executionId": {
+          "type": "string",
+          "format": "uuid"
+        }
       },
-      "required": [ "__type", "apiVersion", "executionId"],
+      "required": [
+        "__type",
+        "apiVersion",
+        "studyId",
+        "executionId"
+      ],
       "additionalProperties": false,
       "Response": {
         "$anchor": "GetExecutionState-Response",
-        "$ref": "../execution/ExecutorState.json"
+        "oneOf": [
+          {
+            "$ref": "../execution/ExecutorState.json"
+          },
+          {
+            "type": "null"
+          }
+        ]
       }
     },
     "GetExecutionResult": {
       "$anchor": "GetExecutionResult",
       "type": "object",
       "properties": {
-        "__type": { "const": "dk.cachet.carp.analytics.infrastructure.ExecutionServiceRequest.GetExecutionResult" },
-        "apiVersion": { "$ref": "#/$defs/ApiVersion" },
-        "executionId": { "type": "string", "format": "uuid" }
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.ExecutionServiceRequest.GetExecutionResult"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "studyId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "executionId": {
+          "type": "string",
+          "format": "uuid"
+        }
       },
-      "required": [ "__type", "apiVersion", "executionId"],
+      "required": [
+        "__type",
+        "apiVersion",
+        "studyId",
+        "executionId"
+      ],
       "additionalProperties": false,
       "Response": {
         "$anchor": "GetExecutionResult-Response",
-        "$ref": "../execution/ExecutionReport.json"
+        "oneOf": [
+          {
+            "$ref": "../execution/ExecutionReport.json"
+          },
+          {
+            "type": "null"
+          }
+        ]
       }
     },
     "FindExecutions": {
       "$anchor": "FindExecutions",
       "type": "object",
       "properties": {
-        "__type": { "const": "dk.cachet.carp.analytics.infrastructure.ExecutionServiceRequest.FindExecutions" },
-        "apiVersion": { "$ref": "#/$defs/ApiVersion" },
-        "studytId": { "type": "string", "format": "uuid" },
-        "workflowId": { "type": "string", "format": "uuid" }
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.ExecutionServiceRequest.FindExecutions"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "studyId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "workflowId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "from": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "to": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limit": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        }
       },
-      "required": [ "__type", "apiVersion", "studyId", "workflowId"],
-      "additionalProperties": true,
+      "required": [
+        "__type",
+        "apiVersion",
+        "studyId"
+      ],
+      "additionalProperties": false,
       "Response": {
         "$anchor": "FindExecutions-Response",
         "type": "array",
@@ -92,23 +272,45 @@
         }
       }
     },
-
-    "GetLatestExecutionStatus": {
-      "$anchor": "GetLatestExecutionStatus",
+    "GetParticipantResults": {
+      "$anchor": "GetParticipantResults",
       "type": "object",
       "properties": {
-        "__type": { "const": "dk.cachet.carp.analytics.infrastructure.ExecutionServiceRequest.GetLatestExecutionStatus" },
-        "apiVersion": { "$ref": "#/$defs/ApiVersion" },
-        "studyId": { "type": "string", "format": "uuid" },
-        "workflowId": { "type": "string", "format": "uuid" }
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.ExecutionServiceRequest.GetParticipantResults"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "studyDeploymentId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "since": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
       },
-      "required": [ "__type", "apiVersion", "studyId", "workflowId"],
+      "required": [
+        "__type",
+        "apiVersion",
+        "studyDeploymentId"
+      ],
       "additionalProperties": false,
       "Response": {
-        "$anchor": "GetLatestExecutionStatus-Response",
-        "$ref": "../execution/ExecutorState.json"
+        "$anchor": "GetParticipantResults-Response",
+        "type": "array",
+        "items": {
+          "$ref": "../data/ArtifactRecord.json"
+        }
       }
     }
-
   }
 }

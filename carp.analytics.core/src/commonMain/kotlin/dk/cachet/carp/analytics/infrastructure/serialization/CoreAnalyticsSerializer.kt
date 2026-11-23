@@ -17,6 +17,9 @@ import dk.cachet.carp.analytics.domain.tasks.PythonTaskDefinition
 import dk.cachet.carp.analytics.domain.tasks.RTaskDefinition
 import dk.cachet.carp.analytics.domain.tasks.Script
 import dk.cachet.carp.analytics.domain.tasks.TaskDefinition
+import dk.cachet.carp.analytics.domain.workflow.Step
+import dk.cachet.carp.analytics.domain.workflow.Workflow
+import dk.cachet.carp.analytics.domain.workflow.WorkflowComponent
 import dk.cachet.carp.common.infrastructure.serialization.CLASS_DISCRIMINATOR
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
@@ -35,6 +38,10 @@ object CoreAnalyticsSerializer
             subclass(CommandSpec::class)
         }
 
+        polymorphic(WorkflowComponent::class) {
+            subclass(Step::class)
+            subclass(Workflow::class)
+        }
         polymorphic(TaskDefinition::class) {
             subclass(CommandTaskDefinition::class)
             subclass(PythonTaskDefinition::class)

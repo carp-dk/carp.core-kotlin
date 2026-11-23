@@ -89,7 +89,8 @@ data class FileLocation(
             path.isBlank() ->
             {
                 val stepDir = WorkspacePathFormatter.formatStepDirName(executionIndex, stepName)
-                copy(path = "steps/$stepDir/outputs/$outputName.${format.extension}")
+                val suffix = format.extension.takeIf { it.isNotEmpty() }?.let { ".$it" }.orEmpty()
+                copy(path = "steps/$stepDir/outputs/$outputName$suffix")
             }
 
             // Relative path — treat as sub-path of step's outputs dir

@@ -43,6 +43,7 @@ enum class FileFormat(
 
     // Document Formats
     PDF( "application/pdf", "pdf", true ),
+    HTML( "text/html", "html", false ),
 
     // Generic Binary
     BINARY( "application/octet-stream", "bin", true ),

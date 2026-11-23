@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "$id": "ArtifactRecord.json",
+  "title": "ArtifactRecord",
+  "type": "object",
+  "properties": {
+    "stepId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "outputId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "reference": {
+      "$ref": "#/$defs/ArtifactReference"
+    },
+    "producedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "scope": {
+      "type": "string",
+      "enum": [
+        "COHORT",
+        "PARTICIPANT"
+      ]
+    },
+    "subjectId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "studyDeploymentId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "uuid"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "stepId",
+    "outputId",
+    "reference",
+    "producedAt"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "ArtifactReference": {
+      "type": "object",
+      "properties": {
+        "uri": {
+          "type": "string"
+        },
+        "mimeType": {
+          "type": "string"
+        },
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "uri",
+        "mimeType",
+        "sizeBytes",
+        "sha256"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

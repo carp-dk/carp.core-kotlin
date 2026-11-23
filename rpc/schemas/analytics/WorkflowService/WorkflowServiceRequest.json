@@ -2,6 +2,12 @@
   "$schema": "https://json-schema.org/draft/2019-09/schema",
   "oneOf": [
     {
+      "$ref": "#/$defs/ValidateWorkflow"
+    },
+    {
+      "$ref": "#/$defs/SubmitWorkflow"
+    },
+    {
       "$ref": "#/$defs/CreateWorkflow"
     },
     {
@@ -11,16 +17,101 @@
       "$ref": "#/$defs/GetWorkflow"
     },
     {
-      "$ref": "#/$defs/DeleteWorkflow"
+      "$ref": "#/$defs/ListWorkflows"
     },
     {
-      "$ref": "#/$defs/ListWorkflows"
+      "$ref": "#/$defs/ListWorkflowVersions"
+    },
+    {
+      "$ref": "#/$defs/GetStepsLock"
+    },
+    {
+      "$ref": "#/$defs/DeleteWorkflow"
     }
   ],
   "$defs": {
     "ApiVersion": {
       "type": "string",
       "const": "1.0"
+    },
+    "ValidateWorkflow": {
+      "$anchor": "ValidateWorkflow",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.WorkflowServiceRequest.ValidateWorkflow"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "studyId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "workflowYaml": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "__type",
+        "apiVersion",
+        "studyId",
+        "workflowYaml"
+      ],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "ValidateWorkflow-Response",
+        "$ref": "../validation/ValidationResult.json"
+      }
+    },
+    "SubmitWorkflow": {
+      "$anchor": "SubmitWorkflow",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.WorkflowServiceRequest.SubmitWorkflow"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "studyId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "workflowYaml": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "__type",
+        "apiVersion",
+        "studyId",
+        "workflowYaml"
+      ],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "SubmitWorkflow-Response",
+        "type": "object",
+        "properties": {
+          "workflow": {
+            "oneOf": [
+              {
+                "$ref": "../workflow/WorkflowMetadata.json"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "validation": {
+            "$ref": "../validation/ValidationResult.json"
+          }
+        },
+        "required": [
+          "validation"
+        ],
+        "additionalProperties": false
+      }
     },
     "CreateWorkflow": {
       "$anchor": "CreateWorkflow",
@@ -36,15 +127,15 @@
           "type": "string",
           "format": "uuid"
         },
-        "workflow": {
-          "$ref": "../workflow/Workflow.json"
+        "definition": {
+          "$ref": "../workflow/WorkflowDefinition.json"
         }
       },
       "required": [
         "__type",
         "apiVersion",
         "studyId",
-        "workflow"
+        "definition"
       ],
       "additionalProperties": false,
       "Response": {
@@ -66,19 +157,15 @@
           "type": "string",
           "format": "uuid"
         },
-        "workflowMetadata": {
-          "$ref": "../workflow/WorkflowMetadata.json"
-        },
-        "updated": {
-          "$ref": "../workflow/Workflow.json"
+        "definition": {
+          "$ref": "../workflow/WorkflowDefinition.json"
         }
       },
       "required": [
         "__type",
         "apiVersion",
         "studyId",
-        "workflowMetadata",
-        "updated"
+        "definition"
       ],
       "additionalProperties": false,
       "Response": {
@@ -103,6 +190,16 @@
         "workflowId": {
           "type": "string",
           "format": "uuid"
+        },
+        "version": {
+          "oneOf": [
+            {
+              "$ref": "../workflow/Version.json"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       },
       "required": [
@@ -114,7 +211,125 @@
       "additionalProperties": false,
       "Response": {
         "$anchor": "GetWorkflow-Response",
-        "$ref": "../workflow/Workflow.json"
+        "oneOf": [
+          {
+            "$ref": "../workflow/WorkflowDefinition.json"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    },
+    "ListWorkflows": {
+      "$anchor": "ListWorkflows",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.WorkflowServiceRequest.ListWorkflows"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "studyId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "__type",
+        "apiVersion",
+        "studyId"
+      ],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "ListWorkflows-Response",
+        "type": "array",
+        "items": {
+          "$ref": "../workflow/WorkflowMetadata.json"
+        }
+      }
+    },
+    "ListWorkflowVersions": {
+      "$anchor": "ListWorkflowVersions",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.WorkflowServiceRequest.ListWorkflowVersions"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "studyId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "workflowId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "__type",
+        "apiVersion",
+        "studyId",
+        "workflowId"
+      ],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "ListWorkflowVersions-Response",
+        "type": "array",
+        "items": {
+          "$ref": "../workflow/WorkflowMetadata.json"
+        }
+      }
+    },
+    "GetStepsLock": {
+      "$anchor": "GetStepsLock",
+      "type": "object",
+      "properties": {
+        "__type": {
+          "const": "dk.cachet.carp.analytics.infrastructure.WorkflowServiceRequest.GetStepsLock"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/ApiVersion"
+        },
+        "studyId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "workflowId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "version": {
+          "oneOf": [
+            {
+              "$ref": "../workflow/Version.json"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "__type",
+        "apiVersion",
+        "studyId",
+        "workflowId"
+      ],
+      "additionalProperties": false,
+      "Response": {
+        "$anchor": "GetStepsLock-Response",
+        "oneOf": [
+          {
+            "$ref": "../workflow/StepsLock.json"
+          },
+          {
+            "type": "null"
+          }
+        ]
       }
     },
     "DeleteWorkflow": {
@@ -146,35 +361,6 @@
       "Response": {
         "$anchor": "DeleteWorkflow-Response",
         "type": "boolean"
-      }
-    },
-    "ListWorkflows": {
-      "$anchor": "ListWorkflows",
-      "type": "object",
-      "properties": {
-        "__type": {
-          "const": "dk.cachet.carp.analytics.infrastructure.WorkflowServiceRequest.ListWorkflows"
-        },
-        "apiVersion": {
-          "$ref": "#/$defs/ApiVersion"
-        },
-        "studyId": {
-          "type": "string",
-          "format": "uuid"
-        }
-      },
-      "required": [
-        "__type",
-        "apiVersion",
-        "studyId"
-      ],
-      "additionalProperties": false,
-      "Response": {
-        "$anchor": "ListWorkflows-Response",
-        "type": "array",
-        "items": {
-          "$ref": "../workflow/WorkflowMetadata.json"
-        }
       }
     }
   }

@@ -5,9 +5,11 @@
   "type": "string",
   "enum": [
     "PENDING",
+    "PROVISIONING",
     "RUNNING",
     "SUCCEEDED",
     "FAILED",
+    "CANCELLED",
     "SKIPPED"
   ]
 }
