@@ -81,7 +81,7 @@ Arguments refer to inputs and outputs by id rather than by path, because paths a
 |---|---|---|---|
 | [`InputDataSpec`](../carp.analytics.core/src/commonMain/kotlin/dk/cachet/carp/analytics/domain/data/DataReference.kt) | Data a step reads; `stepRef` names the step that produces it, if any | Value object | No |
 | [`OutputDataSpec`](../carp.analytics.core/src/commonMain/kotlin/dk/cachet/carp/analytics/domain/data/DataReference.kt) | Data a step writes | Value object | No |
-| [`DataLocation`](../carp.analytics.core/src/commonMain/kotlin/dk/cachet/carp/analytics/domain/data/DataLocation.kt) | Where data lives: file, URL, database, API, stream or in-memory key | Value object | Core only |
+| [`DataLocation`](../carp.analytics.core/src/commonMain/kotlin/dk/cachet/carp/analytics/domain/data/DataLocation.kt) | Where data lives: file, URL, database, API, stream or in-memory key ([details](carp-analytics-data-locations.md)) | Value object | Core only |
 | [`DataSchema`](../carp.analytics.core/src/commonMain/kotlin/dk/cachet/carp/analytics/domain/data/DataSchema.kt) | Optional format and columns of the data | Value object | No |
 | [`FileFormat`](../carp.analytics.core/src/commonMain/kotlin/dk/cachet/carp/analytics/domain/data/FileFormat.kt) | Known file formats and their MIME types | Enum | Core only |
 
@@ -160,7 +160,7 @@ val json = CoreAnalyticsSerializer.json.encodeToString( WorkflowDefinition.seria
 ```
 
 `Step.validate()` checks that each input and output is complete, for example that an external file input has a path and that an output has a format.
-Checks across the whole workflow, such as a missing producer step or an unknown environment, are done by the workflow validators.
+Checks across the whole workflow, such as a missing producer step or an unknown environment, are done by the workflow validators (see [validation](carp-analytics-validation.md)).
 
 ## Extending domain objects
 

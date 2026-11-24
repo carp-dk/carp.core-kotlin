@@ -12,6 +12,7 @@ An input reads from a [`DataLocation`](../carp.analytics.core/src/commonMain/kot
 The services exchange a workflow as a [`WorkflowDefinition`](../carp.analytics.core/src/commonMain/kotlin/dk/cachet/carp/analytics/domain/workflow/WorkflowDefinition.kt): the workflow together with the environments its steps run in.
 Steps taken from a shared step library are pinned to exact versions in a [`StepsLock`](../carp.analytics.core/src/commonMain/kotlin/dk/cachet/carp/analytics/domain/workflow/StepsLock.kt).
 See [the domain model](carp-analytics-domain.md) for each type, how to use it and how to extend it.
+See [validation](carp-analytics-validation.md) for how a workflow is checked before it runs.
 
 ```mermaid
 ---

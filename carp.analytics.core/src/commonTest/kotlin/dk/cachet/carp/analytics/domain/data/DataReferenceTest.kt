@@ -23,8 +23,8 @@ class DataReferenceTest
     private fun output( location: DataLocation, format: FileFormat? = null ) =
         OutputDataSpec( UUID.randomUUID(), "out", location = location, format = format )
 
-    private fun errorsOf( result: ValidationResult ): List<String> =
-        ( result as? ValidationResult.Failure )?.errors.orEmpty()
+    private fun errorsOf( result: DataSpecValidationResult ): List<String> =
+        ( result as? DataSpecValidationResult.Invalid )?.errors.orEmpty()
 
     @Test
     fun can_serialize_and_deserialize_specs()
@@ -56,7 +56,7 @@ class DataReferenceTest
             input( StreamLocation( "kafka://x", "topic" ) )
         )
 
-        valid.forEach { assertIs<ValidationResult.Success>( it.validate() ) }
+        valid.forEach { assertIs<DataSpecValidationResult.Valid>( it.validate() ) }
     }
 
     @Test
@@ -64,14 +64,14 @@ class DataReferenceTest
     {
         val result = input( FileLocation() ).validate()
 
-        assertTrue( result.isFailure )
+        assertFalse( result.isValid )
         assertEquals( 1, errorsOf( result ).size )
     }
 
     @Test
     fun blank_stepRef_fails()
     {
-        assertTrue( input( FileLocation( "in.csv" ), stepRef = " " ).validate().isFailure )
+        assertFalse( input( FileLocation( "in.csv" ), stepRef = " " ).validate().isValid )
     }
 
     @Test
@@ -87,9 +87,9 @@ class DataReferenceTest
     @Test
     fun output_needs_a_format()
     {
-        assertTrue( output( FileLocation( "out" ) ).validate().isFailure )
-        assertFalse( output( FileLocation( "out" ), FileFormat.CSV ).validate().isFailure )
-        assertFalse( output( FileLocation( "out.csv", FileFormat.CSV ) ).validate().isFailure )
+        assertFalse( output( FileLocation( "out" ) ).validate().isValid )
+        assertTrue( output( FileLocation( "out" ), FileFormat.CSV ).validate().isValid )
+        assertTrue( output( FileLocation( "out.csv", FileFormat.CSV ) ).validate().isValid )
     }
 
     @Test
@@ -100,6 +100,6 @@ class DataReferenceTest
         assertEquals( 2, errorsOf( output( DatabaseLocation( "", "" ) ).validate() ).size )
         assertEquals( 1, errorsOf( output( ApiLocation( "" ) ).validate() ).size )
         assertEquals( 2, errorsOf( output( StreamLocation( "", "" ) ).validate() ).size )
-        assertIs<ValidationResult.Success>( output( StreamLocation( "kafka://x", "t" ) ).validate() )
+        assertIs<DataSpecValidationResult.Valid>( output( StreamLocation( "kafka://x", "t" ) ).validate() )
     }
 }

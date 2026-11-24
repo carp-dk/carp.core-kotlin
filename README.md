@@ -45,6 +45,8 @@ Two key **design goals** differentiate this project from similar projects:
     - [Application services](docs/carp-data.md#application-services)
   - [Analytics](docs/carp-analytics.md)
     - [Domain model](docs/carp-analytics-domain.md)
+    - [Data locations](docs/carp-analytics-data-locations.md)
+    - [Validation](docs/carp-analytics-validation.md)
     - [Adding a task or environment type](docs/carp-analytics-extending.md)
 - [Infrastructure helpers](#infrastructure-helpers)
   - [Serialization](#serialization)

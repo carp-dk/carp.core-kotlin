@@ -1,8 +1,8 @@
 package dk.cachet.carp.analytics.domain.workflow
 
+import dk.cachet.carp.analytics.domain.data.DataSpecValidationResult
 import dk.cachet.carp.analytics.domain.data.InputDataSpec
 import dk.cachet.carp.analytics.domain.data.OutputDataSpec
-import dk.cachet.carp.analytics.domain.data.ValidationResult
 import dk.cachet.carp.analytics.domain.tasks.TaskDefinition
 import dk.cachet.carp.common.application.UUID
 import kotlinx.serialization.SerialName
@@ -34,10 +34,10 @@ data class Step(
         // Validate all inputs
         inputs.forEach { input ->
             val result = input.validate()
-            if ( result.isFailure )
+            if ( !result.isValid )
             {
                 errors.add(
-                    "Input '${input.id}': ${( result as ValidationResult.Failure ).errors.joinToString( ", " )}"
+                    "Input '${input.id}': ${( result as DataSpecValidationResult.Invalid ).errors.joinToString( ", " )}"
                 )
             }
         }
@@ -45,11 +45,11 @@ data class Step(
         // Validate all outputs
         outputs.forEach { output ->
             val result = output.validate()
-            if ( result.isFailure )
+            if ( !result.isValid )
             {
                 errors.add(
                     "Output '${output.id}': ${(
-                            result as ValidationResult.Failure
+                            result as DataSpecValidationResult.Invalid
                             ).errors.joinToString( ", " )}"
                 )
             }

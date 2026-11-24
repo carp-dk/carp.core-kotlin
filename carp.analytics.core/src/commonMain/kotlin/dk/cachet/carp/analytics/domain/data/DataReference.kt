@@ -87,9 +87,9 @@ data class InputDataSpec(
      * 8. ApiLocation: endpoint must be non-empty
      * 9. StreamLocation: streamAddress and topicOrStream must be non-empty
      *
-     * @return ValidationResult.Success if valid, Failure with error list if invalid
+     * @return [DataSpecValidationResult.Valid], or [DataSpecValidationResult.Invalid] with the errors found
      */
-    fun validate(): ValidationResult
+    fun validate(): DataSpecValidationResult
     {
         val errors = mutableListOf<String>()
 
@@ -102,7 +102,7 @@ data class InputDataSpec(
         // Delegate per-location validation to helper to reduce complexity.
         errors += validateInputLocation( location, stepRef, name )
 
-        return if ( errors.isEmpty() ) ValidationResult.Success else ValidationResult.Failure( errors )
+        return if ( errors.isEmpty() ) DataSpecValidationResult.Valid else DataSpecValidationResult.Invalid( errors )
     }
 }
 
@@ -150,16 +150,16 @@ data class OutputDataSpec(
      * 5. ApiLocation requires non-empty endpoint
      * 6. StreamLocation requires non-empty streamAddress and topicOrStream
      *
-     * @return ValidationResult.Success if valid, Failure with error list if invalid
+     * @return [DataSpecValidationResult.Valid], or [DataSpecValidationResult.Invalid] with the errors found
      */
-    fun validate(): ValidationResult
+    fun validate(): DataSpecValidationResult
     {
         val errors = mutableListOf<String>()
 
         // Delegate per-location validation to helper to reduce complexity.
         errors += validateOutputLocation( location, format, name )
 
-        return if ( errors.isEmpty() ) ValidationResult.Success else ValidationResult.Failure( errors )
+        return if ( errors.isEmpty() ) DataSpecValidationResult.Valid else DataSpecValidationResult.Invalid( errors )
     }
 }
 
@@ -244,39 +244,23 @@ private fun validateStreamLocation( location: StreamLocation, entity: String, na
 }
 
 /**
- * Result of a validation operation.
- *
- * **Usage:**
- * ```kotlin
- * val result = inputSpec.validate()
- * when (result) {
- *     ValidationResult.Success -> println("Valid!")
- *     is ValidationResult.Failure -> println("Errors: ${result.errors}")
- * }
- * ```
+ * Result of validating an [InputDataSpec] or [OutputDataSpec].
  */
 @Serializable
-sealed class ValidationResult
+sealed class DataSpecValidationResult
 {
     /**
-     * Validation passed — all checks successful.
+     * The specification is complete.
      */
     @Serializable
-    object Success : ValidationResult()
+    object Valid : DataSpecValidationResult()
 
     /**
-     * Validation failed with one or more errors.
-     *
-     * @property errors List of error messages
+     * The specification is incomplete, for the reasons in [errors].
      */
     @Serializable
-    data class Failure( val errors: List<String> ) : ValidationResult()
+    data class Invalid( val errors: List<String> ) : DataSpecValidationResult()
 
-    /**
-     * Check if validation failed.
-     *
-     * @return true if this is Failure, false if Success
-     */
-    val isFailure: Boolean
-        get() = this is Failure
+    val isValid: Boolean
+        get() = this is Valid
 }
